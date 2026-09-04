@@ -1,0 +1,11 @@
+node_modules/
+.core-build/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+.qualification/
+artifacts/current/
+*.log
+.DS_Store
