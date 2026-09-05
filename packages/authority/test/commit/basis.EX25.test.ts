@@ -199,12 +199,19 @@ describe("EX25 identity scope and retained digests", () => {
   );
 
   it.effect(
-    "rejects a new act on retained legacy before any source lookup",
+    "rejects a new act on valid retained legacy before any source lookup",
     () =>
       Effect.gen(function* rejectLegacyAct() {
         const fresh = yield* withDigest([]);
+        const readSetDigest = yield* structuredDigest(
+          "read-set",
+          yield* Schema.decodeEffect(LegacyReadSet)(legacyReadSet)
+        );
         const result = yield* validateBasisSnapshot(
-          yield* Schema.decodeUnknownEffect(InternalBasis)(legacy),
+          yield* Schema.decodeUnknownEffect(InternalBasis)({
+            ...legacy,
+            readSetDigest,
+          }),
           snapshot(fresh)
         ).pipe(Effect.result);
         expect(Result.isFailure(result)).toBeTruthy();
@@ -262,5 +269,41 @@ describe("EX25 identity scope and retained digests", () => {
           }
         }
       })
+  );
+});
+
+describe("EX25 legacy integrity before version staleness", () => {
+  it.effect("fails closed on a well-formed but incorrect legacy digest", () =>
+    Effect.gen(function* rejectCorruptLegacy() {
+      const fresh = yield* withDigest([]);
+      const corrupted =
+        yield* Schema.decodeUnknownEffect(InternalBasis)(legacy);
+      const result = yield* validateBasisSnapshot(
+        corrupted,
+        snapshot(fresh)
+      ).pipe(Effect.result);
+      expect(Result.isFailure(result)).toBeTruthy();
+      if (Result.isFailure(result)) {
+        expect(result.failure._tag).toBe("Unavailable");
+      }
+    })
+  );
+
+  it.effect("preserves current-basis digest mismatch as Stale", () =>
+    Effect.gen(function* preserveCurrentMismatch() {
+      const fresh = yield* withDigest([]);
+      const corrupted = yield* Schema.decodeEffect(CurrentInternalBasis)({
+        ...fresh,
+        readSetDigest: "1".repeat(64),
+      });
+      const result = yield* validateBasisSnapshot(
+        corrupted,
+        snapshot(fresh)
+      ).pipe(Effect.result);
+      expect(Result.isFailure(result)).toBeTruthy();
+      if (Result.isFailure(result)) {
+        expect(result.failure._tag).toBe("Stale");
+      }
+    })
   );
 });

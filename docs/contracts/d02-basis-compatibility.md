@@ -159,3 +159,7 @@ Evidência executada nesta etapa:
 - Typecheck global inicialmente apontou, além de erros locais já corrigidos, os fixtures fora da allowlist `apps/server/test/adapters/postgres/d01/seed.ts` e `tests/integration/d01/commit/guards.EX05.integration.test.ts`. Root coordena seus ajustes; o seed histórico deve usar LegacyDomainCut, sem inventar identidade no histórico.
 
 Não foram executadas migração, integração de banco novo, BC-01–09 ou journey de identidade nesta etapa. O baseline real anterior está sendo preparado independentemente por W3; DDL007, fixtures, perfil e composição são do integrador. Estes testes puros e build não aceitam EX25 nem D02 completos.
+
+### Correção da revisão de integridade legada
+
+Root identificou que a primeira versão candidata classificava qualquer base legada estruturalmente válida como Stale antes de verificar seu digest. A contraprova nova reproduziu `expected Unavailable, received Stale` para um hash de 64 caracteres bem formado mas incorreto (1 falha/11 passagens em EX25). O guard agora verifica o digest legado com o prefixo preservado: íntegro resulta em Stale de novo ato; incoerente resulta em Unavailable. A testemunha de legado válido passou a calcular seu digest correto. Shapes mistos continuam recusados e divergência de digest atual continua Stale, preservando a semântica anterior. Replay de receipt permanece anterior a esse guard; não se recalcula histórico para devolver o receipt.

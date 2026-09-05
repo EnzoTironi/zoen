@@ -72,14 +72,17 @@ export const validateBasisSnapshot = Effect.fn(
   const retained = yield* Schema.decodeEffect(InternalBasis)(basis).pipe(
     Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
   );
+  const digest = yield* structuredDigest("read-set", retained.readSet);
   if (!("schemaVersion" in retained)) {
+    if (digest !== retained.readSetDigest) {
+      return yield* new Unavailable({ code: "UNAVAILABLE" });
+    }
     return yield* new Stale({ code: "STALE" });
   }
   const saved = retained;
   const principalRef = yield* Schema.decodeEffect(PrincipalRef)(
     current.principalId
   ).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
-  const digest = yield* structuredDigest("read-set", saved.readSet);
   if (
     digest !== saved.readSetDigest ||
     saved.worldRef.worldId !== current.worldRef.worldId ||
