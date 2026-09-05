@@ -146,6 +146,26 @@ describe("EX02 public scalar boundaries", () => {
     expect(isRejected(Instant, "2026-02-30T12:30:00.000Z")).toBeTruthy();
   });
 
+  it("keeps LocalDate within the PostgreSQL calendar profile 0001–9999", () => {
+    expect(isRejected(LocalDate, "0000-01-01")).toBeTruthy();
+    expect(Schema.decodeSync(LocalDate)("0001-01-01")).toBe("0001-01-01");
+    expect(Schema.decodeSync(LocalDate)("9999-12-31")).toBe("9999-12-31");
+    expect(isRejected(LocalDate, "10000-01-01")).toBeTruthy();
+    expect(isRejected(LocalDate, "0001-01-01 BC")).toBeTruthy();
+  });
+
+  it("keeps Instant within the PostgreSQL calendar profile 0001–9999", () => {
+    expect(isRejected(Instant, "0000-01-01T00:00:00.000Z")).toBeTruthy();
+    expect(Schema.decodeSync(Instant)("0001-01-01T00:00:00.000Z")).toBe(
+      "0001-01-01T00:00:00.000Z"
+    );
+    expect(Schema.decodeSync(Instant)("9999-12-31T23:59:59.999Z")).toBe(
+      "9999-12-31T23:59:59.999Z"
+    );
+    expect(isRejected(Instant, "+010000-01-01T00:00:00.000Z")).toBeTruthy();
+    expect(isRejected(Instant, "-000001-01-01T00:00:00.000Z")).toBeTruthy();
+  });
+
   it("rejects empty and reversed half-open intervals", () => {
     expect(
       Schema.decodeUnknownSync(DateInterval)(record.validTime)

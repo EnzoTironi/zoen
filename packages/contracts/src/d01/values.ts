@@ -67,7 +67,7 @@ export type ExactAmount = typeof ExactAmount.Type;
 
 export const Instant = Schema.String.check(
   Schema.isPattern(
-    /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/u
+    /^(?!0000)[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}Z$/u
   ),
   Schema.makeFilter((value) =>
     Option.exists(
@@ -77,7 +77,7 @@ export const Instant = Schema.String.check(
   )
 ).pipe(Schema.brand("zoen/Instant"));
 export const LocalDate = Schema.String.check(
-  Schema.isPattern(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/u),
+  Schema.isPattern(/^(?!0000)[0-9]{4}-[0-9]{2}-[0-9]{2}$/u),
   Schema.makeFilter((value) =>
     Option.exists(
       DateTime.make(`${value}T00:00:00.000Z`),
