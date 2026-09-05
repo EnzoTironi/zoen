@@ -4,7 +4,7 @@ Revisor: W2. Data: 2026-09-05. Candidato examinado: `78ae058`, arquivo `docs/con
 
 ## Resultado
 
-A revisão G resolve as lacunas anteriores de transitividade, consultas entre regimes temporais e bases legadas. Há um bloqueio de prontidão antes do pacote de implementação: novas claims admitidas por outras operações podem exceder as quotas da leitura necessária para desfazer identidade. O candidato precisa fechar essa transição, incluindo seus efeitos nos writers existentes, ou definir uma recuperação completa revisável. A frase geral de não gravar estado acima da quota não especifica sua aplicação aos imports atuais.
+A revisão G resolve as lacunas anteriores de transitividade, consultas entre regimes temporais e bases legadas. Em `78ae058`, foi encontrado um bloqueio de prontidão antes do pacote de implementação: novas claims admitidas por outras operações podem exceder as quotas da leitura necessária para desfazer identidade. O candidato precisa fechar essa transição, incluindo seus efeitos nos writers existentes, ou definir uma recuperação completa revisável. A frase geral de não gravar estado acima da quota não especificava sua aplicação aos imports atuais. A revisão posterior `4040ad6` oferece uma recuperação estrutural distinta e resolve a contraprova no nível contratual, condicionada à ratificação explícita do novo tipo/journey; a avaliação detalhada está no fim deste relatório. Nenhuma prova de implementação foi produzida.
 
 ## Q1 — importação posterior pode tornar a decisão impossível de desfazer
 
@@ -51,3 +51,15 @@ Os identificadores de itens imutáveis usados por UndoEffect precisam estar vinc
 Foram lidos `ports/d01/basis.ts`, `commit/guards.ts`, `knowledge/d01/inspect.ts`, `knowledge/d01/selection.ts` e os consumidores `knowledge/corrections/{frame,propose,answer,undo,projection,scope}.ts`. O cut atual tem cinco domínios; identities não vazio é rejeitado pelos guards. Inspect literal retém sua base privada e a leitura histórica retorna o payload preservado. Correções carregam Frame/Case antes do commit em caminhos relevantes, portanto um decoder que aceite só a nova versão quebraria replay antes de chegar ao guard de compatibilidade. O candidato G agora exige auditar precisamente essa ordem.
 
 A consulta histórica se limitou aos registros específicos C024/C025 e ZN-0038/0039/0040/SPEC-006 referenciados pelo candidato; não conferiu autoridade a código antigo, pacote ontology, clínica ou DDL. A proposta continua sujeita às invariantes atuais e à ratificação do integrador.
+
+## Reavaliação de Q1 — revisão 4040ad6
+
+Foi lido o diff completo de `78ae058` até `4040ad6`. A nova proposta `InspectIdentityRecovery` usa um tipo distinto, sem claims ou comparação de valores, mas com fechamento completo, linhagem e células estruturais. Só alimenta split/undo. A Question explicita que consequências comparativas não foram calculadas; nenhuma lista vazia mascara uma comparação inexistente. Nova equivalência continua exigindo a leitura comparativa completa.
+
+Esse caminho resolve a contraprova específica: importar mais claims não altera os segmentos/células de identidade, portanto deixa disponível a inspeção estrutural necessária para desfazer a decisão original no cenário Q1. O DomainCut continua completo, inclusive claims/fontes/head/membership; o read set estrutural precisa proteger toda presença/ausência relevante. Não é permitido copiar um inventário incompleto de fontes ou inventar pins. Claims novas e histórico ficam preservados.
+
+Classificação atual de Q1: **resolvido no desenho candidato, condicionado à aceitação explícita e prova futura**, não bloqueio lógico remanescente desse cenário. A nova família, seus discriminantes, recusa de uso para same-as/different-from e todos os consumidores devem entrar no pacote se o integrador ratificar a decisão. Se ela não for admitida, o bloqueio original de 78ae058 permanece; o relatório não autoriza uma API por si.
+
+Limite preservado: isso garante que o excesso de claims sozinho não torna a identidade irrecuperável. Não garante undo arbitrário de qualquer decisão antiga após outras mudanças de grafo. Limites estruturais atuais/prospectivos precisam ser impostos por todos os writers, e inversões que excedam esses limites ou conflitem com distinções posteriores permanecem bloqueadas. A jornada deve explicar o impedimento real sem prometer reversão automática.
+
+Oráculo ainda a executar depois de implementação autorizada: exceder os limites comparativos por imports reais, observar QuotaExceeded normal, obter recuperação completa sob base atual e confirmar undo; repetir com períodos desconhecidos, revalidação concorrente e viewer negado. Não foram executados testes de identidade nesta revisão documental.
