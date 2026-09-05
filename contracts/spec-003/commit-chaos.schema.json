@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-003/commit-chaos.schema.json",
+  "title": "ZN-0024 commit-chaos fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "domainA", "domainB"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0024-commit-chaos-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "domainA": { "type": "string" },
+    "domainB": { "type": "string" }
+  }
+}

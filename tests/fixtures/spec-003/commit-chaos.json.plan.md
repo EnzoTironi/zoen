@@ -1,6 +1,6 @@
 # File plan — `tests/fixtures/spec-003/commit-chaos.json`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `tests/fixtures/spec-003/commit-chaos.json`. Representation: **sidecar-only**. Allocation: **conditional-support**.
 
