@@ -156,6 +156,9 @@ const Connected = ({
       </section>
       {state.world === null ? (
         <div className="d01-workspace d01-context">
+          {state.view.kind === "denied" ? (
+            <h1>Não foi possível abrir este conteúdo</h1>
+          ) : null}
           <button
             className="d01-button"
             onClick={() => {
