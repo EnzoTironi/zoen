@@ -40,7 +40,7 @@ RETURN tagged errors without partial branding; preserve counterexamples for gene
 | [ZN-0009](../tickets/zn-0009.md) | Implement time kinds and half-open intervals | [packages/kernel/src/time.ts](../../packages/kernel/src/time.ts.plan.md) |
 | [ZN-0010](../tickets/zn-0010.md) | Implement bounded canonical parsing and hashing | [packages/kernel/src/json.ts](../../packages/kernel/src/json.ts.plan.md) |
 | [ZN-0011](../tickets/zn-0011.md) | Define stable errors, state axes and exhaustive serializers | [packages/kernel/src/result.ts](../../packages/kernel/src/result.ts.plan.md) |
-| [ZN-0012](../tickets/zn-0012.md) | Prove algebraic and resource-limit laws | [packages/kernel/src/laws.ts](../../packages/kernel/src/laws.ts) |
+| [ZN-0012](../tickets/zn-0012.md) | Prove algebraic and resource-limit laws | [packages/kernel/src/laws.ts](../../packages/kernel/src/laws.ts.plan.md) |
 
 ## Required proof boundaries
 

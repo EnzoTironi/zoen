@@ -15,7 +15,7 @@
 | `ids.ts` | required | [read](ids.ts.plan.md) |
 | `index.ts` | conditional-support | [read](index.ts.plan.md) |
 | `json.ts` | required | [read](json.ts.plan.md) |
-| `laws.ts` | required | [read](laws.ts) |
+| `laws.ts` | required | [read](laws.ts.plan.md) |
 | `ports.ts` | conditional-support | [read](ports.ts) |
 | `result.ts` | required | [read](result.ts.plan.md) |
 | `time.ts` | required | [read](time.ts.plan.md) |
