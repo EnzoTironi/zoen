@@ -1,19 +1,8 @@
-/* eslint-disable effecttsgo/node-builtin-import, effecttsgo/async-function -- These tests exercise real POSIX file permissions and descriptors, without a fake filesystem. */
-import {
-  chmod,
-  mkdtemp,
-  readFile,
-  stat,
-  symlink,
-  writeFile,
-} from "node:fs/promises";
-import os from "node:os";
-import path from "node:path";
-
+import { NodeServices } from "@effect/platform-node";
+import { describe, expect, it } from "@effect/vitest";
 import { Conflict } from "@zoen/contracts/d01/errors";
 import { WorldCreated } from "@zoen/contracts/d01/operations";
-import { Effect, Redacted, Schema } from "effect";
-import { describe, expect, it } from "vitest";
+import { Effect, FileSystem, Path, Redacted, Schema } from "effect";
 
 import { readInput, validateBaseUrl } from "../../src/d01/input.js";
 import {
@@ -67,56 +56,81 @@ describe("EX11 CLI formatting and local boundaries", () => {
     }
   });
 
-  it("preserves raw document text, rejects oversized bytes and insecure password files", async () => {
-    const directory = await mkdtemp(path.join(os.tmpdir(), "zoen-cli-input-"));
-    const file = path.join(directory, "document.json");
-    const document = '\uFEFF\n{"duplicate":1,"duplicate":2,"text":"á"}\n';
-    await writeFile(file, document, { mode: 0o600 });
-    await expect(Effect.runPromise(readInput(file, 1024))).resolves.toBe(
-      document
-    );
-    await expect(Effect.runPromise(readInput(file, 2))).rejects.toMatchObject({
-      code: "CLI_INPUT",
-    });
-    await chmod(file, 0o644);
-    await expect(
-      Effect.runPromise(readInput(file, 1024, true))
-    ).rejects.toMatchObject({ code: "CLI_INPUT" });
-    const link = path.join(directory, "link");
-    await symlink(file, link);
-    await expect(
-      Effect.runPromise(readInput(link, 1024))
-    ).rejects.toMatchObject({ code: "CLI_INPUT" });
-  });
+  it.live(
+    "preserves raw document text, rejects oversized bytes and insecure password files",
+    () =>
+      Effect.scoped(
+        Effect.gen(function* inputFiles() {
+          const fs = yield* FileSystem.FileSystem;
+          const path = yield* Path.Path;
+          const directory = yield* fs.makeTempDirectoryScoped({
+            prefix: "zoen-cli-input-",
+          });
+          const file = path.join(directory, "document.json");
+          const document = '\uFEFF\n{"duplicate":1,"duplicate":2,"text":"á"}\n';
+          yield* fs.writeFileString(file, document, { mode: 0o600 });
+          expect(yield* readInput(file, 1024)).toBe(document);
+          expect(yield* readInput(file, 2).pipe(Effect.flip)).toMatchObject({
+            code: "CLI_INPUT",
+          });
+          yield* fs.chmod(file, 0o644);
+          expect(
+            yield* readInput(file, 1024, true).pipe(Effect.flip)
+          ).toMatchObject({ code: "CLI_INPUT" });
+          const link = path.join(directory, "link");
+          yield* fs.symlink(file, link);
+          expect(yield* readInput(link, 1024).pipe(Effect.flip)).toMatchObject({
+            code: "CLI_INPUT",
+          });
+        })
+      ).pipe(Effect.provide(NodeServices.layer))
+  );
 
-  it("binds private sessions to an origin, refuses overwrite, and removes only the session", async () => {
-    const directory = await mkdtemp(
-      path.join(os.tmpdir(), "zoen-cli-session-")
-    );
-    const unrelated = path.join(directory, "keep.txt");
-    await writeFile(unrelated, "preserve");
-    const cookie = Redacted.make("zoen-d01.session_token=local-file-test");
-    await Effect.runPromise(
-      saveSession(directory, "http://localhost:3000", cookie)
-    );
-    const storedStat = await stat(path.join(directory, "session.json"));
-    const storedCookie = await Effect.runPromise(
-      readSession(directory, "http://localhost:3000")
-    );
-    expect({
-      cookie: Redacted.value(storedCookie),
-      mode: storedStat.mode % 512,
-    }).toStrictEqual({ cookie: Redacted.value(cookie), mode: 0o600 });
-    await expect(
-      Effect.runPromise(readSession(directory, "http://localhost:3001"))
-    ).rejects.toMatchObject({ code: "CLI_SESSION" });
-    await expect(
-      Effect.runPromise(saveSession(directory, "http://localhost:3000", cookie))
-    ).rejects.toMatchObject({ code: "CLI_SESSION" });
-    await Effect.runPromise(removeSession(directory));
-    await expect(readFile(unrelated, "utf-8")).resolves.toBe("preserve");
-    await expect(
-      Effect.runPromise(readSession(directory, "http://localhost:3000"))
-    ).rejects.toMatchObject({ code: "CLI_SESSION" });
-  });
+  it.live(
+    "binds private sessions to an origin, refuses overwrite, and removes only the session",
+    () =>
+      Effect.scoped(
+        Effect.gen(function* sessionFiles() {
+          const fs = yield* FileSystem.FileSystem;
+          const path = yield* Path.Path;
+          const directory = yield* fs.makeTempDirectoryScoped({
+            prefix: "zoen-cli-session-",
+          });
+          const unrelated = path.join(directory, "keep.txt");
+          yield* fs.writeFileString(unrelated, "preserve");
+          const cookie = Redacted.make(
+            "zoen-d01.session_token=local-file-test"
+          );
+          yield* saveSession(directory, "http://localhost:3000", cookie);
+          const storedStat = yield* fs.stat(
+            path.join(directory, "session.json")
+          );
+          const storedCookie = yield* readSession(
+            directory,
+            "http://localhost:3000"
+          );
+          expect({
+            cookie: Redacted.value(storedCookie),
+            mode: storedStat.mode % 512,
+          }).toStrictEqual({ cookie: Redacted.value(cookie), mode: 0o600 });
+          expect(
+            yield* readSession(directory, "http://localhost:3001").pipe(
+              Effect.flip
+            )
+          ).toMatchObject({ code: "CLI_SESSION" });
+          expect(
+            yield* saveSession(directory, "http://localhost:3000", cookie).pipe(
+              Effect.flip
+            )
+          ).toMatchObject({ code: "CLI_SESSION" });
+          yield* removeSession(directory);
+          expect(yield* fs.readFileString(unrelated)).toBe("preserve");
+          expect(
+            yield* readSession(directory, "http://localhost:3000").pipe(
+              Effect.flip
+            )
+          ).toMatchObject({ code: "CLI_SESSION" });
+        })
+      ).pipe(Effect.provide(NodeServices.layer))
+  );
 });

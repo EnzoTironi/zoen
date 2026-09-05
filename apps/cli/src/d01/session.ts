@@ -1,101 +1,64 @@
-/* eslint-disable effecttsgo/node-builtin-import, effecttsgo/async-function -- Node descriptor flags O_NOFOLLOW/O_EXCL and UID checks are the credential-file boundary; native promises are enclosed in Effect.tryPromise. */
-/* eslint-disable no-bitwise -- POSIX file flags and permission masks are bit fields. */
-import { constants } from "node:fs";
-import { lstat, mkdir, open, unlink } from "node:fs/promises";
-import path from "node:path";
+import { Effect, FileSystem, Path, Redacted, Schema } from "effect";
 
-import { Effect, Redacted, Schema } from "effect";
-
+import { readNoFollow, requirePrivateDirectory } from "./adapters/posix.js";
 import { CliFailure } from "./output.js";
 
 const StoredSession = Schema.Struct({
   baseUrl: Schema.String,
   cookie: Schema.NonEmptyString,
 });
-const decodeSession = Schema.decodeUnknownSync(
-  Schema.fromJsonString(StoredSession)
+const SessionJson = Schema.fromJsonString(StoredSession);
+
+const sessionPath = Effect.fn(function* sessionPath(directory: string) {
+  const fs = yield* FileSystem.FileSystem;
+  const path = yield* Path.Path;
+  yield* fs.makeDirectory(directory, { mode: 0o700, recursive: true });
+  yield* requirePrivateDirectory(directory);
+  return path.join(directory, "session.json");
+});
+
+export const readSession = Effect.fn(
+  function* readSession(directory: string, baseUrl: string) {
+    const target = yield* sessionPath(directory);
+    const text = yield* readNoFollow(target, 16_384, true);
+    const session = yield* Schema.decodeEffect(SessionJson)(text);
+    if (session.baseUrl !== baseUrl || /[\r\n]/u.test(session.cookie)) {
+      return yield* new CliFailure("CLI_SESSION");
+    }
+    return Redacted.make(session.cookie);
+  },
+  Effect.mapError(() => new CliFailure("CLI_SESSION"))
 );
 
-const encodeSession = Schema.encodeSync(Schema.fromJsonString(StoredSession));
-
-const sessionPath = async (directory: string): Promise<string> => {
-  await mkdir(directory, { mode: 0o700, recursive: true });
-  const stat = await lstat(directory);
-  if (
-    !stat.isDirectory() ||
-    stat.isSymbolicLink() ||
-    (stat.mode & 0o777) !== 0o700 ||
-    stat.uid !== process.getuid?.()
+export const saveSession = Effect.fn(
+  function* saveSession(
+    directory: string,
+    baseUrl: string,
+    cookie: Redacted.Redacted
   ) {
-    throw new CliFailure("CLI_SESSION");
-  }
-  return path.join(directory, "session.json");
-};
+    const target = yield* sessionPath(directory);
+    const fs = yield* FileSystem.FileSystem;
+    const json = yield* Schema.encodeEffect(SessionJson)({
+      baseUrl,
+      cookie: Redacted.value(cookie),
+    });
+    yield* Effect.scoped(
+      Effect.gen(function* persistPrivateSession() {
+        // Exclusive creation refuses both existing files and symlinks atomically.
+        const file = yield* fs.open(target, { flag: "wx", mode: 0o600 });
+        yield* file.writeAll(new TextEncoder().encode(json));
+        yield* file.sync;
+      })
+    );
+  },
+  Effect.mapError(() => new CliFailure("CLI_SESSION"))
+);
 
-export const readSession = (directory: string, baseUrl: string) =>
-  Effect.tryPromise({
-    catch: () => new CliFailure("CLI_SESSION"),
-    try: async () => {
-      const file = await open(
-        await sessionPath(directory),
-        constants.O_RDONLY | constants.O_NOFOLLOW
-      );
-      try {
-        const stat = await file.stat();
-        if (
-          !stat.isFile() ||
-          stat.size > 16_384 ||
-          (stat.mode & 0o777) !== 0o600 ||
-          stat.uid !== process.getuid?.()
-        ) {
-          throw new CliFailure("CLI_SESSION");
-        }
-        const session = decodeSession(await file.readFile("utf-8"));
-        if (session.baseUrl !== baseUrl || /[\r\n]/u.test(session.cookie)) {
-          throw new CliFailure("CLI_SESSION");
-        }
-        return Redacted.make(session.cookie);
-      } finally {
-        await file.close();
-      }
-    },
-  });
-
-export const saveSession = (
-  directory: string,
-  baseUrl: string,
-  cookie: Redacted.Redacted
-) =>
-  Effect.tryPromise({
-    catch: () => new CliFailure("CLI_SESSION"),
-    try: async () => {
-      const target = await sessionPath(directory);
-      const file = await open(
-        target,
-        constants.O_WRONLY |
-          constants.O_CREAT |
-          constants.O_EXCL |
-          constants.O_NOFOLLOW,
-        0o600
-      );
-      try {
-        await file.writeFile(
-          encodeSession({
-            baseUrl,
-            cookie: Redacted.value(cookie),
-          })
-        );
-        await file.sync();
-      } finally {
-        await file.close();
-      }
-    },
-  });
-
-export const removeSession = (directory: string) =>
-  Effect.tryPromise({
-    catch: () => new CliFailure("CLI_SESSION"),
-    try: async () => {
-      await unlink(await sessionPath(directory));
-    },
-  });
+export const removeSession = Effect.fn(
+  function* removeSession(directory: string) {
+    const target = yield* sessionPath(directory);
+    const fs = yield* FileSystem.FileSystem;
+    yield* fs.remove(target);
+  },
+  Effect.mapError(() => new CliFailure("CLI_SESSION"))
+);

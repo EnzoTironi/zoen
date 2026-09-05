@@ -1,6 +1,4 @@
 import { homedir } from "node:os";
-// eslint-disable-next-line effecttsgo/node-builtin-import -- Resolve the default local session directory before constructing the CLI.
-import path from "node:path";
 
 import { decodeD01Request } from "@zoen/contracts/d01/operations";
 import {
@@ -11,7 +9,7 @@ import {
   SubjectKey,
   WorldId,
 } from "@zoen/contracts/d01/values";
-import { Console, Effect, Option, Redacted } from "effect";
+import { Console, Effect, Option, Path, Redacted } from "effect";
 import { Command, Flag } from "effect/unstable/cli";
 import { FetchHttpClient } from "effect/unstable/http";
 
@@ -26,7 +24,7 @@ const root = Command.make("zoen").pipe(
       Flag.withDescription("Server origin; HTTPS or loopback HTTP")
     ),
     sessionDir: Flag.string("session-dir").pipe(
-      Flag.withDefault(path.join(homedir(), ".config", "zoen")),
+      Flag.optional,
       Flag.withDescription(
         "Private 0700 directory containing the 0600 session file"
       )
@@ -40,23 +38,29 @@ const settings = Effect.gen(function* settings() {
     catch: () => new CliFailure("CLI_INPUT"),
     try: () => validateBaseUrl(flags.baseUrl),
   });
-  return { ...flags, baseUrl };
+  const path = yield* Path.Path;
+  const sessionDir = Option.getOrElse(flags.sessionDir, () =>
+    path.join(homedir(), ".config", "zoen")
+  );
+  return { baseUrl, sessionDir };
 });
 
 const report = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
   effect.pipe(
     Effect.provideService(FetchHttpClient.RequestInit, { redirect: "error" }),
     Effect.timeout("35 seconds"),
-    // eslint-disable-next-line promise/prefer-await-to-then, promise/prefer-await-to-callbacks -- Effect.catch handles typed failures, not promises.
-    Effect.catch((error) => {
-      const failure = formatFailure(error);
-      return Console.error(failure.json).pipe(
-        Effect.andThen(
-          Effect.sync(() => {
-            process.exitCode = failure.exitCode;
-          })
-        )
-      );
+    Effect.matchEffect({
+      onFailure: (error) => {
+        const failure = formatFailure(error);
+        return Console.error(failure.json).pipe(
+          Effect.andThen(
+            Effect.sync(() => {
+              process.exitCode = failure.exitCode;
+            })
+          )
+        );
+      },
+      onSuccess: Effect.succeed,
     })
   );
 
