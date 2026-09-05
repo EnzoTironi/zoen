@@ -14,6 +14,7 @@ import { Command, Flag } from "effect/unstable/cli";
 import { FetchHttpClient } from "effect/unstable/http";
 
 import { makeCorrectionCommands } from "../integration/d02/command.js";
+import { makeSharingCommands } from "../sharing/command.js";
 import { readInput, validateBaseUrl } from "./input.js";
 import { CliFailure, formatFailure, formatSuccess } from "./output.js";
 import { readSession, removeSession, saveSession } from "./session.js";
@@ -294,7 +295,7 @@ const logout = Command.make("sign-out", {}, () =>
 
 export const d01Command = root.pipe(
   Command.withDescription(
-    "Zoen D01 public API client. Results are JSON; errors go to stderr with nonzero exit status."
+    "Zoen public API client. Results are JSON; errors go to stderr with nonzero exit status."
   ),
   Command.withSubcommands([
     authCommand("sign-up"),
@@ -305,6 +306,7 @@ export const d01Command = root.pipe(
     inspect,
     openEvidence,
     ...makeCorrectionCommands({ operationId, realm, worldId }, send, report),
+    ...makeSharingCommands({ operationId, realm, worldId }, send, report),
   ]),
   Command.withExamples([
     {
