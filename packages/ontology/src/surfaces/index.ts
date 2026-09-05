@@ -39,3 +39,15 @@ export type {
   ExplainOpaqueInput,
   ExplainOpaqueOutcome,
 } from './discovery.js';
+
+export { FrameDisclosureService, FRAME_DISCLOSURE_IMPL, frameDisclosureDigest, asFrameId } from './frame-disclosure.js';
+export type {
+  SameHistoricalFrame,
+  NewerFrame,
+  HistoricalContentUnavailable,
+  FrameDisclosureDenied,
+  FrameReopenOutcome,
+  ReopenFrameInput,
+  EvidenceDisclosureInput,
+  EvidenceDisclosureOutcome,
+} from './frame-disclosure.js';

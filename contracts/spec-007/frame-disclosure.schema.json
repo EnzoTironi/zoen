@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-007/frame-disclosure.schema.json",
+  "title": "ZN-0046 frame-disclosure fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "purpose",
+    "subjectLabel"
+  ],
+  "properties": {
+    "seed": {
+      "type": "string",
+      "const": "zn-0046-frame-disclosure-seed-v1"
+    },
+    "seedDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "subjectLabel": {
+      "type": "string"
+    }
+  }
+}

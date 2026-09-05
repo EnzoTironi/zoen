@@ -1492,7 +1492,7 @@
     "ticket_id": "ZN-0046",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/frame-disclosure.test.ts",
-    "plan_path": "tests/component/spec-007/frame-disclosure.test.ts",
+    "plan_path": "tests/component/spec-007/frame-disclosure.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1503,7 +1503,7 @@
     "ticket_id": "ZN-0046",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/frame-disclosure.test.ts",
-    "plan_path": "tests/component/spec-007/frame-disclosure.test.ts",
+    "plan_path": "tests/component/spec-007/frame-disclosure.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1514,7 +1514,7 @@
     "ticket_id": "ZN-0046",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/frame-disclosure.test.ts",
-    "plan_path": "tests/component/spec-007/frame-disclosure.test.ts",
+    "plan_path": "tests/component/spec-007/frame-disclosure.test.ts.plan.md",
     "status": "not-executed"
   },
   {

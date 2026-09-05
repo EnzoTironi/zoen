@@ -7,6 +7,7 @@ import { KernelError, requireThat, ok, toPublicFailure } from '../../../kernel/s
 import { createHash } from 'node:crypto';
 import { OPERATIONS, FOUNDATION, operation } from './registry.js';
 import { DiscoveryService, buildOpaqueEvidenceRef } from './discovery.js';
+import { FrameDisclosureService } from './frame-disclosure.js';
 import { comparableGroups, parseClaim, parseValidTime } from '../interpretation/claims.js';
 import { interpretVisible } from '../interpretation/reconcile.js';
 import { operationScope } from '../authority/guards.js';
@@ -320,21 +321,55 @@ export class SemanticExecutor {
   }
   private async openFrame(request: SemanticEnvelope, context: VerifiedContext, descriptor: OperationDescriptor): Promise<JsonValue> {
     exactKeys(request.input, ['frameId']); const frameId = uuid(text(request.input['frameId'])); const world = request.worldRef!;
+    const disclosure = new FrameDisclosureService();
     const result = await this.authority.transaction(context, world, true, async sql => {
       const tx = await this.authority.enter(sql, context, world, descriptor, request.purpose, false);
-      const frame = (await sql.query<{ payload: string; source_ids: string[]; expired: boolean }>('SELECT payload::text,source_ids,expires_at<=clock_timestamp() AS expired FROM ontology.frames WHERE world_id=$1 AND realm=$2 AND frame_id=$3 AND principal_id=$4 AND purpose=$5', [world.worldId, world.realm, frameId, context.principalId, request.purpose]))[0];
-      if (!frame) return deny(); if (frame.expired) throw new KernelError('HistoricalContentUnavailable', 'FRAME_EXPIRED');
-      const sources = frame.source_ids.map(uuid); for (const source of sources) if (!await this.authority.sourceAllowed(tx, context, descriptor, source, request.purpose)) return deny();
-      return { payload: parseJsonText(frame.payload), securityRevision: tx.head.securityRevision, sources };
+      const row = await disclosure.loadFrame(sql, world, frameId, context.principalId, request.purpose);
+      let sourcesStillAllowed = true;
+      const sources: ReturnType<typeof uuid>[] = row ? row.source_ids.map(uuid) : [];
+      for (const source of sources) {
+        if (!await this.authority.sourceAllowed(tx, context, descriptor, source, request.purpose)) {
+          sourcesStillAllowed = false;
+          break;
+        }
+      }
+      const currentHeadDigest = await this.authority.crypto.digest({ ...tx.head });
+      const outcome = disclosure.reopen({
+        world,
+        frameId,
+        principalId: context.principalId,
+        purpose: request.purpose,
+        currentSecurityRevision: tx.head.securityRevision,
+        currentHeadDigest,
+        sourcesStillAllowed,
+        membershipActive: tx.membership.state === 'active',
+      }, row);
+      if (outcome.tag === 'Denied') return deny();
+      if (outcome.tag === 'HistoricalContentUnavailable') {
+        throw new KernelError('HistoricalContentUnavailable', outcome.reason);
+      }
+      return { outcome: asJson(outcome), securityRevision: tx.head.securityRevision, sources };
     });
-    await this.authority.reauthorize(context, world, descriptor, request.purpose, result.securityRevision, result.sources); return result.payload;
+    await this.authority.reauthorize(context, world, descriptor, request.purpose, result.securityRevision, result.sources);
+    return result.outcome;
   }
   private async openEvidence(request: SemanticEnvelope, context: VerifiedContext, descriptor: OperationDescriptor): Promise<JsonValue> {
     exactKeys(request.input, ['evidenceId']); const evidenceId = uuid(text(request.input['evidenceId'])); const world = request.worldRef!;
+    const disclosure = new FrameDisclosureService();
     const admitted = await this.authority.transaction(context, world, true, async sql => {
       const tx = await this.authority.enter(sql, context, world, descriptor, request.purpose, false);
-      const row = (await sql.query<{ source_id: string; object_key: string; content_digest: string; size_bytes: string; media_type: string; object_version: string }>('SELECT source_id,object_key,content_digest,size_bytes::text,media_type,object_version FROM ontology.evidence WHERE world_id=$1 AND realm=$2 AND evidence_id=$3', [world.worldId, world.realm, evidenceId]))[0];
-      if (!row || !await this.authority.sourceAllowed(tx, context, descriptor, uuid(row.source_id), request.purpose)) return deny();
+      const row = (await sql.query<{ source_id: string; object_key: string; content_digest: string; size_bytes: string; media_type: string; object_version: string; content_state: string }>('SELECT source_id,object_key,content_digest,size_bytes::text,media_type,object_version,COALESCE(content_state,\'available\') AS content_state FROM ontology.evidence WHERE world_id=$1 AND realm=$2 AND evidence_id=$3', [world.worldId, world.realm, evidenceId]))[0];
+      if (!row) return deny();
+      const sourceAllowed = await this.authority.sourceAllowed(tx, context, descriptor, uuid(row.source_id), request.purpose);
+      const gate = disclosure.discloseEvidence({
+        world,
+        evidenceId,
+        contentState: (row.content_state as 'available' | 'expired' | 'erased' | 'unavailable' | null) ?? 'available',
+        sourceAllowed,
+        membershipActive: tx.membership.state === 'active',
+      });
+      if (gate.tag === 'Denied') return deny();
+      if (gate.tag === 'HistoricalContentUnavailable') throw new KernelError('HistoricalContentUnavailable', gate.reason);
       return { artifact: { key: row.object_key, sha256: row.content_digest, size: row.size_bytes, mediaType: row.media_type, versionId: row.object_version }, sourceId: uuid(row.source_id), securityRevision: tx.head.securityRevision };
     });
     // Real object I/O occurs outside the transaction. No presigned bearer URL or
