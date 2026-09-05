@@ -28,7 +28,15 @@
       "state": "in_progress"
     }
   ],
-  "temporary_ownership": [],
+  "temporary_ownership": [
+    {
+      "task": "EX05",
+      "path": "tests/integration/d01/commit/**",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em suíte transversal, sem import de servidor nas fontes authority."
+    }
+  ],
   "checkpoints": [
     {
       "date": "2026-09-05",
@@ -36,7 +44,11 @@
       "packages": ["EX01", "EX02", "EX03"],
       "state": "reviewed_and_verified_locally",
       "evidence": "docs/verification/bootstrap.md",
-      "remote_ci": "pending",
+      "remote_ci": {
+        "commit": "d7b6c0e3b77930afc25f2a648eb64cee32a4f33f",
+        "result": "success",
+        "url": "https://github.com/EnzoTironi/zoen/actions/runs/33974831478"
+      },
       "unit_tests": 67,
       "infrastructure_tests": 4,
       "browser_component_tests": 7,

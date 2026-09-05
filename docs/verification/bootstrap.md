@@ -10,7 +10,7 @@ Data: 2026-09-05. Código integrado até `6241437`, macOS arm64, Node 24.20.0, p
 | Infraestrutura | 3 arquivos, 4 testes com PostgreSQL 18.6 e RustFS reais | Round-trip SQL/S3, rollback, ausência de DDL no runtime e falhas reais de conexão; não é commit semântico |
 | Navegador | 7 testes Chromium sobre componentes React reais | Props sintéticas declaradas; sem backend simulado. Teclado, upload real do input, estados negados, reflow e ampliação CSS de 200%; não é jornada autenticada nem zoom nativo |
 | Plano | `python3 tooling/verify_plan.py`: passou | Somente cobertura estrutural, grafo e propriedade de paths; nenhum teste de produto |
-| CI remota | Pendente de execução no branch publicado | YAML local não prova execução remota nem branch protection |
+| CI remota | [Execução 33974831478](https://github.com/EnzoTironi/zoen/actions/runs/33974831478), commit `d7b6c0e`: quality, unit, integration, components e required passaram | Mesmos 67/4/7 testes em Linux x64; não prova branch protection ou produto completo |
 
 Comandos disponíveis: `pnpm install --frozen-lockfile`, `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test:unit`, `pnpm test:integration`, `pnpm test:components`. Integração carrega `.env.infra` local, ignorado pelo Git, com credenciais geradas para serviços descartáveis. Não copiar valores para logs ou documentação.
 
@@ -22,5 +22,6 @@ Contraprovas preservadas:
 - O formulário de correção inicialmente espremia o conteúdo em colunas estreitas. `78f0040` corrige a estrutura responsiva; os testes e imagens do layout corrigido foram inspecionados.
 - `Schema.Struct({})` aceitava campos extras no input vazio de genesis. O contrato usa `Schema.Record(Schema.String, Schema.Never)` e contém a contraprova. O agrupamento de erros no HttpApi inicialmente perdia os status; o teste de OpenAPI cobre os membros publicados.
 - Os testes de indisponibilidade conectam a portas locais comprovadamente fechadas. Não desligam serviços compartilhados e não transformam falha em sucesso.
+- A [primeira CI remota](https://github.com/EnzoTironi/zoen/actions/runs/33974714493) falhou porque setup-node procurava pnpm para cache antes da instalação. `d7b6c0e` desativa esse cache implícito e limita cleanup à configuração de serviços criada; a execução seguinte passou. O agregador required reprovou corretamente a execução anterior.
 
 EX04–EX06 estão em implementação. Auth real, SQL de domínio, captura/admissão, leitura autorizada, CLI, aplicação web conectada, correção, recuperação por crash, imagem e Fly ainda precisam de suas provas correspondentes.
