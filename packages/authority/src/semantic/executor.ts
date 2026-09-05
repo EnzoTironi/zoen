@@ -6,7 +6,12 @@ import {
   Expired,
   Unsupported,
 } from "@zoen/contracts/d01/errors";
-import { D01Success, WorldCreated } from "@zoen/contracts/d01/operations";
+import {
+  CorrectionSuccess,
+  D01Success,
+  SemanticSuccess,
+  WorldCreated,
+} from "@zoen/contracts/d01/operations";
 import { D01_LIMITS, Instant } from "@zoen/contracts/d01/values";
 import type { Redacted } from "effect";
 import { Context, DateTime, Effect, Layer, Schema } from "effect";
@@ -16,6 +21,10 @@ import { authorizeWorld } from "../access/world.js";
 import { createPersonalWorld } from "../commit/genesis.js";
 import { importEvidence } from "../evidence/d01/import.js";
 import { openEvidence } from "../evidence/d01/open.js";
+import { answerQuestion } from "../knowledge/corrections/answer.js";
+import { proposeCorrection } from "../knowledge/corrections/propose.js";
+import { parseCorrectionBytes } from "../knowledge/corrections/request.js";
+import { undoCorrection } from "../knowledge/corrections/undo.js";
 import { inspect } from "../knowledge/d01/inspect.js";
 import { Presence } from "../ports/d01/context.js";
 import { canonicalJson } from "../values/canonical.js";
@@ -28,6 +37,10 @@ export class SemanticExecutor extends Context.Service<
       credential: Redacted.Redacted,
       bytes: Uint8Array
     ) => Effect.Effect<D01Success, D01Error>;
+    readonly executeCorrection: (
+      credential: Redacted.Redacted,
+      bytes: Uint8Array
+    ) => Effect.Effect<CorrectionSuccess, D01Error>;
   }
 >()("zoen/authority/semantic/SemanticExecutor") {
   static readonly layer = Layer.effect(
@@ -41,11 +54,21 @@ export class SemanticExecutor extends Context.Service<
             | ReturnType<typeof importEvidence>
             | ReturnType<typeof openEvidence>
             | ReturnType<typeof inspect>
+            | ReturnType<typeof proposeCorrection>
+            | ReturnType<typeof answerQuestion>
+            | ReturnType<typeof undoCorrection>
           >
         >();
       const execute = Effect.fn("authority.semantic.execute")(
-        function* execute(credential: Redacted.Redacted, bytes: Uint8Array) {
-          const request = yield* parseEnvelopeBytes(bytes);
+        function* execute(
+          family: "d01" | "correction",
+          credential: Redacted.Redacted,
+          bytes: Uint8Array
+        ) {
+          const request =
+            family === "d01"
+              ? yield* parseEnvelopeBytes(bytes)
+              : yield* parseCorrectionBytes(bytes);
           const verified = yield* presence.verify(credential);
           const now = yield* DateTime.now;
           const deadline = yield* Schema.decodeEffect(Instant)(
@@ -74,12 +97,23 @@ export class SemanticExecutor extends Context.Service<
               case "OpenEvidence": {
                 return yield* openEvidence(context, request);
               }
+              case "ProposeCorrection": {
+                return yield* proposeCorrection(context, request);
+              }
+              case "AnswerQuestion": {
+                return yield* answerQuestion(context, request);
+              }
+              case "UndoCorrection": {
+                return yield* undoCorrection(context, request);
+              }
               default: {
                 return yield* new Unsupported({ code: "UNSUPPORTED" });
               }
             }
           }).pipe(withinRequestDeadline(context));
-          const decoded = yield* Schema.decodeEffect(D01Success)(result).pipe(
+          const decoded = yield* Schema.decodeEffect(SemanticSuccess)(
+            result
+          ).pipe(
             Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
           );
           const json = yield* canonicalJson(decoded);
@@ -121,7 +155,24 @@ export class SemanticExecutor extends Context.Service<
         }),
         Effect.provide(dependencies)
       );
-      return SemanticExecutor.of({ execute });
+      return SemanticExecutor.of({
+        execute: (credential, bytes) =>
+          execute("d01", credential, bytes).pipe(
+            Effect.flatMap(Schema.decodeUnknownEffect(D01Success)),
+            Effect.catchTag(
+              "SchemaError",
+              () => new Unavailable({ code: "UNAVAILABLE" })
+            )
+          ),
+        executeCorrection: (credential, bytes) =>
+          execute("correction", credential, bytes).pipe(
+            Effect.flatMap(Schema.decodeUnknownEffect(CorrectionSuccess)),
+            Effect.catchTag(
+              "SchemaError",
+              () => new Unavailable({ code: "UNAVAILABLE" })
+            )
+          ),
+      });
     })
   );
 }

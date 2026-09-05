@@ -26,6 +26,7 @@ import {
 import { InternalBasis, ReadSet } from "../../ports/d01/basis.js";
 import type { VerifiedRequestContext } from "../../ports/d01/context.js";
 import { canonicalJson, structuredDigest } from "../../values/canonical.js";
+import { readScopedCorrections } from "../corrections/projection.js";
 import { readClaims } from "./claims.js";
 import { classifyClaims } from "./selection.js";
 
@@ -89,7 +90,11 @@ export const inspect = Effect.fn("authority.knowledge.inspect")(
             contested: selection.contested,
             coverage: { _tag: claims.length === 0 ? "Unknown" : "Partial" },
             frameRef,
-            scopedCorrections: [],
+            scopedCorrections: yield* readScopedCorrections(
+              context,
+              request.worldRef,
+              request.input.subjectKey
+            ),
             selection: selection.selection,
             subjectKey: request.input.subjectKey,
             verification: "unverified",
