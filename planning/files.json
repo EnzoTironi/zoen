@@ -120,9 +120,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "admissions/spec-000/baseline-inventory.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -2534,9 +2534,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-000/baseline-inventory.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -20085,9 +20085,9 @@
         "ZN-0001"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-000/baseline-inventory.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-000/baseline-inventory.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -26629,9 +26629,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/admission/spec-000/baseline-inventory.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/admission/spec-000/baseline-inventory.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -31842,9 +31842,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-000/baseline-inventory.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
