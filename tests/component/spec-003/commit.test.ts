@@ -17,6 +17,7 @@ const SQLS = [
   'db/migrations/0001_authority.sql',
   'db/migrations/zn-0014_genesis.sql',
   'db/migrations/zn-0019_schema.sql',
+  'db/migrations/zn-0021_idempotency.sql',
 ].map((p) => join(ROOT, p));
 const OUT = join(ROOT, '.core-build');
 

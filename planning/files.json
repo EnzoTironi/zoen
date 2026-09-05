@@ -2891,9 +2891,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-003/idempotency.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -8229,9 +8229,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "db/migrations/zn-0021_idempotency.sql.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -14945,9 +14945,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "packages/ontology/src/authority/idempotency.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/ontology/src/authority/idempotency.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -20484,9 +20484,9 @@
         "ZN-0021"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-003/idempotency.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-003/idempotency.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -27645,9 +27645,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/component/spec-003/idempotency.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/component/spec-003/idempotency.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -32199,9 +32199,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-003/idempotency.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {

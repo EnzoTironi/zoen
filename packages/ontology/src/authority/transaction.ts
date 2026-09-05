@@ -1,9 +1,10 @@
 import type { Clock, Cryptography, Database, SqlConnection, Authorizer, Membership, Resource } from '../../../contracts/src/ports.js';
 import type { Basis, DomainCut, Head, OperationDescriptor, SemanticEnvelope, VerifiedContext } from '../../../contracts/src/semantic.js';
 import { uuid, counter, type WorldRef, type UUID } from '../../../kernel/src/ids.js';
-import { canonicalJson, parseJsonText, type JsonValue } from '../../../kernel/src/json.js';
+import { canonicalJson, type JsonValue } from '../../../kernel/src/json.js';
 import { KernelError, requireThat } from '../../../kernel/src/result.js';
-import { assertFresh, isRetryableSql, operationScope, sortedDomains, assertLoadedRelease } from './guards.js';
+import { assertFresh, isRetryableSql, sortedDomains, assertLoadedRelease } from './guards.js';
+import { lockAndLookupOperation, assertReplayDisclosure } from './idempotency.js';
 export type WorldTransaction = Readonly<{ sql: SqlConnection; world: WorldRef; head: Head; cut: DomainCut; membership: Membership }>;
 export type MutationOutput = Readonly<{ data: JsonValue; receiptId: UUID; commitId: UUID }>;
 type WorldRow = { release_digest: string; generation_id: string; cell_epoch: string; security_revision: string; emergency_deny: boolean };
@@ -66,13 +67,24 @@ export class Authority {
       let tx = await this.enter(sql, context, world, descriptor, envelope.purpose, true);
       for (const source of disclosureSources) if (!await this.sourceAllowed(tx, context, descriptor, source, envelope.purpose)) throw new KernelError('NotFoundOrDenied', 'NOT_FOUND_OR_DENIED');
       if (guard !== null) await guard(tx);
-      await sql.query('SELECT pg_advisory_xact_lock(hashtextextended($1,0))', [operationScope(world.worldId, world.realm, context.principalId, envelope.operation, envelope.operationId)]);
-      const previous = await sql.query<{ intent_digest: string; result_ref: string; commit_id: string; payload: string }>('SELECT o.intent_digest,o.result_ref,o.commit_id,r.payload::text FROM ontology.operations o JOIN ontology.receipts r ON r.world_id=o.world_id AND r.realm=o.realm AND r.receipt_id=o.result_ref WHERE o.world_id=$1 AND o.realm=$2 AND o.principal_id=$3 AND o.semantic_op=$4 AND o.operation_id=$5', [world.worldId, world.realm, context.principalId, envelope.operation, envelope.operationId]);
-      const prior = previous[0];
-      if (prior) {
-        if (prior.intent_digest !== intentDigest) throw new KernelError('Conflict', 'OPERATION_ID_REUSED');
-        // Current operation authorization was checked before revealing any stored result.
-        return Object.freeze({ data: parseJsonText(prior.payload), receiptId: uuid(prior.result_ref), commitId: uuid(prior.commit_id) });
+      const decision = await lockAndLookupOperation(
+        sql,
+        {
+          world,
+          principalId: context.principalId,
+          semanticOp: envelope.operation,
+          operationId: envelope.operationId,
+        },
+        intentDigest,
+      );
+      if (decision.tag === 'conflict') throw new KernelError('Conflict', 'OPERATION_ID_REUSED');
+      if (decision.tag === 'replay') {
+        await assertReplayDisclosure(sql, world, context.principalId, decision.stored.securityRevision);
+        return Object.freeze({
+          data: decision.stored.payload,
+          receiptId: decision.stored.resultRef,
+          commitId: decision.stored.commitId,
+        });
       }
       // Lock order (normative): WorldHead FOR SHARE (enter) → advisory op scope → domains FOR UPDATE sorted by id.
       const lockDomains = sortedDomains(domains);
@@ -90,7 +102,7 @@ export class Authority {
       const updated = await sql.query<{ domain_id: string; version: string }>('UPDATE ontology.domains SET version=version+1 WHERE world_id=$1 AND realm=$2 AND domain_id=ANY($3::text[]) RETURNING domain_id,version::text', [world.worldId, world.realm, lockDomains]);
       const touched: Record<string, string> = Object.create(null) as Record<string, string>; for (const row of updated) touched[row.domain_id] = row.version;
       await this.persistCommit(sql, world, envelope.operation, { receiptId, commitId, outboxId }, tx.head, touched, data);
-      await sql.query('INSERT INTO ontology.operations(world_id,realm,principal_id,semantic_op,operation_id,intent_digest,result_ref,commit_id) VALUES($1,$2,$3,$4,$5,$6,$7,$8)', [world.worldId, world.realm, context.principalId, envelope.operation, envelope.operationId, intentDigest, receiptId, commitId]);
+      await sql.query('INSERT INTO ontology.operations(world_id,realm,principal_id,semantic_op,operation_id,intent_digest,result_ref,commit_id,security_revision) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9::bigint)', [world.worldId, world.realm, context.principalId, envelope.operation, envelope.operationId, intentDigest, receiptId, commitId, tx.head.securityRevision]);
       return Object.freeze({ data, receiptId, commitId });
     });
   }

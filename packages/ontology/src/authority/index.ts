@@ -21,3 +21,12 @@ export {
   type ReadGuard,
 } from './guards.js';
 export { typedPlan, type TypedAuthorityPlan } from './plan.js';
+
+export {
+  lockAndLookupOperation,
+  assertReplayDisclosure,
+  redactStoredOutput,
+  type OperationKey,
+  type StoredOperation,
+  type IdempotencyDecision,
+} from './idempotency.js';

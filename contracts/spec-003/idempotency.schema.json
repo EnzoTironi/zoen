@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-003/idempotency.schema.json",
+  "title": "ZN-0021 idempotency fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "domain"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0021-idempotency-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "domain": { "type": "string" }
+  }
+}

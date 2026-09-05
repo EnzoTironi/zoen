@@ -1,0 +1,6 @@
+{
+  "seed": "zn-0021-idempotency-seed-v1",
+  "seedDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "purpose": "operations",
+  "domain": "ledger"
+}
