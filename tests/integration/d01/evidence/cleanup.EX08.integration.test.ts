@@ -73,3 +73,41 @@ it.live(
       )
     )
 );
+
+it.live(
+  "EX08 cleanup pagination crosses equal expiration timestamps without revisiting a page",
+  () =>
+    withD01Database((database) =>
+      withStorage(() =>
+        Effect.gen(function* cursorPrecision() {
+          const { context, request } = yield* makeInput();
+          const { worldRef } = yield* createPersonalWorld(context, request);
+          for (let index = 0; index < 33; index += 1) {
+            yield* reserveCapture(
+              context,
+              worldRef,
+              new TextEncoder().encode(`capture-${index}`)
+            );
+          }
+          yield* Effect.gen(function* agePage() {
+            const setup = yield* SqlClient.SqlClient;
+            yield* setup`UPDATE jobs.captures SET expires_at = '2020-01-01T00:00:00.123456Z'::timestamptz WHERE world_id = ${worldRef.worldId}`;
+          }).pipe(Effect.provide(database.migration));
+          const first = yield* sweepExpiredCaptures(worldRef, null);
+          expect(first.visited).toBe(32);
+          expect(first.nextCursor).not.toBeNull();
+          const second = yield* sweepExpiredCaptures(
+            worldRef,
+            first.nextCursor
+          );
+          expect(second).toStrictEqual({ nextCursor: null, visited: 1 });
+          const sql = yield* SqlClient.SqlClient;
+          expect(
+            yield* sql`SELECT count(*)::int AS captures FROM jobs.captures WHERE world_id = ${worldRef.worldId} AND state = 'removed' AND fence = 1`
+          ).toStrictEqual([{ captures: 33 }]);
+        }).pipe(
+          Effect.provide(Layer.mergeAll(configuration, database.authority))
+        )
+      )
+    )
+);
