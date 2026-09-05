@@ -23,6 +23,7 @@ import { readinessRoutes } from "./http/readiness.ts";
 import { responseSecurity } from "./http/security.ts";
 import { D01IdentityConfig } from "./identity/d01/configuration.ts";
 import { makeD01IdentityLayer } from "./identity/d01/identity.ts";
+import { captureMaintenance } from "./maintenance/captures.ts";
 
 export interface D01ApplicationConfig {
   readonly authorityDatabaseUrl: Redacted.Redacted;
@@ -71,7 +72,8 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
       return Layer.mergeAll(
         api,
         makeIdentityRoutes(identityConfig.baseUrl),
-        readinessRoutes
+        readinessRoutes,
+        captureMaintenance
       ).pipe(Layer.provide(infrastructure), Layer.provide(responseSecurity));
     })
   );
