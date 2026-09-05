@@ -5,7 +5,7 @@ import { NodeFileSystem } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
 import { ConfigProvider, Effect, FileSystem } from "effect";
 
-import { loadConfiguration } from "../../../../apps/server/dist/configuration.js";
+import type { loadConfiguration as ConfigurationEffect } from "../../../../apps/server/src/configuration.js";
 import {
   canonicalJson,
   digestBytes,
@@ -16,6 +16,13 @@ it.live(
   () =>
     Effect.scoped(
       Effect.gen(function* installedBuildIntegrity() {
+        const moduleUrl = new URL(
+          "../../../../apps/server/dist/configuration.js",
+          import.meta.url
+        ).href;
+        const { loadConfiguration } = yield* Effect.promise<{
+          readonly loadConfiguration: typeof ConfigurationEffect;
+        }>(() => import(moduleUrl));
         const fs = yield* FileSystem.FileSystem;
         const root = fileURLToPath(new URL("../../../../", import.meta.url));
         const release = yield* fs.readFile(
