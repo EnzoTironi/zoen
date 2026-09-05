@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-003/commit.schema.json",
+  "title": "ZN-0020 commit fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "domains"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0020-commit-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "domains": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+  }
+}

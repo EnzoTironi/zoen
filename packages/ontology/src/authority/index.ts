@@ -10,3 +10,14 @@ export {
   type MigrationPhase,
   type SchemaDisciplineReport,
 } from './schema.js';
+export { Authority, type WorldTransaction, type MutationOutput } from './transaction.js';
+export {
+  sortedDomains,
+  assertFresh,
+  operationScope,
+  isRetryableSql,
+  assertLoadedRelease,
+  guardProjection,
+  type ReadGuard,
+} from './guards.js';
+export { typedPlan, type TypedAuthorityPlan } from './plan.js';

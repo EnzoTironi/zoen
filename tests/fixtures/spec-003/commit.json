@@ -1,0 +1,6 @@
+{
+  "seed": "zn-0020-commit-seed-v1",
+  "seedDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "purpose": "operations",
+  "domains": ["alpha", "beta", "gamma"]
+}

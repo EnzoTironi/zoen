@@ -1,6 +1,6 @@
 # File plan — `packages/ontology/src/authority/transaction.ts`
 
-**Status:** candidate-unaccepted; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `packages/ontology/src/authority/transaction.ts`. Representation: **existing-with-sidecar**. Allocation: **required**.
 

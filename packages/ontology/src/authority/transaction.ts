@@ -74,6 +74,7 @@ export class Authority {
         // Current operation authorization was checked before revealing any stored result.
         return Object.freeze({ data: parseJsonText(prior.payload), receiptId: uuid(prior.result_ref), commitId: uuid(prior.commit_id) });
       }
+      // Lock order (normative): WorldHead FOR SHARE (enter) → advisory op scope → domains FOR UPDATE sorted by id.
       const lockDomains = sortedDomains(domains);
       const locked = await sql.query<{ domain_id: string; version: string }>('SELECT domain_id,version::text FROM ontology.domains WHERE world_id=$1 AND realm=$2 AND domain_id=ANY($3::text[]) ORDER BY domain_id FOR UPDATE', [world.worldId, world.realm, lockDomains]);
       requireThat(locked.length === lockDomains.length, 'MISSING_AUTHORITY_DOMAIN');
@@ -104,4 +105,58 @@ export class Authority {
     for (const domain of sortedDomains(domains)) { const value = allCut[domain]; requireThat(value !== undefined, 'MISSING_AUTHORITY_DOMAIN'); cut[domain] = value; }
     return Object.freeze({ head, cut: Object.freeze(cut), readSetDigest: await this.crypto.digest({ head: { ...head }, cut }) });
   }
+
+  /**
+   * Exclusive head activation (FOR UPDATE). Concurrent domain writers may hold
+   * FOR SHARE; activation must not expose a mixed head mid-commit.
+   * No externally visible sequence is allocated before COMMIT.
+   */
+  async activateHead(
+    context: VerifiedContext,
+    world: WorldRef,
+    descriptor: OperationDescriptor,
+    purpose: string,
+    nextReleaseDigest: string,
+  ): Promise<Head> {
+    requireThat(/^[a-f0-9]{64}$/.test(nextReleaseDigest), 'RELEASE_DIGEST');
+    return this.transaction(context, world, false, async sql => {
+      const rows = await sql.query<WorldRow>(
+        `SELECT release_digest,generation_id,cell_epoch::text,security_revision::text,emergency_deny
+         FROM ontology.worlds WHERE world_id=$1 AND realm=$2 FOR UPDATE`,
+        [world.worldId, world.realm],
+      );
+      const row = rows[0];
+      if (!row || row.emergency_deny) throw new KernelError('NotFoundOrDenied', 'NOT_FOUND_OR_DENIED');
+      const members = await sql.query<{ principal_id: string; role: string; state: string }>(
+        'SELECT principal_id,role,state FROM ontology.memberships WHERE world_id=$1 AND realm=$2 AND principal_id=$3',
+        [world.worldId, world.realm, context.principalId],
+      );
+      const member = members[0];
+      if (!member || member.state !== 'active' || member.role !== 'owner') {
+        throw new KernelError('NotFoundOrDenied', 'NOT_FOUND_OR_DENIED');
+      }
+      const resource: Resource = { world, sourceId: null, sensitivity: 'shared' };
+      if (!await this.authorizer.authorize(context, descriptor, resource, Object.freeze({
+        principalId: uuid(member.principal_id), role: 'owner', state: 'active',
+      }), purpose)) {
+        throw new KernelError('NotFoundOrDenied', 'NOT_FOUND_OR_DENIED');
+      }
+      const updated = await sql.query<WorldRow>(
+        `UPDATE ontology.worlds
+         SET release_digest=$3, generation_id=gen_random_uuid(), cell_epoch=cell_epoch+1
+         WHERE world_id=$1 AND realm=$2
+         RETURNING release_digest,generation_id,cell_epoch::text,security_revision::text,emergency_deny`,
+        [world.worldId, world.realm, nextReleaseDigest],
+      );
+      const next = updated[0];
+      requireThat(next !== undefined, 'HEAD_ACTIVATION_FAILED');
+      return Object.freeze({
+        releaseDigest: next.release_digest,
+        generationId: uuid(next.generation_id),
+        cellEpoch: counter(next.cell_epoch),
+        securityRevision: counter(next.security_revision),
+      });
+    });
+  }
+
 }

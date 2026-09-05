@@ -2857,9 +2857,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-003/commit.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -14928,7 +14928,7 @@
       "allocation": "required",
       "representation": "existing-with-sidecar",
       "plan_path": "packages/ontology/src/authority/guards.ts.plan.md",
-      "status": "candidate-unaccepted",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -15086,7 +15086,7 @@
       "allocation": "required",
       "representation": "existing-with-sidecar",
       "plan_path": "packages/ontology/src/authority/transaction.ts.plan.md",
-      "status": "candidate-unaccepted",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -20446,9 +20446,9 @@
         "ZN-0020"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-003/commit.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-003/commit.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -27607,9 +27607,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/component/spec-003/commit.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/component/spec-003/commit.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -32165,9 +32165,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-003/commit.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {

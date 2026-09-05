@@ -146,7 +146,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `contracts/spec-002/revocation.schema.json` | [existing-with-sidecar](../contracts/spec-002/revocation.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-002/world-entry.schema.json` | [existing-with-sidecar](../contracts/spec-002/world-entry.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-003/commit-chaos.schema.json` | [sidecar-only](../contracts/spec-003/commit-chaos.schema.json.plan.md) | planned | SPEC-003 |
-| `contracts/spec-003/commit.schema.json` | [sidecar-only](../contracts/spec-003/commit.schema.json.plan.md) | planned | SPEC-003 |
+| `contracts/spec-003/commit.schema.json` | [existing-with-sidecar](../contracts/spec-003/commit.schema.json.plan.md) | implementation-in-progress | SPEC-003 |
 | `contracts/spec-003/guards.schema.json` | [sidecar-only](../contracts/spec-003/guards.schema.json.plan.md) | planned | SPEC-003 |
 | `contracts/spec-003/idempotency.schema.json` | [sidecar-only](../contracts/spec-003/idempotency.schema.json.plan.md) | planned | SPEC-003 |
 | `contracts/spec-003/outbox.schema.json` | [sidecar-only](../contracts/spec-003/outbox.schema.json.plan.md) | planned | SPEC-003 |
@@ -843,7 +843,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/ontology/src/authority/ports.ts` | [existing-with-sidecar](../packages/ontology/src/authority/ports.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `packages/ontology/src/authority/schema.ts` | [existing-with-sidecar](../packages/ontology/src/authority/schema.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `packages/ontology/src/authority/states.ts` | [existing-with-sidecar](../packages/ontology/src/authority/states.ts.plan.md) | candidate-unaccepted | SPEC-003 |
-| `packages/ontology/src/authority/transaction.ts` | [existing-with-sidecar](../packages/ontology/src/authority/transaction.ts.plan.md) | candidate-unaccepted | SPEC-003 |
+| `packages/ontology/src/authority/transaction.ts` | [existing-with-sidecar](../packages/ontology/src/authority/transaction.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `packages/ontology/src/authority/types.ts` | [existing-with-sidecar](../packages/ontology/src/authority/types.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `packages/ontology/src/cells/cell-directory.ts` | [comment-only-source](../packages/ontology/src/cells/cell-directory.ts) | planned | SPEC-042 |
 | `packages/ontology/src/cells/epoch-promotion.ts` | [comment-only-source](../packages/ontology/src/cells/epoch-promotion.ts) | planned | SPEC-042 |
@@ -1117,7 +1117,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `runbooks/spec-002/revocation.md` | [existing-with-sidecar](../runbooks/spec-002/revocation.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-002/world-entry.md` | [existing-with-sidecar](../runbooks/spec-002/world-entry.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-003/commit-chaos.md` | [markdown-plan](../runbooks/spec-003/commit-chaos.md) | planned | SPEC-003 |
-| `runbooks/spec-003/commit.md` | [markdown-plan](../runbooks/spec-003/commit.md) | planned | SPEC-003 |
+| `runbooks/spec-003/commit.md` | [existing-with-sidecar](../runbooks/spec-003/commit.md.plan.md) | implementation-in-progress | SPEC-003 |
 | `runbooks/spec-003/guards.md` | [markdown-plan](../runbooks/spec-003/guards.md) | planned | SPEC-003 |
 | `runbooks/spec-003/idempotency.md` | [markdown-plan](../runbooks/spec-003/idempotency.md) | planned | SPEC-003 |
 | `runbooks/spec-003/outbox.md` | [markdown-plan](../runbooks/spec-003/outbox.md) | planned | SPEC-003 |
@@ -1492,7 +1492,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/component/spec-002/presence.test.ts` | [existing-with-sidecar](../tests/component/spec-002/presence.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-002/revocation.test.ts` | [existing-with-sidecar](../tests/component/spec-002/revocation.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-002/world-entry.test.ts` | [existing-with-sidecar](../tests/component/spec-002/world-entry.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
-| `tests/component/spec-003/commit.test.ts` | [comment-only-source](../tests/component/spec-003/commit.test.ts) | planned | SPEC-003 |
+| `tests/component/spec-003/commit.test.ts` | [existing-with-sidecar](../tests/component/spec-003/commit.test.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `tests/component/spec-003/guards.test.ts` | [comment-only-source](../tests/component/spec-003/guards.test.ts) | planned | SPEC-003 |
 | `tests/component/spec-003/idempotency.test.ts` | [comment-only-source](../tests/component/spec-003/idempotency.test.ts) | planned | SPEC-003 |
 | `tests/component/spec-003/outbox.test.ts` | [comment-only-source](../tests/component/spec-003/outbox.test.ts) | planned | SPEC-003 |
@@ -1734,7 +1734,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/fixtures/spec-002/revocation.json` | [existing-with-sidecar](../tests/fixtures/spec-002/revocation.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-002/world-entry.json` | [existing-with-sidecar](../tests/fixtures/spec-002/world-entry.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-003/commit-chaos.json` | [sidecar-only](../tests/fixtures/spec-003/commit-chaos.json.plan.md) | planned | SPEC-003 |
-| `tests/fixtures/spec-003/commit.json` | [sidecar-only](../tests/fixtures/spec-003/commit.json.plan.md) | planned | SPEC-003 |
+| `tests/fixtures/spec-003/commit.json` | [existing-with-sidecar](../tests/fixtures/spec-003/commit.json.plan.md) | implementation-in-progress | SPEC-003 |
 | `tests/fixtures/spec-003/guards.json` | [sidecar-only](../tests/fixtures/spec-003/guards.json.plan.md) | planned | SPEC-003 |
 | `tests/fixtures/spec-003/idempotency.json` | [sidecar-only](../tests/fixtures/spec-003/idempotency.json.plan.md) | planned | SPEC-003 |
 | `tests/fixtures/spec-003/outbox.json` | [sidecar-only](../tests/fixtures/spec-003/outbox.json.plan.md) | planned | SPEC-003 |

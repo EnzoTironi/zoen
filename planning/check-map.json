@@ -634,7 +634,7 @@
     "ticket_id": "ZN-0020",
     "spec_id": "SPEC-003",
     "test_file": "tests/component/spec-003/commit.test.ts",
-    "plan_path": "tests/component/spec-003/commit.test.ts",
+    "plan_path": "tests/component/spec-003/commit.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -645,7 +645,7 @@
     "ticket_id": "ZN-0020",
     "spec_id": "SPEC-003",
     "test_file": "tests/component/spec-003/commit.test.ts",
-    "plan_path": "tests/component/spec-003/commit.test.ts",
+    "plan_path": "tests/component/spec-003/commit.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -656,7 +656,7 @@
     "ticket_id": "ZN-0020",
     "spec_id": "SPEC-003",
     "test_file": "tests/component/spec-003/commit.test.ts",
-    "plan_path": "tests/component/spec-003/commit.test.ts",
+    "plan_path": "tests/component/spec-003/commit.test.ts.plan.md",
     "status": "not-executed"
   },
   {
