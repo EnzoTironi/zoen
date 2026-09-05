@@ -18,7 +18,7 @@ Command:
 node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration tests/integration/d03-sharing/independent/http-process.review.integration.test.ts --maxWorkers=1
 ```
 
-All **4 tests passed** on 2026-09-05: 13.99 seconds total / 11.89 seconds test time. Whole-worktree `tsc --noEmit` and focused lint subsequently passed. The native-only observer file has a narrow documented exemption from the suggestion to replace Node `fs`/`http` imports with Effect APIs: synchronous blocking at those native boundaries is the purpose of this harness.
+The original OpenEvidence matrix passed all 4 tests on 2026-09-05: 13.99 seconds total / 11.89 seconds test time. The extension to current Inspect and the viewer's own retained Frame then passed **all 12 tests**, using the same compiled production base: **19.93 seconds total / 19.43 seconds test time**. Whole-worktree `tsc --noEmit` and focused lint passed. The native-only observer file has a narrow documented exemption from the suggestion to replace Node `fs`/`http` imports with Effect APIs: synchronous blocking at those native boundaries is the purpose of this harness.
 
 | Public operation and pause | Observed order and result |
 | --- | --- |
@@ -27,7 +27,9 @@ All **4 tests passed** on 2026-09-05: 13.99 seconds total / 11.89 seconds test t
 | Logout before reader's session shared lock | Public signout returns 200. The exact provider session ID is absent and its durable closing barrier exists. Releasing the prepared reader yields exactly 503 `Unavailable`; no private document; no pending permit remains. Membership and semantic receipt/operation/outbox state remain unchanged. |
 | Logout after final revalidation, inside native end | A real try-exclusive returns false while the session shared lock and pending permit remain. After coordinator termination, signout returns 503 `{code:"UNAVAILABLE"}`. The exact session still exists, no closing barrier was committed, pending remains 1, and semantic state is unchanged. Releasing native end yields exact original document JSON once; after observed ACK zero, retry with the **same cookie** returns 200, the exact session ID is absent, and its closing barrier persists. A new read with that cookie returns 401 `Unauthenticated`. |
 
-The late private response is allowed because the competing revoke/logout did **not** confirm. The successful retry happens only after factual acknowledgment, and subsequent reads are denied. Original document equality, UTF-8 content length, security headers and exactly one `end.return` event are checked for the late successful read.
+The four orders above now run for each of OpenEvidence, current Inspect and retained Inspect. For both Inspect modes, the test creates a real viewer Frame through public HTTP before arming the pause and waits until that reference read's pending permit is acknowledged. A current Inspect response is decoded as `FrameInspected` and compared against all reference Frame fields except its newly allocated FrameRef; that new ID must differ. Retained Inspect must return the complete exact original DTO. An independent SQL observation confirms that each successfully emitted Frame belongs to the viewer in the same World/realm. Denied responses remain exact closed error DTOs, without accepting a private Frame or document.
+
+The late private response is allowed because the competing revoke/logout did **not** confirm. The successful retry happens only after factual acknowledgment, and subsequent reads are denied. Original document/Frame content, UTF-8 content length, security headers and exactly one `end.return` event are checked for each late successful read.
 
 ## Initial failure retained
 
@@ -35,4 +37,4 @@ The first four-case run produced 3 passes and 1 failure at the late logout error
 
 ## Limits
 
-These are executed witnesses for the specified SH-07/08 orders using OpenEvidence and public revoke/logout in distinct server processes. They do not establish all interleavings, deadline/expiry cases, ACK outages, hard process death, Inspect/retained-Frame race variants, browser/CLI races, client receipt of bytes, or full D03 acceptance. The native boundary remains return of `end`, not proof of network delivery. Unknown outcomes and orphan recovery require their separately specified proofs.
+These are executed witnesses for the specified SH-07/08 orders using OpenEvidence, current Inspect and retained Inspect with public revoke/logout in distinct server processes. They do not establish all interleavings, deadline/expiry cases, ACK outages, hard process death, browser/CLI races, client receipt of bytes, or full D03 acceptance. The native boundary remains return of `end`, not proof of network delivery. Unknown outcomes and orphan recovery require their separately specified proofs.
