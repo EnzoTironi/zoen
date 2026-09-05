@@ -137,6 +137,7 @@ CREATE TABLE authority.evidence (
   capture_id uuid NOT NULL,
   source_id uuid NOT NULL,
   source_revision text COLLATE "C" NOT NULL CHECK (char_length(source_revision) BETWEEN 1 AND 128),
+  source_label text NOT NULL CHECK (char_length(source_label) BETWEEN 1 AND 200),
   byte_digest text COLLATE "C" NOT NULL CHECK (byte_digest ~ '^[0-9a-f]{64}$'),
   state text COLLATE "C" NOT NULL CHECK (state IN ('admitted', 'unavailable', 'erasure_pending')),
   admitted_receipt_id uuid NOT NULL,

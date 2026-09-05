@@ -18,10 +18,9 @@ const AllowedRole = Schema.Tuple([
   Schema.Struct({ allowed: Schema.Literal(true) }),
 ]);
 
-const runtimeRoleCheck = Layer.effectDiscard(
-  Effect.gen(function* checkD01DatabaseRole() {
-    const sql = yield* SqlClient.SqlClient;
-    yield* sql`
+export const checkD01RuntimeRole = Effect.gen(function* checkD01DatabaseRole() {
+  const sql = yield* SqlClient.SqlClient;
+  yield* sql`
     SELECT NOT (
       rolsuper OR rolcreaterole OR rolcreatedb OR rolbypassrls OR rolreplication
       OR has_database_privilege(current_user, current_database(), 'CREATE')
@@ -33,18 +32,17 @@ const runtimeRoleCheck = Layer.effectDiscard(
     ) AS allowed
     FROM pg_roles WHERE rolname = current_user
   `.pipe(
-      Effect.flatMap(Schema.decodeUnknownEffect(AllowedRole)),
-      Effect.catchTag(
-        "SchemaError",
-        () => new UnsafePostgresRole({ code: "runtime_role_is_privileged" })
-      )
-    );
-  })
-);
+    Effect.flatMap(Schema.decodeUnknownEffect(AllowedRole)),
+    Effect.catchTag(
+      "SchemaError",
+      () => new UnsafePostgresRole({ code: "runtime_role_is_privileged" })
+    )
+  );
+});
 
 /** A concrete pool profile, not another SQL/transaction abstraction. */
 export const makeD01PostgresLayer = (config: D01PostgresConfig) =>
-  runtimeRoleCheck.pipe(
+  Layer.effectDiscard(checkD01RuntimeRole).pipe(
     Layer.provideMerge(
       PgClient.layer({
         applicationName: config.applicationName,

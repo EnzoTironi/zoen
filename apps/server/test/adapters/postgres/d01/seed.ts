@@ -94,6 +94,7 @@ export const seedEvidence = Effect.fn("seedEvidence")(function* seed(
     evidence_id: evidence,
     realm,
     source_id: source,
+    source_label: "SQL integrity fixture",
     source_revision: "revision-1",
     state: "admitted",
     world_id: worldId,

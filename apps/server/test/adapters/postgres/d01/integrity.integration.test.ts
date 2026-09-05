@@ -18,6 +18,18 @@ it.live(
         const evaluation = yield* seedEvidence(a.worldId, "evaluation");
         const control = claimRow(a);
         yield* sql`INSERT INTO authority.claims ${sql.insert(control)}`;
+        yield* sql`UPDATE authority.sources SET label = 'Changed current label' WHERE world_id = ${a.worldId} AND realm = ${a.realm} AND source_id = ${a.source}`;
+        expect(
+          yield* sql`SELECT source_label FROM authority.evidence WHERE world_id = ${a.worldId} AND realm = ${a.realm} AND evidence_id = ${a.evidence}`
+        ).toStrictEqual([{ source_label: "SQL integrity fixture" }]);
+        expect(
+          yield* sql`UPDATE authority.evidence SET source_label = 'Rewritten history' WHERE evidence_id = ${a.evidence}`.pipe(
+            Effect.flip
+          )
+        ).toMatchObject({
+          _tag: "SqlError",
+          reason: { _tag: "AuthorizationError" },
+        });
         for (const wrong of [
           { ...claimRow(a), evidence_id: b.evidence, source_id: b.source },
           {
