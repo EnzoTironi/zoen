@@ -30,6 +30,7 @@ const Connected = ({
         className="d01-workspace d01-context"
       >
         <div className="d01-context-inner">
+          <output aria-live="polite">{state.actionError}</output>
           <form
             onSubmit={(event) => {
               event.preventDefault();

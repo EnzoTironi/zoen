@@ -9,6 +9,7 @@ import type { BrowserSession } from "./client.ts";
 import { inspectionView } from "./presentation.ts";
 
 export interface WorkspaceState extends CorrectionContext {
+  readonly actionError: string | null;
   readonly busy: boolean;
   readonly canRetry: boolean;
   readonly checking: boolean;
@@ -20,6 +21,7 @@ export interface WorkspaceState extends CorrectionContext {
 }
 
 export const initialState: WorkspaceState = {
+  actionError: null,
   busy: false,
   canRetry: false,
   checking: true,

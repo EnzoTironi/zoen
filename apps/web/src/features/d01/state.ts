@@ -48,6 +48,7 @@ export const createWorkspaceController = (origin: string) => {
     active = new AbortController();
     retry = null;
     publish({
+      actionError: null,
       busy: false,
       canRetry: false,
       feedback: "",
@@ -73,6 +74,7 @@ export const createWorkspaceController = (origin: string) => {
       });
     } else {
       publish({
+        actionError: errorMessage(error),
         busy: false,
         canRetry: retry !== null,
         feedback: errorMessage(error),
@@ -102,7 +104,7 @@ export const createWorkspaceController = (origin: string) => {
     if (result._tag === "WorldCreated") {
       invalidate(patch);
     } else {
-      publish({ ...patch, canRetry: false });
+      publish({ ...patch, actionError: null, canRetry: false });
     }
   };
   const execute = Effect.fn("web.execute")(function* executeRequest(
@@ -113,7 +115,7 @@ export const createWorkspaceController = (origin: string) => {
     }
     const started = epoch;
     retry = request;
-    publish({ busy: true, feedback: "" });
+    publish({ actionError: null, busy: true, feedback: "" });
     const result = yield* BrowserApi.pipe(
       Effect.flatMap((api) => api.execute(request)),
       Effect.result
@@ -300,6 +302,7 @@ export const createWorkspaceController = (origin: string) => {
       }
       const started = epoch;
       publish({
+        actionError: null,
         busy: true,
         feedback: "",
         frame: null,
