@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-004/extract.schema.json",
+  "title": "ZN-0028 extract fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "extractorVersion", "mappingVersion", "csvDelimiter", "jsonSchemaDigest"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0028-extract-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "extractorVersion": { "type": "string" },
+    "mappingVersion": { "type": "string" },
+    "csvDelimiter": { "type": "string", "enum": [",", ";", "\t"] },
+    "jsonSchemaDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

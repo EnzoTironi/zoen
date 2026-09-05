@@ -898,7 +898,7 @@
     "ticket_id": "ZN-0028",
     "spec_id": "SPEC-004",
     "test_file": "tests/component/spec-004/extract.test.ts",
-    "plan_path": "tests/component/spec-004/extract.test.ts",
+    "plan_path": "tests/component/spec-004/extract.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -909,7 +909,7 @@
     "ticket_id": "ZN-0028",
     "spec_id": "SPEC-004",
     "test_file": "tests/component/spec-004/extract.test.ts",
-    "plan_path": "tests/component/spec-004/extract.test.ts",
+    "plan_path": "tests/component/spec-004/extract.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -920,7 +920,7 @@
     "ticket_id": "ZN-0028",
     "spec_id": "SPEC-004",
     "test_file": "tests/component/spec-004/extract.test.ts",
-    "plan_path": "tests/component/spec-004/extract.test.ts",
+    "plan_path": "tests/component/spec-004/extract.test.ts.plan.md",
     "status": "not-executed"
   },
   {

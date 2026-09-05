@@ -1,0 +1,9 @@
+{
+  "seed": "zn-0028-extract-seed-v1",
+  "seedDigest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "purpose": "operations",
+  "extractorVersion": "extract-csv-json-v1",
+  "mappingVersion": "mapping-invoice-v1",
+  "csvDelimiter": ",",
+  "jsonSchemaDigest": "1111111111111111111111111111111111111111111111111111111111111111"
+}

@@ -112,3 +112,58 @@ export type ReadEvidenceResult =
   | Readonly<{ tag: 'HistoricalContentUnavailable'; value: EvidenceReceiptMeta }>
   | Readonly<{ tag: 'NotFoundOrDenied' }>
   | Readonly<{ tag: 'Denied'; reason: 'GRANT_EXPIRED' | 'GRANT_REVOKED' | 'RIGHTS_STALE' }>;
+
+export type CsvExtractProfile = Readonly<{
+  kind: 'csv';
+  delimiter: ',' | ';' | '\t';
+  hasHeader: boolean;
+  /** Explicit locale required for grouped numerics; 'und' = undeclared (quarantine ambiguous). */
+  locale: 'und' | 'en-US' | 'pt-BR';
+}>;
+
+export type JsonExtractProfile = Readonly<{
+  kind: 'json';
+  schemaDigest: string;
+  requiredKeys?: readonly string[];
+}>;
+
+export type ExtractProfile = CsvExtractProfile | JsonExtractProfile;
+
+export type ExtractCandidate = Readonly<{
+  candidateId: UUID;
+  row: number;
+  field: string;
+  column: number;
+  rawText: string;
+  parsed: unknown;
+  mappingVersion: string;
+  extractorVersion: string;
+  coordinates: Readonly<{ row: number; column: number; path?: string }>;
+}>;
+
+export type ExtractInput = Readonly<{
+  world: WorldRef;
+  bytes: Uint8Array;
+  profile: ExtractProfile;
+  mappingVersion: string;
+  evidenceId?: UUID;
+  captureId?: UUID;
+}>;
+
+export type ExtractResult =
+  | Readonly<{
+      tag: 'Ok';
+      runId: UUID;
+      claims: readonly ExtractCandidate[];
+      inputDigest: string;
+      resultDigest: string;
+      firstRun: boolean;
+    }>
+  | Readonly<{
+      tag: 'Quarantined';
+      runId: UUID;
+      reason: string;
+      inputDigest: string;
+      resultDigest: string;
+      firstRun: boolean;
+    }>;

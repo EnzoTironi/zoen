@@ -3,6 +3,8 @@ import type {
   AdmitCaptureInput,
   CaptureRef,
   DeclaredCaptureMetadata,
+  ExtractInput,
+  ExtractResult,
   QuarantinedCapture,
   ReadEvidenceInput,
   ReadEvidenceResult,
@@ -15,6 +17,8 @@ export type {
   AdmitCaptureInput,
   CaptureRef,
   DeclaredCaptureMetadata,
+  ExtractInput,
+  ExtractResult,
   QuarantinedCapture,
   ReadEvidenceInput,
   ReadEvidenceResult,
@@ -38,4 +42,8 @@ export interface AdmitCapturePort {
 
 export interface ReadEvidencePort {
   readEvidence(input: ReadEvidenceInput): Promise<ReadEvidenceResult>;
+}
+
+export interface ExtractPort {
+  extract(input: ExtractInput): Promise<ExtractResult>;
 }
