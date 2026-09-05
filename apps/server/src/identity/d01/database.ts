@@ -42,6 +42,14 @@ export const checkD01IdentityPool = Effect.fn("identity.checkPool")(
       yield* sql`SELECT current_schema() = 'identity'
       AND has_schema_privilege(current_user, 'identity', 'USAGE')
       AND NOT EXISTS (
+        SELECT FROM (VALUES
+          ('identity."user"'), ('identity."session"'), ('identity."account"'),
+          ('identity."verification"'), ('identity."rateLimit"')
+        ) AS required(relation)
+        CROSS JOIN (VALUES ('SELECT'), ('INSERT'), ('UPDATE'), ('DELETE')) AS permission(privilege)
+        WHERE NOT coalesce(has_table_privilege(current_user, to_regclass(required.relation), permission.privilege), false)
+      )
+      AND NOT EXISTS (
         SELECT FROM pg_roles
         WHERE (rolname = current_user OR pg_has_role(current_user, oid, 'SET'))
           AND (has_schema_privilege(oid, 'authority', 'USAGE')
@@ -57,7 +65,8 @@ export const checkD01IdentityPool = Effect.fn("identity.checkPool")(
     }).pipe(
       Effect.provide(
         PgClient.layerFrom(PgClient.fromPool({ acquire: Effect.succeed(pool) }))
-      )
+      ),
+      Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
     );
   }
 );

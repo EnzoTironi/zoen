@@ -131,10 +131,7 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
         Context.add(
           D01Auth,
           D01Auth.of({
-            checkHealth: Effect.tryPromise({
-              catch: () => new Unavailable({ code: "UNAVAILABLE" }),
-              try: () => pool.query("SELECT 1"),
-            }).pipe(Effect.asVoid),
+            checkHealth: checkD01IdentityPool(pool),
             handle,
           })
         )
