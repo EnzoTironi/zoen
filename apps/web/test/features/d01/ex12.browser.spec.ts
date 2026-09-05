@@ -8,6 +8,7 @@ import { WorldId } from "@zoen/contracts/d01/values";
 import { Config, Effect, Schema } from "effect";
 
 import { BrowserSession } from "../../../src/features/d01/client.ts";
+import { confirmedLogout } from "../../integration/confirmed-logout.ts";
 
 const baseURL = Effect.runSync(
   Config.string("ZOEN_TEST_WEB_URL").pipe(
@@ -190,7 +191,7 @@ test("EX12 real browser preserves sources and clears private views across sessio
     .getByRole("button", { exact: true, name: "Abrir espaço" })
     .click();
   await inspect(sibling, subject);
-  await page.getByRole("button", { exact: true, name: "Sair" }).click();
+  await confirmedLogout(page);
   await expect(
     page.getByRole("heading", { name: "Entre para continuar" })
   ).toBeVisible();

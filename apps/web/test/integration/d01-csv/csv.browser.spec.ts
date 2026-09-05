@@ -15,6 +15,7 @@ import {
 } from "@zoen/contracts/d01/operations";
 import { Config, Effect, FileSystem, Option, Path, Schema } from "effect";
 
+import { confirmedLogout } from "../confirmed-logout.ts";
 import {
   cli,
   makeSessionDirectory,
@@ -341,7 +342,7 @@ test("CSV-13 browser retains original CSV and operation across network retry and
     } finally {
       await otherContext.close();
     }
-    await page.getByRole("button", { exact: true, name: "Sair" }).click();
+    await confirmedLogout(page);
     await expect(
       page.getByRole("heading", { name: "Entre para continuar" })
     ).toBeVisible();
