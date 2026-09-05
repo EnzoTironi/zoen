@@ -1,0 +1,15 @@
+{
+  "seed": "zn-0051-s0-acceptance-seed-v1",
+  "seedDigest": "429c8f3635f8533e9536e255014b65f623620242068f88ea6d439d86fbec981f",
+  "profile": "admitted-local-s0-file",
+  "forbiddenCredentials": [
+    "LLM_API_KEY",
+    "MESSAGING_TOKEN",
+    "FINANCE_PROVIDER_SECRET"
+  ],
+  "webTransport": "web",
+  "cliTransport": "cli",
+  "sourceA": "invoice-a.json",
+  "sourceB": "invoice-b-divergent.json",
+  "enterpriseClaimForbidden": "enterprise-ready"
+}

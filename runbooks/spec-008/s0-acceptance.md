@@ -1,47 +1,15 @@
-# File plan — `runbooks/spec-008/s0-acceptance.md`
+# Repair runbook — S0 truth-without-chat journey (ZN-0051)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not accepted.
 
-Target: `runbooks/spec-008/s0-acceptance.md`. Representation: **markdown-plan**. Allocation: **required**.
-
-Specs: [SPEC-008](../../docs/specs/spec-008.md).
-Tickets: [ZN-0051](../../docs/tickets/zn-0051.md).
-
-## Responsibility and reuse
-
-## ZN-0051 operational/repair procedure
-
-Scope: Accept the S0 truth-without-chat journey. This is a plan; deployments and commands not yet qualified remain blocked.
+Scope: File-based S0 acceptance under a clean local profile without LLM/messaging/finance credentials; web+CLI; upload replay, divergent sources, idempotency, forbidden read, restore drill.
 
 ```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-The S0 acceptance suite executes
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-EMIT correlation identifiers and bounded operational events; exclude credentials, documents, prompts and hidden reasoning.
-DISTINGUISH liveness from readiness for actual admitted dependencies and enabled capabilities.
-CAPTURE backup manifests covering authority cuts, object pins, deletion ledger references and escaped effects.
-RESTORE into isolated read-only/dispatch-disabled infrastructure, never over a live unknown tenant.
-REPLAY current deletion suppression before any user read; verify missing objects and role separation.
-RECONCILE escaped external attempts using original identities; Unknown stays Unknown.
-MEASURE recovery against the actual fixture/profile and publish commands plus observations, not assumed service guarantees.
-ADMIT writes/dispatch only after current operator approval and failed checks are resolved.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-The file-based truthful outcome works without those services; no unsupported external result or enterprise-readiness claim appears
-RESUME only with current approval and intact unrelated tenant scopes.
+PRECHECK admitted-local-s0-file profile; confirm LLM/messaging/finance credentials absent.
+RUN web and CLI file-truth paths; archive commit, lock digest, test counts, outstanding gates.
+NEVER emit enterprise-readiness or unsupported external results for missing services.
+ON restore drill: dispatch disabled; deleted content undisclosed.
+DO NOT mark ZN-0051 or S0 milestone accepted without independent review.
 ```
 
-## Owning state / operation contracts
-
-### SPEC-008
-Health() -> Liveness; Readiness() -> AdmittedDependencies; ExportOperationalEvidence(scope) -> RedactedReport; RestoreAdmission(backupRef,deletionCut,effectLedger) -> ReadOnlyReady | Blocked.
-
-audit.operational_events(event_id PK,world_ref_nullable,actor_ref,kind,redacted_payload,occurred_at,retention_class); jobs.recovery_fences(cell_id PK,epoch,dispatch_enabled,deletion_ledger_cut); infra migration manifest contains legacy source commit, row counts, rights mapping and unmatched records.
-
-[algorithm SPEC-008](../../docs/algorithms/spec-008.md)
-
-## Acceptance boundary
-
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+SPEC-008 · S0 journey.

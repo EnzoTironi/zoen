@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-008/s0-acceptance.schema.json",
+  "title": "ZN-0051 s0-acceptance fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "profile",
+    "forbiddenCredentials",
+    "webTransport",
+    "cliTransport",
+    "sourceA",
+    "sourceB",
+    "enterpriseClaimForbidden"
+  ],
+  "properties": {
+    "seed": {
+      "type": "string",
+      "const": "zn-0051-s0-acceptance-seed-v1"
+    },
+    "seedDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "profile": {
+      "type": "string"
+    },
+    "forbiddenCredentials": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "webTransport": {
+      "type": "string"
+    },
+    "cliTransport": {
+      "type": "string"
+    },
+    "sourceA": {
+      "type": "string"
+    },
+    "sourceB": {
+      "type": "string"
+    },
+    "enterpriseClaimForbidden": {
+      "type": "string"
+    }
+  }
+}
