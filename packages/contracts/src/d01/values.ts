@@ -20,6 +20,8 @@ export const DocumentText = Schema.String.check(
   Schema.isMinLength(1),
   Schema.isMaxLength(D01_LIMITS.documentBytes)
 );
+export const DocumentFormat = Schema.Literals(["d01.json.v1", "d01.csv.v1"]);
+export type DocumentFormat = typeof DocumentFormat.Type;
 
 const Uuid = Schema.String.check(Schema.isUUID());
 export const WorldId = Uuid.pipe(Schema.brand("zoen/WorldId"));

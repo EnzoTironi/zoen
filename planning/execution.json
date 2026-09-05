@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "planned",
-  "scope": "D01 e primeiro incremento D02; nenhuma implementação ou verificação executada por esta proposta",
+  "scope": "Pacotes D01/D02 e expansão CSV; estados planejados são requisitos, progresso executado fica em planning/progress.json",
   "workers": {
     "worker-1": {
       "model": "gpt-6-astra",
@@ -1038,6 +1038,250 @@
         "docs/quality.md",
         "docs/execution.md",
         "planning/execution.json#packages/EX15"
+      ]
+    },
+    {
+      "id": "EX16",
+      "title": "Congelar handoff CSV e migração aditiva real",
+      "owner": "root",
+      "depends_on": {
+        "hard": ["EX14"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "contracts_consumed": [
+        "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
+      ],
+      "scope": "Congelar handoff CSV e migração aditiva real",
+      "acceptance": [
+        "Formato exato com ausência legada significando JSON; nenhuma concessão de dados sensíveis.",
+        "Nova migração preserva registros e artefatos JSON; root numera e compõe, sem rebind de release."
+      ],
+      "planned_direct_checks": [
+        "CSV-12: fixture real preserva JSON anterior, sem alterar bytes/digests/receipts.",
+        "Typecheck do handoff existente; JSON legado continua compilável."
+      ],
+      "owns": [
+        "docs/contracts/d01-csv.md",
+        "packages/contracts/src/d01/values.ts",
+        "packages/authority/src/ports/d01/storage.ts",
+        "ops/migrations/**",
+        "apps/server/test/adapters/postgres/d01/database.ts"
+      ],
+      "status": "planned",
+      "reviewer": "worker-1",
+      "model": null,
+      "reasoning_effort": null,
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais existentes; cenários CSV ainda precisam ser implementados e executados.",
+      "planned_commands": [
+        "pnpm typecheck",
+        "pnpm lint",
+        "pnpm test:unit",
+        "pnpm test:integration"
+      ],
+      "source_ticket_ids": [
+        "ZN-0026",
+        "ZN-0027",
+        "ZN-0028",
+        "ZN-0029",
+        "ZN-0031",
+        "ZN-0032",
+        "ZN-0033",
+        "ZN-0036",
+        "ZN-0037",
+        "ZN-0042",
+        "ZN-0044",
+        "ZN-0112"
+      ],
+      "source_semantics": "Recorte CSV de captura/evidência/prova. Não conclui os tickets ou D01 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d01-csv.md",
+        "planning/execution.json#packages/EX16"
+      ]
+    },
+    {
+      "id": "EX17",
+      "title": "Parser CSV limitado e admissão pelo executor existente",
+      "owner": "worker-1",
+      "depends_on": {
+        "hard": ["EX16"],
+        "optional": []
+      },
+      "acceptance_requires": ["EX18"],
+      "contracts_consumed": [
+        "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
+      ],
+      "scope": "Parser CSV limitado e admissão pelo executor existente",
+      "acceptance": [
+        "União pública exata preserva requests e digests JSON; parser segue CSV-01–06.",
+        "Import, intentDigest, captura e OpenEvidence usam formato correto; sem S3 dentro de commit."
+      ],
+      "planned_direct_checks": [
+        "CSV-01–06 puros e schemas reais; golden JSON intacto.",
+        "CSV-07–12 com PostgreSQL/S3 reais, incluindo bytes/MIME/dup/replay/retention."
+      ],
+      "owns": [
+        "packages/contracts/src/d01/operations.ts",
+        "packages/contracts/test/d01/**",
+        "packages/authority/src/values/**",
+        "packages/authority/test/values/**",
+        "packages/authority/src/evidence/d01/**",
+        "tests/integration/d01/evidence/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais existentes; cenários CSV ainda precisam ser implementados e executados.",
+      "planned_commands": [
+        "pnpm typecheck",
+        "pnpm lint",
+        "pnpm test:unit",
+        "pnpm test:integration"
+      ],
+      "source_ticket_ids": [
+        "ZN-0007",
+        "ZN-0008",
+        "ZN-0009",
+        "ZN-0010",
+        "ZN-0012",
+        "ZN-0026",
+        "ZN-0027",
+        "ZN-0028",
+        "ZN-0029",
+        "ZN-0031",
+        "ZN-0032",
+        "ZN-0033",
+        "ZN-0036",
+        "ZN-0037",
+        "ZN-0042",
+        "ZN-0044",
+        "ZN-0112"
+      ],
+      "source_semantics": "Recorte CSV de captura/evidência/prova. Não conclui os tickets ou D01 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d01-csv.md",
+        "planning/execution.json#packages/EX17"
+      ]
+    },
+    {
+      "id": "EX18",
+      "title": "Storage S3 com formato vinculado à captura",
+      "owner": "worker-2",
+      "depends_on": {
+        "hard": ["EX16"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "contracts_consumed": [
+        "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
+      ],
+      "scope": "Storage S3 com formato vinculado à captura",
+      "acceptance": [
+        "PUT/GET/locate conferem MIME exato, digest, tamanho, versão e formato; JSON histórico sem campo permanece JSON.",
+        "Não detectar formato por conteúdo ou key; erro fechado e retenção pinada preservados."
+      ],
+      "planned_direct_checks": [
+        "CSV-10 com S3 real: ambos MIME, metadados incoerentes, recuperação e ausência.",
+        "Contraprovas JSON existentes continuam passando sem mudar expectativas."
+      ],
+      "owns": [
+        "apps/server/src/adapters/object-storage/d01/**",
+        "apps/server/test/adapters/object-storage/d01/**",
+        "packages/authority/src/ports/d01/storage.ts"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais existentes; cenários CSV ainda precisam ser implementados e executados.",
+      "planned_commands": [
+        "pnpm typecheck",
+        "pnpm lint",
+        "pnpm test:unit",
+        "pnpm test:integration"
+      ],
+      "source_ticket_ids": ["ZN-0025", "ZN-0027", "ZN-0029"],
+      "source_semantics": "Recorte CSV de captura/evidência/prova. Não conclui os tickets ou D01 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d01-csv.md",
+        "planning/execution.json#packages/EX18"
+      ]
+    },
+    {
+      "id": "EX19",
+      "title": "Expor CSV explícito em web/CLI e provar jornada mista",
+      "owner": "root",
+      "depends_on": {
+        "hard": ["EX17", "EX18"],
+        "optional": []
+      },
+      "acceptance_requires": ["EX15"],
+      "contracts_consumed": [
+        "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
+      ],
+      "scope": "Expor CSV explícito em web/CLI e provar jornada mista",
+      "acceptance": [
+        "Web/CLI enviam CSV original e seletor ao mesmo executor; sem parser nofrontend.",
+        "Mesma operação entre superfícies retorna receipt idêntico; jornada mista JSON/CSV conserva correção e história."
+      ],
+      "planned_direct_checks": [
+        "CSV-13–14: navegador/CLI/S3/PG reais, arquivo/stdinCRLF e seletor explícito.",
+        "pnpm build e pnpm test:container com profileCSVnovo; preservação de perfis anteriores."
+      ],
+      "owns": [
+        "apps/web/src/features/d01/**",
+        "apps/web/test/features/d01/**",
+        "apps/web/test/integration/d02/**",
+        "apps/cli/src/d01/**",
+        "apps/cli/test/d01/**",
+        "tests/acceptance/d01-d02/**",
+        "apps/server/src/composition.ts",
+        "apps/server/src/http/**",
+        "apps/web/src/main.*",
+        "apps/cli/src/main.*"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": null,
+      "reasoning_effort": null,
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais existentes; cenários CSV ainda precisam ser implementados e executados.",
+      "planned_commands": [
+        "pnpm typecheck",
+        "pnpm lint",
+        "pnpm test:unit",
+        "pnpm test:integration"
+      ],
+      "source_ticket_ids": [
+        "ZN-0045",
+        "ZN-0046",
+        "ZN-0070",
+        "ZN-0071",
+        "ZN-0072",
+        "ZN-0073",
+        "ZN-0291",
+        "ZN-0292"
+      ],
+      "source_semantics": "Recorte CSV de captura/evidência/prova. Não conclui os tickets ou D01 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d01-csv.md",
+        "planning/execution.json#packages/EX19"
       ]
     }
   ],

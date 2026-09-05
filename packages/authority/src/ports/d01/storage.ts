@@ -1,6 +1,7 @@
 import {
   D01_LIMITS,
   Digest,
+  DocumentFormat,
   WorldRef,
   exact,
 } from "@zoen/contracts/d01/values";
@@ -18,6 +19,7 @@ export const ObjectLocation = Schema.Struct({
   ),
   captureId: CaptureId,
   digest: Digest,
+  documentFormat: Schema.optionalKey(DocumentFormat),
   key: Schema.String.check(Schema.isMinLength(1), Schema.isMaxLength(512)),
   versionId: Schema.NullOr(
     Schema.String.check(Schema.isMinLength(1), Schema.isMaxLength(512))
