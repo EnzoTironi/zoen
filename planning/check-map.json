@@ -9610,7 +9610,7 @@
     "ticket_id": "ZN-0292",
     "spec_id": "SPEC-050",
     "test_file": "tests/static/spec-050/no-bypass-graph.test.ts",
-    "plan_path": "tests/static/spec-050/no-bypass-graph.test.ts",
+    "plan_path": "tests/static/spec-050/no-bypass-graph.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -9621,7 +9621,7 @@
     "ticket_id": "ZN-0292",
     "spec_id": "SPEC-050",
     "test_file": "tests/static/spec-050/no-bypass-graph.test.ts",
-    "plan_path": "tests/static/spec-050/no-bypass-graph.test.ts",
+    "plan_path": "tests/static/spec-050/no-bypass-graph.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -9632,7 +9632,7 @@
     "ticket_id": "ZN-0292",
     "spec_id": "SPEC-050",
     "test_file": "tests/static/spec-050/no-bypass-graph.test.ts",
-    "plan_path": "tests/static/spec-050/no-bypass-graph.test.ts",
+    "plan_path": "tests/static/spec-050/no-bypass-graph.test.ts.plan.md",
     "status": "not-executed"
   },
   {

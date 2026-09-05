@@ -1,44 +1,294 @@
-// @zoen-plan tooling/semantic-boundaries/no-bypass-graph.ts
-// NON-EXECUTABLE PSEUDOCODE; not registered or compiled as product implementation.
-// # File plan — `tooling/semantic-boundaries/no-bypass-graph.ts`
-//
-// **Status:** planned; no product acceptance implied.
-//
-// Target: `tooling/semantic-boundaries/no-bypass-graph.ts`. Representation: **comment-only-source**. Allocation: **required**.
-//
-// Specs: [SPEC-050](../../docs/specs/spec-050.md).
-// Tickets: [ZN-0292](../../docs/tickets/zn-0292.md).
-//
-// ## Responsibility and reuse
-//
-// ```text
-// PROCEDURE ZN_0292 /* planning label, not a public API */
-//   OWNER := SPEC-050; TARGET := tooling/semantic-boundaries/no-bypass-graph.ts
-//   REQUIRE accepted dependencies: ZN-0003, ZN-0291
-//   REQUIRE evidence layer: static; actual admitted services when needed
-//   IF a required service/profile/schema is missing: STOP Blocked; never substitute a provider.
-//   IF normative contracts conflict: STOP SpecConflict; never choose a permissive interpretation.
-//   USE the shared module protocol below; implement ONLY this ticket's segment, not a duplicate engine.
-//     NORMALIZE transport input into the common envelope; obtain identity and app/workload context only from verified server bindings.
-//     RESOLVE allowed operation using the existing SPEC-007 dispatcher; do not instantiate another executor.
-//     PRESERVE intent ID, contract digest, basis and purpose on retry/resumption; a new ID is a new intention.
-//     INTERSECT current user/delegation rights, admitted app capabilities and current source restrictions centrally.
-//     FOR batches/streams/exports support bounded work and exact basis; reauthorize each item/chunk/resumption.
-//     CACHE only with full subject/World/delegation/app/purpose/release/query/cut/security key; references are not permits.
-//     COMPARE canonical semantic outcomes under equivalent authority/basis, not natural-language presentation.
-//     AUDIT every ingress/asset/export/worker path for bypasses; structured app calls require neither Eve nor an LLM.
-//   TICKET-SPECIFIC SEGMENT:
-//     01. Classify trusted executor/repository composition and untrusted human, agent, app and runner client roots.
-//     02. Deny imports of repositories, SQL/index clients and source credentials from client roots; account for reexports and dynamic imports.
-//     03. Define a network/secret allowlist regression fixture and fail on any new unreviewed data ingress.
-//   TEST BEFORE DECLARING THIS SEGMENT COMPLETE:
-//     GIVEN The declared module graph and all S0 client roots
-//     WHEN A mini-app or Eve module imports a raw pg adapter through a barrel
-//     THEN The static gate fails with the forbidden edge; ordinary SemanticClient imports remain valid
-//   ON failure: preserve observed state and evidence; no fabricated success or consent refresh.
-//   RETURN only the owning spec's tagged result / recorded test evidence for the exact ticket.
-// ```
-//
-// ## Acceptance boundary
-//
-// A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+import { createHash } from 'node:crypto';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import { join, relative, sep } from 'node:path';
+import type { BoundaryFinding, ForbiddenEdge, NoBypassReport, RootKind } from './types.js';
+import type { NoBypassGraphPort } from './ports.js';
+
+export const NO_BYPASS_SCHEMA_VERSION = 'spec-050.no-bypass-graph.v1';
+export const NO_BYPASS_FIXTURE_SEED = 'zn-0292-no-bypass-seed-v1';
+
+/** Trusted executor / repository composition roots (may touch pg / credentials). */
+export const TRUSTED_ROOTS = Object.freeze([
+  'apps/authority-worker/',
+  'packages/ontology/',
+  'packages/adapters/',
+  'packages/kernel/',
+  'db/',
+  'tooling/',
+] as const);
+
+/** Untrusted human, agent, app and runner client roots. */
+export const CLIENT_ROOTS = Object.freeze([
+  'apps/web/',
+  'apps/eve-worker/',
+  'apps/edge/src/routes/',
+  'packages/eve/',
+  'packages/clients/',
+  'runners/',
+] as const);
+
+const FORBIDDEN_SPEC_RES = Object.freeze([
+  { code: 'client-forbidden-pg', re: /(?:^|\/)(?:pg)$|(?:^|\/)adapters\/src\/pg(?:\.js)?$|@zoen\/adapters\/pg/ },
+  { code: 'client-forbidden-sql-client', re: /(?:^|\/)adapters\/src\/(?:config|sql|index-client)(?:\.js)?$|@zoen\/adapters\/(?:config|sql)/ },
+  { code: 'client-forbidden-repository', re: /(?:^|\/)ontology\/src\/(?:authority|evidence)(?:\/|$)|@zoen\/ontology\/(?:authority|evidence)/ },
+] as const);
+
+const CREDENTIAL_RE =
+  /process\.env\.(?:AUTHORITY_CREDENTIAL|AUTHORITY_DATABASE_URL|ZOEN_AUTHORITY_DATABASE_URL|SOURCE_PROVIDER_SECRET|ZOEN_SOURCE_SECRET|AWS_SECRET_ACCESS_KEY)\b/;
+
+const IMPORT_RE =
+  /(?:import|export)\s+(?:type\s+)?(?:[\s\S]*?\s+from\s+)?['"]([^'"]+)['"]|require\s*\(\s*['"]([^'"]+)['"]\s*\)|import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
+
+const ALIAS_HINT_RE =
+  /(?:from|require\s*\(|import\s*\()\s*['"](?:@\/|#\/|~\/)(?:.*pg.*|.*adapters\/pg.*)['"]/;
+
+function posix(rel: string): string {
+  return rel.split(sep).join('/');
+}
+
+function walkSourceFiles(root: string, relDir: string): string[] {
+  const abs = join(root, relDir);
+  if (!existsSync(abs)) return [];
+  const out: string[] = [];
+  const stack = [abs];
+  while (stack.length) {
+    const cur = stack.pop()!;
+    let entries: string[] = [];
+    try {
+      entries = readdirSync(cur);
+    } catch {
+      continue;
+    }
+    for (const name of entries) {
+      if (name === 'node_modules' || name === 'dist' || name === '.core-build' || name === '.git') continue;
+      const p = join(cur, name);
+      let st;
+      try {
+        st = statSync(p);
+      } catch {
+        continue;
+      }
+      if (st.isDirectory()) stack.push(p);
+      else if (/\.(ts|tsx|mjs|cjs|js)$/.test(name) && !name.endsWith('.plan.md')) out.push(p);
+    }
+  }
+  return out.sort();
+}
+
+function isCommentOnlyPlan(text: string): boolean {
+  const lines = text.split(/\r?\n/);
+  if (!lines[0]?.startsWith('// @zoen-plan') && !lines[0]?.startsWith('# @zoen-plan')) return false;
+  return lines.every((line) => {
+    const t = line.trim();
+    return t === '' || t.startsWith('//') || t.startsWith('#');
+  });
+}
+
+function extractImports(text: string): string[] {
+  const found: string[] = [];
+  IMPORT_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = IMPORT_RE.exec(text))) {
+    const spec = m[1] ?? m[2] ?? m[3];
+    if (spec) found.push(spec);
+  }
+  return found;
+}
+
+export function classifyRoot(relFile: string): RootKind {
+  const path = posix(relFile);
+  if (CLIENT_ROOTS.some((r) => path.startsWith(r) || path.includes('/mini-apps/') || path.includes('/app-host/'))) {
+    return 'client';
+  }
+  if (TRUSTED_ROOTS.some((r) => path.startsWith(r))) return 'trusted-composition';
+  if (path.startsWith('packages/contracts/') || path.startsWith('packages/clients/src/semantic-client')) {
+    return 'shared-contracts';
+  }
+  return 'unknown';
+}
+
+function isSemanticClientImport(spec: string): boolean {
+  return (
+    /semantic-client(?:\.js)?$/.test(spec) ||
+    spec === '@zoen/contracts/semantic-client' ||
+    /(?:^|\/)contracts\/src\/semantic-client(?:\.js)?$/.test(spec) ||
+    /(?:^|\/)clients\/src\/semantic-client(?:\.js)?$/.test(spec) ||
+    /semantic-client/.test(spec)
+  );
+}
+
+function isForbiddenSpec(spec: string): { code: string; to: string } | null {
+  for (const rule of FORBIDDEN_SPEC_RES) {
+    if (rule.re.test(spec)) return { code: rule.code, to: spec };
+  }
+  // Barrel reexport path hints
+  if (/(?:^|\/)(?:pg-barrel|db-barrel|sql-barrel)(?:\.js)?$/.test(spec)) {
+    return { code: 'client-forbidden-pg-barrel', to: spec };
+  }
+  return null;
+}
+
+export type CheckOptions = Readonly<{
+  fixtureSeed?: string;
+  /** When true, require at least one selected source file (BOUNDARY). */
+  requireNonEmpty?: boolean;
+}>;
+
+/**
+ * Static gate: client roots may not import repositories, SQL/pg adapters or
+ * source credentials — including via barrels, aliases and dynamic import().
+ */
+export function checkNoBypassGraph(root: string, options: CheckOptions = {}): NoBypassReport {
+  const findings: BoundaryFinding[] = [];
+  const forbiddenEdges: ForbiddenEdge[] = [];
+  const allowedSemanticClientImports: string[] = [];
+  const requireNonEmpty = options.requireNonEmpty !== false;
+  const fixtureSeed = options.fixtureSeed ?? NO_BYPASS_FIXTURE_SEED;
+
+  if (!existsSync(root) || !statSync(root).isDirectory()) {
+    findings.push({
+      code: 'disconnected-checker',
+      severity: 'error',
+      message: `Checker root missing or not a directory: ${root}`,
+      path: root,
+    });
+    return Object.freeze({
+      schemaVersion: NO_BYPASS_SCHEMA_VERSION,
+      ticket: 'ZN-0292',
+      spec: 'SPEC-050',
+      status: 'Rejected',
+      selectedFileCount: 0,
+      clientRoots: [...CLIENT_ROOTS],
+      trustedRoots: [...TRUSTED_ROOTS],
+      forbiddenEdges: [],
+      allowedSemanticClientImports: [],
+      findings,
+      fixtureSeed,
+    });
+  }
+
+  const selected: string[] = [];
+  for (const prefix of [...CLIENT_ROOTS, ...TRUSTED_ROOTS, 'packages/contracts/', 'apps/web/src/mini-apps/']) {
+    for (const file of walkSourceFiles(root, prefix.replace(/\/$/, ''))) {
+      selected.push(file);
+    }
+  }
+  // Deduplicate
+  const uniqueFiles = [...new Set(selected)].sort();
+
+  if (requireNonEmpty && uniqueFiles.length === 0) {
+    findings.push({
+      code: 'empty-graph',
+      severity: 'error',
+      message: 'Zero selected files — refusing to certify an empty module graph',
+      path: root,
+    });
+    return Object.freeze({
+      schemaVersion: NO_BYPASS_SCHEMA_VERSION,
+      ticket: 'ZN-0292',
+      spec: 'SPEC-050',
+      status: 'Rejected',
+      selectedFileCount: 0,
+      clientRoots: [...CLIENT_ROOTS],
+      trustedRoots: [...TRUSTED_ROOTS],
+      forbiddenEdges: [],
+      allowedSemanticClientImports: [],
+      findings,
+      fixtureSeed,
+    });
+  }
+
+  for (const file of uniqueFiles) {
+    const text = readFileSync(file, 'utf8');
+    if (isCommentOnlyPlan(text)) continue;
+    const relFile = posix(relative(root, file));
+    const kind = classifyRoot(relFile);
+    if (kind !== 'client') continue;
+
+    const imports = extractImports(text);
+    for (const spec of imports) {
+      if (isSemanticClientImport(spec)) {
+        allowedSemanticClientImports.push(`${relFile} -> ${spec}`);
+        continue;
+      }
+      const hit = isForbiddenSpec(spec);
+      if (hit) {
+        forbiddenEdges.push({ from: relFile, to: hit.to, detail: hit.code });
+        findings.push({
+          code: hit.code,
+          severity: 'error',
+          message: `Forbidden client dependency edge: ${relFile} -> ${hit.to}`,
+          path: relFile,
+        });
+      }
+    }
+
+    if (CREDENTIAL_RE.test(text)) {
+      forbiddenEdges.push({ from: relFile, to: 'process.env.*CREDENTIAL*', detail: 'client-forbidden-credential' });
+      findings.push({
+        code: 'client-forbidden-credential',
+        severity: 'error',
+        message: `Client root reads authority/source credential env: ${relFile}`,
+        path: relFile,
+      });
+    }
+
+    if (ALIAS_HINT_RE.test(text)) {
+      forbiddenEdges.push({ from: relFile, to: 'alias-pg', detail: 'client-forbidden-import-alias' });
+      findings.push({
+        code: 'client-forbidden-import-alias',
+        severity: 'error',
+        message: `Import alias cannot evade pg/adapter gate: ${relFile}`,
+        path: relFile,
+      });
+    }
+
+    // Dynamic import with computed-looking pg path still caught if literal appears
+    if (/import\s*\(\s*['"]pg['"]\s*\)/.test(text) || /require\s*\(\s*['"]pg['"]\s*\)/.test(text)) {
+      if (!forbiddenEdges.some((e) => e.from === relFile && e.to === 'pg')) {
+        forbiddenEdges.push({ from: relFile, to: 'pg', detail: 'client-forbidden-dynamic-pg' });
+        findings.push({
+          code: 'client-forbidden-dynamic-pg',
+          severity: 'error',
+          message: `Dynamic/require pg import forbidden from client root: ${relFile}`,
+          path: relFile,
+        });
+      }
+    }
+  }
+
+  const status: NoBypassReport['status'] = findings.some((f) => f.severity === 'error') ? 'Rejected' : 'Certified';
+  return Object.freeze({
+    schemaVersion: NO_BYPASS_SCHEMA_VERSION,
+    ticket: 'ZN-0292',
+    spec: 'SPEC-050',
+    status,
+    selectedFileCount: uniqueFiles.length,
+    clientRoots: [...CLIENT_ROOTS],
+    trustedRoots: [...TRUSTED_ROOTS],
+    forbiddenEdges: Object.freeze([...forbiddenEdges]),
+    allowedSemanticClientImports: Object.freeze([...allowedSemanticClientImports]),
+    findings: Object.freeze([...findings]),
+    fixtureSeed,
+  });
+}
+
+export class NoBypassGraphChecker implements NoBypassGraphPort {
+  check(root: string, options?: { fixtureSeed?: string }): NoBypassReport {
+    return checkNoBypassGraph(root, options);
+  }
+}
+
+export function reportDigest(report: NoBypassReport): string {
+  return createHash('sha256')
+    .update(
+      JSON.stringify({
+        status: report.status,
+        selectedFileCount: report.selectedFileCount,
+        edges: report.forbiddenEdges,
+        findings: report.findings.map((f) => f.code),
+      }),
+      'utf8',
+    )
+    .digest('hex');
+}

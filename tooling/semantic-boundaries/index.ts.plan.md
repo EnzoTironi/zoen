@@ -1,8 +1,8 @@
-# File plan — `contracts/spec-050/no-bypass-graph.schema.json`
+# File plan — `tooling/semantic-boundaries/index.ts`
 
 **Status:** implementation-in-progress; no product acceptance implied.
 
-Target: `contracts/spec-050/no-bypass-graph.schema.json`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
+Target: `tooling/semantic-boundaries/index.ts`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
 
 Specs: [SPEC-050](../../docs/specs/spec-050.md).
 Tickets: [ZN-0292](../../docs/tickets/zn-0292.md).
@@ -12,12 +12,12 @@ Tickets: [ZN-0292](../../docs/tickets/zn-0292.md).
 The adjacent implementation is preserved. Read it first, extend it in place, and prove behavior at the ticket's required layer. Do not replace it with this plan or create a duplicate primitive.
 
 ```text
-CONDITIONAL SCHEMA PLAN — no permissive {} schema or fabricated generated types.
-RESOLVE exact input/output/tagged-error fields from the operation signatures and common protocol.
-REQUIRE bounded sizes/depth/arrays, exact discriminants, validated IDs and explicit optional/null distinctions.
-REJECT additional or authority-bearing client fields; money/counters stay strings where required.
-GENERATE canonical fixtures, wire types and surface descriptors from this single reviewed schema source.
-TEST malformed/oversized/unknown-version inputs and exact round trips; registry presence alone is not a pass.
+COMPOSITION/REGISTRATION PLAN.
+IMPORT only reviewed implemented ports and adapters under the existing dependency direction.
+BIND the existing semantic executor once; register this module's released operation descriptors.
+DO NOT add business rules, source credentials, alternate policy evaluators or a second dispatcher here.
+GATE unavailable capabilities explicitly; an unwired implementation does not satisfy a ticket.
+KEEP shared composition edits under the named exclusive lock.
 ```
 
 ## Owning state / operation contracts

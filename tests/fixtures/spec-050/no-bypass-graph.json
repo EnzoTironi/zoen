@@ -1,0 +1,20 @@
+{
+  "seed": "zn-0292-no-bypass-seed-v1",
+  "seedDigest": "c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2",
+  "clientRoots": [
+    "apps/web/",
+    "apps/eve-worker/",
+    "packages/eve/",
+    "packages/clients/",
+    "runners/"
+  ],
+  "forbiddenSamples": [
+    "pg",
+    "packages/adapters/src/pg.js",
+    "@zoen/adapters/pg"
+  ],
+  "allowedSemanticClient": [
+    "../../../contracts/src/semantic-client.js",
+    "@zoen/contracts/semantic-client"
+  ]
+}

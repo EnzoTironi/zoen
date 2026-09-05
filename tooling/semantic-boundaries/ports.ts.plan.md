@@ -1,8 +1,8 @@
-# File plan — `contracts/spec-050/no-bypass-graph.schema.json`
+# File plan — `tooling/semantic-boundaries/ports.ts`
 
 **Status:** implementation-in-progress; no product acceptance implied.
 
-Target: `contracts/spec-050/no-bypass-graph.schema.json`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
+Target: `tooling/semantic-boundaries/ports.ts`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
 
 Specs: [SPEC-050](../../docs/specs/spec-050.md).
 Tickets: [ZN-0292](../../docs/tickets/zn-0292.md).
@@ -12,12 +12,12 @@ Tickets: [ZN-0292](../../docs/tickets/zn-0292.md).
 The adjacent implementation is preserved. Read it first, extend it in place, and prove behavior at the ticket's required layer. Do not replace it with this plan or create a duplicate primitive.
 
 ```text
-CONDITIONAL SCHEMA PLAN — no permissive {} schema or fabricated generated types.
-RESOLVE exact input/output/tagged-error fields from the operation signatures and common protocol.
-REQUIRE bounded sizes/depth/arrays, exact discriminants, validated IDs and explicit optional/null distinctions.
-REJECT additional or authority-bearing client fields; money/counters stay strings where required.
-GENERATE canonical fixtures, wire types and surface descriptors from this single reviewed schema source.
-TEST malformed/oversized/unknown-version inputs and exact round trips; registry presence alone is not a pass.
+CONTRACT SURFACE PLAN.
+DEFINE only the owning module's input/output/error/state and dependency-port types.
+REUSE branded kernel values, verified context, common semantic envelope and typed results.
+DO NOT export repositories or broad credentials to clients; authority context is server verified.
+SEPARATE versioned semantic meaning from transport metadata and immutable artifacts from mutable runtime state.
+VERIFY consumers use the same contracts and exhaustive tagged outcomes; unsupported shapes fail closed.
 ```
 
 ## Owning state / operation contracts

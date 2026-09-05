@@ -34,6 +34,20 @@ module.exports = {
       from: { path: '^apps/eve-worker' },
       to: { path: '(/adapters/src/pg)|(/adapters/src/config)' },
     },
+    {
+      name: 'client-no-pg-via-barrel',
+      severity: 'error',
+      comment: 'ZN-0292: web/eve/clients/runners cannot import pg or adapters/pg (incl. barrels).',
+      from: { path: '^(apps/web|apps/eve-worker|packages/eve|packages/clients|runners)' },
+      to: { path: '(^pg$)|(/adapters/src/pg)|(@zoen/adapters/pg)|(pg-barrel)' },
+    },
+    {
+      name: 'client-no-authority-credential',
+      severity: 'error',
+      comment: 'ZN-0292: client roots never read authority/source credential modules.',
+      from: { path: '^(apps/web|apps/eve-worker|packages/eve|packages/clients|runners)' },
+      to: { path: '(/adapters/src/config)|(/ontology/src/authority)|(/ontology/src/evidence)' },
+    },
   ],
   options: {
     doNotFollow: { path: 'node_modules' },

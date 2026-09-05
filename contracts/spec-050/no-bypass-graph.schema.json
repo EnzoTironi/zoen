@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-050/no-bypass-graph.schema.json",
+  "title": "ZN-0292 no-bypass-graph fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "clientRoots", "forbiddenSamples", "allowedSemanticClient"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0292-no-bypass-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "clientRoots": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1
+    },
+    "forbiddenSamples": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "allowedSemanticClient": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

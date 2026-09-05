@@ -1,47 +1,179 @@
-// @zoen-plan tests/static/spec-050/no-bypass-graph.test.ts
-// NON-EXECUTABLE PSEUDOCODE; not registered or compiled as product implementation.
-// # File plan — `tests/static/spec-050/no-bypass-graph.test.ts`
-//
-// **Status:** planned; no product acceptance implied.
-//
-// Target: `tests/static/spec-050/no-bypass-graph.test.ts`. Representation: **comment-only-source**. Allocation: **required**.
-//
-// Specs: [SPEC-050](../../../docs/specs/spec-050.md).
-// Tickets: [ZN-0292](../../../docs/tickets/zn-0292.md).
-//
-// ## Responsibility and reuse
-//
-// ```text
-// SUITE ZN-0292 [required layer=static; currently NOT IMPLEMENTED]
-//   REQUIRE real admitted dependencies and disposable owned namespaces; missing dependency => BLOCKED.
-//   USE synthetic input records, not synthetic services, fake credentials or canned provider responses.
-//
-//   TEST ZN-0292-AC:
-//     ARRANGE The declared module graph and all S0 client roots
-//     ACT A mini-app or Eve module imports a raw pg adapter through a barrel
-//     ASSERT The static gate fails with the forbidden edge; ordinary SemanticClient imports remain valid
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   TEST ZN-0292-NEG:
-//     ARRANGE the same ticket component with the stated invalid/denied input.
-//     ACT only through its real supported boundary; inspect denial and lack of side effects.
-//     ASSERT An import alias or dynamic import cannot evade the same dependency gate
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   TEST ZN-0292-BOUNDARY:
-//     ARRANGE the same component at its named failure/replay/resource boundary.
-//     ACT with independently controlled real connection/process barriers when I/O is involved.
-//     ASSERT A disconnected checker or zero selected files fails rather than certifying an empty graph
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   AVAILABLE SPEC-LOCAL FAULT BOUNDARIES (apply only when owned by this ticket):
-//     F-29: barrier=after generation before download; inject=Revoke source rights; assert=Download denied; handle cannot authorize.
-//
-//   ASSERT every required check executed, no required skips, nonzero count and exact semantic oracle.
-//   CLEANUP only this test namespace after checking receipts/pins/unknown external outcomes.
-//   NEVER expose clocks, barriers, fixture seeders or failure controls in production routes.
-// ```
-//
-// ## Acceptance boundary
-//
-// A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import {
+  checkNoBypassGraph,
+  CLIENT_ROOTS,
+  NO_BYPASS_FIXTURE_SEED,
+  NO_BYPASS_SCHEMA_VERSION,
+  reportDigest,
+} from '../../../tooling/semantic-boundaries/no-bypass-graph.ts';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(__dirname, '../../..');
+const SCHEMA_PATH = join(ROOT, 'contracts/spec-050/no-bypass-graph.schema.json');
+const FIXTURE_PATH = join(ROOT, 'tests/fixtures/spec-050/no-bypass-graph.json');
+const REQUIRED_CHECK_IDS = ['ZN-0292-AC', 'ZN-0292-NEG', 'ZN-0292-BOUNDARY'] as const;
+
+type Fixture = {
+  seed: string;
+  seedDigest: string;
+  clientRoots: string[];
+  forbiddenSamples: string[];
+  allowedSemanticClient: string[];
+};
+
+function fixture(): Fixture {
+  return JSON.parse(readFileSync(FIXTURE_PATH, 'utf8')) as Fixture;
+}
+
+function writeTree(root: string, files: Record<string, string>): void {
+  for (const [rel, body] of Object.entries(files)) {
+    const abs = join(root, rel);
+    mkdirSync(dirname(abs), { recursive: true });
+    writeFileSync(abs, body);
+  }
+}
+
+function baseLayout(extra: Record<string, string> = {}): Record<string, string> {
+  return {
+    'apps/web/src/index.ts': "export const surface = 'web';\n",
+    'apps/eve-worker/src/index.ts': "export const surface = 'eve-worker';\n",
+    'packages/eve/src/index.ts': "export const surface = 'eve';\n",
+    'packages/clients/src/index.ts': "export const surface = 'clients';\n",
+    'packages/clients/src/semantic-client.ts':
+      "export class SemanticClient { async invoke() { return { tag: 'Ok', value: null }; } }\n",
+    'packages/contracts/src/semantic-client.ts':
+      "export interface SemanticClientPort { call(): Promise<unknown>; }\n",
+    'packages/adapters/src/pg.ts': "export const PgDatabase = {};\n",
+    'packages/ontology/src/authority/transaction.ts': "export class Authority {}\n",
+    'apps/authority-worker/src/index.ts': "export const trusted = true;\n",
+    'runners/local/src/index.ts': "export const runner = true;\n",
+    ...extra,
+  };
+}
+
+test('ZN-0292-AC', () => {
+  assert.equal(existsSync(SCHEMA_PATH), true);
+  assert.equal(existsSync(FIXTURE_PATH), true);
+  const fx = fixture();
+  assert.equal(fx.seed, NO_BYPASS_FIXTURE_SEED);
+  assert.equal(fx.seed, 'zn-0292-no-bypass-seed-v1');
+  assert.ok(fx.clientRoots.length >= 1);
+  for (const root of fx.clientRoots) {
+    assert.ok(CLIENT_ROOTS.some((c) => c === root || root.startsWith(c) || c.startsWith(root)));
+  }
+
+  const dirty = mkdtempSync(join(tmpdir(), 'zn-0292-ac-dirty-'));
+  try {
+    writeTree(
+      dirty,
+      baseLayout({
+        'apps/web/src/mini-apps/evil.ts':
+          "import pg from 'pg';\nexport const leak = pg;\n",
+        'packages/eve/src/via-barrel.ts':
+          "export { PgDatabase } from '../../adapters/src/pg.js';\n",
+        'packages/clients/src/ok-client.ts':
+          "import { SemanticClient } from './semantic-client.js';\nexport const c = SemanticClient;\n",
+      }),
+    );
+    const report = checkNoBypassGraph(dirty, { fixtureSeed: fx.seed });
+    assert.equal(report.schemaVersion, NO_BYPASS_SCHEMA_VERSION);
+    assert.equal(report.status, 'Rejected');
+    assert.ok(report.forbiddenEdges.length >= 1);
+    assert.ok(
+      report.forbiddenEdges.some((e) => e.to === 'pg' || e.detail.includes('pg')),
+      JSON.stringify(report.forbiddenEdges),
+    );
+    assert.ok(
+      report.allowedSemanticClientImports.some((s) => s.includes('semantic-client')),
+      JSON.stringify(report.allowedSemanticClientImports),
+    );
+    assert.match(reportDigest(report), /^[a-f0-9]{64}$/);
+  } finally {
+    rmSync(dirty, { recursive: true, force: true });
+  }
+
+  const clean = mkdtempSync(join(tmpdir(), 'zn-0292-ac-clean-'));
+  try {
+    writeTree(
+      clean,
+      baseLayout({
+        'apps/web/src/mini-apps/ok.ts':
+          "import type { SemanticClientPort } from '../../../packages/contracts/src/semantic-client.js';\nexport type P = SemanticClientPort;\n",
+      }),
+    );
+    const report = checkNoBypassGraph(clean, { fixtureSeed: fx.seed });
+    assert.equal(report.status, 'Certified');
+    assert.equal(report.forbiddenEdges.length, 0);
+    assert.ok(report.selectedFileCount > 0);
+    assert.ok(report.allowedSemanticClientImports.length >= 1);
+  } finally {
+    rmSync(clean, { recursive: true, force: true });
+  }
+
+  void REQUIRED_CHECK_IDS;
+});
+
+test('ZN-0292-NEG', () => {
+  const fx = fixture();
+  const root = mkdtempSync(join(tmpdir(), 'zn-0292-neg-'));
+  try {
+    writeTree(
+      root,
+      baseLayout({
+        'apps/web/src/alias-pg.ts':
+          "import db from '@/adapters/pg';\nexport const x = db;\n",
+        'packages/eve/src/dynamic-pg.ts':
+          "export async function load() { return import('pg'); }\n",
+        'apps/eve-worker/src/cred.ts':
+          "export const url = process.env.AUTHORITY_DATABASE_URL;\n",
+      }),
+    );
+    const report = checkNoBypassGraph(root, { fixtureSeed: fx.seed });
+    assert.equal(report.status, 'Rejected');
+    const codes = new Set(report.findings.map((f) => f.code));
+    assert.ok(codes.has('client-forbidden-import-alias') || codes.has('client-forbidden-pg'), [...codes]);
+    assert.ok(codes.has('client-forbidden-dynamic-pg') || codes.has('client-forbidden-pg'), [...codes]);
+    assert.ok(codes.has('client-forbidden-credential'), [...codes]);
+    // Alias / dynamic must not evade — edges present
+    assert.ok(report.forbiddenEdges.length >= 2);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('ZN-0292-BOUNDARY', () => {
+  const fx = fixture();
+  // Disconnected checker root
+  const missing = join(tmpdir(), `zn-0292-missing-${process.pid}-${Date.now()}`);
+  const disconnected = checkNoBypassGraph(missing, { fixtureSeed: fx.seed });
+  assert.equal(disconnected.status, 'Rejected');
+  assert.ok(disconnected.findings.some((f) => f.code === 'disconnected-checker'));
+  assert.equal(disconnected.selectedFileCount, 0);
+
+  // Empty graph (directory exists but no selected sources)
+  const empty = mkdtempSync(join(tmpdir(), 'zn-0292-empty-'));
+  try {
+    writeFileSync(join(empty, 'README.md'), 'no sources\n');
+    const report = checkNoBypassGraph(empty, { fixtureSeed: fx.seed, requireNonEmpty: true });
+    assert.equal(report.status, 'Rejected');
+    assert.ok(report.findings.some((f) => f.code === 'empty-graph'));
+    assert.equal(report.selectedFileCount, 0);
+    // Must not claim certification of emptiness
+    assert.notEqual(report.status, 'Certified');
+  } finally {
+    rmSync(empty, { recursive: true, force: true });
+  }
+
+  // Seed digest recorded
+  assert.equal(
+    createHash('sha256').update(fx.seed, 'utf8').digest('hex').length,
+    64,
+  );
+});

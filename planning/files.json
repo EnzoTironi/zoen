@@ -7515,9 +7515,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-050/no-bypass-graph.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -25652,9 +25652,9 @@
         "ZN-0292"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-050/no-bypass-graph.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-050/no-bypass-graph.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -36823,9 +36823,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-050/no-bypass-graph.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -42180,9 +42180,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/static/spec-050/no-bypass-graph.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/static/spec-050/no-bypass-graph.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -42197,9 +42197,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "tooling/semantic-boundaries/index.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tooling/semantic-boundaries/index.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -42216,9 +42216,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tooling/semantic-boundaries/no-bypass-graph.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tooling/semantic-boundaries/no-bypass-graph.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -42233,9 +42233,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "tooling/semantic-boundaries/ports.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tooling/semantic-boundaries/ports.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -42250,9 +42250,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "tooling/semantic-boundaries/types.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tooling/semantic-boundaries/types.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
