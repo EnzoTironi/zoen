@@ -1,5 +1,7 @@
 # D03 — cerca de divulgação (candidato; não congelado)
 
+**Revisão vigente:** [fechamento durável EX22](disclosure-durable.md) substitui a proposta de ACK/Scope abaixo após a corrida real por perda de conexão. O texto anterior permanece como histórico da hipótese e baseline; não autoriza sua ativação.
+
 Este documento propõe o mecanismo que falta entre uma leitura autorizada e a entrega de seu DTO. Não aceita D03 nem autoriza implementação. Complementa [D03 sharing](d03-sharing.md). As decisões de limite de emissão, coordenação do logout e descarte de conexão precisam ser congeladas antes do código.
 
 ## Limite observável proposto

@@ -6,6 +6,7 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { grantD01Roles } from "../../apps/server/sql/proposals/d01/grants.ts";
 import type { D01DatabaseRoles } from "../../apps/server/sql/proposals/d01/grants.ts";
+import { grantDisclosureRole } from "../../apps/server/sql/proposals/disclosure/grants.ts";
 import { grantD01IdentityRole } from "../../apps/server/src/identity/d01/grants.ts";
 
 /** Called only by the migration owner, never by the server's runtime pool. */
@@ -74,3 +75,22 @@ export const applySharingMigrations = Effect.fn("migrations.applySharing")(
     return [...base, ...extension];
   }
 );
+
+/** Durable coordination extends the separately reproducible membership migration. */
+export const applyDisclosureMigrations = Effect.fn(
+  "migrations.applyDisclosure"
+)(function* applyDisclosureMigrations(roles: D01DatabaseRoles) {
+  const base = yield* applySharingMigrations(roles);
+  const fs = yield* FileSystem.FileSystem;
+  const sql = yield* SqlClient.SqlClient;
+  const disclosure = yield* fs.readFileString(
+    fileURLToPath(new URL("006_durable_disclosure.sql", import.meta.url))
+  );
+  const extension = yield* PgMigrator.run({
+    loader: PgMigrator.fromRecord({
+      "6_durable_disclosure": sql.unsafe(disclosure).pipe(Effect.asVoid),
+    }),
+  });
+  yield* sql.withTransaction(grantDisclosureRole(roles.authority));
+  return [...base, ...extension];
+});
