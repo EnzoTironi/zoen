@@ -18,6 +18,7 @@ import { acquireD01IdentityPool, checkD01IdentityPool } from "./database.ts";
 export class D01Auth extends Context.Service<
   D01Auth,
   {
+    readonly checkHealth: Effect.Effect<void, Unavailable>;
     readonly handle: (request: Request) => Effect.Effect<Response, Unavailable>;
   }
 >()("zoen/server/identity/d01/Auth") {}
@@ -127,7 +128,16 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
         return response;
       });
       return Context.make(Presence, Presence.of({ verify })).pipe(
-        Context.add(D01Auth, D01Auth.of({ handle }))
+        Context.add(
+          D01Auth,
+          D01Auth.of({
+            checkHealth: Effect.tryPromise({
+              catch: () => new Unavailable({ code: "UNAVAILABLE" }),
+              try: () => pool.query("SELECT 1"),
+            }).pipe(Effect.asVoid),
+            handle,
+          })
+        )
       );
     })
   );
