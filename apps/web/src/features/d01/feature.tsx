@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useSyncExternalStore } from "react";
 
 import { CorrectionPanel } from "../../integration/d02/correction-panel.tsx";
+import { SharingPanel } from "../sharing/panel.tsx";
 import { AuthForm } from "./auth-form.tsx";
 import { field } from "./form.ts";
 import { ImportWorkspace } from "./import-workspace.tsx";
@@ -31,6 +32,16 @@ const Connected = ({
       >
         <div className="d01-context-inner">
           <output aria-live="polite">{state.actionError}</output>
+          <label htmlFor={`${id}-principal`}>Seu identificador de conta</label>
+          <input
+            id={`${id}-principal`}
+            readOnly
+            value={state.session.user.id}
+          />
+          <p>
+            Compartilhe este UUID fora do produto para que um proprietário possa
+            conceder leitura.
+          </p>
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -80,55 +91,65 @@ const Connected = ({
               <p className="d01-world-id">
                 Espaço atual: <span>{state.world.worldId}</span>
               </p>
-              <form
-                key={state.world.worldId}
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const subject = field(
-                    new FormData(event.currentTarget),
-                    "subject"
-                  );
-                  const atFrame = field(
-                    new FormData(event.currentTarget),
-                    "atFrame"
-                  );
-                  controller.inspect(subject, atFrame === "" ? null : atFrame);
-                }}
-              >
-                <label htmlFor={`${id}-subject`}>
-                  Identificador da obrigação
-                </label>
-                <div className="d01-action-row">
+              <p>
+                {state.membership === null
+                  ? "Verificando acesso ao espaço…"
+                  : `Seu papel: ${state.membership.role === "owner" ? "proprietário" : "leitor"}`}
+              </p>
+              {state.membership === null ? null : (
+                <form
+                  key={state.world.worldId}
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const subject = field(
+                      new FormData(event.currentTarget),
+                      "subject"
+                    );
+                    const atFrame = field(
+                      new FormData(event.currentTarget),
+                      "atFrame"
+                    );
+                    controller.inspect(
+                      subject,
+                      atFrame === "" ? null : atFrame
+                    );
+                  }}
+                >
+                  <label htmlFor={`${id}-subject`}>
+                    Identificador da obrigação
+                  </label>
+                  <div className="d01-action-row">
+                    <input
+                      disabled={state.busy}
+                      id={`${id}-subject`}
+                      name="subject"
+                      placeholder="Ex.: invoice-1"
+                      required
+                      type="text"
+                    />
+                    <button
+                      className="d01-button d01-button-primary"
+                      disabled={state.busy}
+                      type="submit"
+                    >
+                      Consultar fontes
+                    </button>
+                  </div>
+                  <label htmlFor={`${id}-at-frame`}>
+                    Referência de leitura anterior (opcional)
+                  </label>
                   <input
                     disabled={state.busy}
-                    id={`${id}-subject`}
-                    name="subject"
-                    placeholder="Ex.: invoice-1"
-                    required
+                    id={`${id}-at-frame`}
+                    name="atFrame"
                     type="text"
                   />
-                  <button
-                    className="d01-button d01-button-primary"
-                    disabled={state.busy}
-                    type="submit"
-                  >
-                    Consultar fontes
-                  </button>
-                </div>
-                <label htmlFor={`${id}-at-frame`}>
-                  Referência de leitura anterior (opcional)
-                </label>
-                <input
-                  disabled={state.busy}
-                  id={`${id}-at-frame`}
-                  name="atFrame"
-                  type="text"
-                />
-                <p>
-                  Deixe em branco para consultar o estado atual. Uma leitura
-                  anterior conserva seu contexto histórico.
-                </p>
-              </form>
+                  <p>
+                    Deixe em branco para consultar o estado atual. Uma leitura
+                    anterior conserva seu contexto histórico.
+                  </p>
+                </form>
+              )}
             </>
           )}
         </div>
@@ -153,7 +174,14 @@ const Connected = ({
             key={`${state.session.session.id}:${state.world.worldId}`}
             state={state}
           />
-          <CorrectionPanel controller={controller} state={state} />
+          {state.membership?.role === "owner" ? (
+            <CorrectionPanel controller={controller} state={state} />
+          ) : null}
+          <SharingPanel
+            controller={controller}
+            state={state}
+            key={`${state.session.session.id}:${state.world.worldId}:${state.membership?.role}`}
+          />
         </>
       )}
     </>

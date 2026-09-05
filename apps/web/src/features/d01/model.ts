@@ -4,14 +4,19 @@ import type {
   D01Success,
 } from "@zoen/contracts/d01/operations";
 import type { WorldRef } from "@zoen/contracts/d01/values";
+import type { Membership } from "@zoen/contracts/sharing/operations";
 
 import type { WorkspaceView } from "../../components/d01/presentation.ts";
 import { correctionPatch } from "../../integration/d02/model.ts";
 import type { CorrectionContext } from "../../integration/d02/model.ts";
+import { emptySharing } from "../sharing/model.ts";
+import type { SharingState } from "../sharing/model.ts";
 import type { BrowserSession } from "./client.ts";
 import { inspectionView } from "./presentation.ts";
 
 export interface WorkspaceState extends CorrectionContext {
+  readonly membership: Membership | null;
+  readonly sharing: SharingState;
   readonly actionError: string | null;
   readonly busy: boolean;
   readonly canRetry: boolean;
@@ -30,8 +35,10 @@ export const initialState: WorkspaceState = {
   checking: true,
   feedback: "",
   frame: null,
+  membership: null,
   proposal: null,
   session: null,
+  sharing: emptySharing,
   view: { kind: "empty" },
   world: null,
 };

@@ -41,6 +41,7 @@ export interface CorrectionDraft {
 }
 
 export interface D01WorkspaceProps {
+  readonly readOnly?: boolean;
   readonly view: WorkspaceView;
   readonly acceptedFileTypes: string;
   readonly fileHelp: string;

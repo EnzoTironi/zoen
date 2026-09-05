@@ -18,34 +18,38 @@ export const ImportWorkspace = ({
   const csv = format === "csv";
   return (
     <>
-      <section
-        aria-label="Formato da importação"
-        className="d01-workspace d01-context"
-      >
-        <div className="d01-context-inner">
-          <label htmlFor={`${id}-format`}>Formato dos arquivos</label>
-          <select
-            disabled={state.busy}
-            id={`${id}-format`}
-            onChange={(event) => {
-              const chosen = event.currentTarget.value;
-              if (chosen === "json" || chosen === "csv") {
-                setFormat(chosen);
-              }
-            }}
-            value={format}
-          >
-            <option value="json">JSON — Zoen d01.v1</option>
-            <option value="csv">CSV — Zoen d01.csv.v1</option>
-          </select>
-          <p>
-            O formato escolhido vale para todos os arquivos da próxima seleção.
-          </p>
-        </div>
-      </section>
+      {state.membership?.role === "owner" ? (
+        <section
+          aria-label="Formato da importação"
+          className="d01-workspace d01-context"
+        >
+          <div className="d01-context-inner">
+            <label htmlFor={`${id}-format`}>Formato dos arquivos</label>
+            <select
+              disabled={state.busy}
+              id={`${id}-format`}
+              onChange={(event) => {
+                const chosen = event.currentTarget.value;
+                if (chosen === "json" || chosen === "csv") {
+                  setFormat(chosen);
+                }
+              }}
+              value={format}
+            >
+              <option value="json">JSON — Zoen d01.v1</option>
+              <option value="csv">CSV — Zoen d01.csv.v1</option>
+            </select>
+            <p>
+              O formato escolhido vale para todos os arquivos da próxima
+              seleção.
+            </p>
+          </div>
+        </section>
+      ) : null}
       <D01Workspace
         {...(state.canRetry ? { onRetry: controller.retry } : {})}
         acceptedFileTypes={csv ? "text/csv,.csv" : "application/json,.json"}
+        readOnly={state.membership?.role !== "owner"}
         actionPending={state.busy}
         feedback={state.feedback}
         fileHelp={`${csv ? "CSV no formato Zoen d01.csv.v1, com cabeçalho e colunas fixas" : "JSON no formato Zoen d01.v1"}, até 256 KiB por arquivo. Use apenas dados autorizados e não sensíveis neste perfil.`}

@@ -3,8 +3,7 @@ import type { D01Error } from "@zoen/contracts/d01/errors";
 import { Inspect, OpenEvidence } from "@zoen/contracts/d01/operations";
 import type {
   CorrectionRequest,
-  CorrectionSuccess,
-  D01Success,
+  SemanticSuccess,
   SemanticRequest,
 } from "@zoen/contracts/d01/operations";
 import { WorldRef } from "@zoen/contracts/d01/values";
@@ -15,6 +14,11 @@ import {
   proposeRequest,
   undoRequest,
 } from "../../integration/d02/requests.ts";
+import { emptySharing } from "../sharing/model.ts";
+import {
+  confirmAccessRequest,
+  inspectAccessRequest,
+} from "../sharing/requests.ts";
 import { BrowserApi, browserApiLayer } from "./client.ts";
 import { initialState, successPatch } from "./model.ts";
 import type { WorkspaceState } from "./model.ts";
@@ -55,7 +59,9 @@ export const createWorkspaceController = (origin: string) => {
       canRetry: false,
       feedback: "",
       frame: null,
+      membership: null,
       proposal: null,
+      sharing: emptySharing,
       view: { kind: "empty" },
       ...patch,
     });
@@ -74,8 +80,20 @@ export const createWorkspaceController = (origin: string) => {
         session: null,
         world: null,
       });
+    } else if (error._tag === "NotFoundOrDenied") {
+      invalidate({
+        actionError: errorMessage(error),
+        feedback: errorMessage(error),
+        view: errorView(error),
+        world: null,
+      });
     } else {
       publish({
+        ...(error._tag === "Stale"
+          ? { sharing: { ...emptySharing, stale: true } }
+          : {
+              sharing: { ...state.sharing, confirmation: null, target: null },
+            }),
         actionError: errorMessage(error),
         busy: false,
         canRetry: retry !== null,
@@ -101,7 +119,41 @@ export const createWorkspaceController = (origin: string) => {
       signal: active.signal,
     });
   };
-  const consume = (result: D01Success | CorrectionSuccess) => {
+  const consume = (result: SemanticSuccess, request: SemanticRequest) => {
+    if (result._tag === "WorldAccessInspected") {
+      if (request.operation !== "InspectWorldAccess") {
+        return;
+      }
+      publish({
+        actionError: null,
+        busy: false,
+        canRetry: false,
+        feedback: "",
+        view:
+          state.view.kind === "unavailable" ? { kind: "empty" } : state.view,
+        ...(request.input.principalRef === null
+          ? { membership: result.membership }
+          : {
+              sharing: {
+                ...state.sharing,
+                confirmation: null,
+                stale: false,
+                target: {
+                  membership: result.membership,
+                  principalRef: request.input.principalRef,
+                },
+              },
+            }),
+      });
+      return;
+    }
+    if (
+      result._tag === "WorldReadAccessGranted" ||
+      result._tag === "WorldReadAccessRevoked"
+    ) {
+      publish({ sharing: { ...emptySharing, receipt: result } });
+      return;
+    }
     const patch = successPatch(state, result);
     if (result._tag === "WorldCreated") {
       invalidate(patch);
@@ -111,7 +163,7 @@ export const createWorkspaceController = (origin: string) => {
   };
   const execute = Effect.fn("web.execute")(function* executeRequest(
     request: SemanticRequest
-  ) {
+  ): Effect.fn.Return<void, never, BrowserApi> {
     if (state.session === null || state.busy) {
       return;
     }
@@ -161,12 +213,79 @@ export const createWorkspaceController = (origin: string) => {
           failed(new Unavailable({ code: "UNAVAILABLE" }));
           return;
         }
-        consume(recovered.success);
+        consume(recovered.success, request);
       }
+      const own =
+        result.success._tag === "WorldCreated"
+          ? yield* inspectAccessRequest(result.success.worldRef, null).pipe(
+              Effect.orDie
+            )
+          : null;
       retry = null;
-      consume(result.success);
+      consume(result.success, request);
+      if (own !== null) {
+        launch(execute(own));
+      }
+      if (
+        result.success._tag === "WorldReadAccessGranted" ||
+        result.success._tag === "WorldReadAccessRevoked"
+      ) {
+        const current = yield* inspectAccessRequest(
+          result.success.worldRef,
+          result.success.membershipAtCommit.principalRef
+        ).pipe(Effect.orDie);
+        // The receipt is historical. Only this new inspection supplies displayed current access.
+        publish({ busy: false });
+        yield* execute(current);
+      }
     }
   });
+  const revalidateContent = Effect.fn("web.revalidateContent")(
+    function* revalidateContent(started: number) {
+      const { world } = state;
+      if (state.session !== null && world !== null && !state.busy) {
+        const own = yield* inspectAccessRequest(world, null);
+        const access = yield* BrowserApi.pipe(
+          Effect.flatMap((api) => api.execute(own)),
+          Effect.result
+        );
+        if (started !== epoch || disposed || state.busy) {
+          return;
+        }
+        if (Result.isFailure(access)) {
+          failed(access.failure);
+          return;
+        }
+        if (access.success._tag === "WorldAccessInspected") {
+          publish({ membership: access.success.membership });
+        }
+      }
+      const { frame } = state;
+      if (state.session === null || frame === null || state.busy) {
+        return;
+      }
+      const request = yield* Schema.decodeEffect(Inspect)({
+        ...envelope,
+        input: { atFrame: frame.frameRef, subjectKey: frame.subjectKey },
+        operation: "Inspect",
+        worldRef: frame.worldRef,
+      });
+      const revalidated = yield* BrowserApi.pipe(
+        Effect.flatMap((api) => api.execute(request)),
+        Effect.result
+      );
+      if (
+        started !== epoch ||
+        disposed ||
+        state.frame?.frameRef !== frame.frameRef
+      ) {
+        return;
+      }
+      if (Result.isFailure(revalidated)) {
+        failed(revalidated.failure);
+      }
+    }
+  );
   const refresh = Effect.fn("web.refresh")(function* refreshSession() {
     if (refreshPaused || disposed) {
       return;
@@ -197,30 +316,7 @@ export const createWorkspaceController = (origin: string) => {
     } else {
       publish({ checking: false });
     }
-    const { frame } = state;
-    if (session === null || frame === null || state.busy) {
-      return;
-    }
-    const request = yield* Schema.decodeEffect(Inspect)({
-      ...envelope,
-      input: { atFrame: frame.frameRef, subjectKey: frame.subjectKey },
-      operation: "Inspect",
-      worldRef: frame.worldRef,
-    });
-    const revalidated = yield* BrowserApi.pipe(
-      Effect.flatMap((api) => api.execute(request)),
-      Effect.result
-    );
-    if (
-      started !== epoch ||
-      disposed ||
-      state.frame?.frameRef !== frame.frameRef
-    ) {
-      return;
-    }
-    if (Result.isFailure(revalidated)) {
-      failed(revalidated.failure);
-    }
+    yield* revalidateContent(started);
   });
   const correct = (request: Effect.Effect<CorrectionRequest, InvalidInput>) => {
     if (state.busy || state.session === null) {
@@ -273,6 +369,32 @@ export const createWorkspaceController = (origin: string) => {
             announceSessionChange();
           }
         })
+      );
+    },
+    cancelAccess: () => {
+      if (!state.busy) {
+        publish({ sharing: { ...state.sharing, confirmation: null } });
+      }
+    },
+    confirmAccess: () => {
+      const { world, sharing } = state;
+      if (
+        state.busy ||
+        world === null ||
+        sharing.target === null ||
+        sharing.confirmation === null
+      ) {
+        return;
+      }
+      launch(
+        confirmAccessRequest(world, sharing.target, sharing.confirmation).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
       );
     },
     createWorld: () => {
@@ -366,6 +488,22 @@ export const createWorkspaceController = (origin: string) => {
       }
       launch(execute(request.value));
     },
+    inspectRecipient: (principalRef: string) => {
+      if (state.world === null || state.busy) {
+        return;
+      }
+      publish({ sharing: emptySharing });
+      launch(
+        inspectAccessRequest(state.world, principalRef).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
+    },
     logout: () => {
       refreshPaused = true;
       announceSessionChange();
@@ -408,6 +546,12 @@ export const createWorkspaceController = (origin: string) => {
         )
       );
     },
+    prepareAccess: (action: "grant" | "revoke") => {
+      if (state.busy || state.sharing.target === null) {
+        return;
+      }
+      publish({ sharing: { ...state.sharing, confirmation: action } });
+    },
     proposeCorrection: (from: string, to: string, choice: string) => {
       correct(proposeRequest(state, from, to, choice));
     },
@@ -427,6 +571,12 @@ export const createWorkspaceController = (origin: string) => {
         return;
       }
       publish({ world: world.value });
+      launch(
+        inspectAccessRequest(world.value, null).pipe(
+          Effect.flatMap(execute),
+          Effect.orDie
+        )
+      );
     },
     start: () => {
       disposed = false;

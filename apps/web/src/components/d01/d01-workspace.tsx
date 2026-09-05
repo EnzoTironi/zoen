@@ -263,7 +263,16 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
         </button>
       </header>
       <main id={`${id}-main`} tabIndex={-1}>
-        {props.view.kind === "empty" ? (
+        {props.view.kind === "empty" && props.readOnly === true ? (
+          <section className="d01-empty">
+            <h1>Consultar espaço compartilhado</h1>
+            <p>
+              Informe a obrigação para ler as fontes disponíveis ou abra uma
+              referência de leitura anterior sua.
+            </p>
+          </section>
+        ) : null}
+        {props.view.kind === "empty" && props.readOnly !== true ? (
           <section className="d01-empty">
             <p className="d01-eyebrow">Um começo simples</p>
             <h1>
@@ -331,7 +340,8 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
               </button>
             ) : null}
           </section>
-        ) : (
+        ) : null}
+        {!blocked && props.readOnly !== true ? (
           <section aria-label="Importação de arquivos" className="d01-upload">
             <FileInput
               {...props}
@@ -340,7 +350,7 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
               }
             />
           </section>
-        )}
+        ) : null}
         {props.feedback !== undefined &&
         props.feedback.length > 0 &&
         !blocked ? (
