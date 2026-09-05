@@ -1,6 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 import { setTimeout } from "node:timers/promises";
 
+import { NodeServices } from "@effect/platform-node";
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import {
@@ -12,7 +13,7 @@ import {
   ImportEvidence,
   SemanticRequest,
 } from "@zoen/contracts/d01/operations";
-import { Config, Effect, Option, Schema } from "effect";
+import { Config, Effect, FileSystem, Option, Path, Schema } from "effect";
 
 import {
   cli,
@@ -172,6 +173,9 @@ test("CSV-13 browser retains original CSV and operation across network retry and
     await page
       .getByLabel("Formato dos arquivos", { exact: true })
       .selectOption("csv");
+    await expect(
+      page.getByLabel("Adicionar arquivos", { exact: true })
+    ).toBeAttached();
     const failedRequest = page.waitForRequest((request) => {
       if (!request.url().endsWith("/api/d01/execute")) {
         return false;
@@ -237,6 +241,31 @@ test("CSV-13 browser retains original CSV and operation across network retry and
     expect(replay.stderr).toBe("");
     expect(
       Schema.decodeUnknownSync(EvidenceImported)(JSON.parse(replay.stdout))
+    ).toEqual(imported);
+    const filePath = await Effect.runPromise(
+      Effect.gen(function* writeOriginalCsv() {
+        const fs = yield* FileSystem.FileSystem;
+        const path = yield* Path.Path;
+        const target = path.join(directory, "original.csv");
+        yield* fs.writeFile(target, new TextEncoder().encode(document));
+        return target;
+      }).pipe(Effect.provide(NodeServices.layer))
+    );
+    const fileReplay = await cli(baseURL, directory, [
+      "import",
+      "--format",
+      "csv",
+      "--file",
+      filePath,
+      "--world-id",
+      attempted.worldRef.worldId,
+      "--operation-id",
+      attempted.operationId,
+    ]);
+    expect(fileReplay.exitCode).toBe(0);
+    expect(fileReplay.stderr).toBe("");
+    expect(
+      Schema.decodeUnknownSync(EvidenceImported)(JSON.parse(fileReplay.stdout))
     ).toEqual(imported);
     const frame = await inspect(page, subject);
     expect(frame.claims).toHaveLength(1);
@@ -323,6 +352,18 @@ test("CSV-13 explicit CSV batch rejects JSON without fallback and resets format 
   await expect(
     page.getByLabel("Formato dos arquivos", { exact: true })
   ).toHaveValue("csv");
+  await expect(
+    page.getByLabel("Adicionar arquivos", { exact: true })
+  ).toBeAttached();
+  const subject = `recovered-${randomUUID()}`;
+  const accepted = await upload(
+    page,
+    csvSource(subject, "CSV after rejection", "125.00"),
+    "csv"
+  );
+  expect(accepted.status()).toBe(200);
+  const recovered = await inspect(page, subject);
+  expect(recovered.claims).toHaveLength(1);
   await createWorld(page);
   await expect(
     page.getByLabel("Formato dos arquivos", { exact: true })
@@ -333,110 +374,150 @@ test("CSV-13 explicit CSV batch rejects JSON without fallback and resets format 
 test("CSV-14 mixed real CSV and JSON preserve divergence correction history unknown undo and stale consent", async ({
   page,
 }, info) => {
-  await signUp(page);
-  await createWorld(page);
-  const subject = `mixed-${randomUUID()}`;
-  const csv = await upload(
-    page,
-    csvSource(subject, "Fonte CSV", "100.00"),
-    "csv"
-  );
-  expect(csv.status()).toBe(200);
-  const json = await upload(
-    page,
-    jsonSource(subject, "Fonte JSON", "200.00"),
-    "json"
-  );
-  expect(json.status()).toBe(200);
-  expect(
-    Object.hasOwn(
-      Schema.decodeUnknownSync(ImportEvidence)(json.request().postDataJSON())
-        .input,
-      "format"
-    )
-  ).toBe(false);
-  const original = await inspect(page, subject);
-  expect(original.claims).toHaveLength(2);
-  expect(original.contested).toBe(true);
-  expect(original.verification).toBe("unverified");
-  expect(
-    new Set(original.claims.map((claim) => claim.source.namespace))
-  ).toEqual(new Set(["csv-browser", "json-browser"]));
-  await expect(page.getByText("100 BRL", { exact: true })).toBeVisible();
-  await expect(page.getByText("200 BRL", { exact: true })).toBeVisible();
-  const csvClaim = original.claims.find(
-    (claim) => claim.source.namespace === "csv-browser"
-  );
-  if (csvClaim === undefined) {
-    throw new Error("CSV import must produce its attributed claim");
+  const directory = await makeSessionDirectory();
+  try {
+    const { email, password } = await signUp(page);
+    await createWorld(page);
+    const subject = `mixed-${randomUUID()}`;
+    const csv = await upload(
+      page,
+      csvSource(subject, "Fonte CSV", "100.00"),
+      "csv"
+    );
+    expect(csv.status()).toBe(200);
+    const json = await upload(
+      page,
+      jsonSource(subject, "Fonte JSON", "200.00"),
+      "json"
+    );
+    expect(json.status()).toBe(200);
+    expect(
+      Object.hasOwn(
+        Schema.decodeUnknownSync(ImportEvidence)(json.request().postDataJSON())
+          .input,
+        "format"
+      )
+    ).toBe(false);
+    const jsonRequest = Schema.decodeUnknownSync(ImportEvidence)(
+      json.request().postDataJSON()
+    );
+    const signedIn = await cli(
+      baseURL,
+      directory,
+      ["sign-in", "--email", email],
+      `${password}\n`
+    );
+    expect(signedIn.exitCode).toBe(0);
+    const jsonReplay = await cli(
+      baseURL,
+      directory,
+      [
+        "import",
+        "--world-id",
+        jsonRequest.worldRef.worldId,
+        "--operation-id",
+        jsonRequest.operationId,
+      ],
+      jsonRequest.input.document
+    );
+    expect(jsonReplay.exitCode).toBe(0);
+    expect(jsonReplay.stderr).toBe("");
+    expect(
+      Schema.decodeUnknownSync(EvidenceImported)(JSON.parse(jsonReplay.stdout))
+    ).toEqual(Schema.decodeUnknownSync(EvidenceImported)(await json.json()));
+    const original = await inspect(page, subject);
+    expect(original.claims).toHaveLength(2);
+    expect(original.contested).toBe(true);
+    expect(original.verification).toBe("unverified");
+    expect(
+      new Set(original.claims.map((claim) => claim.source.namespace))
+    ).toEqual(new Set(["csv-browser", "json-browser"]));
+    await expect(page.getByText("100 BRL", { exact: true })).toBeVisible();
+    await expect(page.getByText("200 BRL", { exact: true })).toBeVisible();
+    const csvClaim = original.claims.find(
+      (claim) => claim.source.namespace === "csv-browser"
+    );
+    if (csvClaim === undefined) {
+      throw new Error("CSV import must produce its attributed claim");
+    }
+    await propose(page, csvClaim.claimRef);
+    const answer = waitForOperation(page, "AnswerQuestion");
+    await page
+      .getByRole("button", { exact: true, name: "Confirmar decisão" })
+      .click();
+    const answerResponse = await answer;
+    Schema.decodeUnknownSync(CorrectionApplied)(await answerResponse.json());
+    const corrected = await inspect(page, subject);
+    expect(corrected.claims).toEqual(original.claims);
+    expect(corrected.scopedCorrections).toHaveLength(1);
+    expect(await inspect(page, subject, original.frameRef)).toEqual(original);
+    await inspect(page, subject);
+    const undo = waitForOperation(page, "UndoCorrection");
+    await page
+      .getByRole("button", {
+        exact: true,
+        name: "Desfazer decisão deste período",
+      })
+      .click();
+    const undoResponse = await undo;
+    Schema.decodeUnknownSync(CorrectionUndone)(await undoResponse.json());
+    const undone = await inspect(page, subject);
+    expect(undone.scopedCorrections).toEqual([]);
+    expect(await inspect(page, subject, corrected.frameRef)).toEqual(corrected);
+    await inspect(page, subject);
+    await propose(page, "unknown");
+    const unknown = waitForOperation(page, "AnswerQuestion");
+    await page
+      .getByRole("button", { exact: true, name: "Não sei responder" })
+      .click();
+    const unknownResponse = await unknown;
+    Schema.decodeUnknownSync(CorrectionApplied)(await unknownResponse.json());
+    const unknownFrame = await inspect(page, subject);
+    expect(unknownFrame.scopedCorrections.map((item) => item.choice)).toEqual([
+      { _tag: "unknown" },
+    ]);
+    expect(unknownFrame.claims).toEqual(original.claims);
+    await propose(page, csvClaim.claimRef);
+    const concurrent = Schema.decodeSync(ImportEvidence)({
+      input: {
+        document: csvSource(subject, "Fonte CSV posterior", "300.00"),
+        format: "d01.csv.v1",
+      },
+      operation: "ImportEvidence",
+      operationId: randomUUID(),
+      purpose: "personal-records",
+      schemaVersion: "d01.v1",
+      worldRef: original.worldRef,
+    });
+    const changed = await page.request.post("/api/d01/execute", {
+      data: concurrent,
+      headers: { origin: baseURL },
+    });
+    expect(changed.status()).toBe(200);
+    const stale = waitForOperation(page, "AnswerQuestion");
+    await page
+      .getByRole("button", { exact: true, name: "Confirmar decisão" })
+      .click();
+    const staleResponse = await stale;
+    expect(await staleResponse.json()).toEqual({
+      _tag: "Stale",
+      code: "STALE",
+    });
+    await expect(
+      page.getByRole("button", { exact: true, name: "Tentar novamente" })
+    ).toHaveCount(0);
+    const afterStale = await inspect(page, subject);
+    expect(afterStale.scopedCorrections).toEqual(
+      unknownFrame.scopedCorrections
+    );
+    await page.screenshot({
+      fullPage: true,
+      path: info.outputPath("mixed-sources-preserved.png"),
+    });
+    await page.getByRole("button", { exact: true, name: "Sair" }).click();
+    const signedOut = await cli(baseURL, directory, ["sign-out"]);
+    expect(signedOut.exitCode).toBe(0);
+  } finally {
+    await removeSessionDirectory(directory);
   }
-  await propose(page, csvClaim.claimRef);
-  const answer = waitForOperation(page, "AnswerQuestion");
-  await page
-    .getByRole("button", { exact: true, name: "Confirmar decisão" })
-    .click();
-  const answerResponse = await answer;
-  Schema.decodeUnknownSync(CorrectionApplied)(await answerResponse.json());
-  const corrected = await inspect(page, subject);
-  expect(corrected.claims).toEqual(original.claims);
-  expect(corrected.scopedCorrections).toHaveLength(1);
-  expect(await inspect(page, subject, original.frameRef)).toEqual(original);
-  await inspect(page, subject);
-  const undo = waitForOperation(page, "UndoCorrection");
-  await page
-    .getByRole("button", {
-      exact: true,
-      name: "Desfazer decisão deste período",
-    })
-    .click();
-  const undoResponse = await undo;
-  Schema.decodeUnknownSync(CorrectionUndone)(await undoResponse.json());
-  const undone = await inspect(page, subject);
-  expect(undone.scopedCorrections).toEqual([]);
-  expect(await inspect(page, subject, corrected.frameRef)).toEqual(corrected);
-  await inspect(page, subject);
-  await propose(page, "unknown");
-  const unknown = waitForOperation(page, "AnswerQuestion");
-  await page
-    .getByRole("button", { exact: true, name: "Não sei responder" })
-    .click();
-  const unknownResponse = await unknown;
-  Schema.decodeUnknownSync(CorrectionApplied)(await unknownResponse.json());
-  const unknownFrame = await inspect(page, subject);
-  expect(unknownFrame.scopedCorrections.map((item) => item.choice)).toEqual([
-    { _tag: "unknown" },
-  ]);
-  expect(unknownFrame.claims).toEqual(original.claims);
-  await propose(page, csvClaim.claimRef);
-  const concurrent = Schema.decodeSync(ImportEvidence)({
-    input: {
-      document: csvSource(subject, "Fonte CSV posterior", "300.00"),
-      format: "d01.csv.v1",
-    },
-    operation: "ImportEvidence",
-    operationId: randomUUID(),
-    purpose: "personal-records",
-    schemaVersion: "d01.v1",
-    worldRef: original.worldRef,
-  });
-  const changed = await page.request.post("/api/d01/execute", {
-    data: concurrent,
-  });
-  expect(changed.status()).toBe(200);
-  const stale = waitForOperation(page, "AnswerQuestion");
-  await page
-    .getByRole("button", { exact: true, name: "Confirmar decisão" })
-    .click();
-  const staleResponse = await stale;
-  expect(await staleResponse.json()).toEqual({ _tag: "Stale", code: "STALE" });
-  await expect(
-    page.getByRole("button", { exact: true, name: "Tentar novamente" })
-  ).toHaveCount(0);
-  const afterStale = await inspect(page, subject);
-  expect(afterStale.scopedCorrections).toEqual(unknownFrame.scopedCorrections);
-  await page.screenshot({
-    fullPage: true,
-    path: info.outputPath("mixed-sources-preserved.png"),
-  });
-  await page.getByRole("button", { exact: true, name: "Sair" }).click();
 });
