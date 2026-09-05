@@ -1,51 +1,23 @@
 import { InvalidInput, Unavailable } from "@zoen/contracts/d01/errors";
 import type { D01Error } from "@zoen/contracts/d01/errors";
-import type { VisibleFrame } from "@zoen/contracts/d01/evidence";
-import {
-  CreatePersonalWorld,
-  ImportEvidence,
-  Inspect,
-  OpenEvidence,
-} from "@zoen/contracts/d01/operations";
+import { Inspect, OpenEvidence } from "@zoen/contracts/d01/operations";
 import type { D01Request, D01Success } from "@zoen/contracts/d01/operations";
 import { WorldRef } from "@zoen/contracts/d01/values";
 import { Effect, Exit, ManagedRuntime, Result, Schema } from "effect";
 
-import type { WorkspaceView } from "../../components/d01/presentation.ts";
 import { BrowserApi, browserApiLayer } from "./client.ts";
-import type { BrowserSession } from "./client.ts";
-import { readDocument } from "./file.ts";
-import { errorMessage, errorView, inspectionView } from "./presentation.ts";
-
-export interface WorkspaceState {
-  readonly busy: boolean;
-  readonly checking: boolean;
-  readonly feedback: string;
-  readonly frame: VisibleFrame | null;
-  readonly session: BrowserSession | null;
-  readonly view: WorkspaceView;
-  readonly world: WorldRef | null;
-}
-const initial: WorkspaceState = {
-  busy: false,
-  checking: true,
-  feedback: "",
-  frame: null,
-  session: null,
-  view: { kind: "empty" },
-  world: null,
-};
-const envelope = {
-  purpose: "personal-records",
-  schemaVersion: "d01.v1",
-} as const;
+import { initialState, successPatch } from "./model.ts";
+import type { WorkspaceState } from "./model.ts";
+import { errorMessage, errorView } from "./presentation.ts";
+import { createWorldRequest, envelope, importRequest } from "./requests.ts";
+import { announceSessionChange } from "./session-events.ts";
 
 /** Ephemeral presentation state, discarded on every session or World boundary. */
 export const createWorkspaceController = (origin: string) => {
   let runtime: ReturnType<
     typeof ManagedRuntime.make<BrowserApi, never>
   > | null = null;
-  let state = initial;
+  let state = initialState;
   let epoch = 0;
   let active = new AbortController();
   let retry: D01Request | null = null;
@@ -107,66 +79,9 @@ export const createWorkspaceController = (origin: string) => {
     });
   };
   const consume = (result: D01Success) => {
-    switch (result._tag) {
-      case "WorldCreated": {
-        invalidate({
-          feedback: "Seu espaço privado está pronto.",
-          world: result.worldRef,
-        });
-        return;
-      }
-      case "EvidenceImported": {
-        publish({
-          busy: false,
-          feedback:
-            "Fonte admitida. Informe a obrigação para consultar os registros.",
-          frame: null,
-          view: { kind: "empty" },
-        });
-        return;
-      }
-      case "FrameInspected": {
-        const { session } = state;
-        if (session === null) {
-          return;
-        }
-        publish({
-          busy: false,
-          feedback: "",
-          frame: result.frame,
-          view: {
-            inspection: inspectionView(
-              result.frame,
-              `${session.user.id}:${session.session.id}`
-            ),
-            kind: "inspection",
-          },
-        });
-        return;
-      }
-      case "EvidenceOpened": {
-        const { session } = state;
-        const { frame } = state;
-        if (session === null || frame === null) {
-          return;
-        }
-        publish({
-          busy: false,
-          view: {
-            inspection: inspectionView(
-              frame,
-              `${session.user.id}:${session.session.id}`,
-              result
-            ),
-            kind: "inspection",
-          },
-        });
-        break;
-      }
-      default: {
-        break;
-      }
-    }
+    const patch = successPatch(state, result);
+    if (result._tag === "WorldCreated") {invalidate(patch);}
+    else {publish(patch);}
   };
   const execute = Effect.fn("web.execute")(function* executeRequest(
     request: D01Request
@@ -254,6 +169,7 @@ export const createWorkspaceController = (origin: string) => {
       name: string
     ) => {
       refreshPaused = false;
+      announceSessionChange();
       invalidate({ busy: true, checking: false, session: null, world: null });
       const started = epoch;
       launch(
@@ -275,6 +191,7 @@ export const createWorkspaceController = (origin: string) => {
             });
           } else {
             publish({ busy: false, session: result.success });
+            announceSessionChange();
           }
         })
       );
@@ -283,13 +200,7 @@ export const createWorkspaceController = (origin: string) => {
       invalidate({ world: null });
       launch(
         Effect.gen(function* createWorld() {
-          const request = yield* Schema.decodeEffect(CreatePersonalWorld)({
-            ...envelope,
-            input: {},
-            operation: "CreatePersonalWorld",
-            // oxlint-disable-next-line effecttsgo/crypto-random-uuid-in-effect -- Use the browser cryptographic UUID implementation; retry preserves this ID.
-            operationId: crypto.randomUUID(),
-          });
+          const request = yield* createWorldRequest;
           yield* execute(request);
         })
       );
@@ -322,21 +233,9 @@ export const createWorkspaceController = (origin: string) => {
       launch(
         Effect.gen(function* importFiles() {
           for (const file of files) {
-            const parsed = yield* Effect.gen(function* readFile() {
-              const document = yield* readDocument(file);
-              return yield* Schema.decodeEffect(ImportEvidence)({
-                ...envelope,
-                input: { document },
-                operation: "ImportEvidence",
-                // oxlint-disable-next-line effecttsgo/crypto-random-uuid-in-effect -- Use the browser cryptographic UUID implementation; retry preserves this ID.
-                operationId: crypto.randomUUID(),
-                worldRef: world,
-              }).pipe(
-                Effect.mapError(
-                  () => new InvalidInput({ code: "INVALID_INPUT" })
-                )
-              );
-            }).pipe(Effect.result);
+            const parsed = yield* importRequest(file, world).pipe(
+              Effect.result
+            );
             if (started !== epoch || disposed) {
               return;
             }
@@ -385,6 +284,7 @@ export const createWorkspaceController = (origin: string) => {
     },
     logout: () => {
       refreshPaused = true;
+      announceSessionChange();
       invalidate({ checking: false, session: null, world: null });
       const started = epoch;
       launch(
@@ -396,6 +296,7 @@ export const createWorkspaceController = (origin: string) => {
           if (started !== epoch || disposed) {
             return;
           }
+          announceSessionChange();
           if (Result.isFailure(result)) {
             publish({
               feedback:
