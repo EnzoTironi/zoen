@@ -12,6 +12,7 @@ export default defineConfig({
       ...vitest,
       overrides: (vitest.overrides ?? []).map((override) => ({
         ...override,
+        files: ["**/*.test.{ts,tsx,js,jsx}"],
         rules: {
           ...override.rules,
           "vitest/no-standalone-expect": [
@@ -45,4 +46,80 @@ export default defineConfig({
     typeAware: true,
     typeCheck: true,
   },
+  overrides: [
+    {
+      files: ["**/*.{ts,tsx,mts,cts}"],
+      rules: {
+        "no-redeclare": "off",
+        "typescript/promise-function-async": [
+          "error",
+          { checkArrowFunctions: false, checkFunctionExpressions: false },
+        ],
+        "unicorn/throw-new-error": "off",
+      },
+    },
+    {
+      files: ["packages/contracts/src/**", "packages/authority/src/ports/**"],
+      rules: { "max-classes-per-file": ["error", { max: 16 }] },
+    },
+    {
+      files: ["**/*.spec.ts"],
+      rules: { "effecttsgo/async-function": "off" },
+    },
+    {
+      files: [
+        "packages/contracts/src/**",
+        "apps/web/src/**",
+        "apps/cli/src/**",
+      ],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              "@zoen/authority",
+              "@zoen/authority/*",
+              "**/authority/**",
+              "**/apps/server/**",
+              "@zoen/server",
+              "@zoen/server/*",
+              "@effect/sql-*",
+              "effect/unstable/sql",
+              "effect/unstable/sql/*",
+              "pg",
+              "@aws-sdk/*",
+              "better-auth",
+            ],
+          },
+        ],
+      },
+    },
+    {
+      files: ["packages/contracts/src/**", "apps/web/src/**"],
+      rules: {
+        "no-restricted-imports": [
+          "error",
+          {
+            patterns: [
+              "@zoen/authority",
+              "@zoen/authority/*",
+              "**/authority/**",
+              "**/apps/server/**",
+              "@zoen/server",
+              "@zoen/server/*",
+              "@effect/sql-*",
+              "effect/unstable/sql",
+              "effect/unstable/sql/*",
+              "pg",
+              "@aws-sdk/*",
+              "better-auth",
+              "@effect/platform-node",
+              "@effect/platform-node/*",
+              "node:*",
+            ],
+          },
+        ],
+      },
+    },
+  ],
 });
