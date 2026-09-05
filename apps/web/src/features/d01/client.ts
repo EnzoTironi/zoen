@@ -1,4 +1,4 @@
-import { D01Api } from "@zoen/contracts/d01/api";
+import { ApplicationApi } from "@zoen/contracts/d01/api";
 import { D01Error, Unavailable } from "@zoen/contracts/d01/errors";
 import type { SemanticRequest } from "@zoen/contracts/d01/operations";
 import { Context, Effect, Layer, Option, Schema } from "effect";
@@ -33,7 +33,7 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
       )
     )
   );
-  const api = yield* HttpApiClient.make(D01Api, {
+  const api = yield* HttpApiClient.make(ApplicationApi, {
     transformClient: () => http,
   });
   const session = http.get("/api/auth/get-session").pipe(

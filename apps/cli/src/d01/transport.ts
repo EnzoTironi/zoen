@@ -1,4 +1,4 @@
-import { D01Api } from "@zoen/contracts/d01/api";
+import { ApplicationApi } from "@zoen/contracts/d01/api";
 import type { SemanticRequest } from "@zoen/contracts/d01/operations";
 import { Effect, Redacted } from "effect";
 import { Cookies, HttpClient, HttpClientRequest } from "effect/unstable/http";
@@ -11,7 +11,7 @@ export const execute = Effect.fn(function* execute(
   cookie: Redacted.Redacted,
   payload: SemanticRequest
 ) {
-  const client = yield* HttpApiClient.make(D01Api, {
+  const client = yield* HttpApiClient.make(ApplicationApi, {
     baseUrl,
     transformClient: HttpClient.mapRequest((request) =>
       request.pipe(

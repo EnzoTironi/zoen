@@ -1,5 +1,5 @@
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
-import { D01Api } from "@zoen/contracts/d01/api";
+import { ApplicationApi } from "@zoen/contracts/d01/api";
 import { Expired } from "@zoen/contracts/d01/errors";
 import { D01_LIMITS } from "@zoen/contracts/d01/values";
 import { Effect, Redacted } from "effect";
@@ -9,7 +9,7 @@ import { checkRequestAudience, readJsonBody } from "./request.ts";
 
 export const makeCorrectionHttpGroup = (publicUrl: URL) =>
   HttpApiBuilder.group(
-    D01Api,
+    ApplicationApi,
     "corrections",
     Effect.fn("http.makeCorrectionGroup")(
       function* makeCorrectionGroup(handlers) {

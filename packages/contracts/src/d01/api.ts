@@ -26,7 +26,5 @@ export const CorrectionApiGroup = HttpApiGroup.make("corrections").add(
     success: CorrectionSuccess,
   })
 );
-export const D01Api = HttpApi.make("zoen-d01").add(
-  D01ApiGroup,
-  CorrectionApiGroup
-);
+export const D01Api = HttpApi.make("zoen-d01").add(D01ApiGroup);
+export const ApplicationApi = D01Api.add(CorrectionApiGroup);

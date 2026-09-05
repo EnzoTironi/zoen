@@ -7,7 +7,7 @@ import {
   DataPolicySchema,
 } from "@zoen/authority/ports/d01/context";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
-import { D01Api } from "@zoen/contracts/d01/api";
+import { ApplicationApi } from "@zoen/contracts/d01/api";
 import { Effect, Layer, Schema } from "effect";
 import type { Redacted } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
@@ -64,7 +64,7 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
       const executor = SemanticExecutor.layer.pipe(
         Layer.provide(infrastructure)
       );
-      const api = HttpApiBuilder.layer(D01Api).pipe(
+      const api = HttpApiBuilder.layer(ApplicationApi).pipe(
         Layer.provide(makeD01HttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeCorrectionHttpGroup(identityConfig.baseUrl)),
         Layer.provide(executor)
