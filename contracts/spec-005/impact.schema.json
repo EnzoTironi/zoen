@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-005/impact.schema.json",
+  "title": "ZN-0035 impact fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "purpose",
+    "caseId",
+    "questionDigest",
+    "cutDigest",
+    "priorCutDigest",
+    "deliveryDateBefore",
+    "deliveryDateAfter",
+    "planNodeId",
+    "caseNodeId",
+    "invoiceNodeId",
+    "projectionNodeId",
+    "deliveryClaimNodeId",
+    "invoiceClaimNodeId",
+    "budget"
+  ],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0035-impact-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "caseId": { "type": "string" },
+    "questionDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "cutDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "priorCutDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "deliveryDateBefore": { "type": "string" },
+    "deliveryDateAfter": { "type": "string" },
+    "planNodeId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "caseNodeId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "invoiceNodeId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "projectionNodeId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "deliveryClaimNodeId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "invoiceClaimNodeId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "budget": { "type": "integer", "minimum": 1, "maximum": 4096 }
+  }
+}

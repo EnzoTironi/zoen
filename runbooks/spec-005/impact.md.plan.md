@@ -1,8 +1,17 @@
-# Repair runbook — correction impact / quality (ZN-0035)
+# File plan — `runbooks/spec-005/impact.md`
 
-**Status:** implementation-in-progress; not accepted. Operator use requires admitted component profile.
+**Status:** planned; no product acceptance implied.
 
-Scope: Propagate correction impact and expose quality dimensions.
+Target: `runbooks/spec-005/impact.md`. Representation: **markdown-plan**. Allocation: **required**.
+
+Specs: [SPEC-005](../../docs/specs/spec-005.md).
+Tickets: [ZN-0035](../../docs/tickets/zn-0035.md).
+
+## Responsibility and reuse
+
+## ZN-0035 operational/repair procedure
+
+Scope: Propagate correction impact and expose quality dimensions. This is a plan; deployments and commands not yet qualified remain blocked.
 
 ```text
 PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
@@ -24,14 +33,15 @@ The plan and dependent Case become stale; the unrelated invoice remains valid; q
 RESUME only with current approval and intact unrelated tenant scopes.
 ```
 
-## Operations notes
+## Owning state / operation contracts
 
-- `ImpactService.consumeCorrection` is idempotent on `operationId`.
-- Dependency closure is reverse-edge BFS from the corrected claim node with a hard budget.
-- Cycles deny (`CYCLE`); budget overflow returns `Stale/BUDGET_EXCEEDED`.
-- Unauthorized rival nodes never enter `affectedScope.nodeIds` or authorized quality denominators.
-- Projections flip to `pending` until a later cut covers the source cut (`projectionLag.coveredCutDigest`).
+### SPEC-005
+CompareClaims(claims,meaningProfile) -> ComparableGroups; Interpret(query,basis,perspective) -> Interpretation; ApplyScopedReply(caseId,questionDigest,answer,operationId) -> CorrectionReceipt | Stale; Explain(interpretationId,grant) -> ExplanationFrame.
 
-## Owning contracts
+ontology.claims(claim_id PK,world_id,subject_id,predicate_id,value_json,unit,scope_json,valid_from,valid_until,source_family,evidence_refs,asserted_by,domain_id,knowledge_version); ontology.claim_edges(world_id,parent_id,child_id,kind PK); ontology.interpretations(interpretation_id PK,world_id,query_digest,release_digest,cut_digest,perspective,status,verification,contested,selected_refs,rival_refs,dependency_refs); ontology.corrections(correction_id PK,world_id,target_claim,successor_claim,actor,case_ref,receipt_ref). Values are immutable except governed erasure.
 
-SPEC-005 · [algorithm](../../docs/algorithms/spec-005.md) · tables `ontology.impact_nodes`, `ontology.impact_edges`, `ontology.impact_runs`.
+[algorithm SPEC-005](../../docs/algorithms/spec-005.md)
+
+## Acceptance boundary
+
+A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.

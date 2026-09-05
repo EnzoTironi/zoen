@@ -57,3 +57,23 @@ export interface CorrectionPort {
   applyCorrection(input: ApplyCorrectionInput): Promise<CorrectionOutcome>;
   retractCorrection(input: RetractCorrectionInput): Promise<CorrectionOutcome>;
 }
+
+import type {
+  ConsumeCorrectionImpactInput,
+  RegisterImpactNodeInput,
+  RegisterImpactEdgeInput,
+  ImpactOutcome,
+} from './impact.js';
+
+export type {
+  ConsumeCorrectionImpactInput,
+  RegisterImpactNodeInput,
+  RegisterImpactEdgeInput,
+  ImpactOutcome,
+};
+
+export interface ImpactPort {
+  registerNode(input: RegisterImpactNodeInput): Promise<ImpactOutcome>;
+  registerEdge(input: RegisterImpactEdgeInput): Promise<ImpactOutcome>;
+  consumeCorrection(input: ConsumeCorrectionImpactInput): Promise<ImpactOutcome>;
+}

@@ -61,3 +61,18 @@ export type {
   CorrectionOutcome,
 } from './correction.js';
 export type { CorrectionPort } from './ports.js';
+export { ImpactService, IMPACT_IMPL, DEFAULT_IMPACT_BUDGET } from './impact.js';
+export type {
+  ImpactNodeKind,
+  ImpactNodeStatus,
+  RegisterImpactNodeInput,
+  RegisterImpactEdgeInput,
+  ConsumeCorrectionImpactInput,
+  QualityDimensions,
+  ImpactReceipt,
+  ImpactOk,
+  ImpactStale,
+  ImpactDenied,
+  ImpactOutcome,
+} from './impact.js';
+export type { ImpactPort } from './ports.js';

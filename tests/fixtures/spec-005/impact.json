@@ -1,0 +1,18 @@
+{
+  "seed": "zn-0035-impact-seed-v1",
+  "seedDigest": "6666666666666666666666666666666666666666666666666666666666666666",
+  "purpose": "operations",
+  "caseId": "case-delivery-plan-1",
+  "questionDigest": "7777777777777777777777777777777777777777777777777777777777777777",
+  "cutDigest": "8888888888888888888888888888888888888888888888888888888888888888",
+  "priorCutDigest": "9999999999999999999999999999999999999999999999999999999999999999",
+  "deliveryDateBefore": "2026-03-01",
+  "deliveryDateAfter": "2026-03-15",
+  "planNodeId": "interp-production-plan",
+  "caseNodeId": "case-production-plan",
+  "invoiceNodeId": "interp-unrelated-invoice",
+  "projectionNodeId": "proj-production-plan",
+  "deliveryClaimNodeId": "claim-delivery-date",
+  "invoiceClaimNodeId": "claim-invoice-amount",
+  "budget": 64
+}
