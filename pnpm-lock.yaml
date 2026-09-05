@@ -65,7 +65,14 @@ importers:
 
   packages/contracts: {}
 
-  packages/door: {}
+  packages/door:
+    dependencies:
+      better-auth:
+        specifier: 1.7.2
+        version: 1.7.2(pg@8.23.0)(vitest@5.0.0(@types/node@24.0.0)(vite@8.2.2(@types/node@24.0.0)))
+      pg:
+        specifier: 8.23.0
+        version: 8.23.0
 
   packages/eve: {}
 
