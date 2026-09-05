@@ -33,10 +33,18 @@ class Reservation {
   readonly locks: Lock[] = [];
   readonly client: PoolClient;
   released = false;
+  onLost: (() => void) | null = null;
   constructor(client: PoolClient) {
     this.client = client;
-    client.on("error", this.destroy);
+    client.on("error", this.connectionLost);
+    client.on("end", this.connectionLost);
   }
+  readonly connectionLost = () => {
+    const notify = this.onLost;
+    this.onLost = null;
+    this.destroy();
+    notify?.();
+  };
   readonly destroy = () => {
     if (!this.released) {
       this.released = true;
@@ -76,6 +84,7 @@ class Reservation {
     });
   readonly close = () =>
     Effect.gen({ self: this }, function* closeReservation() {
+      this.onLost = null;
       if (this.released) {
         return;
       }
@@ -100,7 +109,8 @@ class Reservation {
       }
       if (!this.released) {
         this.released = true;
-        this.client.removeListener("error", this.destroy);
+        this.client.removeListener("error", this.connectionLost);
+        this.client.removeListener("end", this.connectionLost);
         this.client.release();
       }
     });
@@ -181,6 +191,7 @@ export const makeDisclosureFenceLayer = (config: D01PostgresConfig) =>
       yield* checkHealth;
       const acquire = (locks: readonly Lock[], deadline: typeof Instant.Type) =>
         Effect.gen(function* acquireLocks() {
+          const owner = yield* Effect.fiber;
           const millis = yield* remaining(deadline);
           const reservation = yield* Effect.acquireRelease(
             reserve(pool, millis),
@@ -198,6 +209,14 @@ export const makeDisclosureFenceLayer = (config: D01PostgresConfig) =>
             }
           }
           yield* remaining(deadline);
+          if (reservation.released) {
+            return yield* unavailable();
+          }
+          // The real emitter continues in this caller fiber until its Scope closes.
+          reservation.onLost = () => {
+            owner.interruptUnsafe();
+          };
+          return yield* Effect.void;
         });
       return DisclosureFence.of({
         checkHealth,

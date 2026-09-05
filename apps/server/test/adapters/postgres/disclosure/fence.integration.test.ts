@@ -12,6 +12,7 @@ import {
   DateTime,
   Deferred,
   Effect,
+  Exit,
   Fiber,
   Layer,
   Result,
@@ -156,6 +157,50 @@ it.live(
               url: database.urls.authority,
             }),
             database.migration
+          )
+        )
+      )
+    )
+);
+
+it.live(
+  "EX22 confirmed coordinator connection loss interrupts the emitting fiber and removes all physical locks",
+  () =>
+    withD01Database((database) =>
+      Effect.gen(function* lostConnection() {
+        const sql = yield* SqlClient.SqlClient;
+        const fence = yield* DisclosureFence;
+        const viewer = yield* presence();
+        const target = world();
+        const ready = yield* Deferred.make<null>();
+        const reader = yield* Effect.scoped(
+          Effect.gen(function* emittingReader() {
+            yield* fence.shared(viewer, target, yield* deadline());
+            yield* Deferred.succeed(ready, null);
+            return yield* Effect.never;
+          })
+        ).pipe(Effect.forkChild);
+        yield* Deferred.await(ready);
+        expect(
+          yield* sql`SELECT pg_terminate_backend(pid) AS terminated FROM pg_stat_activity WHERE application_name = 'ex22-fence-loss'`
+        ).toStrictEqual([{ terminated: true }]);
+        const outcome = yield* Fiber.await(reader).pipe(
+          Effect.timeout("1 second")
+        );
+        expect(Exit.hasInterrupts(outcome)).toBeTruthy();
+        expect(
+          yield* sql`SELECT count(*)::int AS count FROM pg_locks JOIN pg_stat_activity ON pg_locks.pid = pg_stat_activity.pid WHERE application_name = 'ex22-fence-loss' AND locktype = 'advisory'`
+        ).toStrictEqual([{ count: 0 }]);
+        yield* Effect.scoped(fence.shared(viewer, target, yield* deadline()));
+      }).pipe(
+        Effect.provide(
+          Layer.merge(
+            makeDisclosureFenceLayer({
+              applicationName: "ex22-fence-loss",
+              maxConnections: 1,
+              url: database.urls.authority,
+            }),
+            database.authority
           )
         )
       )
