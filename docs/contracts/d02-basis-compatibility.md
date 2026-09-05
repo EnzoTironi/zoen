@@ -4,6 +4,14 @@ Auditoria independente W2, 2026-09-05, sobre código em `06535bdcec668f62ba6d91d
 
 A decisão de produto examinada é D02 G com recuperação estrutural distinta, candidato `c2d2b70`, mais a precisão do integrador sobre o limite de 1.048.576 bytes. A revisão anterior está em [d02-subject-identity.review.md](d02-subject-identity.review.md). Este inventário é evidência de leitura do código atual; os oráculos abaixo ainda não foram executados.
 
+## Decisão de representação ratificada por root para EX25
+
+`LegacyInternalBasis` e `LegacyReadSet` conservam exatamente os schemas antigos sem discriminante. `CurrentInternalBasis` acrescenta `schemaVersion: "authority.basis.v2"`; `CurrentReadSet` acrescenta `schemaVersion: "authority.read-set.v2"`. O cut atual inclui o domínio `identity`. O decoder de histórico `InternalBasis` aceita a união exata das duas versões; `ReadSet` e `DomainCut` usados para novas escritas são os atuais. Nenhum decoder promove legado ou inventa revisão ausente.
+
+O algoritmo `structuredDigest("read-set", ...)` e seu prefixo permanecem intactos. O discriminante explícito do read set atual entra no JSON canônico e, portanto, no digest novo. Literal atual mantém `identities: []`; a família de identidade registra dependências `SubjectIdentityGraph` com principalRef, purpose, anchors, closureAnchors, interval e revision. World está vinculado na base. A validação confere escopo contra contexto verificado e revision contra cut.identity; a disciplina comum de writers do domínio protege também ausência/phantoms. Essas dependências não são fornecidas como autoridade pelo cliente.
+
+O guard de versão para ato novo vem depois do replay reautorizado. Os três handlers de correção antecipam a consulta de replay e conservam a repetição sob os locks do commit. O loader histórico continua estrito; corrupção não se torna automaticamente Stale. A migração numerada, fixtures, genesis/provisionamento e ativação são coordenados com root. Provas de dados/guards na camada de componente não autorizam trocar o release vinculado de um World nem qualificam upgrade de uma instalação anterior.
+
 ## Conclusão e risco principal
 
 A extensão do cut não pode ser feita substituindo o schema atual por um schema que aceite apenas seis domínios. `loadCorrectionFrame` e `readCorrectionCase` decodificam `InternalBasis` antes de os handlers chegarem ao replay. Essa troca converteria históricos válidos em `Unavailable` e impediria devolver receipts já existentes. Precisam coexistir reconhecimento histórico fiel e validação de base para um ato novo, que são decisões distintas.

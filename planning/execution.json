@@ -1560,6 +1560,347 @@
         "tests/integration/d03-sharing/independent/**",
         "apps/server/test/composition/disclosure/**"
       ]
+    },
+    {
+      "depends_on": {
+        "hard": ["EX23"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d02-subject-identity.md",
+        "docs/contracts/d02-subject-identity.review.md"
+      ],
+      "contracts_consumed": [
+        "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
+      ],
+      "id": "EX24",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Schemas e leis puras de identidade temporal",
+      "scope": "Schemas fechados e algoritmos puros consumidos pela família EX27; nenhuma operação entregue isoladamente.",
+      "acceptance": [
+        "Grafo positivo transitivo e distinções coerentes, células maximais, comparação explícita, partição completa e inversão de efeitos.",
+        "Frame/Question normal e recuperação distinguíveis; schemaVersion subject-identity.v1 e quotas completas sem truncamento."
+      ],
+      "planned_direct_checks": [
+        "ID-02–07/12: leis puras adversárias de orientação, ciclos, fronteiras, contradição e quotas.",
+        "Schemas compiláveis revisados antes de root expor a família HTTP."
+      ],
+      "owns": [
+        "packages/contracts/src/subject-identity/**",
+        "packages/contracts/test/subject-identity/**",
+        "packages/authority/src/knowledge/subject-identity/pure/**",
+        "packages/authority/test/knowledge/subject-identity/**"
+      ],
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low"
+    },
+    {
+      "depends_on": {
+        "hard": ["EX23"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d02-subject-identity.md",
+        "docs/contracts/d02-subject-identity.review.md"
+      ],
+      "contracts_consumed": [
+        "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
+      ],
+      "id": "EX25",
+      "owner": "worker-2",
+      "reviewer": "worker-3",
+      "title": "Versionar base privada e preservar replay histórico",
+      "scope": "Auditoria de todos entrypoints antes da DDL; emitir bases novas completas com domínio identity e manter bases antigas legíveis.",
+      "acceptance": [
+        "Leitura e replay reautorizados preservam DTO/digests antigos; atos novos com base antiga ficam Stale depois do replay.",
+        "Bases novas incluem seis domínios e dependência real de identidade/ausência; nenhum retropreenchimento."
+      ],
+      "planned_direct_checks": [
+        "ID-11/14: histórico real, migração aditiva, replay e novos atos legados antes/depois.",
+        "SERIALIZABLE e guards comuns preservados; própria proposta permite resposta imediata."
+      ],
+      "owns": [
+        "docs/contracts/d02-basis-compatibility.md",
+        "packages/authority/src/ports/d01/basis.ts",
+        "packages/authority/src/commit/guards.ts",
+        "packages/authority/src/commit/mutation.ts",
+        "packages/authority/src/commit/genesis.ts",
+        "packages/authority/src/commit/README.md",
+        "packages/authority/src/knowledge/d01/inspect.ts",
+        "packages/authority/src/knowledge/corrections/**",
+        "packages/authority/test/commit/**",
+        "tests/integration/d02-identity/basis/**"
+      ],
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "Auditoria e representação privada revisadas, antes de qualquer emissão de base nova.",
+          "completion": "Root aplica migração aditiva numerada, fixtures/provisionamento de novo perfil e composição de tipos; revisão independente preserva histórico.",
+          "owns": [
+            "ops/migrations/**",
+            "apps/server/src/composition.ts",
+            "packages/authority/src/index.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "depends_on": {
+        "hard": ["EX24", "EX25"],
+        "optional": []
+      },
+      "acceptance_requires": ["EX27"],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d02-subject-identity.md",
+        "docs/contracts/d02-subject-identity.review.md"
+      ],
+      "contracts_consumed": [
+        "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
+      ],
+      "id": "EX26",
+      "owner": "worker-3",
+      "reviewer": "root",
+      "title": "Contraprovas independentes de identidade e compatibilidade",
+      "scope": "Revisar algoritmos, migrações, autoridade e história; executar casos adversários em componentes e processos reais quando os consumers existirem.",
+      "acceptance": [
+        "Contraprovas de grafo, ausência, recuperação após novas claims, bases legadas, audiência e limites reais.",
+        "SIGKILL e concorrência demonstram atomicidade/replay sem mocks ou autoaprovação."
+      ],
+      "planned_direct_checks": [
+        "ID-01–15 aplicáveis em integração/processos reais; separar provas puras e de provider.",
+        "Revisão SQL/grants preserva bancos e dados anteriores; somente recursos exclusivos de teste."
+      ],
+      "owns": ["tests/integration/d02-identity/independent/**"],
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low"
+    },
+    {
+      "depends_on": {
+        "hard": ["EX24", "EX25"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d02-subject-identity.md",
+        "docs/contracts/d02-subject-identity.review.md"
+      ],
+      "contracts_consumed": [
+        "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
+      ],
+      "id": "EX27",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Executar identidade no commit semântico comum",
+      "scope": "Handlers de inspeção, recuperação, proposta, confirmação, split e undo; SQL privado e fonte original preservada.",
+      "acceptance": [
+        "Leitura de grafo em snapshot único, pins reais quando há claims e base completa, sem misturar Frame de correção.",
+        "Mudanças e evento/Case/receipt/outbox atômicos; guards de ausência, serialização e recuperação prospectiva aplicados em todos writers."
+      ],
+      "planned_direct_checks": [
+        "ID-01/08–14 em PostgreSQL/S3/Better Auth reais, incluindo imports que excedem comparação e undo estrutural.",
+        "Replay histórico e conflito de intenção; viewer negado antes de lookup/contagem/travessia."
+      ],
+      "owns": [
+        "packages/authority/src/knowledge/subject-identity/handlers/**",
+        "packages/authority/src/knowledge/subject-identity/persistence/**",
+        "packages/authority/src/knowledge/subject-identity/request.ts",
+        "tests/integration/d02-identity/core/**"
+      ],
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "Schemas revisados e proposta SQL concreta recebida; exports dos handlers disponíveis.",
+          "completion": "Migração numerada/grants, dispatcher, API e composição importam o código; perfil novo só ativa após EX29.",
+          "owns": [
+            "ops/migrations/**",
+            "packages/contracts/src/index.ts",
+            "packages/authority/src/index.ts",
+            "apps/server/src/composition.ts",
+            "apps/server/src/http/**"
+          ]
+        }
+      ]
+    },
+    {
+      "depends_on": {
+        "hard": ["EX24"],
+        "optional": []
+      },
+      "acceptance_requires": ["EX27"],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d02-subject-identity.md",
+        "docs/contracts/d02-subject-identity.review.md"
+      ],
+      "contracts_consumed": [
+        "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
+      ],
+      "id": "EX28",
+      "owner": "worker-2",
+      "reviewer": "worker-3",
+      "title": "Expor identidade e recuperação em Web e CLI",
+      "scope": "Consumir mesmos schemas/Question/receipt; mostrar fechamento, células, partição e inversão sem inferir consentimento.",
+      "acceptance": [
+        "Web/CLI conservam opID/digest no retry; Stale exige nova inspeção e confirmação explícita.",
+        "Recovery explica ausência de comparação e confirma transformação estrutural completa; viewers não recebem controles privados."
+      ],
+      "planned_direct_checks": [
+        "ID-15 com navegador/CLI reais; mesmas intenções e receipts entre superfícies.",
+        "Jornada normal, split com ciclo, undo, crescimento de claims e recuperação distinta."
+      ],
+      "owns": [
+        "apps/web/src/features/subject-identity/**",
+        "apps/web/test/integration/d02-identity/**",
+        "apps/cli/src/subject-identity/**",
+        "apps/cli/test/subject-identity/**"
+      ],
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low"
+    },
+    {
+      "depends_on": {
+        "hard": ["EX26", "EX27", "EX28"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d02-subject-identity.md",
+        "docs/contracts/d02-subject-identity.review.md"
+      ],
+      "contracts_consumed": [
+        "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
+      ],
+      "id": "EX29",
+      "owner": "root",
+      "reviewer": "worker-3",
+      "title": "Compor e verificar incremento de identidade",
+      "scope": "Novo perfil de build preservando instalações anteriores; revisão combinada, container e CI reais.",
+      "acceptance": [
+        "Mesmo executor e fence em HTTP/Web/CLI; handlers e helpers têm consumers exercidos.",
+        "Build, qualidade, provas por camada e imagem nova passam sem rebind de World antigo."
+      ],
+      "planned_direct_checks": [
+        "Suite combinada adequada à mudança, ID-01–15 e recuperação por quota observados.",
+        "Artefato container e CI do commit integrado; resultados separados de D02 completo."
+      ],
+      "owns": [
+        "packages/authority/src/semantic/**",
+        "packages/contracts/src/d01/api.ts",
+        "packages/contracts/src/d01/operations.ts",
+        "packages/contracts/src/index.ts",
+        "packages/authority/src/index.ts",
+        "apps/server/src/composition.ts",
+        "apps/server/src/http/**",
+        "apps/server/src/main.ts",
+        "apps/web/src/features/d01/**",
+        "apps/cli/src/main.ts",
+        "ops/local/**",
+        "docs/verification/subject-identity-local.md"
+      ],
+      "model": null,
+      "reasoning_effort": null
     }
   ],
   "suggested_schedule": [

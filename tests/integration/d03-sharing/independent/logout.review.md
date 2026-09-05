@@ -21,16 +21,16 @@ Initial diagnostic copies stopped before logout because this review checkout had
 
 All offsets below are milliseconds since the experiment body began, after the normal signup-rate-limit wait.
 
-| Event | Held transport | Confirmed transport |
-| --- | ---: | ---: |
-| Sign-out request | 1105 | 964 |
-| Both login headings visible | 1108 | 969 |
-| Sign-out HTTP 200 | not observed | 985 |
-| Confirmed get-session null | not established | 992 |
-| about:blank loaded | 1113 | 997 |
-| Held request released | 1115 | n/a |
-| Back completed | 1130 | 1010 |
-| Real provider session after back | present, 1142 | null, 1015 |
+| Event                            |  Held transport | Confirmed transport |
+| -------------------------------- | --------------: | ------------------: |
+| Sign-out request                 |            1105 |                 964 |
+| Both login headings visible      |            1108 |                 969 |
+| Sign-out HTTP 200                |    not observed |                 985 |
+| Confirmed get-session null       | not established |                 992 |
+| about:blank loaded               |            1113 |                 997 |
+| Held request released            |            1115 |                 n/a |
+| Back completed                   |            1130 |                1010 |
+| Real provider session after back |   present, 1142 |          null, 1015 |
 
 The held case does not expose a requestfailed event for sign-out; the narrower direct evidence is absence of its response, successful route release after navigation, and the provider session remaining present. No HTTP 503 was observed in these authentication timelines. World, Frame and evidence remained absent after back in the held case, but the signed-in account controls returned. This is not proof of private payload leakage.
 

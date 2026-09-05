@@ -5,23 +5,23 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "D02-subject-identity-graph-contract",
+      "task": "EX24-subject-identity-schemas-and-pure-laws",
       "model": "gpt-6-astra",
       "effort": "low",
-      "worktree": "/Users/enzotironi/zoen-subject-identity-contract",
+      "worktree": "/Users/enzotironi/zoen-ex24-subject-identity",
       "state": "in_progress"
     },
     {
       "agent": "roadmap_redesign",
-      "task": "D03-logout-CI-review / D02-identity-review-pending",
+      "task": "EX25-versioned-basis-compatibility",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
-      "state": "in_progress"
+      "state": "contract_audited_implementation_assigned"
     },
     {
       "agent": "tickets_redesign",
-      "task": "D03-S3-provider-feasibility",
+      "task": "EX26-legacy-baseline-proof-design",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
@@ -332,6 +332,22 @@
       "container_acceptance_passed": 11,
       "container_acceptance_failed": 1,
       "scope": "Qualidade e integração passaram; EX12 falhou no retorno após logout, sem Frame/evidência restaurados. Causa sob revisão independente; não contar CI como verde."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "06535bdcec668f62ba6d91d8ebb17e0235ed568b",
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "state": "remote_behavior_passed_report_format_failed",
+      "remote_ci": {
+        "commit": "06535bdcec668f62ba6d91d8ebb17e0235ed568b",
+        "result": "failure",
+        "url": "https://github.com/EnzoTironi/zoen/actions/runs/33993160944"
+      },
+      "unit_tests": 198,
+      "integration_tests": 168,
+      "browser_component_tests": 7,
+      "container_acceptance_tests": 12,
+      "scope": "Logout confirmado corrigiu a testemunha; todas as provas comportamentais passaram. Qualidade reprovou somente tabela não formatada no relatório; correção preserva os bytes da fonte diagnóstica. Agregador não foi verde."
     }
   ],
   "verified_deliveries": [],
