@@ -1,6 +1,6 @@
 # File plan — `tests/fixtures/spec-003/schema.json`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `tests/fixtures/spec-003/schema.json`. Representation: **sidecar-only**. Allocation: **conditional-support**.
 

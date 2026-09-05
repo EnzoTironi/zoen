@@ -1,0 +1,11 @@
+{
+  "seed": "zn-0019-schema-seed-v1",
+  "migrationName": "zn-0019_schema",
+  "phases": ["expand", "backfill", "validate", "contract"],
+  "authorityTables": [
+    "worlds", "memberships", "domains", "commits", "receipts", "operations",
+    "bootstrap_operations", "sources", "subjects", "evidence", "claims",
+    "claim_evidence", "claim_edges", "frames", "schema_migration_ledger"
+  ],
+  "runtimeRoles": ["zoen_authority", "zoen_progress", "zoen_outbox"]
+}

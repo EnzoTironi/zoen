@@ -211,7 +211,7 @@
   {
     "id": "ZN-0007-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0007",
     "spec_id": "SPEC-001",
@@ -244,7 +244,7 @@
   {
     "id": "ZN-0008-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0008",
     "spec_id": "SPEC-001",
@@ -277,7 +277,7 @@
   {
     "id": "ZN-0009-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0009",
     "spec_id": "SPEC-001",
@@ -310,7 +310,7 @@
   {
     "id": "ZN-0010-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0010",
     "spec_id": "SPEC-001",
@@ -343,7 +343,7 @@
   {
     "id": "ZN-0011-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0011",
     "spec_id": "SPEC-001",
@@ -376,7 +376,7 @@
   {
     "id": "ZN-0012-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0012",
     "spec_id": "SPEC-001",
@@ -601,7 +601,7 @@
     "ticket_id": "ZN-0019",
     "spec_id": "SPEC-003",
     "test_file": "tests/component/spec-003/schema.test.ts",
-    "plan_path": "tests/component/spec-003/schema.test.ts",
+    "plan_path": "tests/component/spec-003/schema.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -612,7 +612,7 @@
     "ticket_id": "ZN-0019",
     "spec_id": "SPEC-003",
     "test_file": "tests/component/spec-003/schema.test.ts",
-    "plan_path": "tests/component/spec-003/schema.test.ts",
+    "plan_path": "tests/component/spec-003/schema.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -623,7 +623,7 @@
     "ticket_id": "ZN-0019",
     "spec_id": "SPEC-003",
     "test_file": "tests/component/spec-003/schema.test.ts",
-    "plan_path": "tests/component/spec-003/schema.test.ts",
+    "plan_path": "tests/component/spec-003/schema.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1036,7 +1036,7 @@
   {
     "id": "ZN-0032-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0032",
     "spec_id": "SPEC-005",
@@ -1256,7 +1256,7 @@
   {
     "id": "ZN-0039-AC",
     "layer": "component",
-    "oracle": "The new identity view joins meaning without granting access to either subject’s forbidden evidence; old cuts preserve the old representatives",
+    "oracle": "The new identity view joins meaning without granting access to either subject\u2019s forbidden evidence; old cuts preserve the old representatives",
     "purpose": "Observable outcome",
     "ticket_id": "ZN-0039",
     "spec_id": "SPEC-006",
@@ -1333,7 +1333,7 @@
   {
     "id": "ZN-0041-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0041",
     "spec_id": "SPEC-006",
@@ -2290,7 +2290,7 @@
   {
     "id": "ZN-0070-NEG",
     "layer": "journey",
-    "oracle": "Open the flow on a shared device after logout or without access. No previous person’s context appears; accessible denial remains usable. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
+    "oracle": "Open the flow on a shared device after logout or without access. No previous person\u2019s context appears; accessible denial remains usable. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0070",
     "spec_id": "SPEC-012",
@@ -2323,7 +2323,7 @@
   {
     "id": "ZN-0071-NEG",
     "layer": "journey",
-    "oracle": "Open the flow on a shared device after logout or without access. No previous person’s context appears; accessible denial remains usable. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
+    "oracle": "Open the flow on a shared device after logout or without access. No previous person\u2019s context appears; accessible denial remains usable. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0071",
     "spec_id": "SPEC-012",
@@ -2356,7 +2356,7 @@
   {
     "id": "ZN-0072-NEG",
     "layer": "journey",
-    "oracle": "Open the flow on a shared device after logout or without access. No previous person’s context appears; accessible denial remains usable. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
+    "oracle": "Open the flow on a shared device after logout or without access. No previous person\u2019s context appears; accessible denial remains usable. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0072",
     "spec_id": "SPEC-012",
@@ -2378,7 +2378,7 @@
   {
     "id": "ZN-0073-AC",
     "layer": "journey",
-    "oracle": "A’s private content is not rendered from cache before authorization; B sees only permitted data",
+    "oracle": "A\u2019s private content is not rendered from cache before authorization; B sees only permitted data",
     "purpose": "Observable outcome",
     "ticket_id": "ZN-0073",
     "spec_id": "SPEC-012",
@@ -2389,7 +2389,7 @@
   {
     "id": "ZN-0073-NEG",
     "layer": "journey",
-    "oracle": "Open the flow on a shared device after logout or without access. No previous person’s context appears; accessible denial remains usable. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
+    "oracle": "Open the flow on a shared device after logout or without access. No previous person\u2019s context appears; accessible denial remains usable. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0073",
     "spec_id": "SPEC-012",
@@ -2653,7 +2653,7 @@
   {
     "id": "ZN-0081-NEG",
     "layer": "law",
-    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task’s pure boundary. It returns the specified tagged error without coercion or I/O.",
+    "oracle": "Supply an invalid type, incompatible unit/time/realm or unsupported scalar to this task\u2019s pure boundary. It returns the specified tagged error without coercion or I/O.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0081",
     "spec_id": "SPEC-013",
@@ -3797,7 +3797,7 @@
   {
     "id": "ZN-0116-AC",
     "layer": "chaos",
-    "oracle": "The deleted subject’s content remains undisclosed across every derived store before readiness becomes true",
+    "oracle": "The deleted subject\u2019s content remains undisclosed across every derived store before readiness becomes true",
     "purpose": "Observable outcome",
     "ticket_id": "ZN-0116",
     "spec_id": "SPEC-019",
@@ -6481,7 +6481,7 @@
   {
     "id": "ZN-0197-NEG",
     "layer": "component",
-    "oracle": "Exceed a query lease’s rights, budget, output or time limits. Cancel/bound execution and never publish partial output as complete. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
+    "oracle": "Exceed a query lease\u2019s rights, budget, output or time limits. Cancel/bound execution and never publish partial output as complete. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0197",
     "spec_id": "SPEC-034",
@@ -6514,7 +6514,7 @@
   {
     "id": "ZN-0198-NEG",
     "layer": "component",
-    "oracle": "Exceed a query lease’s rights, budget, output or time limits. Cancel/bound execution and never publish partial output as complete. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
+    "oracle": "Exceed a query lease\u2019s rights, budget, output or time limits. Cancel/bound execution and never publish partial output as complete. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0198",
     "spec_id": "SPEC-034",
@@ -6547,7 +6547,7 @@
   {
     "id": "ZN-0199-NEG",
     "layer": "component",
-    "oracle": "Exceed a query lease’s rights, budget, output or time limits. Cancel/bound execution and never publish partial output as complete. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
+    "oracle": "Exceed a query lease\u2019s rights, budget, output or time limits. Cancel/bound execution and never publish partial output as complete. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0199",
     "spec_id": "SPEC-034",
@@ -6580,7 +6580,7 @@
   {
     "id": "ZN-0200-NEG",
     "layer": "component",
-    "oracle": "Exceed a query lease’s rights, budget, output or time limits. Cancel/bound execution and never publish partial output as complete. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
+    "oracle": "Exceed a query lease\u2019s rights, budget, output or time limits. Cancel/bound execution and never publish partial output as complete. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.",
     "purpose": "Invalid/denied input or false evidence",
     "ticket_id": "ZN-0200",
     "spec_id": "SPEC-034",
@@ -8285,7 +8285,7 @@
   {
     "id": "ZN-0252-AC",
     "layer": "component",
-    "oracle": "The global result is partial/pending/failed as appropriate, not rolled back by deleting A’s receipt",
+    "oracle": "The global result is partial/pending/failed as appropriate, not rolled back by deleting A\u2019s receipt",
     "purpose": "Observable outcome",
     "ticket_id": "ZN-0252",
     "spec_id": "SPEC-043",

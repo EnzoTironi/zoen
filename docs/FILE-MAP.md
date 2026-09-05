@@ -150,7 +150,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `contracts/spec-003/guards.schema.json` | [sidecar-only](../contracts/spec-003/guards.schema.json.plan.md) | planned | SPEC-003 |
 | `contracts/spec-003/idempotency.schema.json` | [sidecar-only](../contracts/spec-003/idempotency.schema.json.plan.md) | planned | SPEC-003 |
 | `contracts/spec-003/outbox.schema.json` | [sidecar-only](../contracts/spec-003/outbox.schema.json.plan.md) | planned | SPEC-003 |
-| `contracts/spec-003/schema.schema.json` | [sidecar-only](../contracts/spec-003/schema.schema.json.plan.md) | planned | SPEC-003 |
+| `contracts/spec-003/schema.schema.json` | [existing-with-sidecar](../contracts/spec-003/schema.schema.json.plan.md) | implementation-in-progress | SPEC-003 |
 | `contracts/spec-004/admission.schema.json` | [sidecar-only](../contracts/spec-004/admission.schema.json.plan.md) | planned | SPEC-004 |
 | `contracts/spec-004/capture-gc.schema.json` | [sidecar-only](../contracts/spec-004/capture-gc.schema.json.plan.md) | planned | SPEC-004 |
 | `contracts/spec-004/capture.schema.json` | [sidecar-only](../contracts/spec-004/capture.schema.json.plan.md) | planned | SPEC-004 |
@@ -460,7 +460,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `db/migrations/zn-0016_invitations.sql` | [existing-with-sidecar](../db/migrations/zn-0016_invitations.sql.plan.md) | implementation-in-progress | SPEC-002 |
 | `db/migrations/zn-0017_revocation.sql` | [existing-with-sidecar](../db/migrations/zn-0017_revocation.sql.plan.md) | implementation-in-progress | SPEC-002 |
 | `db/migrations/zn-0018_entry-isolation.sql` | [existing-with-sidecar](../db/migrations/zn-0018_entry-isolation.sql.plan.md) | implementation-in-progress | SPEC-002 |
-| `db/migrations/zn-0019_schema.sql` | [sidecar-only](../db/migrations/zn-0019_schema.sql.plan.md) | planned | SPEC-003 |
+| `db/migrations/zn-0019_schema.sql` | [existing-with-sidecar](../db/migrations/zn-0019_schema.sql.plan.md) | implementation-in-progress | SPEC-003 |
 | `db/migrations/zn-0020_commit.sql` | [sidecar-only](../db/migrations/zn-0020_commit.sql.plan.md) | planned | SPEC-003 |
 | `db/migrations/zn-0021_idempotency.sql` | [sidecar-only](../db/migrations/zn-0021_idempotency.sql.plan.md) | planned | SPEC-003 |
 | `db/migrations/zn-0022_guards.sql` | [sidecar-only](../db/migrations/zn-0022_guards.sql.plan.md) | planned | SPEC-003 |
@@ -837,14 +837,14 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/ontology/src/attention/watch-inspector.ts` | [comment-only-source](../packages/ontology/src/attention/watch-inspector.ts) | planned | SPEC-020 |
 | `packages/ontology/src/authority/guards.ts` | [existing-with-sidecar](../packages/ontology/src/authority/guards.ts.plan.md) | candidate-unaccepted | SPEC-003 |
 | `packages/ontology/src/authority/idempotency.ts` | [comment-only-source](../packages/ontology/src/authority/idempotency.ts) | planned | SPEC-003 |
-| `packages/ontology/src/authority/index.ts` | [comment-only-source](../packages/ontology/src/authority/index.ts) | planned | SPEC-003 |
+| `packages/ontology/src/authority/index.ts` | [existing-with-sidecar](../packages/ontology/src/authority/index.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `packages/ontology/src/authority/outbox.ts` | [existing-with-sidecar](../packages/ontology/src/authority/outbox.ts.plan.md) | candidate-unaccepted | SPEC-003 |
-| `packages/ontology/src/authority/plan.ts` | [comment-only-source](../packages/ontology/src/authority/plan.ts) | planned | SPEC-003 |
-| `packages/ontology/src/authority/ports.ts` | [comment-only-source](../packages/ontology/src/authority/ports.ts) | planned | SPEC-003 |
-| `packages/ontology/src/authority/schema.ts` | [comment-only-source](../packages/ontology/src/authority/schema.ts) | planned | SPEC-003 |
+| `packages/ontology/src/authority/plan.ts` | [existing-with-sidecar](../packages/ontology/src/authority/plan.ts.plan.md) | implementation-in-progress | SPEC-003 |
+| `packages/ontology/src/authority/ports.ts` | [existing-with-sidecar](../packages/ontology/src/authority/ports.ts.plan.md) | implementation-in-progress | SPEC-003 |
+| `packages/ontology/src/authority/schema.ts` | [existing-with-sidecar](../packages/ontology/src/authority/schema.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `packages/ontology/src/authority/states.ts` | [existing-with-sidecar](../packages/ontology/src/authority/states.ts.plan.md) | candidate-unaccepted | SPEC-003 |
 | `packages/ontology/src/authority/transaction.ts` | [existing-with-sidecar](../packages/ontology/src/authority/transaction.ts.plan.md) | candidate-unaccepted | SPEC-003 |
-| `packages/ontology/src/authority/types.ts` | [comment-only-source](../packages/ontology/src/authority/types.ts) | planned | SPEC-003 |
+| `packages/ontology/src/authority/types.ts` | [existing-with-sidecar](../packages/ontology/src/authority/types.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `packages/ontology/src/cells/cell-directory.ts` | [comment-only-source](../packages/ontology/src/cells/cell-directory.ts) | planned | SPEC-042 |
 | `packages/ontology/src/cells/epoch-promotion.ts` | [comment-only-source](../packages/ontology/src/cells/epoch-promotion.ts) | planned | SPEC-042 |
 | `packages/ontology/src/cells/index.ts` | [comment-only-source](../packages/ontology/src/cells/index.ts) | planned | SPEC-042 |
@@ -1121,7 +1121,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `runbooks/spec-003/guards.md` | [markdown-plan](../runbooks/spec-003/guards.md) | planned | SPEC-003 |
 | `runbooks/spec-003/idempotency.md` | [markdown-plan](../runbooks/spec-003/idempotency.md) | planned | SPEC-003 |
 | `runbooks/spec-003/outbox.md` | [markdown-plan](../runbooks/spec-003/outbox.md) | planned | SPEC-003 |
-| `runbooks/spec-003/schema.md` | [markdown-plan](../runbooks/spec-003/schema.md) | planned | SPEC-003 |
+| `runbooks/spec-003/schema.md` | [existing-with-sidecar](../runbooks/spec-003/schema.md.plan.md) | implementation-in-progress | SPEC-003 |
 | `runbooks/spec-004/admission.md` | [markdown-plan](../runbooks/spec-004/admission.md) | planned | SPEC-004 |
 | `runbooks/spec-004/capture-gc.md` | [markdown-plan](../runbooks/spec-004/capture-gc.md) | planned | SPEC-004 |
 | `runbooks/spec-004/capture.md` | [markdown-plan](../runbooks/spec-004/capture.md) | planned | SPEC-004 |
@@ -1496,7 +1496,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/component/spec-003/guards.test.ts` | [comment-only-source](../tests/component/spec-003/guards.test.ts) | planned | SPEC-003 |
 | `tests/component/spec-003/idempotency.test.ts` | [comment-only-source](../tests/component/spec-003/idempotency.test.ts) | planned | SPEC-003 |
 | `tests/component/spec-003/outbox.test.ts` | [comment-only-source](../tests/component/spec-003/outbox.test.ts) | planned | SPEC-003 |
-| `tests/component/spec-003/schema.test.ts` | [comment-only-source](../tests/component/spec-003/schema.test.ts) | planned | SPEC-003 |
+| `tests/component/spec-003/schema.test.ts` | [existing-with-sidecar](../tests/component/spec-003/schema.test.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `tests/component/spec-004/admission.test.ts` | [comment-only-source](../tests/component/spec-004/admission.test.ts) | planned | SPEC-004 |
 | `tests/component/spec-004/capture-gc.test.ts` | [comment-only-source](../tests/component/spec-004/capture-gc.test.ts) | planned | SPEC-004 |
 | `tests/component/spec-004/capture.test.ts` | [comment-only-source](../tests/component/spec-004/capture.test.ts) | planned | SPEC-004 |
@@ -1738,7 +1738,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/fixtures/spec-003/guards.json` | [sidecar-only](../tests/fixtures/spec-003/guards.json.plan.md) | planned | SPEC-003 |
 | `tests/fixtures/spec-003/idempotency.json` | [sidecar-only](../tests/fixtures/spec-003/idempotency.json.plan.md) | planned | SPEC-003 |
 | `tests/fixtures/spec-003/outbox.json` | [sidecar-only](../tests/fixtures/spec-003/outbox.json.plan.md) | planned | SPEC-003 |
-| `tests/fixtures/spec-003/schema.json` | [sidecar-only](../tests/fixtures/spec-003/schema.json.plan.md) | planned | SPEC-003 |
+| `tests/fixtures/spec-003/schema.json` | [existing-with-sidecar](../tests/fixtures/spec-003/schema.json.plan.md) | implementation-in-progress | SPEC-003 |
 | `tests/fixtures/spec-004/admission.json` | [sidecar-only](../tests/fixtures/spec-004/admission.json.plan.md) | planned | SPEC-004 |
 | `tests/fixtures/spec-004/capture-gc.json` | [sidecar-only](../tests/fixtures/spec-004/capture-gc.json.plan.md) | planned | SPEC-004 |
 | `tests/fixtures/spec-004/capture.json` | [sidecar-only](../tests/fixtures/spec-004/capture.json.plan.md) | planned | SPEC-004 |
@@ -2097,7 +2097,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/migrations/zn-0016.test.ts` | [comment-only-source](../tests/migrations/zn-0016.test.ts) | planned | SPEC-002 |
 | `tests/migrations/zn-0017.test.ts` | [comment-only-source](../tests/migrations/zn-0017.test.ts) | planned | SPEC-002 |
 | `tests/migrations/zn-0018.test.ts` | [comment-only-source](../tests/migrations/zn-0018.test.ts) | planned | SPEC-002 |
-| `tests/migrations/zn-0019.test.ts` | [comment-only-source](../tests/migrations/zn-0019.test.ts) | planned | SPEC-003 |
+| `tests/migrations/zn-0019.test.ts` | [existing-with-sidecar](../tests/migrations/zn-0019.test.ts.plan.md) | implementation-in-progress | SPEC-003 |
 | `tests/migrations/zn-0020.test.ts` | [comment-only-source](../tests/migrations/zn-0020.test.ts) | planned | SPEC-003 |
 | `tests/migrations/zn-0021.test.ts` | [comment-only-source](../tests/migrations/zn-0021.test.ts) | planned | SPEC-003 |
 | `tests/migrations/zn-0022.test.ts` | [comment-only-source](../tests/migrations/zn-0022.test.ts) | planned | SPEC-003 |

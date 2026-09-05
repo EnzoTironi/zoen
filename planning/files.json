@@ -2925,9 +2925,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-003/schema.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -8195,9 +8195,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "db/migrations/zn-0019_schema.sql.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -14966,9 +14966,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "packages/ontology/src/authority/index.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/ontology/src/authority/index.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -15006,9 +15006,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "packages/ontology/src/authority/plan.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/ontology/src/authority/plan.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -15027,9 +15027,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "packages/ontology/src/authority/ports.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/ontology/src/authority/ports.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -15046,9 +15046,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "packages/ontology/src/authority/schema.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/ontology/src/authority/schema.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -15105,9 +15105,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "packages/ontology/src/authority/types.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/ontology/src/authority/types.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -20522,9 +20522,9 @@
         "ZN-0019"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-003/schema.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-003/schema.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -27683,9 +27683,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/component/spec-003/schema.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/component/spec-003/schema.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -32233,9 +32233,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-003/schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -38498,9 +38498,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "tests/migrations/zn-0019.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/migrations/zn-0019.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {

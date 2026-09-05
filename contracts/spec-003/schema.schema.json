@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-003/schema.schema.json",
+  "title": "ZN-0019 schema discipline fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "migrationName", "phases", "authorityTables", "runtimeRoles"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0019-schema-seed-v1" },
+    "migrationName": { "type": "string", "minLength": 1 },
+    "phases": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["expand", "backfill", "validate", "contract"] },
+      "minItems": 4,
+      "maxItems": 4
+    },
+    "authorityTables": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "runtimeRoles": { "type": "array", "items": { "type": "string" }, "minItems": 1 }
+  }
+}
