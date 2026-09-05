@@ -11,7 +11,7 @@ As leis vigentes são [invariants.md](../invariants.md), sobretudo INV-02–10, 
 | Referência | Significado preservado | Limite desta proposta |
 | --- | --- | --- |
 | C025 / ZN-0038 | Case de identidade vincula candidatos autorizados, fonte/base e resposta; mudança relevante antes da resposta produz `Stale`, sem atribuição nem candidato oculto. | Par indicado manualmente; não existe busca de candidatos, fuzzy match, paciente ou integração clínica. |
-| C024 / ZN-0039 | Merge é declaração versionada e reversível; fontes conservam seus assuntos; autorização não é união de grants; cuts antigos conservam a visão anterior. | Um par dentro do mesmo World e uma interpretação privada. Grants por assunto/fonte e identidade entre Worlds não estão disponíveis. |
+| C024 / ZN-0039 | Merge é declaração versionada e reversível; fontes conservam seus assuntos; autorização não é união de grants; cuts antigos conservam a visão anterior. | Componentes transitivos dentro do mesmo World e uma interpretação privada. Grants por assunto/fonte e identidade entre Worlds não estão disponíveis. |
 | C024 / ZN-0040 | Split acrescenta contradecisão e linhagem; invalida decisões dependentes e mantém história explicável; não adivinha o destino de derivados ambíguos. | Consumidores atuais são Frames, comparação e Cases de correção. Purchase Cases, Watches e datasets derivados do requisito amplo ainda não existem. |
 
 O incremento não conclui C024, C025 ou D02 completos. Também não conclui apagamento, restore, stewardship compartilhado, identidade genérica de entidades ou D07. Conserva `d01-local-retained-v1`, realm `live`, propósito `personal-records`, dados admitidos não sensíveis, Better Auth, PostgreSQL e S3 atuais. Não precisa de modelo, diretório externo, Fly ou outro provider novo.
@@ -27,145 +27,189 @@ O incremento não conclui C024, C025 ou D02 completos. Também não conclui apag
 | Confirmação e undo | [propose.ts](../../packages/authority/src/knowledge/corrections/propose.ts), [answer.ts](../../packages/authority/src/knowledge/corrections/answer.ts) e [undo.ts](../../packages/authority/src/knowledge/corrections/undo.ts) usam base retida, consequência exata e eventos compensatórios. | Reusar o executor e a fronteira de commit; não criar um fluxo de confirmação que escreva direto no banco. Não fingir que o shape de uma correção de valor já representa identidade. |
 | Compartilhamento | [d03-sharing.md](d03-sharing.md) concede evidências/claims do World e exclui interpretações, Questions e Frames privados do owner. | Fazer o viewer consumir uma associação privada alteraria sua observação e a audiência já admitida. A primeira proposta mantém essa declaração privada. |
 
-## Recorte recomendado: declaração privada de um par em intervalo explícito
+## Recorte recomendado: grafo privado com identidade transitiva
 
-Um assunto deste incremento é a âncora **`(WorldRef, subjectKey literal)` já presente em claims admitidas**. `PrincipalRef`, `user.id`, email de login, sessão, nome de pessoa, identidade de registro da fonte e assunto de domínio permanecem conceitos diferentes. Não criar um cadastro paralelo de usuários ou traduzir um `subjectKey` em conta. Chaves iguais em Worlds distintos não são o mesmo assunto. Chaves diferentes com nomes parecidos também não são equivalentes por inferência.
+Esta revisão escolhe **G: fechamento transitivo completo dentro do escopo autorizado**. Substitui a proposta anterior de pares isolados. A=B e B=C implicam A=C; aceitar as duas primeiras relações e ignorar a terceira seria incorreto. Os limites operacionais abaixo rejeitam a operação inteira quando necessário; não alteram essa lei.
 
-O owner informa exatamente duas chaves distintas do mesmo World e um `DateInterval` civil não vazio, com início inclusivo e fim exclusivo. Ambas precisam ter evidência admitida observável por ele. Ausência não cria um assunto, alias ou placeholder automaticamente. O par é normalizado em ordem determinística de bytes para comparação/digest; essa ordem não atribui precedência semântica a uma fonte.
+Uma âncora é `(WorldRef, subjectKey literal)` já presente em claims admitidas observáveis pelo owner. `PrincipalRef`, login, email, nome de pessoa e identificador de registro da fonte são conceitos distintos. Nenhuma operação cria conta, alias ou assunto sem evidência. Worlds distintos nunca são unidos. O owner indica manualmente uma ou duas âncoras e um `DateInterval` civil finito, não vazio, com início inclusivo e fim exclusivo. Não há descoberta fuzzy, ranking, LLM ou associação por nomes parecidos.
 
-**Recomendação temporal:** admitir somente declarações com intervalo explícito. Para o mesmo par, intervalos iguais podem receber nova decisão ou undo; intervalos disjuntos convivem; intervalos sobrepostos e diferentes ficam `Unsupported` até existir uma operação explícita de particionamento. Não estender setembro a outubro, não inferir identidade por intervalo desconhecido e não transformar campo ausente em “todos os tempos”. Split parcial de uma declaração exige outro incremento; este split usa o intervalo exato confirmado.
+Toda declaração pertence a um único World, autor e propósito. Em cada instante do intervalo:
 
-**Recomendação de tamanho, ainda não autorizada:** trabalhar com pares isolados. Cada âncora participa de no máximo um par com declaração efetiva (`same-as` ou `different-from`) em qualquer instante. Não admitir A=B e B=C com sobreposição temporal, nem A≠B e B≠C nesse mesmo recorte, nem escolher uma aresta para remover. Um terceiro vínculo que violaria esse limite fica `Unsupported` antes do commit, após autorização. `unknown` não cria vínculo nem reserva a âncora. A equivalência simétrica A=B/B=A é a mesma intenção normalizada; a igualdade reflexiva de uma âncora consigo mesma já é literal e não cria Case. O limite abrange também distinções para não aparentar uma teoria global de identidade enquanto se ignora a substituição de iguais em relações com terceiros.
+- Arestas positivas `same-as` formam componentes conexos. Igualdade é reflexiva, simétrica e transitiva. Ciclos são permitidos e preservados como declarações distintas; remover uma aresta não necessariamente desfaz uma igualdade.
+- Uma aresta negativa `different-from` exige que seus extremos estejam em componentes positivos diferentes. Sua distinção vale entre os dois componentes por substituição de iguais, sem se tornar transitiva: A≠B e B≠C não implicam A≠C.
+- Um par sem caminho positivo e sem distinção entre seus componentes é `unresolved`. `unknown` é uma resposta humana, não uma aresta nem uma prova de diferença.
+- Uma aresta negativa interna a um componente positivo é contradição proibida no commit. Não escolher silenciosamente a declaração mais nova, eliminar uma aresta negativa, limitar o caminho explorado ou mostrar simultaneamente “mesmo” e “diferente”. Um estado persistido inconsistente falha fechado; não é tratado como ambiguidade resolvida por heurística.
 
-### Decisão necessária: pares isolados ou fechamento transitivo
+Uma relação temporal não se estende por analogia a outro período. Intervalos parcialmente sobrepostos são permitidos, com células temporais explícitas. Intervalo desconhecido de claim não vira identidade eterna nem período conhecido. Novas claims dessas mesmas âncoras podem participar de uma leitura futura dentro do intervalo declarado; o Case deve explicar esse efeito. A declaração não escolhe valor verdadeiro, confirma pagamento ou transmite correção de uma âncora a outra.
 
-Esta restrição é uma **escolha de alcance de produto proposta**, não uma consequência das leis existentes, da infraestrutura ou do nome `same-as`. A relação de identidade não pode deixar de ser transitiva por conveniência: se um produto aceitar A=B e B=C no mesmo World/autor/intervalo, precisa tratar A=C coerentemente, inclusive em distinções, representantes, comparação e split. A opção de pares evita admitir essa segunda aresta; não a aceita para depois ignorar seu significado.
+## Audiência, fechamento e limites completos
 
-| Alternativa a decidir | Efeito em Frame/Question e reversão | Relação com o requisito amplo |
-| --- | --- | --- |
-| P — pares isolados, recomendada para este primeiro incremento | Frame/Question contêm exatamente duas âncoras e um intervalo. Toda relação efetiva a terceiro que se sobreponha impede a proposta/confirmação. Split/undo afetam somente o par previamente congelado. Cases concorrentes protegem a ausência de terceiro vínculo. | Entrega uma fatia local de C024/C025. É deliberadamente mais restrita que a resolução de sujeitos/representantes e fechamento de impacto de SPEC-006; não recebe o selo dessas capacidades completas. |
-| G — grafo com fechamento transitivo | Frame/Question precisam expor e vincular todos os componentes autorizados afetados, distinções incompatíveis, efeitos da união, arestas e partição de split; remover uma aresta pode não separar nada quando existe outro caminho. Undo precisa revalidar todo esse fechamento e nunca separar automaticamente um subconjunto não confirmado. | Aproxima o significado amplo preservado, mas exige contrato adicional de conflito entre same/different, ciclos, identidade temporal, limite de componente e split como partição explícita. Não é trabalho autorizado por esta proposta. |
+A declaração, o Case, o Frame, a Question, o receipt e sua explicação são privados do **principal autor, owner ativo do World, no propósito admitido**. Viewers D03 continuam usando `Inspect` literal e `OpenEvidence` com os direitos atuais; não consomem essa interpretação. Publicar identidade para viewers exige outro contrato. Não criar papel `steward`, capability fornecida pelo cliente, união de grants ou autenticação paralela.
 
-O roadmap mantém merge/split e stewardship como incrementos próprios. O catálogo fala em compute do representante sob cut e recalcular dependentes, não impõe pares isolados. Portanto root precisa aceitar P como entrega parcial ou escolher G e devolver o contrato à elaboração. Não transformar P em definição permanente de C024, nem publicar `same-as` como API geral com suporte silenciosamente incompleto. Quando houver ampliação, a semântica dos Frames/Questions P já salvos continua exata; não acrescentar terceiro membro retroativamente por fechar o grafo atual.
+Autorização antecede lookup, travessia, contagem, quota e replay. A leitura começa nas âncoras indicadas e calcula, sob um snapshot, o menor conjunto fechado por **todas as arestas positivas e negativas efetivas que intersectam o intervalo consultado**, do mesmo World/autor/propósito. Cada extremo encontrado entra no conjunto e expande novamente ambas as espécies de aresta até ponto fixo. Isso inclui componentes vizinhos ligados por distinções e seus caminhos positivos; não depende só do caminho escolhido entre as duas sementes. Claims e evidências de todas as âncoras desse fechamento entram integralmente no Frame, respeitando a seleção temporal vigente e preservando as de período desconhecido como tais. O fechamento espacial cobre a união dos membros relevantes em todo o intervalo, mesmo que uma aresta exista somente em parte dele.
 
-A declaração é de identidade de domínio **naquele intervalo**, não uma regra de correção ou classificação. Novas claims admitidas posteriormente para essas mesmas âncoras podem ser comparadas sob a declaração em uma nova leitura, apenas na interseção com o intervalo declarado. A confirmação precisa dizer isso. A associação não passa para outro assunto, predicado, World, autor, período ou definição por analogia.
+A consulta exclui declarações de outros autores/Worlds **antes** do cálculo do fechamento e dos limites. Referências privadas alheias retornam `NotFoundOrDenied`. Leitura/replay reautorizam e passam pelo mesmo fence de divulgação; revogação vencedora impede a entrega preparada. Não revelar revisão privada, quantidade de Cases ocultos, digest oculto ou “há uma associação que você não pode ver”. O modelo atual de ACL por World não prova ACL distinta por assunto/fonte do requisito amplo.
 
-## Audiência e autoria propostas
+Orçamento candidato de uma operação, a ratificar antes de código: **32 âncoras no fechamento completo; 128 segmentos efetivos de asserção; 64 células; 200 claims no conjunto completo (`D01_LIMITS.frameClaims` atual); 256 pares de claims por célula; 512 itens de efeito em uma decisão**. Um segmento é uma parte contínua de uma asserção após aplicar retiradas vigentes; vários segmentos da mesma asserção contam separadamente. Pares de comparação são todos os pares não ordenados de claims que precisam ser examinados, sem poda por resultado conhecido; 200 claims não garantem caber nesse segundo limite. Os limites atuais de bytes de fonte permanecem. Esses números são proposta de produto, não benchmark nem admissão de capacidade.
 
-A audiência recomendada da declaração, do Case, da resposta, do receipt e da explicação é **somente o principal autor, owner ativo do World, no propósito atual**. Não incluir a declaração automaticamente na concessão D03 de evidências/claims. Não publicar o ID do autor nem o receipt privado como justificativa para outro principal. Se o produto quiser que uma associação governe a leitura dos viewers, será outra decisão explícita de audiência e outro contrato de publicação; não uma consequência implícita deste documento.
+Ultrapassar qualquer limite retorna `QuotaExceeded` para a leitura/proposta inteira, sem Frame ou Question parcial, truncamento, ranking ou paginação interpretada como fechamento completo. A travessia pode parar ao testemunhar excesso, mas não devolver um subconjunto como resultado. Propostas e confirmação também verificam o fechamento prospectivo e seus limites. Não gravar um estado cujo fechamento após a mutação já excede os limites desta família. Uma decisão não pode contornar o limite dividindo silenciosamente o consentimento em commits parciais.
 
-| Ação/observação | Owner autor atual | Viewer | Ausente/revogado/outro World |
-| --- | --- | --- | --- |
-| `Inspect` literal e `OpenEvidence` existentes | Com os direitos atuais | Com os direitos atuais de D03 | Negação uniforme |
-| Preparar, resolver, explicar ou desfazer a declaração privada | Permitido pelo executor após autorização e guards | `NotFoundOrDenied`, inclusive replay e referências conhecidas | `NotFoundOrDenied` |
-| Frame/Question/receipt privado de outro autor | Negado | Negado | Negado |
-| Leitura identity-aware deste incremento | Somente interpretação do autor atual | Não disponível neste recorte; a leitura literal permanece | Negado |
+## Tempo, representantes e comparação
 
-O papel `owner` já existente exerce essa revisão local; não adicionar `steward` como papel oculto, capability enviada pelo browser ou login SQL. A autorização antecede lookup do Case, consulta de candidates e resolução de relações. Leitura e replay reautorizam e usam o mesmo fence de divulgação; revogação de World/sessão pode impedir até uma explicação preparada. A associação nunca amplia grants, altera memberships ou mistura fontes de outro World. Não anunciar que o recorte de ACL por World prova o caso amplo de dois assuntos com ACLs de fonte diferentes.
+A leitura divide o intervalo consultado em células não vazias determinadas por seus extremos, por todos os extremos de segmentos efetivos do fechamento e por todos os extremos de períodos conhecidos das claims observadas que caiam dentro da consulta. Ordenam-se datas civis e recortam-se esses eventos à consulta. Células adjacentes só podem ser reunidas se o grafo efetivo com referências/linhagem e o conjunto de claims com cobertura temporal forem idênticos; preservar uma fronteira redundante também não autoriza exceder o orçamento. Essa decomposição é determinística no cut.
 
-A contraprova de privacidade deve comparar viewers antes/depois de declarações privadas do owner: conteúdo literal, seleção, contestação, contagens, ordenação, erros e headers permitidos não mudam por essas declarações. Não retornar revisão global de identidade, digest de candidatos ocultos, número de Cases privados ou aviso de “associação oculta”. IDs novos aleatórios de Frame podem ser normalizados somente como na prova D03, sem remover campos funcionais.
+Em cada célula, o Frame contém os componentes positivos completos, as distinções entre componentes, as claims com suporte temporal e comparações. O representante é a menor `subjectKey` em ordem lexicográfica de bytes UTF-8 de cada componente **naquela célula**. É projeção explicativa, nunca novo ID de origem, redirect, conta ou parâmetro autoritativo de escrita. Não existe um representante ou badge de identidade global se a consulta cruza estados diferentes.
 
-## Leitura e efeito na comparação
+Claims conservam `claimRef`, `evidenceRef`, `sourceRef`, `source`, `recordId`, `recordIndex`, `subjectKey`, valor, período original e `verification`. Bytes/digest/localização S3 e pins não mudam. Uma comparação recebe explicitamente a equivalência e a célula; não reescreve `VisibleClaim.subjectKey` para passar pelo comparador literal. Para ser comparável, o par exige mesmo predicado admitido, valores conhecidos, moeda/unidade compatível e cobertura temporal conhecida de ambas as claims naquela célula, além de âncoras iguais ou equivalentes. Distinção explícita e identidade não resolvida são motivos diferentes de não comparabilidade. Período/valor desconhecido permanece desconhecido; não se inventa zero, sobreposição ou seleção.
 
-Recomenda-se uma **operação de leitura explícita de par** na nova família, mantendo `Inspect` D01 literal e seu DTO inalterados neste incremento. A nova leitura recebe as duas âncoras e o intervalo; devolve um Frame privado próprio, contendo as claims originais de cada lado, a relação efetiva naquele cut/intervalo e a explicação da comparação. Não aceitar esse novo tipo de Frame silenciosamente como Frame D01 de correção.
+Exemplo: A afirma 100 BRL e B 120 BRL, ambos cobrindo setembro/outubro. A=B em setembro e A≠B em outubro. Uma consulta de 15/09 a 15/10 apresenta ao menos `[15/09,01/10)` com comparação divergente e `[01/10,15/10)` com assuntos distintos, sem um único badge para todo o intervalo. As duas claims continuam mostrando seus períodos originais completos. A explicação informa a célula em que a comparação vale; merge não elege 100 nem 120. Claims de período desconhecido ficam na coleção original e são explicitamente excluídas das comparações temporais verificadas.
 
-1. As claims conservam `claimRef`, `evidenceRef`, `sourceRef`, `source`, `recordId`, `recordIndex`, `subjectKey`, valor, período original e `verification`. Os bytes/digest/localização S3, pins de origem e atribuição da fonte não mudam.
-2. Sem decisão, a relação entre as duas chaves é **não resolvida**. Isso não afirma “diferentes”. O Frame mantém os lados separados; não cria conflito entre eles apenas porque os valores divergem.
-3. `different-from` confirmado mantém os lados separados no intervalo; valores diferentes não são conflito entre o mesmo assunto. Não deduzir igualdade com um terceiro por exclusão.
-4. `same-as` confirmado permite tratar somente esses dois assuntos como equivalentes na comparação, dentro do intervalo declarado. É uma condição de comparabilidade, não seleção da verdade: predicado, moeda/unidade, escopo e tempo continuam necessários. Para duas claims, a interseção de seus períodos conhecidos com o intervalo consultado precisa ser não vazia. Fora desse intervalo não há conclusão de identidade desta declaração; períodos desconhecidos não ganham sobreposição por inferência.
-5. Exemplo: A afirma `100 BRL` e B afirma `120 BRL`, ambas para setembro. Sem relação, são duas observações de assuntos não resolvidos entre si. Após `same-as` em setembro, a comparação em setembro pode marcar divergência e permanecer `unresolved`; não elege 100 nem 120. Após split, a comparação nova volta a manter os assuntos separados. Um Frame salvo durante o merge continua explicando a divergência que exibiu.
-6. A apresentação identity-aware deve explicitar **o intervalo a que sua comparação se aplica**. Não reutilizar um badge global D01 como se o merge valesse durante todo o período original de cada claim. A decisão de schema do novo resumo comparativo é gate: preservar distinção entre não comparável, desconhecido e conflito; não inventar `selected` quando parte do intervalo não tem suporte.
+`Inspect` D01 continua literal, com DTO público inalterado. A nova leitura privada não altera a observação do viewer, nem usa um Frame de identidade como Frame D01 de correção. `atFrame` retorna exatamente o Frame histórico autorizado, sem recalcular grafo, fontes ou representante atual.
 
-O representante, se necessário na explicação privada, é uma projeção do par no cut e intervalo: durante `same-as`, a menor chave em ordem de bytes serve apenas como representante determinístico; antes/depois, cada chave representa a si. Não é novo identificador de origem, não é redirect persistente e não muda o parâmetro exigido para abrir um Frame histórico. O cliente não o envia como substituto de uma claim.
+## Shapes candidatos e consentimento
 
-A comparação nova consome uma equivalência explícita, com referência/escopo, sem reescrever os objetos de fonte para passar pelo teste de igualdade literal existente. Os limites existentes de claims/bytes continuam a valer sobre **o conjunto completo do par**; ultrapassar o limite retorna `QuotaExceeded`, sem truncar candidatos e fingir que a lista exibida é a base completa. Não acrescentar ranking, probabilidades, similaridade, inferência de nome/email ou LLM.
+Os nomes e shapes seguintes tornam a proposta revisável; **não são API congelada, endpoints admitidos ou código executável**. Tipos primitivos usam os contratos existentes. `Ref`, digest, cut, representante e consequências são emitidos pelo executor, nunca autoridade escolhida pelo cliente. Datas e pares têm serialização canônica. IDs de célula referenciam a decomposição exata do Frame; a ordem dos arrays é canônica e entra no digest.
 
-## Case de ambiguidade e ciclo de decisão
+```text
+InspectSubjectIdentity {
+  worldRef, anchors: [subjectKey] | [subjectKey, subjectKey], interval,
+  atFrame?: IdentityFrameRef
+}
+IdentityFrame {
+  kind: "subject-identity", frameRef, worldRef, requestedAnchors, interval,
+  audience: "private-author", claims: [VisibleClaim original],
+  closureAnchors: [subjectKey], assertionSegments: [
+    { assertionRef, decisionRef, relation: "same-as" | "different-from",
+      left, right, effectiveInterval, withdrawalRefs }
+  ],
+  cells: [{ cellRef, interval,
+    components: [{ representative, members: [subjectKey] }],
+    distinctions: [{ leftComponent, rightComponent, assertionRefs }],
+    comparisons: [{ leftClaimRef, rightClaimRef,
+      status: "agree" | "conflict" | "not-comparable" | "unknown",
+      reasons, identitySupportRefs, interval }]
+  }]
+}
+ProposeIdentityResolution { frameRef, left, right, operationId }
+ProposeIdentitySplit {
+  frameRef, anchor,
+  partitionsByCell: [{ cellRef, blocks: [[subjectKey]] }], operationId
+}
+ProposeIdentityUndo { frameRef, targetDecisionRef, operationId }
+IdentityQuestion {
+  kind: "identity-resolution" | "identity-split" | "identity-undo",
+  questionRef, caseRef, frameRef, interval, consequenceDigest,
+  alternatives: [{ answer, effectItems, afterCells, impact }],
+  blockedAlternatives: [{ answer, reason, supportingRefs }]
+}
+ResolveIdentity { questionRef, consequenceDigest, answer, operationId }
+EffectItem =
+  Assert { relation, left, right, interval }
+  | Withdraw { assertionRef, interval }
+  | UndoEffect { targetEffectRef }
+```
 
-Os nomes abaixo são rótulos candidatos para revisão, **não endpoints ou schemas congelados**. Reusar envelopes fechados, `WorldRef`, `OperationId`, erros existentes e `HttpApiClient` na mesma composição; a família e o versionamento público precisam ser definidos no gate final.
+`reasons` é enum fechado a definir no gate de schema: identidade não resolvida, assuntos distintos, predicado diferente, moeda/unidade incompatível, valor desconhecido ou período desconhecido; não texto livre de decisão. `agree/conflict` só existe com todos os requisitos de comparação satisfeitos. `identitySupportRefs` inclui caminhos/asserções necessários e, para distinção, seu suporte; o Frame também contém o fechamento completo, sem depender da escolha de um caminho para guardar a base. Comparações de mesma âncora não exigem aresta positiva. Nenhum status equivale a valor selecionado ou fato aprovado.
 
-| Passo candidato | Intenção que precisa estar explícita | Resultado e compromisso |
-| --- | --- | --- |
-| `InspectIdentityPair` | Par literal, intervalo; opcionalmente uma referência de Frame próprio histórico. | Frame privado com fontes/claims originais e relação efetiva. Não escreve uma declaração de identidade. |
-| `ProposeIdentityResolution` | Referência do Frame de par exibido e `operationId`. | Case/Question privado com o conjunto exato de alternativas `same-as`, `different-from`, `unknown`, seus efeitos e digest. Nenhuma alternativa pré-selecionada. |
-| `ResolveIdentity` | Question exata, digest da consequência/alternativas liberadas, escolha e `operationId`. | Confirma a alternativa no mesmo commit ou retorna `Stale`/erro fechado. `unknown` registra a resposta, sem atribuir identidade. |
-| `UndoIdentityAssertion` | Referência exata da declaração efetiva, Frame de par recém-inspecionado e `operationId`. | Nova contradecisão com vínculo ao alvo e estado anterior; não apaga a declaração, nem usa um cut antigo como autorização atual. |
+O estado privado retido com Frame/Question inclui base versionada completa, fonte/digest/pins, autor/propósito e predicados de presença e ausência do fechamento. Não se exige expor `InternalBasis` na DTO. `afterCells` mostra o estado prospectivo integral do fechamento relevante, com as mesmas regras temporais e de comparação; a união das fronteiras do antes/depois permite comparar os efeitos sem perder subintervalos. `impact` enumera invalidação conservadora de Cases pendentes, preservação de correções literais e Frames históricos, e aplicação a novas claims das mesmas âncoras no intervalo. Nenhuma alternativa vem selecionada.
 
-O Case congela autor, propósito, World, par normalizado, intervalo, Frame, fontes e digests, relação atual, alternativas permitidas, consequência de cada alternativa e a base completa. A UI/CLI mostra que `same-as` afeta a comparação atual e futuras leituras das mesmas âncoras dentro do intervalo, e que o efeito é privado. Uma mudança de alternativa depois de responder com o mesmo `operationId` é `Conflict`; não gerar um segundo ID automaticamente no retry.
+Uma proposta não altera identidade. O Case congela alternativas permitidas, efeitos exatos e impedimentos. `ResolveIdentity` só aceita uma alternativa exibida no digest e preserva a intenção nos retries. Mesmo `operationId` com intenção diferente retorna `Conflict`; não gerar outro ID automaticamente. `unknown` fecha o Case com resposta auditada, receipt/outbox, sem efeito de identidade e sem apagar relação existente. Um impedimento não é alternativa executável.
 
-A resposta deve corresponder a uma alternativa que já foi exibida e incluída no digest. Se a revisão optar por uma proposta com uma única consequência e respostas `confirm/unknown`, é necessário reconfirmar esse desenho antes de congelar a API; não reutilizar o Question de correção atual sem distinguir as duas semânticas.
+### Resolução de igualdade ou diferença
 
-| Relação efetiva no intervalo | Resposta `same-as` | Resposta `different-from` | Resposta `unknown` |
-| --- | --- | --- | --- |
-| Não resolvida | Acrescenta associação | Acrescenta distinção explícita | Registra desconhecimento; continua não resolvida |
-| `same-as` | Reafirmação auditada, sem nova mudança efetiva | Acrescenta contradeclaração ligada à associação: split | Registra desconhecimento; não desfaz a associação existente |
-| `different-from` | Acrescenta associação ligada à distinção anterior | Reafirmação auditada, sem nova mudança efetiva | Registra desconhecimento; não apaga a distinção existente |
+A Question de resolução trata exatamente o par indicado, em **todo o intervalo do Frame**, mas mostra o fechamento transitivo afetado em todas as células. Oferece `same-as`, `different-from` e `unknown` quando viáveis; alternativas impossíveis aparecem bloqueadas com motivo e suporte privado. A viabilidade é avaliada em todas as células. Se apenas parte do intervalo admitir a opção, ela fica bloqueada inteira; nova consulta/proposta com intervalo escolhido pelo humano é necessária.
 
-Reafirmação e `unknown` resolvem o Case e recebem receipt/outbox próprios, sem fingir transição efetiva de identidade. Repetir a mesma operação retorna exatamente o receipt original após reautorização. Um receipt antigo de merge, replayado depois do split, não recompõe a associação. Estado atual é obtido por nova leitura do par.
+`same-as` acrescenta asserção positiva direta nos subintervalos ainda não cobertos por uma asserção direta positiva do mesmo par. Isso pode acrescentar uma aresta de ciclo mesmo quando já há igualdade transitiva; a nova declaração e seu undo são efeitos reais. Onde a aresta direta já cobre o período, não duplica efeito. Uma distinção entre os componentes em qualquer célula bloqueia a alternativa (`ConflictingDistinction` candidato); não a retira implicitamente.
 
-Undo só pode mirar a declaração ainda efetiva naquele escopo, conhecida pelo Frame atual. Acrescenta uma contradecisão que restaura a relação efetiva anterior, ou ausência de resolução se não havia anterior. Desfazer uma distinção que havia dividido o par pode voltar a associá-lo: isso deve estar explícito na confirmação. Não equivale a apagar evidência ou “esquecer” a decisão. Se intervenções posteriores mudaram a base ou o alvo já não está efetivo, retorna `Stale`; nova inspeção e intenção são necessárias. O evento de undo não vira um alvo implícito para uma cadeia ilimitada de inversões; o próximo alvo vem da nova projeção efetiva, como na correção atual.
+`different-from` acrescenta asserção negativa direta onde não existe a mesma asserção direta efetiva. Se os extremos estão no mesmo componente em qualquer célula, a alternativa é bloqueada (`RequiresPartition` candidato), mesmo que exista uma aresta direta fácil de remover. Uma distinção já inferida por substituição não impede registrar uma nova asserção direta; essa redundância tem autoria/undo próprios. Igualdade literal reflexiva não abre Case para criar distinção.
 
-## Commit, guards e compatibilidade histórica
+A ausência de delta direto em todo o intervalo é reafirmação auditada, sem avanço do domínio de identidade. Se qualquer item muda o conjunto de asserções efetivas, inclusive aresta de ciclo ou negativa redundante, avança esse domínio, ainda que a partição de equivalência não mude. Uma inconsistência não é corrigida pela resposta `unknown`. Para mudar uma decisão incompatível, o humano examina e confirma undo ou split explícito, depois prepara outra resolução sob nova base.
 
-Todos os passos semânticos usam o mesmo executor e o mesmo `commitMutation` SERIALIZABLE, locks em ordem comum, identidade de operação por principal/World/operação, reautorização anterior ao replay, receipt e outbox atômicos. Nenhum cálculo de candidatos depende de rede ou modelo dentro da transação. Mantém-se o limite atual de três tentativas totais para serialização/deadlock; retry não renova o consentimento nem muda as alternativas.
+### Split é partição explícita de todo o componente
 
-A base precisa capturar fontes admitidas dos dois lados, predicados de claims de ambos, presença/membership, head e todos os domínios atuais. Também precisa capturar relação/versão e ausência de associação conflitante que justificam admitir o par. Guardar só as duas linhas já existentes não protege um terceiro vínculo inserido entre pergunta e resposta. A decisão inteira deve ser revalidada sob os locks comuns, incluindo esse predicado de ausência.
+O owner escolhe uma âncora e entrega uma partição para **cada célula do Frame**. Em cada célula, os blocos precisam ser não vazios, sem repetição, disjuntos e cobrir exatamente todos os membros do componente positivo daquela âncora. Não podem omitir membro, incluir estranho ou escolher só as sementes. Uma célula pode conservar um bloco único, mas ao menos uma célula precisa ter separação real. Se setembro contém AB e outubro ABC, as partições são enumeradas separadamente; não se reutiliza silenciosamente a lista AB em outubro. Não inferir para onde C deve ir.
 
-**Recomendação de versionamento a revisar:** acrescentar um domínio explícito de identidade e uma nova versão privada de `InternalBasis`/dependências. Todo Frame novo conserva o `DomainCut` completo; não tirar `cases`, `membership` ou outros domínios para evitar `Stale`. Toda transição efetiva/undo de identidade avança o domínio de identidade uma vez; criar/resolver Case avança `cases`. Reafirmação/unknown não avançam a revisão efetiva de identidade, mas conservam o evento de Case/receipt/outbox. A implementação deve tornar essa disciplina verificável em todos os writers.
+A proposta calcula e mostra todos os itens necessários:
 
-Isso exige uma solução de compatibilidade **antes** da migração:
+1. Retirar, por `Withdraw(assertionRef, intervalo recortado)`, **todas** as asserções positivas efetivas que cruzam blocos na célula, inclusive arestas redundantes e ciclos. Preservar as arestas internas aos blocos. Retirada é evento append-only; não editar o intervalo original da asserção.
+2. Acrescentar distinções diretas para todos os pares de âncoras em blocos diferentes naquela célula. Esse conjunto explícito dá significado durável ao split e consome o orçamento de efeitos; não é uma amostra ou apenas uma árvore entre blocos. Intervalos adjacentes do mesmo item podem ser coalescidos canonicamente sem alterar efeito.
+3. Recalcular o fechamento prospectivo completo. Seus componentes positivos precisam ser **exatamente os blocos propostos** dentro do componente original, mantendo o restante intacto. Se um bloco proposto não ficar conectado após as retiradas, a proposta é inválida (`InvalidPartition` candidato); o executor não acrescenta igualdade interna que o humano não propôs. A UI pode mostrar a partição viável a partir do grafo, mas não escolher por ele.
+4. Verificar ausência de contradição com todas as distinções vigentes e mostrar comparação/representantes após a mudança. Asserções, comparações e componentes fora do intervalo do split permanecem iguais. O Frame histórico conserva o estado anterior.
 
-- Bases antigas com os cinco domínios, Frames visíveis antigos, Questions, receipts e bytes de fonte ficam intactos. Não preencher retrospectivamente `identities: 0` ou outra revisão, não recalcular digest/read set e não “atualizar” a base guardada para fazê-la passar.
-- O leitor versionado reconhece a representação privada antiga como tal. Um novo ato que exija identidade não pode derivar consentimento dela: retorna `Stale` e pede uma nova leitura. Não transformar incompatibilidade de versão em `Unavailable` permanente, nem quebrar a leitura histórica autorizada.
-- Replay de operação já registrada conserva resultado histórico exato e precede a rejeição de base obsoleta, após autorização. Os handlers atuais carregam Frames/Cases antes de parte do caminho de replay; essa ordem precisa ser revisada ao ampliar o decoder para não inviabilizar receipts antigos.
-- Ler `atFrame` continua devolvendo o Frame salvo do mesmo principal, World, propósito e âncora/par/intervalo, sujeito aos direitos atuais. Não misturar claims novas, relações atuais ou representante novo no Frame antigo. O formato público de Frame D01 não recebe campos obrigatórios retroativos.
-- A alternativa de reaproveitar apenas `cases` como domínio de todas as mudanças de identidade é possível somente se revisada com todos os writers/readers e a prova de ausência. Não a assumir como atalho para deixar `ReadSet.identities` fictício ou ignorado. A recomendação acima torna a dependência explícita e assume o custo de compatibilidade. Nenhuma das duas alternativas dispensa a prova de que todo writer de identidade invalida os Cases que dependem dela.
+A Question de split oferece `confirm` e `unknown`, com a partição por célula, cada asserção retirada, subintervalo e nova distinção no digest. “Separar A e B” sem essa partição não é consentimento suficiente para separar C, nem autorização para manter A=B por um caminho alternativo oculto. Confirmar aplica o conjunto inteiro atomicamente.
 
-O próprio Case recém-criado não deve se tornar `Stale` pela sua inserção. Só é permitido avançar na base guardada o incremento de `cases` que essa mesma proposta acabou de causar, de forma análoga à correção atual; nenhum cut externo, fonte, relação ou alternativa é renovado. Uma importação nova, alteração de membership, correção concorrente ou declaração de identidade posterior continua invalidando conservadoramente a base conforme o cut completo.
+### Undo é inversão explícita de efeitos, com nova revalidação
 
-## Split e fechamento de impacto no recorte atual
+Cada decisão aplicada possui itens de efeito imutáveis identificados. `ProposeIdentityUndo` recebe um Frame novo e o ID exato de uma decisão aplicada de resolução ou split, do mesmo autor/World/propósito. O Frame precisa cobrir todo o intervalo e fechamento afetados pelo alvo; intervalo menor ou âncoras insuficientes não autorizam undo parcial. A proposta enumera a inversão de **todos** os itens do alvo e o estado prospectivo atual. Não aceita um evento de undo como alvo nem inventa uma cadeia de redo.
 
-O split não particiona linhas físicas, não troca `claims.subject_key`, não renomeia fontes e não distribui objetos derivados por heurística. O estado novo deriva dos eventos de identidade no novo cut; os eventos anteriores e a cadeia de undo permanecem explicáveis.
+A inversão desativa, por novo evento, as asserções criadas pelo alvo e cancela as retiradas pertencentes ao alvo. Não apaga asserções ou máscaras históricas; uma asserção só reaparece onde não houver outra retirada ainda efetiva. O alvo já desfeito, sem efeito de identidade ou cujas asserções adicionadas tenham sido retiradas por decisão posterior retorna `Stale`; não há inversão parcial silenciosa. Outras decisões posteriores podem coexistir, mas sua base e suas consequências entram na nova inspeção.
 
-- **Comparação nova:** considera o par separado no intervalo; marca falta de resolução quando não há declaração aplicável. Não conserva um resultado combinado como fato atual após remover a sua base de identidade.
-- **Frames salvos:** preservam o representante, o escopo e a explicação que possuíam, com pins necessários. Seu histórico não é reprocessado pelo split.
-- **Cases pendentes de correção/identidade:** mudança de identidade invalida a base completa; resposta antiga retorna `Stale` sem nova declaração/correção. A proposta nova exige nova leitura e confirmação. O indicador “pendente” da UI não é prova de que a base ainda vale.
-- **Correções já aplicadas:** mantêm autoria, assunto literal e intervalo originais. Não herdar a correção de A em B durante merge, não migrá-la de volta durante split e não apagá-la. A nova leitura pode mostrá-las separadamente por âncora ao próprio autor; continuam anotações privadas, não modificações do resultado automático das fontes. Corrigir um resumo combinado permanece fora deste incremento.
-- **Derivados ainda ausentes:** não implementar tabelas vazias de Watches, purchase Cases ou datasets para preencher ZN-0040. Antes de qualquer um desses consumidores existir, ele precisa registrar sua dependência de identidade e provar invalidação/estado `unresolved` quando a atribuição se tornar ambígua. Esta entrega não pode alegar ter fechado esse impacto futuro.
+Undo de A=B em um triângulo A=B, B=C, A=C pode deixar ABC conectado; a Question mostra isso e não chama essa ação de split. Undo de split retira suas distinções e cancela suas retiradas, podendo reunificar o componente. Se a restauração conflitar com outra distinção independente vigente, a proposta fica bloqueada (`ConflictingDistinction`), sem apagar a decisão alheia. A Question de undo oferece `confirm/unknown` e congela a inversão completa. Mudança posterior à Question produz `Stale` na confirmação, mesmo que o alvo ainda exista.
 
-## Contraprovas exigidas antes de liberar código
+Replay do receipt antigo de merge após split/undo retorna o mesmo resultado histórico após reautorização e não reaplica identidade. Nova leitura fornece estado atual. As explicações conservam a linhagem decisão → itens → retiradas/undo e nunca confundem “desfazer esta declaração” com “garantir que estes assuntos agora sejam diferentes”.
 
-Estes são oráculos propostos, **não testes executados**. Funções puras usam entradas sintéticas diretas; efeitos usam PostgreSQL/S3/Better Auth reais, papéis normais e o executor comum. Uma revisão independente precisa preservar a falha antes de qualquer correção relevante.
+## Commit, guards e migração histórica
 
-| ID candidato | Testemunha necessária |
+Todos os passos usam o mesmo executor e `commitMutation` SERIALIZABLE, locks em ordem comum, identidade de operação por principal/World/operação, reautorização anterior ao replay, receipt e outbox atômicos. Mantém-se o limite atual de três tentativas totais para serialização/deadlock. Retry não recalcula consentimento nem muda alternativas. Não há rede/modelo dentro do cálculo transacional de identidade.
+
+A base captura fontes/claims de todo o fechamento, presença/membership, head, todos os domínios vigentes e a dependência de identidade. Deve proteger também a **ausência** de arestas que expandiriam ou contradiriam o fechamento, inclusive nova terceira aresta concorrente. Guardar somente IDs de asserções encontradas é insuficiente. O guard completo de revisão mais predicados versionados deve impedir phantom; sua implementação/locks exigem prova concorrente, não mera declaração no documento.
+
+Recomenda-se novo domínio explícito de identidade e nova versão privada de `InternalBasis`/dependências. Todo Frame novo, inclusive `Inspect` literal D01, recebe internamente o cut completo com os cinco domínios atuais mais identidade; o DTO público D01 não muda. Uma decisão com algum efeito de identidade avança identidade uma vez; criar/resolver Case avança `cases`. Reafirmação/unknown conserva auditoria sem avanço de identidade. O único ajuste permitido na base da própria Question é o avanço de `cases` causado pela própria proposta, como no fluxo atual; não atualizar fonte, head, membership, identidade ou consequências.
+
+**A compatibilidade é pré-condição da DDL e abrange todos os atos novos, inclusive correções literais existentes:**
+
+- Bases privadas antigas de cinco domínios permanecem byte a byte intactas, assim como Frames, Questions, receipts, digests e fontes. Não preencher `identities: 0`, recalcular read set ou regravar base antiga.
+- Decoder versionado reconhece e preserva a versão antiga para leitura histórica. Qualquer **novo ato dependente de base antiga**, incluindo propor/responder/desfazer correção literal D01, retorna `Stale` após verificar replay autorizado. Isso exige uma nova inspeção com base completa. Não limitar esse guard à nova família de identidade, nem transformar versão antiga em `Unavailable` permanente.
+- Operação já registrada é reautorizada e replayada exatamente **antes** da rejeição da base antiga por obsolescência. Se handlers carregam Frame/Case antes do caminho atual de replay, precisam manter decodificação histórica e evitar validar a base como ato novo nesse trecho. ID igual com intenção diferente continua `Conflict`.
+- `atFrame` e leitura histórica autorizada preservam DTO/explicação antiga, sem usar cut atual para recalcular resultado. Uma base antiga legível não se torna base válida para ato novo por isso.
+- Antes da migração, inventariar todos os entrypoints de leitura, proposta, resposta, undo e replay legados; demonstrar a ordem autorização → replay/identidade de intenção → compatibilidade/guards de novo ato. Só depois estender persistência e emitir novas bases. Uma função decoder isolada não fecha essa obrigação.
+
+Não reutilizar silenciosamente `ReadSet.identities` reservado e rejeitado pelos guards atuais. Se o integrador preferir outro mecanismo/domínio, precisa voltar à revisão com prova equivalente para todos os writers/readers, ausência concorrente e histórico; não é exceção tácita a esse contrato.
+
+## Fechamento de impacto atual
+
+O grafo é projeção de eventos no cut; não muda `claims.subject_key`, S3, fontes ou registros. Leituras novas recalculam equivalência/comparação por célula. Frames salvos mantêm seus membros, representante, escopo, pins e explicação. Mudança efetiva de asserções invalida conservadoramente Cases pendentes de identidade e correção pelo cut completo, inclusive quando uma aresta redundante não muda componentes.
+
+Correções já aplicadas conservam autor, assunto literal e intervalo. Não são herdadas de A em B durante merge, migradas no split ou apagadas no undo. A leitura privada pode apresentá-las por âncora; continuam anotações, sem alterar resultado automático das fontes. Corrigir um resumo combinado permanece fora deste incremento.
+
+Purchase Cases, Watches e datasets derivados ainda ausentes não recebem tabelas vazias ou atribuição heurística. Cada futuro consumidor precisa registrar dependência de identidade e provar invalidação/estado não resolvido quando a atribuição ficar ambígua. Este incremento não conclui esse impacto futuro, stewardship compartilhado ou C024/C025 completos.
+
+## Contraprovas propostas antes de implementação
+
+São oráculos candidatos, **não testes executados**. Funções puras recebem entradas sintéticas diretas; efeitos usam PostgreSQL/S3/Better Auth reais, papéis normais e o executor comum. Preservar falha reproduzível e revisão independente; build/análise estática não substituem integração, migração, concorrência ou navegador.
+
+| ID | Testemunha necessária |
 | --- | --- |
-| ID-01 — fonte preservada | Importar A/B por caminhos JSON e CSV atuais; registrar bytes/digests/refs/chaves. Merge, split e undo não alteram nenhuma fonte, claim original, pin histórico ou receipt. `OpenEvidence` continua byte a byte igual. |
-| ID-02 — comparação com escopo | A=100/B=120, mesmo predicado/moeda e períodos sobrepostos: sem relação não há conflito entre assuntos; `same-as` em setembro permite conflito em setembro; split remove essa comparabilidade atual. Outubro, moeda incompatível, período desconhecido e predicado não admitido não são promovidos a conflito válido. |
-| ID-03 — ambiguidade e unknown | Nomes parecidos/chaves distintas não se associam. Case apresenta somente o par autorizado e alternativas exatas. `unknown` não é `different-from` e não desfaz relação já efetiva. Não há seleção default nem inferência por exclusão. |
-| ID-04 — Stale da resposta | Após preparar Case, admitir nova revisão de fonte/claim relevante, alterar membership ou relação. Responder à Question antiga devolve `Stale`; zero evento de resolução, atribuição, receipt/outbox de mutação concluída. Não atualizar digest/oráculo para acomodar a mudança. |
-| ID-05 — ausência e terceira aresta | Dois processos tentam A=B e B=C com intervalos sobrepostos, preparados quando B estava sem vínculo. Nunca resulta grupo de três; no máximo uma transição confirma e a outra fica `Stale` ou, após nova leitura, `Unsupported`. Duplicatas simétricas mantêm o par canônico. |
-| ID-06 — reversibilidade | Não resolvida → same → different → undo restaura same em cut novo, com linhagem; undo de same original restaura ausência quando ainda for o alvo efetivo. Alvo superado/Frame antigo retorna `Stale`. Reafirmação não incrementa revisão efetiva. |
-| ID-07 — receipt histórico | Merge → split → replay exato do merge retorna o primeiro receipt, sem reassociar. Mesmo opID/intenção diferente conflita. Nova associação requer novo Case/base/confirmação. Replays continuam privados e reautorizados. |
-| ID-08 — privacidade | Viewer/terceiro não abre Case/Frame/receipt de identidade mesmo conhecendo IDs. Pares de estados diferindo só nas declarações privadas do owner produzem a mesma leitura literal permitida do viewer, inclusive metadados. Revoke/logout vencedor do fence impede explicação preparada. |
-| ID-09 — impacto atual | Case de correção literal aberto antes do split fica `Stale`; correção já aplicada conserva assunto/autor/intervalo e não é herdada pela outra âncora. Frame antigo conserva comparação/representante antigos. A própria criação do Case não invalida sua única resposta imediata. |
-| ID-10 — atomicidade | SIGKILL nos limites reais de confirmação/undo: evento de identidade, estado do Case, revisões, operação, receipt e outbox aparecem todos ou nenhum. Reinício com mesmos bytes/opID retorna um único resultado. Sem promessa de ACID com S3/identidade. |
-| ID-11 — migração e compatibilidade | Aplicar extensão sobre histórico real das migrações vigentes; comparar linhas antigas, digests e ACLs. Frames/receipts antigos ainda leem/replayam; bases antigas que não podem governar ato novo ficam `Stale`, sem retropreenchimento. Papel de cliente/identity não escreve autoridade. |
-| ID-12 — superfícies e limites | Web/CLI enviam o mesmo par/intervalo/digest/operationId, conservam retry e exigem nova confirmação após `Stale`; UI distingue declaração privada de fato da fonte e receipt de estado atual. Limite do conjunto excedido falha inteiro, sem candidates ocultados pela paginação/truncamento. |
+| ID-01 — fontes | Importar JSON/CSV atuais; registrar bytes/digests/refs/chaves/pins. Merge/split/undo preservam fontes e `OpenEvidence` byte a byte. |
+| ID-02 — transitividade | A=B e B=C tornam A=C no mesmo período, sem reescrever claims. Representante determinístico independe de ordem e orientação das arestas. A≠C impede a união; A≠B/B≠C não infere A≠C. |
+| ID-03 — tempo | Consulta 15/09–15/10 atravessa igualdade em setembro e diferença em outubro: células e comparações distintas, períodos originais intactos. Sobreposição parcial, fronteira exclusiva e claims de período desconhecido não ganham badge global. |
+| ID-04 — comparação | A=100/B=120 só conflitam em célula com igualdade, predicado/moeda/tempo compatíveis. Sem relação, distintos, moeda incompatível ou suporte desconhecido têm motivos próprios; merge não seleciona verdade. |
+| ID-05 — ambiguidade | Nomes parecidos não criam aresta. Alternativas/deltas/impedimentos exatos são exibidos. `unknown` não é diferença e não remove declaração. Alternativa viável em parte do período fica bloqueada inteira. |
+| ID-06 — split e ciclos | Triângulo ABC: remover só AB não divide; split A | BC retira AB e AC, mantém BC e acrescenta distinções completas. Bloco desconectado é recusado. AB em setembro/ABC em outubro exige partições completas separadas. Fora do intervalo permanece igual. |
+| ID-07 — undo | Undo de AB no triângulo mantém ABC por outro caminho e explica isso. Undo de split pode reunir; negativa independente que tornaria a restauração contraditória bloqueia. Alvo já desfeito ou asserção retirada depois fica `Stale`; sem inversão parcial. |
+| ID-08 — concorrência | Preparar A=B e B=C/A≠C sob bases compatíveis e intercalar confirmações reais. Nova aresta/ausência alterada produz `Stale`; nunca grafo contraditório. Fonte/membership/correção concorrente também invalida o cut completo. |
+| ID-09 — história | Merge → split → replay merge devolve receipt original sem reassociar. Mesmo opID/intenção diferente conflita. Frames antigos não ganham membros ou fontes atuais. |
+| ID-10 — audiência | Viewer/terceiro não abre novo Frame/Case/receipt com ID conhecido. Duas bases diferindo só por declarações privadas produzem observação literal permitida igual, incluindo contagens/ordem/headers/erros. Revogação vencedora impede divulgação preparada. |
+| ID-11 — impacto | Case literal pendente fica `Stale` após mudança de identidade; correção aplicada não é herdada/movida. Criação do próprio Case permite sua resposta imediata sem concorrência. |
+| ID-12 — limites | Fechamento com cadeia positiva/negativa, segmento após retirada, excesso de células/pares/efeitos: falha inteira sem Frame/Question parcial. Dados privados alheios não influenciam quotas. Estado prospectivo também cabe ou nada é aplicado. |
+| ID-13 — atomicidade | SIGKILL em limites reais: decisão/itens/Case/revisões/operação/receipt/outbox todos ou nenhum. Reinício com bytes/opID iguais produz um resultado; sem promessa de ACID distribuído com S3/auth. |
+| ID-14 — compatibilidade | Banco com histórico real de cinco domínios: antigos Frames leem e operações replayam; todos os atos novos com base antiga, inclusive correções literais, ficam `Stale`. Nova inspeção recebe base completa sem mudar DTO D01; linhas/digests antigos intactos. |
+| ID-15 — superfícies | Web/CLI usam mesma Question/digest/opID, mostram células, fechamento, partição inteira e inversão real; `Stale` exige nova inspeção/consentimento. Cliente normal não escreve autoridade direto. |
 
-O cenário histórico de “paciente oculto” é um requisito de não interferência, não autorização para dados clínicos neste perfil. Sua testemunha local usa assuntos não sensíveis e Worlds/principals reais separados. O caso amplo de ACL distinta por assunto/fonte continua pendente até esse modelo existir, sem rebatizar ACL por World como prova equivalente.
+O cenário histórico de paciente oculto orienta não interferência, mas não admite dados clínicos neste perfil. A testemunha local usa assuntos não sensíveis e principals/Worlds reais; ACL distinta por fonte continua fora do modelo atual.
 
-## Consumidores reais e gates para um futuro pacote
+## Consumidores e gates para pacote futuro
 
-| Consumidor a integrar | Resultado concreto necessário |
+| Consumidor | Integração necessária |
 | --- | --- |
-| Contratos públicos / `ApplicationApi` | Nova família fechada e Frame de par distinguível, com versionamento e erros decididos. Nenhum campo livre de role/capability, representante ou cut fornecido como autoridade pelo cliente. |
-| Executor / commit / guards | Dispatch explícito, capacidade derivada da operação, base completa e dependências reais de identidade, atomicidade/replay e fence existentes. |
-| PostgreSQL / migração | Eventos privados, vínculo de predecessor/undo, Case/Question tipados e revisões; constraints do recorte de pares/intervalos. Ordem e DDL pertencem ao integrador; nenhum schema é aprovado aqui. |
-| Leitura/comparação | Consulta do par sob um único snapshot, preservação das claims e comparação com equivalência/tempo explícitos. Uma função não importada não entrega a capacidade. |
-| Correções atuais | Guards reconhecem mudança de identidade, preservam versões antigas e não aceitam correção combinada por acidente. |
-| Web/CLI | Journey completa: informar par/intervalo → inspecionar fontes → responder Case → consultar relação/comparação atual → split/undo explícito. Sem botão que execute SQL ou publique interpretação ao viewer. |
-| Prova independente | Leis, integração, concorrência, migração, emissão e navegador/CLI separados. Build verde não aceita sem os oráculos correspondentes. |
+| Contratos / `ApplicationApi` | Família fechada, discriminantes de Frame/Question, enums/erros e limites ratificados. Shapes acima precisam virar schema revisado antes de API. |
+| Executor / guards | Dispatch real, autorização derivada da operação, base versionada completa, fechamento/ausência, commit/replay/fence comuns. |
+| Persistência | Decisões/itens/retiradas/undo privados, linhagem e versões; projeção temporal e constraints coerentes. Compatibilidade legada antes de DDL. |
+| Leitura / comparação | Snapshot único, fechamento completo, células, fontes preservadas, comparação por equivalência explícita. Função não utilizada não entrega capacidade. |
+| Correção atual | Todos os guards/decoders/replays reconhecem versões e invalidam atos novos antigos; não aceitam Frame combinado. |
+| Web / CLI | Inspecionar fontes/fechamento → resolver Question → nova leitura → particionar ou propor undo → confirmar consequência exata. |
+| Prova independente | Leis, integração, concorrência, migração, crash, divulgação e journey reais; artefatos de falha preservados. |
 
-Antes de atribuir EX24, registrar decisões para: **(1)** audiência privada versus publicação compartilhada — recomendação privada; **(2)** âncoras literais e existência exigida — sem alias/fuzzy; **(3)** limite de duas âncoras e ausência de transitividade arbitrária; **(4)** intervalo obrigatório e apenas igualdade/disjunção de escopos; **(5)** alternativas exatas do Case e semântica de unknown/reafirmação/undo; **(6)** Frame/operação de leitura separados e resumo comparativo com tempo explícito; **(7)** domínio/dependências de identidade e compatibilidade de bases antigas; **(8)** incorporação do domínio nos guards de correção e limites de impacto futuro; **(9)** nomes/shapes/rotas versionados e orçamento de tamanho usando limites admitidos; **(10)** owners, migração, consumidor, revisão e oráculos de cada segmento.
+Antes de atribuir EX24, ratificar: **(1)** audiência privada; **(2)** âncoras existentes sem fuzzy; **(3)** G transitivo com negativas e fechamento completo; **(4)** células temporais e comparação sem badge global; **(5)** resolução, split por partição e undo de efeitos; **(6)** shapes/digests/enums/rotas candidatos; **(7)** limites numéricos e erros; **(8)** domínio/versionamento e auditoria de todos os entrypoints legados antes da DDL; **(9)** impacto em correções/consumidores e exclusões futuras; **(10)** owners, write allowlists, locks, migração e oráculos de cada segmento.
 
-Se uma dessas decisões exigir outra audiência, cadeia transitiva, intervalo parcial, atribuição de dado derivado ou regra reutilizável, o contrato volta à revisão antes de iniciar esses caminhos. O documento propõe um incremento executável e limitado; não transforma a amplitude de SPEC-006 em operações já disponíveis.
+Este documento permanece candidato, sem EX24, migração, API congelada ou autorização para produção. Outra audiência, identidade entre Worlds ou atribuição de derivados exige revisão própria; não decorre de escolher transitividade correta.
