@@ -275,4 +275,51 @@ describe("EX24 closed subject identity schemas", () => {
       expect(Schema.is(IdentityPartitions)(partitions)).toBeFalsy();
     }
   });
+  it("rejects aggregate overflow, overlapping components and unknown invalidation", () => {
+    const members = Array.from({ length: 33 }, (_, index) => `A${index}`);
+    expect(
+      Schema.is(IdentityPartitions)([
+        { blocks: [members.slice(0, 32), members.slice(32)], cellRef: digest },
+      ])
+    ).toBeFalsy();
+    const invalidFrame = {
+      ...recovery,
+      cells: [
+        {
+          ...structure,
+          components: [
+            { members: ["A"], representative: "A" },
+            { members: ["A", "B"], representative: "A" },
+          ],
+        },
+      ],
+    };
+    expect(Schema.is(IdentityRecoveryFrame)(invalidFrame)).toBeFalsy();
+    expect(
+      Schema.is(SubjectIdentitySuccess)({
+        _tag: "IdentityRecoveryInspected",
+        frame: invalidFrame,
+      })
+    ).toBeFalsy();
+    expect(
+      Schema.is(IdentityQuestion)({
+        ...recoveryQuestion,
+        alternatives: [
+          {
+            ...unknownAlternative,
+            impact: {
+              ...impact,
+              pendingCases: "invalidated-by-identity-change",
+            },
+          },
+        ],
+      })
+    ).toBeFalsy();
+    expect(
+      Schema.is(IdentityRecoveryFrame)({
+        ...recovery,
+        cells: [{ ...structure, coveredClaimRefs: [] }],
+      })
+    ).toBeFalsy();
+  });
 });

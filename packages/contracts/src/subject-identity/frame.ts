@@ -63,7 +63,14 @@ export const IdentityCellStructure = Schema.Struct({
   cellRef: IdentityCellRef,
   components: Schema.Array(IdentityComponent).check(
     Schema.isMinLength(1),
-    Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.anchors)
+    Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.anchors),
+    Schema.makeFilter((components) => {
+      const members = components.flatMap((component) => component.members);
+      return (
+        members.length <= SUBJECT_IDENTITY_LIMITS.anchors &&
+        new Set(members).size === members.length
+      );
+    })
   ),
   distinctions: Schema.Array(IdentityDistinction).check(
     Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.segments)
@@ -107,6 +114,10 @@ export const IdentityComparison = Schema.Union([
 export type IdentityComparison = typeof IdentityComparison.Type;
 export const IdentityComparisonCell = Schema.Struct({
   ...IdentityCellStructure.fields,
+  coveredClaimRefs: Schema.Array(ClaimRef).check(
+    Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.claims),
+    Schema.makeFilter((refs) => new Set(refs).size === refs.length)
+  ),
   comparisons: Schema.Array(IdentityComparison).check(
     Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.comparisonPairsPerCell)
   ),

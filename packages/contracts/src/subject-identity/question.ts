@@ -32,7 +32,10 @@ export const IdentityCellPartition = Schema.Struct({
     Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.anchors),
     Schema.makeFilter((blocks) => {
       const members = blocks.flat();
-      return new Set(members).size === members.length;
+      return (
+        members.length <= SUBJECT_IDENTITY_LIMITS.anchors &&
+        new Set(members).size === members.length
+      );
     })
   ),
   cellRef: IdentityCellRef,
@@ -65,15 +68,21 @@ const recoveryAlternative = {
   afterCells: IdentityStructureCells,
   comparison: Schema.Literal("not-requested"),
 };
+const unchangedImpact = Schema.Struct({
+  ...IdentityImpact.fields,
+  pendingCases: Schema.Literal("unchanged"),
+}).annotate(exact);
 const normalUnknown = Schema.Struct({
   ...normalAlternative,
   answer: Schema.Literal("unknown"),
   effectItems: Schema.Tuple([]),
+  impact: unchangedImpact,
 }).annotate(exact);
 const recoveryUnknown = Schema.Struct({
   ...recoveryAlternative,
   answer: Schema.Literal("unknown"),
   effectItems: Schema.Tuple([]),
+  impact: unchangedImpact,
 }).annotate(exact);
 export const IdentityResolutionAlternative = Schema.Union([
   Schema.Struct({
