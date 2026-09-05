@@ -1,6 +1,6 @@
 # File plan — `contracts/spec-003/guards.schema.json`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `contracts/spec-003/guards.schema.json`. Representation: **sidecar-only**. Allocation: **conditional-support**.
 

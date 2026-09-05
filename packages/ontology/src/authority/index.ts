@@ -14,11 +14,16 @@ export { Authority, type WorldTransaction, type MutationOutput } from './transac
 export {
   sortedDomains,
   assertFresh,
+  assertGuardsFresh,
+  absenceGuard,
+  domainGuard,
+  guardDomains,
   operationScope,
   isRetryableSql,
   assertLoadedRelease,
   guardProjection,
   type ReadGuard,
+  type GuardContext,
 } from './guards.js';
 export { typedPlan, type TypedAuthorityPlan } from './plan.js';
 

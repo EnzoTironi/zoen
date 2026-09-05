@@ -1,0 +1,8 @@
+{
+  "seed": "zn-0022-guards-seed-v1",
+  "seedDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "purpose": "operations",
+  "invoiceDomain": "invoices",
+  "notesDomain": "notes",
+  "unpaidPredicate": "absence:unpaid-invoice-v1"
+}

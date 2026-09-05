@@ -1,6 +1,6 @@
 # File plan — `packages/ontology/src/authority/guards.ts`
 
-**Status:** candidate-unaccepted; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `packages/ontology/src/authority/guards.ts`. Representation: **existing-with-sidecar**. Allocation: **required**.
 

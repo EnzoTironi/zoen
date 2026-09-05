@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-003/guards.schema.json",
+  "title": "ZN-0022 guards fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "invoiceDomain", "notesDomain", "unpaidPredicate"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0022-guards-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "invoiceDomain": { "type": "string" },
+    "notesDomain": { "type": "string" },
+    "unpaidPredicate": { "type": "string" }
+  }
+}
