@@ -3350,9 +3350,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-008/redaction.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -8586,9 +8586,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "db/migrations/zn-0047_redaction.sql.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -19180,9 +19180,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "packages/telemetry/src/ports.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/telemetry/src/ports.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -19218,9 +19218,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "packages/telemetry/src/redaction.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/telemetry/src/redaction.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -19237,9 +19237,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "comment-only-source",
-      "plan_path": "packages/telemetry/src/types.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/telemetry/src/types.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -20997,9 +20997,9 @@
         "ZN-0047"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-008/redaction.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-008/redaction.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -28082,9 +28082,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/component/spec-008/redaction.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/component/spec-008/redaction.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -32658,9 +32658,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-008/redaction.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {

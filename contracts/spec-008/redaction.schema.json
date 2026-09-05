@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-008/redaction.schema.json",
+  "title": "ZN-0047 redaction fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "caseId",
+    "clinicalNote",
+    "sourceCredential"
+  ],
+  "properties": {
+    "seed": {
+      "type": "string",
+      "const": "zn-0047-redaction-seed-v1"
+    },
+    "seedDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "caseId": {
+      "type": "string"
+    },
+    "clinicalNote": {
+      "type": "string"
+    },
+    "sourceCredential": {
+      "type": "string"
+    }
+  }
+}
