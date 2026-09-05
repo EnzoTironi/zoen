@@ -1,4 +1,3 @@
-// oxlint-disable vitest/max-expects -- One real database/storage lifecycle proves retained state across its transitions.
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";

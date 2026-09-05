@@ -1,4 +1,3 @@
-// oxlint-disable vitest/max-expects -- One real database/storage lifecycle proves retained state across its transitions.
 import { expect, it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { SqlClient } from "effect/unstable/sql";

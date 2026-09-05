@@ -61,57 +61,55 @@ export const readClaims = Effect.fn("authority.knowledge.readClaims")(
     }
     const rows = yield* Schema.decodeUnknownEffect(Schema.Array(ClaimRow))(raw);
     return yield* Effect.forEach(
-      // oxlint-disable-next-line unicorn/no-array-method-this-argument -- Effect.forEach takes an effectful callback, not Array.thisArg.
-      rows,
-      Effect.fn("authority.knowledge.projectClaim")(
-        function* projectClaim(row) {
-          const value =
-            row.value_tag === "Unknown"
-              ? ({ _tag: "Unknown" } as const)
-              : {
-                  _tag: "Known" as const,
-                  amount:
-                    row.amount === null
-                      ? null
-                      : yield* normalizeDecimal(row.amount),
-                  currency: row.currency,
-                };
-          const validTime =
-            row.valid_from === null && row.valid_to === null
-              ? ({ _tag: "Unknown" } as const)
-              : {
-                  _tag: "DateInterval" as const,
-                  from: row.valid_from,
-                  to: row.valid_to,
-                };
-          const claim = yield* Schema.decodeUnknownEffect(VisibleClaim)({
-            claimRef: row.claim_id,
-            evidenceRef: row.evidence_id,
-            predicate: row.predicate,
-            recordId: row.external_id,
-            recordIndex: row.record_index,
-            source: {
-              externalId: row.source_external_id,
-              label: row.source_label,
-              namespace: row.namespace,
-              revision: row.source_revision,
-            },
-            sourceRef: row.source_id,
-            subjectKey: row.subject_key,
-            validTime,
-            value,
-            verification: "unverified",
-          });
-          const dependency = yield* Schema.decodeEffect(SourceDependency)({
-            byteDigest: row.byte_digest,
-            evidenceRef: row.evidence_id,
+      Effect.fn("authority.knowledge.projectClaim")(function* projectClaim(
+        row: typeof ClaimRow.Type
+      ) {
+        const value =
+          row.value_tag === "Unknown"
+            ? ({ _tag: "Unknown" } as const)
+            : {
+                _tag: "Known" as const,
+                amount:
+                  row.amount === null
+                    ? null
+                    : yield* normalizeDecimal(row.amount),
+                currency: row.currency,
+              };
+        const validTime =
+          row.valid_from === null && row.valid_to === null
+            ? ({ _tag: "Unknown" } as const)
+            : {
+                _tag: "DateInterval" as const,
+                from: row.valid_from,
+                to: row.valid_to,
+              };
+        const claim = yield* Schema.decodeUnknownEffect(VisibleClaim)({
+          claimRef: row.claim_id,
+          evidenceRef: row.evidence_id,
+          predicate: row.predicate,
+          recordId: row.external_id,
+          recordIndex: row.record_index,
+          source: {
+            externalId: row.source_external_id,
+            label: row.source_label,
+            namespace: row.namespace,
             revision: row.source_revision,
-            sourceRef: row.source_id,
-          });
-          return { claim, dependency };
-        }
-      )
-    );
+          },
+          sourceRef: row.source_id,
+          subjectKey: row.subject_key,
+          validTime,
+          value,
+          verification: "unverified",
+        });
+        const dependency = yield* Schema.decodeEffect(SourceDependency)({
+          byteDigest: row.byte_digest,
+          evidenceRef: row.evidence_id,
+          revision: row.source_revision,
+          sourceRef: row.source_id,
+        });
+        return { claim, dependency };
+      })
+    )(rows);
   },
   Effect.catchTag("SchemaError", () => new Unavailable({ code: "UNAVAILABLE" }))
 );
