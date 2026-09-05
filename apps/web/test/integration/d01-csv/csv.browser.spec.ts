@@ -300,11 +300,37 @@ test("CSV-13 browser retains original CSV and operation across network retry and
       await other
         .getByLabel("Abrir espaço pelo identificador")
         .fill(attempted.worldRef.worldId);
+      const deniedAccess = other.waitForResponse((response) =>
+        response.url().endsWith("/api/d03/sharing")
+      );
       await other
         .getByRole("button", { exact: true, name: "Abrir espaço" })
         .click();
-      await other.getByLabel("Identificador da obrigação").fill(subject);
-      await other.getByRole("button", { name: "Consultar fontes" }).click();
+      const access = await deniedAccess;
+      expect(access.status()).toBe(404);
+      expect(await access.json()).toStrictEqual({
+        _tag: "NotFoundOrDenied",
+        code: "NOT_FOUND_OR_DENIED",
+      });
+      await expect(other.locator(".d01-world-id")).toHaveCount(0);
+      await expect(other.getByLabel("Identificador da obrigação")).toHaveCount(
+        0
+      );
+      const deniedRead = await other.request.post("/api/d01/execute", {
+        data: {
+          input: { atFrame: null, subjectKey: subject },
+          operation: "Inspect",
+          purpose: "personal-records",
+          schemaVersion: "d01.v1",
+          worldRef: attempted.worldRef,
+        },
+        headers: { Origin: baseURL },
+      });
+      expect(deniedRead.status()).toBe(404);
+      expect(await deniedRead.json()).toStrictEqual({
+        _tag: "NotFoundOrDenied",
+        code: "NOT_FOUND_OR_DENIED",
+      });
       await expect(
         other.getByRole("heading", {
           name: "Não foi possível abrir este conteúdo",
