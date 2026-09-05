@@ -2,7 +2,7 @@ import { InvalidInput } from "@zoen/contracts/d01/errors";
 import { D01_LIMITS } from "@zoen/contracts/d01/values";
 import { Effect } from "effect";
 
-/** Decode exact UTF-8 without parsing JSON or silently replacing malformed bytes. */
+/** Decode exact UTF-8 without parsing the document or silently replacing malformed bytes. */
 export const readDocument = Effect.fn("web.readDocument")(
   function* readDocument(file: File) {
     if (file.size < 1 || file.size > D01_LIMITS.documentBytes) {

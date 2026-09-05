@@ -18,6 +18,7 @@ import { BrowserApi, browserApiLayer } from "./client.ts";
 import { initialState, successPatch } from "./model.ts";
 import type { WorkspaceState } from "./model.ts";
 import { errorMessage, errorView } from "./presentation.ts";
+import type { ImportFileFormat } from "./requests.ts";
 import { createWorldRequest, envelope, importRequest } from "./requests.ts";
 import { announceSessionChange } from "./session-events.ts";
 
@@ -295,7 +296,10 @@ export const createWorkspaceController = (origin: string) => {
     hide: () => {
       invalidate({ checking: !refreshPaused, session: null, world: null });
     },
-    importFiles: (files: readonly File[]) => {
+    importFiles: (
+      files: readonly File[],
+      format: ImportFileFormat = "json"
+    ) => {
       const { world } = state;
       if (world === null || state.session === null || state.busy) {
         return;
@@ -312,7 +316,7 @@ export const createWorkspaceController = (origin: string) => {
       launch(
         Effect.gen(function* importFiles() {
           for (const file of files) {
-            const parsed = yield* importRequest(file, world).pipe(
+            const parsed = yield* importRequest(file, world, format).pipe(
               Effect.result
             );
             if (started !== epoch || disposed) {

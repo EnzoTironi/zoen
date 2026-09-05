@@ -10,7 +10,8 @@
   gap: 0.75rem;
 }
 .d01-account input,
-.d01-context input {
+.d01-context input,
+.d01-context select {
   width: 100%;
   min-width: 0;
   border: 1px solid #8c9c91;

@@ -1,9 +1,9 @@
 import { useEffect, useId, useMemo, useSyncExternalStore } from "react";
 
-import { D01Workspace } from "../../components/d01/d01-workspace.tsx";
 import { CorrectionPanel } from "../../integration/d02/correction-panel.tsx";
 import { AuthForm } from "./auth-form.tsx";
 import { field } from "./form.ts";
+import { ImportWorkspace } from "./import-workspace.tsx";
 import { watchSessionChanges } from "./session-events.ts";
 import { createWorkspaceController } from "./state.ts";
 import type { WorkspaceController } from "./state.ts";
@@ -148,22 +148,10 @@ const Connected = ({
         </div>
       ) : (
         <>
-          <D01Workspace
-            {...(state.canRetry ? { onRetry: controller.retry } : {})}
-            acceptedFileTypes="application/json,.json"
-            actionPending={state.busy}
-            feedback={state.feedback}
-            fileHelp="JSON no formato Zoen d01.v1, até 256 KiB por arquivo. Use apenas dados autorizados e não sensíveis neste perfil."
-            onFilesSelected={(files) => {
-              controller.importFiles(files);
-            }}
-            onInspectEvidence={(claim) => {
-              controller.openEvidence(claim);
-            }}
-            onLogout={() => {
-              controller.logout();
-            }}
-            view={state.view}
+          <ImportWorkspace
+            controller={controller}
+            key={`${state.session.session.id}:${state.world.worldId}`}
+            state={state}
           />
           <CorrectionPanel controller={controller} state={state} />
         </>

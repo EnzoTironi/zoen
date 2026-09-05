@@ -28,11 +28,20 @@ export const createWorldRequest = Effect.gen(function* createWorldRequest() {
   });
 });
 
+export type ImportFileFormat = "json" | "csv";
+
 export const importRequest = Effect.fn("web.importRequest")(
-  function* importRequest(file: File, worldRef: WorldRef) {
+  function* importRequest(
+    file: File,
+    worldRef: WorldRef,
+    format: ImportFileFormat = "json"
+  ) {
     return yield* Schema.decodeEffect(ImportEvidence)({
       ...envelope,
-      input: { document: yield* readDocument(file) },
+      input: {
+        document: yield* readDocument(file),
+        ...(format === "csv" ? { format: "d01.csv.v1" } : {}),
+      },
       operation: "ImportEvidence",
       operationId: yield* newOperationId,
       worldRef,
