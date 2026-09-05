@@ -34,3 +34,34 @@ describe("SH schemas", () => {
     }
   });
 });
+
+describe("SH exact transitions at the public boundary", () => {
+  it("requires an explicit target and revision for revoke and no operation identity for reads", () => {
+    const revoke = {
+      ...grant,
+      input: { ...grant.input, expectedRevision: "0" },
+      operation: "RevokeWorldReadAccess",
+    };
+    expect(Schema.is(SemanticRequest)(revoke)).toBeTruthy();
+    expect(
+      Schema.is(SemanticRequest)({ ...revoke, input: grant.input })
+    ).toBeFalsy();
+    const read = {
+      input: { principalRef: null },
+      operation: "InspectWorldAccess",
+      purpose: grant.purpose,
+      schemaVersion: grant.schemaVersion,
+      worldRef: grant.worldRef,
+    };
+    expect([
+      Schema.is(SemanticRequest)(read),
+      Schema.is(SemanticRequest)({ ...read, operationId: grant.operationId }),
+      Schema.is(SemanticRequest)({ ...read, input: {} }),
+      Schema.is(SemanticRequest)({
+        ...read,
+        input: { principalRef: grant.input.principalRef },
+      }),
+      Schema.is(SemanticRequest)({ ...grant, schemaVersion: "d01.v1" }),
+    ]).toStrictEqual([true, false, false, true, false]);
+  });
+});
