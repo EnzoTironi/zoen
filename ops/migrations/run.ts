@@ -38,3 +38,21 @@ export const applyD01Migrations = Effect.fn("migrations.applyD01")(
     return applied;
   }
 );
+
+/** The published D01 baseline stays reproducible; the current application extends it explicitly. */
+export const applyApplicationMigrations = Effect.fn(
+  "migrations.applyApplication"
+)(function* applyApplicationMigrations(roles: D01DatabaseRoles) {
+  const base = yield* applyD01Migrations(roles);
+  const fs = yield* FileSystem.FileSystem;
+  const sql = yield* SqlClient.SqlClient;
+  const format = yield* fs.readFileString(
+    fileURLToPath(new URL("004_evidence_document_format.sql", import.meta.url))
+  );
+  const extension = yield* PgMigrator.run({
+    loader: PgMigrator.fromRecord({
+      "4_evidence_document_format": sql.unsafe(format).pipe(Effect.asVoid),
+    }),
+  });
+  return [...base, ...extension];
+});

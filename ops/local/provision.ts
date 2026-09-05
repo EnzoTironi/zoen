@@ -11,7 +11,7 @@ import { PgClient } from "@effect/sql-pg";
 import { Config, Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { applyD01Migrations } from "../migrations/run.ts";
+import { applyApplicationMigrations } from "../migrations/run.ts";
 
 class ProvisionError extends Schema.TaggedError<ProvisionError>()(
   "ProvisionError",
@@ -150,7 +150,7 @@ const program = Effect.gen(function* provisionLocalApplication() {
     }
     yield* sql`CREATE DATABASE ${sql(databaseName)} OWNER ${sql(names.migration)}`;
   }).pipe(Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl })));
-  yield* applyD01Migrations(names).pipe(
+  yield* applyApplicationMigrations(names).pipe(
     Effect.provide(
       PgClient.layer({
         maxConnections: 1,

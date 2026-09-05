@@ -16,7 +16,7 @@ import {
 } from "effect/unstable/http";
 import type { HttpClientResponse } from "effect/unstable/http";
 
-import { applyD01Migrations } from "../../../../../ops/migrations/run.ts";
+import { applyApplicationMigrations } from "../../../../../ops/migrations/run.ts";
 import { makeD01Application } from "../../../src/composition.ts";
 import { sdk, withStorage } from "../../adapters/object-storage/d01/fixture.ts";
 import { withD01Database } from "../../adapters/postgres/d01/database.ts";
@@ -103,7 +103,7 @@ export const withD01Http = <A, E>(
       ),
     undefined,
     (database) =>
-      applyD01Migrations(database.names).pipe(
+      applyApplicationMigrations(database.names).pipe(
         Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
       )
   );
