@@ -1,0 +1,9 @@
+{
+  "seed": "zn-0017-revocation-seed-v1",
+  "note": "Synthetic revocation/disclosure fixtures for ZN-0017. Real PostgreSQL required. Already-delivered payloads are not recalled.",
+  "seedDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "worldName": "Revocation World",
+  "purpose": "billing.read",
+  "audience": "audience.home",
+  "framePurpose": "billing.summary"
+}

@@ -143,7 +143,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `contracts/spec-002/genesis.schema.json` | [existing-with-sidecar](../contracts/spec-002/genesis.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-002/invitations.schema.json` | [existing-with-sidecar](../contracts/spec-002/invitations.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-002/presence.schema.json` | [existing-with-sidecar](../contracts/spec-002/presence.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
-| `contracts/spec-002/revocation.schema.json` | [sidecar-only](../contracts/spec-002/revocation.schema.json.plan.md) | planned | SPEC-002 |
+| `contracts/spec-002/revocation.schema.json` | [existing-with-sidecar](../contracts/spec-002/revocation.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-002/world-entry.schema.json` | [existing-with-sidecar](../contracts/spec-002/world-entry.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-003/commit-chaos.schema.json` | [sidecar-only](../contracts/spec-003/commit-chaos.schema.json.plan.md) | planned | SPEC-003 |
 | `contracts/spec-003/commit.schema.json` | [sidecar-only](../contracts/spec-003/commit.schema.json.plan.md) | planned | SPEC-003 |
@@ -458,7 +458,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `db/migrations/zn-0014_genesis.sql` | [existing-with-sidecar](../db/migrations/zn-0014_genesis.sql.plan.md) | implementation-in-progress | SPEC-002 |
 | `db/migrations/zn-0015_world-entry.sql` | [existing-with-sidecar](../db/migrations/zn-0015_world-entry.sql.plan.md) | implementation-in-progress | SPEC-002 |
 | `db/migrations/zn-0016_invitations.sql` | [existing-with-sidecar](../db/migrations/zn-0016_invitations.sql.plan.md) | implementation-in-progress | SPEC-002 |
-| `db/migrations/zn-0017_revocation.sql` | [sidecar-only](../db/migrations/zn-0017_revocation.sql.plan.md) | planned | SPEC-002 |
+| `db/migrations/zn-0017_revocation.sql` | [existing-with-sidecar](../db/migrations/zn-0017_revocation.sql.plan.md) | implementation-in-progress | SPEC-002 |
 | `db/migrations/zn-0018_entry-isolation.sql` | [sidecar-only](../db/migrations/zn-0018_entry-isolation.sql.plan.md) | planned | SPEC-002 |
 | `db/migrations/zn-0019_schema.sql` | [sidecar-only](../db/migrations/zn-0019_schema.sql.plan.md) | planned | SPEC-003 |
 | `db/migrations/zn-0020_commit.sql` | [sidecar-only](../db/migrations/zn-0020_commit.sql.plan.md) | planned | SPEC-003 |
@@ -1045,7 +1045,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/ontology/src/worlds/index.ts` | [existing-with-sidecar](../packages/ontology/src/worlds/index.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `packages/ontology/src/worlds/invitations.ts` | [existing-with-sidecar](../packages/ontology/src/worlds/invitations.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `packages/ontology/src/worlds/ports.ts` | [comment-only-source](../packages/ontology/src/worlds/ports.ts) | planned | SPEC-002 |
-| `packages/ontology/src/worlds/revocation.ts` | [comment-only-source](../packages/ontology/src/worlds/revocation.ts) | planned | SPEC-002 |
+| `packages/ontology/src/worlds/revocation.ts` | [existing-with-sidecar](../packages/ontology/src/worlds/revocation.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `packages/ontology/src/worlds/types.ts` | [comment-only-source](../packages/ontology/src/worlds/types.ts) | planned | SPEC-002 |
 | `packages/ontology/src/worlds/world-entry.ts` | [existing-with-sidecar](../packages/ontology/src/worlds/world-entry.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `packages/ontology/tsconfig.json` | [existing-with-sidecar](../packages/ontology/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
@@ -1114,7 +1114,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `runbooks/spec-002/genesis.md` | [existing-with-sidecar](../runbooks/spec-002/genesis.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-002/invitations.md` | [existing-with-sidecar](../runbooks/spec-002/invitations.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-002/presence.md` | [existing-with-sidecar](../runbooks/spec-002/presence.md.plan.md) | implementation-in-progress | SPEC-002 |
-| `runbooks/spec-002/revocation.md` | [markdown-plan](../runbooks/spec-002/revocation.md) | planned | SPEC-002 |
+| `runbooks/spec-002/revocation.md` | [existing-with-sidecar](../runbooks/spec-002/revocation.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-002/world-entry.md` | [existing-with-sidecar](../runbooks/spec-002/world-entry.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-003/commit-chaos.md` | [markdown-plan](../runbooks/spec-003/commit-chaos.md) | planned | SPEC-003 |
 | `runbooks/spec-003/commit.md` | [markdown-plan](../runbooks/spec-003/commit.md) | planned | SPEC-003 |
@@ -1490,7 +1490,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/component/spec-002/genesis.test.ts` | [existing-with-sidecar](../tests/component/spec-002/genesis.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-002/invitations.test.ts` | [existing-with-sidecar](../tests/component/spec-002/invitations.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-002/presence.test.ts` | [existing-with-sidecar](../tests/component/spec-002/presence.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
-| `tests/component/spec-002/revocation.test.ts` | [comment-only-source](../tests/component/spec-002/revocation.test.ts) | planned | SPEC-002 |
+| `tests/component/spec-002/revocation.test.ts` | [existing-with-sidecar](../tests/component/spec-002/revocation.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-002/world-entry.test.ts` | [existing-with-sidecar](../tests/component/spec-002/world-entry.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-003/commit.test.ts` | [comment-only-source](../tests/component/spec-003/commit.test.ts) | planned | SPEC-003 |
 | `tests/component/spec-003/guards.test.ts` | [comment-only-source](../tests/component/spec-003/guards.test.ts) | planned | SPEC-003 |
@@ -1731,7 +1731,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/fixtures/spec-002/genesis.json` | [existing-with-sidecar](../tests/fixtures/spec-002/genesis.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-002/invitations.json` | [existing-with-sidecar](../tests/fixtures/spec-002/invitations.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-002/presence.json` | [existing-with-sidecar](../tests/fixtures/spec-002/presence.json.plan.md) | implementation-in-progress | SPEC-002 |
-| `tests/fixtures/spec-002/revocation.json` | [sidecar-only](../tests/fixtures/spec-002/revocation.json.plan.md) | planned | SPEC-002 |
+| `tests/fixtures/spec-002/revocation.json` | [existing-with-sidecar](../tests/fixtures/spec-002/revocation.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-002/world-entry.json` | [existing-with-sidecar](../tests/fixtures/spec-002/world-entry.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-003/commit-chaos.json` | [sidecar-only](../tests/fixtures/spec-003/commit-chaos.json.plan.md) | planned | SPEC-003 |
 | `tests/fixtures/spec-003/commit.json` | [sidecar-only](../tests/fixtures/spec-003/commit.json.plan.md) | planned | SPEC-003 |

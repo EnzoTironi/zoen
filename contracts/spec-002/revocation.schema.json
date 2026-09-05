@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-002/revocation.schema.json",
+  "title": "SPEC-002 DisclosureDecision",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "frameId", "payload"],
+      "properties": {
+        "tag": { "const": "DisclosureSent" },
+        "frameId": { "type": "string", "format": "uuid" },
+        "payload": { "type": "object" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "frameId", "code", "auditId"],
+      "properties": {
+        "tag": { "const": "DisclosureSuppressed" },
+        "frameId": { "type": "string", "format": "uuid" },
+        "code": { "type": "string" },
+        "auditId": { "type": "string", "format": "uuid" }
+      }
+    }
+  ]
+}
