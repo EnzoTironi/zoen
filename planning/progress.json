@@ -5,15 +5,15 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "EX21",
+      "task": "EX23-web",
       "model": "gpt-6-astra",
       "effort": "low",
-      "worktree": "/Users/enzotironi/zoen-ex02",
-      "state": "in_progress"
+      "worktree": "/Users/enzotironi/zoen-ex23-web",
+      "state": "independent_review"
     },
     {
       "agent": "roadmap_redesign",
-      "task": "EX22",
+      "task": "EX23-independent-web-review",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
@@ -140,6 +140,20 @@
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "CLI compartilhamento implementada e revisada por worker-3; integração HTTP viva depende do profile novo."
+    },
+    {
+      "task": "EX23-web",
+      "path": "apps/web/src/components/d01/{d01-workspace.tsx,presentation.ts}",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Permitir readOnly no componente existente e ocultar importação e ajustes para viewer; extensão autorizada antes da implementação."
+    },
+    {
+      "task": "EX23-independent-web-review",
+      "path": "apps/web/test/integration/d03-sharing/independent/**",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "Reproduzir descarte de negação com leitura concorrente no navegador real; não fabricar respostas."
     }
   ],
   "checkpoints": [
