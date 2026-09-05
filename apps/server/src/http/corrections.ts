@@ -6,6 +6,7 @@ import { Effect, Redacted, Scope } from "effect";
 import { HttpServerResponse } from "effect/unstable/http";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
+import { makePrivateJsonEmitter } from "./disclosure.ts";
 import { checkRequestAudience, readJsonBody } from "./request.ts";
 
 export const makeCorrectionHttpGroup = (publicUrl: URL) =>
@@ -22,18 +23,15 @@ export const makeCorrectionHttpGroup = (publicUrl: URL) =>
               yield* checkRequestAudience(request, publicUrl);
               const bytes = yield* readJsonBody(request);
               const requestScope = yield* Scope.Scope;
-              return yield* executor
+              const emit = yield* makePrivateJsonEmitter(request);
+              yield* executor
                 .executeCorrectionWithEmission(
                   Redacted.make(request.headers.cookie ?? ""),
                   bytes,
-                  (jsonBytes) =>
-                    Effect.succeed(
-                      HttpServerResponse.uint8Array(jsonBytes, {
-                        contentType: "application/json",
-                      })
-                    )
+                  emit
                 )
                 .pipe(Scope.provide(requestScope));
+              return HttpServerResponse.empty({ status: 200 });
             }).pipe(
               Effect.timeoutOrElse({
                 duration: D01_LIMITS.requestSeconds * 1000,

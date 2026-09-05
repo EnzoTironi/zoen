@@ -15,7 +15,7 @@ import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
 import { D01_LIMITS, Instant } from "@zoen/contracts/d01/values";
 import { SharingSuccess } from "@zoen/contracts/sharing/operations";
 import type { Redacted } from "effect";
-import { Context, DateTime, Effect, Layer, Schema, Scope } from "effect";
+import { Clock, Context, DateTime, Effect, Layer, Schema, Scope } from "effect";
 
 import { validateContext, withinRequestDeadline } from "../access/context.js";
 import { inspectWorldAccess } from "../access/sharing/inspect.js";
@@ -39,12 +39,12 @@ import { canonicalJson } from "../values/canonical.js";
 import { parseEnvelopeBytes } from "../values/json.js";
 
 type Family = "d01" | "correction" | "sharing";
-type Emit<A, E, R> = (jsonBytes: Uint8Array) => Effect.Effect<A, E, R>;
-type ExecuteWithEmission = <A, E, R>(
+type Emit = (jsonBytes: Uint8Array) => "submitted";
+type ExecuteWithEmission = (
   credential: Redacted.Redacted,
   bytes: Uint8Array,
-  emit: Emit<A, E, R>
-) => Effect.Effect<A, D01Error | E, Scope.Scope | R>;
+  emit: Emit
+) => Effect.Effect<void, D01Error, Scope.Scope>;
 
 const parseRequest = (family: Family, bytes: Uint8Array) => {
   switch (family) {
@@ -225,11 +225,12 @@ export class SemanticExecutor extends Context.Service<
             ...prepared.context,
             presence: currentPresence,
           });
-          return yield* authorizeWorld(
+          yield* authorizeWorld(
             currentContext,
             prepared.worldRef,
             operationCapability(prepared.request.operation)
           );
+          return currentContext;
         },
         Effect.catchTag("SqlError", schemaUnavailable),
         Effect.provide(dependencies)
@@ -245,26 +246,69 @@ export class SemanticExecutor extends Context.Service<
         );
         return prepared.result;
       });
-      const withEmission = <A, E, R>(
+      const withEmission = (
         family: Family,
         credential: Redacted.Redacted,
         bytes: Uint8Array,
-        emit: Emit<A, E, R>
+        emit: Emit
       ) =>
         Effect.gen(function* emitAuthorizedResult() {
           const requestScope = yield* Scope.Scope;
+          const clock = yield* Clock.Clock;
           const prepared = yield* prepare(family, credential, bytes);
           return yield* Effect.gen(function* authorizeEmission() {
-            yield* fence
-              .shared(
-                prepared.context.presence,
-                prepared.worldRef,
-                prepared.context.deadline
-              )
-              .pipe(Scope.provide(requestScope));
-            yield* revalidate(prepared, credential);
-            // Caller services and the caller's Scope remain outside the captured Layer context.
-            return yield* emit(prepared.jsonBytes);
+            let phase: "prepared" | "attempting" | "submitted" = "prepared";
+            yield* Effect.acquireRelease(
+              fence
+                .shared(
+                  prepared.context.presence,
+                  prepared.worldRef,
+                  prepared.context.deadline
+                )
+                .pipe(Scope.provide(requestScope)),
+              (permit) =>
+                phase === "attempting"
+                  ? Effect.void
+                  : permit.acknowledge.pipe(
+                      Effect.interruptible,
+                      Effect.timeout("3 seconds"),
+                      Effect.catch(() =>
+                        Effect.logWarning({
+                          event: "disclosure.acknowledgement_unavailable",
+                        })
+                      )
+                    )
+            ).pipe(Scope.provide(requestScope));
+            const currentContext = yield* revalidate(prepared, credential);
+            // No Effect boundary between the final time checks and the owned synchronous writer.
+            yield* Effect.suspend(
+              (): Effect.Effect<
+                void,
+                Expired | Unauthenticated | Unavailable
+              > => {
+                const now = clock.currentTimeMillisUnsafe();
+                if (now >= Date.parse(prepared.context.deadline)) {
+                  return Effect.fail(new Expired({ code: "EXPIRED" }));
+                }
+                if (
+                  now >=
+                  Math.min(
+                    Date.parse(prepared.context.presence.expiresAt),
+                    Date.parse(currentContext.presence.expiresAt)
+                  )
+                ) {
+                  return Effect.fail(
+                    new Unauthenticated({ code: "PRESENCE_REQUIRED" })
+                  );
+                }
+                phase = "attempting";
+                if (emit(prepared.jsonBytes) !== "submitted") {
+                  return Effect.fail(schemaUnavailable());
+                }
+                phase = "submitted";
+                return Effect.void;
+              }
+            );
           }).pipe(withinRequestDeadline(prepared.context));
         });
       return SemanticExecutor.of({
