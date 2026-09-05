@@ -2,433 +2,433 @@ TAP version 13
 # Subtest: IR/exact quantities never acquire floating point rounding
 ok 1 - IR/exact quantities never acquire floating point rounding
   ---
-  duration_ms: 2.910739
+  duration_ms: 2.715234
   type: 'test'
   ...
 # Subtest: IR/unknown data is not a zero and wrong units cannot be added
 ok 2 - IR/unknown data is not a zero and wrong units cannot be added
   ---
-  duration_ms: 0.761553
+  duration_ms: 2.688673
   type: 'test'
   ...
 # Subtest: IR/multiplication requires explicit precision and cannot silently invent unit algebra
 ok 3 - IR/multiplication requires explicit precision and cannot silently invent unit algebra
   ---
-  duration_ms: 0.687534
+  duration_ms: 0.777696
   type: 'test'
   ...
 # Subtest: IR/no eval, code, SQL, URL or unknown operators enter definitions
 ok 4 - IR/no eval, code, SQL, URL or unknown operators enter definitions
   ---
-  duration_ms: 0.44314
+  duration_ms: 0.467592
   type: 'test'
   ...
 # Subtest: IR/branches preserve static dependency closure but only read chosen values
 ok 5 - IR/branches preserve static dependency closure but only read chosen values
   ---
-  duration_ms: 1.298996
+  duration_ms: 5.504381
   type: 'test'
   ...
 # Subtest: IR/limits bound recursive and broad expression graphs
 ok 6 - IR/limits bound recursive and broad expression graphs
   ---
-  duration_ms: 0.399989
+  duration_ms: 0.54535
   type: 'test'
   ...
 # Subtest: IR/inherited properties cannot become authorized fields
 ok 7 - IR/inherited properties cannot become authorized fields
   ---
-  duration_ms: 0.163908
+  duration_ms: 0.124935
   type: 'test'
   ...
 # Subtest: apps/declarative components produce the existing operation without identity or authority
 ok 8 - apps/declarative components produce the existing operation without identity or authority
   ---
-  duration_ms: 0.854405
+  duration_ms: 1.196377
   type: 'test'
   ...
 # Subtest: apps/executable and unpublished operations cannot enter trusted renderer
 ok 9 - apps/executable and unpublished operations cannot enter trusted renderer
   ---
-  duration_ms: 0.468108
+  duration_ms: 0.591
   type: 'test'
   ...
 # Subtest: apps/duplicate components, fields and arbitrary executable properties reject
 ok 10 - apps/duplicate components, fields and arbitrary executable properties reject
   ---
-  duration_ms: 0.522437
+  duration_ms: 0.597933
   type: 'test'
   ...
 # Subtest: interpretation/no evidence means unknown, not zero or verified
 ok 11 - interpretation/no evidence means unknown, not zero or verified
   ---
-  duration_ms: 2.133752
+  duration_ms: 1.918079
   type: 'test'
   ...
 # Subtest: interpretation/agreement is selected without upgrading verification
 ok 12 - interpretation/agreement is selected without upgrading verification
   ---
-  duration_ms: 2.485462
+  duration_ms: 3.002398
   type: 'test'
   ...
 # Subtest: interpretation/divergence is preserved and an explicit precedence may select while contested
 ok 13 - interpretation/divergence is preserved and an explicit precedence may select while contested
   ---
-  duration_ms: 2.115163
+  duration_ms: 2.610424
   type: 'test'
   ...
 # Subtest: interpretation/fifty copied claims do not outvote a divergent independent source
 ok 14 - interpretation/fifty copied claims do not outvote a divergent independent source
   ---
-  duration_ms: 13.495645
+  duration_ms: 10.166582
   type: 'test'
   ...
 # Subtest: interpretation/dependent families collapse transitively but do not lose IDs
 ok 15 - interpretation/dependent families collapse transitively but do not lose IDs
   ---
-  duration_ms: 1.531717
+  duration_ms: 1.449273
   type: 'test'
   ...
 # Subtest: interpretation/conflict inside highest-ranked source is not resolved by arrival order
 ok 16 - interpretation/conflict inside highest-ranked source is not resolved by arrival order
   ---
-  duration_ms: 0.67032
+  duration_ms: 0.740749
   type: 'test'
   ...
 # Subtest: comparability/predicate, accounting basis, unit, time, definition and subject remain distinct
 ok 17 - comparability/predicate, accounting basis, unit, time, definition and subject remain distinct
   ---
-  duration_ms: 3.355937
+  duration_ms: 4.247423
   type: 'test'
   ...
 # Subtest: comparability/unknown dates do not become the upload date or imply comparability
 ok 18 - comparability/unknown dates do not become the upload date or imply comparability
   ---
-  duration_ms: 0.482375
+  duration_ms: 0.538288
   type: 'test'
   ...
 # Subtest: comparability/another tenant or evaluation realm is rejected before interpretation
 ok 19 - comparability/another tenant or evaluation realm is rejected before interpretation
   ---
-  duration_ms: 0.682115
+  duration_ms: 0.716004
   type: 'test'
   ...
 # Subtest: interpretation/permutation invariance preserves identical meaning
 ok 20 - interpretation/permutation invariance preserves identical meaning
   ---
-  duration_ms: 3.9111
+  duration_ms: 4.701721
   type: 'test'
   ...
 # Subtest: boundary/UUID validates before branding and rejects nil and arbitrary IDs
 ok 21 - boundary/UUID validates before branding and rejects nil and arbitrary IDs
   ---
-  duration_ms: 2.909274
+  duration_ms: 9.950583
   type: 'test'
   ...
 # Subtest: boundary/world and evaluation realm are non-interchangeable at runtime
 ok 22 - boundary/world and evaluation realm are non-interchangeable at runtime
   ---
-  duration_ms: 0.509156
+  duration_ms: 0.65894
   type: 'test'
   ...
 # Subtest: boundary/bigint counters remain exact across the JS safe-integer boundary
 ok 23 - boundary/bigint counters remain exact across the JS safe-integer boundary
   ---
-  duration_ms: 1.643047
+  duration_ms: 4.500379
   type: 'test'
   ...
 # Subtest: json/reject duplicate keys even when differently escaped
 ok 24 - json/reject duplicate keys even when differently escaped
   ---
-  duration_ms: 0.956139
+  duration_ms: 1.404699
   type: 'test'
   ...
 # Subtest: json/reject malformed, fractional, oversized and imprecise authority numbers
 ok 25 - json/reject malformed, fractional, oversized and imprecise authority numbers
   ---
-  duration_ms: 1.299583
+  duration_ms: 0.879649
   type: 'test'
   ...
 # Subtest: json/invalid UTF-8, BOM and lone surrogates fail rather than being repaired
 ok 26 - json/invalid UTF-8, BOM and lone surrogates fail rather than being repaired
   ---
-  duration_ms: 0.386083
+  duration_ms: 2.016808
   type: 'test'
   ...
 # Subtest: json/bounded depth, bytes and entries are enforced
 ok 27 - json/bounded depth, bytes and entries are enforced
   ---
-  duration_ms: 20.344116
+  duration_ms: 19.284126
   type: 'test'
   ...
 # Subtest: json/canonical bytes are stable across member ordering and safe prototype keys
 ok 28 - json/canonical bytes are stable across member ordering and safe prototype keys
   ---
-  duration_ms: 0.695433
+  duration_ms: 1.106959
   type: 'test'
   ...
 # Subtest: json/reject getters, circular inputs, foreign prototypes and sparse arrays
 ok 29 - json/reject getters, circular inputs, foreign prototypes and sparse arrays
   ---
-  duration_ms: 0.563814
+  duration_ms: 0.726927
   type: 'test'
   ...
 # Subtest: json/property canonicalization is idempotent (seed 43117, 2000 examples)
 ok 30 - json/property canonicalization is idempotent (seed 43117, 2000 examples)
   ---
-  duration_ms: 100.847951
+  duration_ms: 255.07161
   type: 'test'
   ...
 # Subtest: decimal/no float arithmetic for exact large and small quantities
 ok 31 - decimal/no float arithmetic for exact large and small quantities
   ---
-  duration_ms: 0.579591
+  duration_ms: 0.711516
   type: 'test'
   ...
 # Subtest: decimal/NUMERIC(38,18) boundaries and invalid syntax
 ok 32 - decimal/NUMERIC(38,18) boundaries and invalid syntax
   ---
-  duration_ms: 0.334805
+  duration_ms: 0.289686
   type: 'test'
   ...
 # Subtest: decimal/rounding is explicit, signed and half-even
 ok 33 - decimal/rounding is explicit, signed and half-even
   ---
-  duration_ms: 0.32634
+  duration_ms: 2.714021
   type: 'test'
   ...
 # Subtest: decimal/multiply/divide have exact scale and zero-denominator errors
 ok 34 - decimal/multiply/divide have exact scale and zero-denominator errors
   ---
-  duration_ms: 0.213887
+  duration_ms: 0.252629
   type: 'test'
   ...
 # Subtest: money/currencies never implicitly mix
 ok 35 - money/currencies never implicitly mix
   ---
-  duration_ms: 0.195764
+  duration_ms: 0.260854
   type: 'test'
   ...
 # Subtest: decimal/property addition inverse and allocation conservation (seed 71023, 4000 examples)
 ok 36 - decimal/property addition inverse and allocation conservation (seed 71023, 4000 examples)
   ---
-  duration_ms: 136.123265
+  duration_ms: 139.494486
   type: 'test'
   ...
 # Subtest: allocation/ties are stable and duplicate/zero/negative weights fail
 ok 37 - allocation/ties are stable and duplicate/zero/negative weights fail
   ---
-  duration_ms: 0.294956
+  duration_ms: 0.496803
   type: 'test'
   ...
 # Subtest: time/calendar rejects rollovers and distinguishes dates from instants
 ok 38 - time/calendar rejects rollovers and distinguishes dates from instants
   ---
-  duration_ms: 0.655923
+  duration_ms: 1.180313
   type: 'test'
   ...
 # Subtest: time/nanoseconds, pre-epoch values and invalid UTC encodings
 ok 39 - time/nanoseconds, pre-epoch values and invalid UTC encodings
   ---
-  duration_ms: 0.297302
+  duration_ms: 0.392105
   type: 'test'
   ...
 # Subtest: time/half-open adjacent intervals never overlap
 ok 40 - time/half-open adjacent intervals never overlap
   ---
-  duration_ms: 0.250943
+  duration_ms: 0.548454
   type: 'test'
   ...
 # Subtest: time/calendar arithmetic matches native UTC for 2000 recorded dates
 ok 41 - time/calendar arithmetic matches native UTC for 2000 recorded dates
   ---
-  duration_ms: 4.024412
+  duration_ms: 6.227311
   type: 'test'
   ...
 # Subtest: graph/stable order, dependent propagation and cycle/missing-node rejection
 ok 42 - graph/stable order, dependent propagation and cycle/missing-node rejection
   ---
-  duration_ms: 0.598456
+  duration_ms: 1.123747
   type: 'test'
   ...
 # Subtest: public outcomes/unknown is not a fabricated external failure; internal details stay private
 ok 43 - public outcomes/unknown is not a fabricated external failure; internal details stay private
   ---
-  duration_ms: 0.163516
+  duration_ms: 0.416283
   type: 'test'
   ...
 # Subtest: JSON/text input does not silently replace an invalid raw surrogate
 ok 44 - JSON/text input does not silently replace an invalid raw surrogate
   ---
-  duration_ms: 0.089287
+  duration_ms: 0.15207
   type: 'test'
   ...
 # Subtest: protocol/identity, roles and grants are never accepted in client JSON
 ok 45 - protocol/identity, roles and grants are never accepted in client JSON
   ---
-  duration_ms: 5.51366
+  duration_ms: 12.37773
   type: 'test'
   ...
 # Subtest: protocol/unsupported versions and duplicate operation names fail
 ok 46 - protocol/unsupported versions and duplicate operation names fail
   ---
-  duration_ms: 0.664395
+  duration_ms: 2.060171
   type: 'test'
   ...
 # Subtest: guards/absence predicates become stale when a matching set changes
 ok 47 - guards/absence predicates become stale when a matching set changes
   ---
-  duration_ms: 1.292948
+  duration_ms: 0.943449
   type: 'test'
   ...
 # Subtest: guards/an unmentioned dependency cannot be silently treated as current
 ok 48 - guards/an unmentioned dependency cannot be silently treated as current
   ---
-  duration_ms: 1.977732
+  duration_ms: 2.288152
   type: 'test'
   ...
 # Subtest: guards/unrelated domains do not invalidate a decision; security/epoch do
 ok 49 - guards/unrelated domains do not invalidate a decision; security/epoch do
   ---
-  duration_ms: 1.016541
+  duration_ms: 4.718626
   type: 'test'
   ...
 # Subtest: idempotency/key has no transport or app namespace and distinguishes real identities
 ok 50 - idempotency/key has no transport or app namespace and distinguishes real identities
   ---
-  duration_ms: 0.537129
+  duration_ms: 0.448121
   type: 'test'
   ...
 # Subtest: retries/only serialization and deadlock errors are retryable
 ok 51 - retries/only serialization and deadlock errors are retryable
   ---
-  duration_ms: 0.280483
+  duration_ms: 0.170394
   type: 'test'
   ...
 # Subtest: effects/lost provider response remains unknown and cannot be blindly retried or cancelled
 ok 52 - effects/lost provider response remains unknown and cannot be blindly retried or cancelled
   ---
-  duration_ms: 0.240584
+  duration_ms: 0.228695
   type: 'test'
   ...
 # Subtest: case/release machines exercise all legal and illegal state pairs
 ok 53 - case/release machines exercise all legal and illegal state pairs
   ---
-  duration_ms: 4.025692
+  duration_ms: 3.895145
   type: 'test'
   ...
 # Subtest: fencing/old owner, old fence or expired lease cannot finish a job
 ok 54 - fencing/old owner, old fence or expired lease cannot finish a job
   ---
-  duration_ms: 1.25784
+  duration_ms: 0.638401
   type: 'test'
   ...
 # Subtest: release/unloaded active semantics cannot silently use the current application code
 ok 55 - release/unloaded active semantics cannot silently use the current application code
   ---
-  duration_ms: 0.589405
+  duration_ms: 0.364703
   type: 'test'
   ...
 # Subtest: crypto/SHA-256 agrees with independent native implementation
 ok 56 - crypto/SHA-256 agrees with independent native implementation
   ---
-  duration_ms: 9.962836
+  duration_ms: 13.398345
   type: 'test'
   ...
 # Subtest: crypto/references have 192 random bits, distinct UUIDs and canonical encoding
 ok 57 - crypto/references have 192 random bits, distinct UUIDs and canonical encoding
   ---
-  duration_ms: 19.098113
+  duration_ms: 27.571231
   type: 'test'
   ...
 # Subtest: crypto/HMAC uses actual crypto, rejects changes and matches native HMAC
 ok 58 - crypto/HMAC uses actual crypto, rejects changes and matches native HMAC
   ---
-  duration_ms: 5.437372
+  duration_ms: 6.481284
   type: 'test'
   ...
 # Subtest: crypto/actual Ed25519 signature is byte-specific, not an authorization grant
 ok 59 - crypto/actual Ed25519 signature is byte-specific, not an authorization grant
   ---
-  duration_ms: 8.299095
+  duration_ms: 3.306328
   type: 'test'
   ...
 # Subtest: links/forwarded, revoked, expired and missing links reveal same neutral error
 ok 60 - links/forwarded, revoked, expired and missing links reveal same neutral error
   ---
-  duration_ms: 1.419219
+  duration_ms: 1.195302
   type: 'test'
   ...
 # Subtest: sessions/context, world, realm and operation never inherit publisher authority
 ok 61 - sessions/context, world, realm and operation never inherit publisher authority
   ---
-  duration_ms: 0.787277
+  duration_ms: 0.887317
   type: 'test'
   ...
 # Subtest: sessions/idle and absolute expiration, pre-issuance and closed sessions fail
 ok 62 - sessions/idle and absolute expiration, pre-issuance and closed sessions fail
   ---
-  duration_ms: 0.325465
+  duration_ms: 0.258899
   type: 'test'
   ...
 # Subtest: capabilities/intersection only narrows and empty permits cannot expand access
 ok 63 - capabilities/intersection only narrows and empty permits cannot expand access
   ---
-  duration_ms: 1.243237
+  duration_ms: 1.027254
   type: 'test'
   ...
 # Subtest: isolation/executable code cannot receive private data merely because it is signed
 ok 64 - isolation/executable code cannot receive private data merely because it is signed
   ---
-  duration_ms: 0.660203
+  duration_ms: 0.592985
   type: 'test'
   ...
 # Subtest: HTTP/exact origins reject suffixes, userinfo, subdomains and null
 ok 65 - HTTP/exact origins reject suffixes, userinfo, subdomains and null
   ---
-  duration_ms: 0.75622
+  duration_ms: 0.475953
   type: 'test'
   ...
 # Subtest: HTTP/return paths have no redirect or encoded slash escape hatch
 ok 66 - HTTP/return paths have no redirect or encoded slash escape hatch
   ---
-  duration_ms: 0.596208
+  duration_ms: 1.367534
   type: 'test'
   ...
 # Subtest: HTTP/generated runtime never receives cookies, bearer tokens or forged identity headers
 ok 67 - HTTP/generated runtime never receives cookies, bearer tokens or forged identity headers
   ---
-  duration_ms: 27.595922
+  duration_ms: 22.732984
   type: 'test'
   ...
 # Subtest: HTTP/body bounds apply to chunked streams, not just Content-Length
 ok 68 - HTTP/body bounds apply to chunked streams, not just Content-Length
   ---
-  duration_ms: 7.910676
+  duration_ms: 8.055866
   type: 'test'
   ...
 # Subtest: HTTP/oversized lengths and compressed inputs reject before interpretation
 ok 69 - HTTP/oversized lengths and compressed inputs reject before interpretation
   ---
-  duration_ms: 1.669334
+  duration_ms: 2.284012
   type: 'test'
   ...
 # Subtest: HTTP/no-store and HTTPS requirements apply without a development login bypass
 ok 70 - HTTP/no-store and HTTPS requirements apply without a development login bypass
   ---
-  duration_ms: 0.529577
+  duration_ms: 0.313239
   type: 'test'
   ...
 # Subtest: canonical/array accessors cannot execute while signing authority bytes
 ok 71 - canonical/array accessors cannot execute while signing authority bytes
   ---
-  duration_ms: 0.434349
+  duration_ms: 0.303876
   type: 'test'
   ...
 # Subtest: config/missing real dependencies never selects a fallback implementation
 ok 72 - config/missing real dependencies never selects a fallback implementation
   ---
-  duration_ms: 11.707109
+  duration_ms: 13.564359
   type: 'test'
   ...
 1..72
@@ -439,4 +439,4 @@ ok 72 - config/missing real dependencies never selects a fallback implementation
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 374.302719
+# duration_ms 662.86486

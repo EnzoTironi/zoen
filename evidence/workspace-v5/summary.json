@@ -2,7 +2,7 @@
   "schema_version": 1,
   "delivery": "Zoen Workspace v5",
   "product_architecture": "v4 with organization amendment 066",
-  "source_commit": "90f404ef5e25f988d7970cdf62c4a8c8cb687714",
+  "source_commit": "407da157771807ce397529a50a67bc8964a335b6",
   "source_worktree_clean_at_core_test": true,
   "purpose": "Organized execution workspace, local linked pseudocode, current documentation and preserved candidate code; not a complete product implementation.",
   "coverage": {
@@ -39,12 +39,12 @@
     },
     "static_integrity": {
       "status": "passed",
-      "static_files": 2990,
+      "static_files": 2991,
       "scope": "Static delivery integrity only; Git and mutable evidence/acceptance are checked separately."
     },
     "python_control_tests": {
       "status": "passed",
-      "executed": 89,
+      "executed": 91,
       "failed": 0,
       "skipped": 0
     },
@@ -94,20 +94,20 @@
   ],
   "report_hashes": {
     "backlog-syntax.json": "0c8d2ce677b3c4714d8b64e7ada883b5738f29dd2dba92c726371539303742b4",
-    "control-tests.stderr": "f04e2fcb1544757f14590844879151feebba9fb9db9e656c3029d99f037134aa",
+    "control-tests.stderr": "e0fc788d8d42fe876ec33e26bd2f571a4917fbf1e7df10e0d8b7a9ebfca6533a",
     "control-tests.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "core-command.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "core-command.stdout": "f701e146e14223826802ee1cb07fdf4db3a8b73912a5e1a785d28b20db9da464",
-    "core-report.json": "6b890567a3ed8b6aa98a450dfe82bb503ab82999a7a7ab034d12da6364ab9357",
-    "core-tests.stdout": "8f363862a3acce0f56e0aaa01c0057f652d7fa8d1fabba583358cf14f6b782b7",
+    "core-report.json": "7430e64290e13d07bd2992376d5c8a96cbba9bb7bbcbaa13ba350cfa8990e2cc",
+    "core-tests.stdout": "69bf899679f22664cddc548cdc661e98947f274099055cd20a1b0fca1fb8e555",
     "document-contracts.json": "ddc6f9e135855458689b81d576128234087d33e5caa17a769df55e88b0d57ce3",
     "generation.json": "1ddc522df83e876d995f1d6b76c77dbb559a6ff6a6a662780228752f2cfe16b7",
-    "integrity.json": "6b9c5483f76852f77103ec565200b715d5512081c77bb3c49fe5bf9c7e507d43",
+    "integrity.json": "cd6903a21c6733b45cbcec4fc1ee24d7469574068d76c0cc7ea247a76909e659",
     "mutations-command.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "mutations-command.stdout": "08bf70bcedb2892272c9f0efea813d47bab57dcbaf831bea9961175b3b32d402",
     "mutations.json": "08bf70bcedb2892272c9f0efea813d47bab57dcbaf831bea9961175b3b32d402",
     "real-preflight.json": "2f37dba636d1ff2db4dd8f767439aa914f04f0c81baf8a09195b617fc660b62b",
     "real-preflight.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    "structure.json": "527f3c7992d0ccbded68d02584d3460e7baab3a1f5a91781ca79233151c97e46"
+    "structure.json": "6aabf70fb318d8bed8b3650040f2487bc086d8a497fbd1ad1379a55e6fbd796b"
   }
 }

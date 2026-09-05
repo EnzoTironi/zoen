@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-05T00:47:05.454Z",
+  "generatedAt": "2026-09-05T00:50:37.912Z",
   "git": {
-    "commit": "90f404ef5e25f988d7970cdf62c4a8c8cb687714",
+    "commit": "407da157771807ce397529a50a67bc8964a335b6",
     "dirty": false
   },
   "runtime": {
@@ -105,12 +105,13 @@
     "tooling/check_integrity.py": "fda04778e6b11afa3f7b8c27fc2e7acaa6f8213a12b7378cfff54f4d2e676a81",
     "tooling/execution/core.py": "a78e4a6c5a2166184c255ead8de08dbd26c4b468bf0dc7a45eb2162e0682bf86",
     "tooling/execution/test_controls.py": "9ef84f1a2a3f6bb6ce53ffe423064950457992b26a379a10fb1741bf49a7d274",
-    "tooling/execution/test_workspace.py": "26f9b8b65d8ab4d3486f358d0f12c3313af253c36dda34c743a24b4dd41e0ab3",
+    "tooling/execution/test_workspace.py": "af998a7d484c41a075fb5d35703361aab5bf727e308d9d4057d389640f818ee7",
     "tooling/extract_specification.py": "13ca7f9eca334793267732c5697c4a0eda0bba779eea1e6ef8b018807cb2eb98",
     "tooling/files.mjs": "719a7afaa8adcc393ec6f4c9450e561c47a3af42524ba5f8510876bc2ae17656",
     "tooling/generate-plans.py": "5f03c0bcad108b4bc0b6f0b00fee1c4f751ed6c27702397bc3b2ed6624f7fedb",
     "tooling/migrate.mjs": "2cd47f84c922cce824835cb18310f8c6c4838f9ae3230da2542b8068c1ee6726",
     "tooling/mutations.mjs": "695709917b3a486c904f66766e64829dd95e1b4d9652a1715ac3184d047083a7",
+    "tooling/package-workspace.py": "7a906d928044e94179ee9facc2e9bb5abd24fcf2e90057fa0d7755ed36799251",
     "tooling/preflight.mjs": "25430f296af053360e797e1099a1e85b1dca72200c7a873388a7291c03e74e30",
     "tooling/provision.mjs": "b4fef39b4187561cf66642304f2db9c937ff07da3b5634d4e02dbf3820121580",
     "tooling/real-tests.mjs": "3738b537eec175e0540332081befcf2114b2ee983d7286c749075193692e9c6c",
