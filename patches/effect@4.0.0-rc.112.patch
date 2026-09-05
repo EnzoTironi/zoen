@@ -1,0 +1,13 @@
+diff --git a/dist/unstable/cli/internal/command.d.ts b/dist/unstable/cli/internal/command.d.ts
+index bf0e20947724389232c42e6d1fe8ce516dfcaa51..ffc330dd4a85fa9c3e2ac9a919aed90c7fc9771c 100644
+--- a/dist/unstable/cli/internal/command.d.ts
++++ b/dist/unstable/cli/internal/command.d.ts
+@@ -63,7 +63,7 @@ export declare const makeCommand: <const Name extends string, Input, E, R, Conte
+ /**
+  * Converts a single flag param into a FlagDoc for help display.
+  */
+-export declare const toFlagDoc: (single: Param.Single<typeof Param.flagKind, unknown>, metadata: ReturnType<typeof Param.getParamMetadata>) => FlagDoc;
++export declare const toFlagDoc: (single: Param.Single<typeof Param.flagKind, unknown>, metadata: { readonly isOptional: boolean; readonly isVariadic: boolean; readonly variadicMin: import("../../../Option.ts").Option<number>; readonly variadicMax: import("../../../Option.ts").Option<number>; }) => FlagDoc;
+ /**
+  * Creates a parser for a given config. Used as the default for both `parse`
+  * and `parseContext`, and also by `withSharedFlags` to avoid constructing a

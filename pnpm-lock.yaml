@@ -6,6 +6,7 @@ settings:
 
 patchedDependencies:
   '@better-fetch/fetch@1.3.1': c41f22e0b2e05e34728a6ccb7a4c37525a9587fb151d4da9d40f8bc215d09ad1
+  effect@4.0.0-rc.112: 018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88
 
 importers:
 
@@ -19,16 +20,16 @@ importers:
         version: 5.20260905.1
       '@effect/platform-node':
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112(effect@4.0.0-rc.112)(redis@6.2.1)
+        version: 4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))(redis@6.2.1)
       '@effect/sql-pg':
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112(effect@4.0.0-rc.112)
+        version: 4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))
       '@effect/tsgo':
         specifier: 0.41.0
         version: 0.41.0
       '@effect/vitest':
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112(effect@4.0.0-rc.112)(vitest@4.1.11(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(yaml@2.9.0)))
+        version: 4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))(vitest@4.1.11(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(yaml@2.9.0)))
       '@playwright/test':
         specifier: 1.63.0
         version: 1.63.0
@@ -52,7 +53,7 @@ importers:
         version: 1.4.1
       effect:
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112
+        version: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
       oxfmt:
         specifier: 0.66.0
         version: 0.66.0
@@ -79,13 +80,13 @@ importers:
     dependencies:
       '@effect/platform-node':
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112(effect@4.0.0-rc.112)(redis@6.2.1)
+        version: 4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))(redis@6.2.1)
       '@zoen/contracts':
         specifier: workspace:*
         version: link:../../packages/contracts
       effect:
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112
+        version: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
 
   apps/server:
     dependencies:
@@ -94,10 +95,10 @@ importers:
         version: 3.1127.0
       '@effect/platform-node':
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112(effect@4.0.0-rc.112)(redis@6.2.1)
+        version: 4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))(redis@6.2.1)
       '@effect/sql-pg':
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112(effect@4.0.0-rc.112)
+        version: 4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))
       '@zoen/authority':
         specifier: workspace:*
         version: link:../../packages/authority
@@ -109,7 +110,7 @@ importers:
         version: 1.7.2(@cloudflare/workers-types@5.20260905.1)(pg@8.23.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(vitest@4.1.11(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(yaml@2.9.0)))
       effect:
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112
+        version: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
       pg:
         specifier: 8.23.0
         version: 8.23.0
@@ -121,7 +122,7 @@ importers:
         version: link:../../packages/contracts
       effect:
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112
+        version: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
       react:
         specifier: 19.2.8
         version: 19.2.8
@@ -136,13 +137,13 @@ importers:
         version: link:../contracts
       effect:
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112
+        version: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
 
   packages/contracts:
     dependencies:
       effect:
         specifier: 4.0.0-rc.112
-        version: 4.0.0-rc.112
+        version: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
 
 packages:
 
@@ -2179,19 +2180,19 @@ snapshots:
 
   '@cloudflare/workers-types@5.20260905.1': {}
 
-  '@effect/platform-node-shared@4.0.0-rc.112(effect@4.0.0-rc.112)':
+  '@effect/platform-node-shared@4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))':
     dependencies:
       '@types/ws': 8.18.1
-      effect: 4.0.0-rc.112
+      effect: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
       ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
 
-  '@effect/platform-node@4.0.0-rc.112(effect@4.0.0-rc.112)(redis@6.2.1)':
+  '@effect/platform-node@4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))(redis@6.2.1)':
     dependencies:
-      '@effect/platform-node-shared': 4.0.0-rc.112(effect@4.0.0-rc.112)
-      effect: 4.0.0-rc.112
+      '@effect/platform-node-shared': 4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))
+      effect: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
       mime: 4.1.0
       redis: 6.2.1
       undici: 8.10.2
@@ -2199,9 +2200,9 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@effect/sql-pg@4.0.0-rc.112(effect@4.0.0-rc.112)':
+  '@effect/sql-pg@4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))':
     dependencies:
-      effect: 4.0.0-rc.112
+      effect: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
       pg: 8.23.0
       pg-connection-string: 2.14.0
       pg-cursor: 2.22.0(pg@8.23.0)
@@ -2241,9 +2242,9 @@ snapshots:
       '@effect/tsgo-win32-arm64': 0.41.0
       '@effect/tsgo-win32-x64': 0.41.0
 
-  '@effect/vitest@4.0.0-rc.112(effect@4.0.0-rc.112)(vitest@4.1.11(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(yaml@2.9.0)))':
+  '@effect/vitest@4.0.0-rc.112(effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88))(vitest@4.1.11(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(yaml@2.9.0)))':
     dependencies:
-      effect: 4.0.0-rc.112
+      effect: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
       vitest: 4.1.11(@types/node@24.13.3)(vite@8.2.2(@types/node@24.13.3)(yaml@2.9.0))
 
   '@jridgewell/sourcemap-codec@1.6.0': {}
@@ -2753,7 +2754,7 @@ snapshots:
 
   detect-libc@2.1.2: {}
 
-  effect@4.0.0-rc.112:
+  effect@4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88):
     dependencies:
       fast-check: 4.9.0
       msgpackr: 2.1.0
