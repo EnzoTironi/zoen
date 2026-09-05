@@ -26,7 +26,4 @@ Better Auth 1.7.2 can return 200 after swallowing a session deletion error. The 
 
 `logout.EX09.integration.test.ts` uses real PostgreSQL and Better Auth. The DELETE-denial regression first failed with actual 200 while the same session remained usable, then passed with 503. Further cases exercise a real trigger that silently retains the session, SELECT privilege loss, provider callback rejection, an untrusted body session ID, successful retry and already absent logout.
 
-Validation on 2026-09-05: all nine identity integration files passed (15 tests)
-with one worker against real PostgreSQL; TypeScript and focused oxlint passed.
-A prior concurrent suite run hit host ENOSPC while importing the new suite;
-the sequential rerun above completed after that transient host failure.
+Validation on 2026-09-05: all nine identity integration files passed (15 tests) with one worker against real PostgreSQL; TypeScript and focused oxlint passed. A prior concurrent suite run hit host ENOSPC while importing the new suite; the sequential rerun above completed after that transient host failure.

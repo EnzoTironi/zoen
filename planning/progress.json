@@ -5,15 +5,15 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "EX15-composition-review",
+      "task": "EX17",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex02",
-      "state": "review_completed"
+      "state": "in_progress"
     },
     {
       "agent": "roadmap_redesign",
-      "task": "D01-CSV-contract",
+      "task": "EX19-web",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
@@ -21,11 +21,11 @@
     },
     {
       "agent": "tickets_redesign",
-      "task": "D03-sharing-contract",
+      "task": "EX16-independent-migration-review",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
-      "state": "contract_proposed"
+      "state": "in_progress"
     }
   ],
   "temporary_ownership": [
@@ -105,6 +105,20 @@
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "Contrato candidato de importação CSV pelo mesmo executor; não autoriza parser heurístico."
+    },
+    {
+      "task": "EX19-web",
+      "path": "apps/web/src/features/d01/**",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "SeletorCSV explícito no mesmo cliente; entrypoints/config permanecem root."
+    },
+    {
+      "task": "EX16-independent-migration-review",
+      "path": "tests/integration/d01/independent/document-format-migration.review.integration.test.ts",
+      "owner": "worker-3",
+      "integration_owner": "root",
+      "reason": "Contraprova real da migração004 e preservação JSON histórica."
     }
   ],
   "checkpoints": [
@@ -170,6 +184,40 @@
       "browser_acceptance_tests": 4,
       "tooling_tests": 6,
       "scope": "Jornada JSON, identidade real, PostgreSQL/S3, correção/unknown/undo, replay e revogação com revisão cruzada. Build, typecheck e lint passaram. Aceitação combinada atual51.9s; contêiner/CI nova ainda não executados. Não conclui D01/D02 completos nem 22 entregas."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "e13ad12b881010870570f35e90499f080926d51c",
+      "packages": [
+        "EX01",
+        "EX02",
+        "EX03",
+        "EX04",
+        "EX05",
+        "EX06",
+        "EX07",
+        "EX08",
+        "EX09",
+        "EX10",
+        "EX11",
+        "EX12",
+        "EX13",
+        "EX14",
+        "EX15"
+      ],
+      "state": "verified_for_profile",
+      "profile": "d01-local-retained-v1 / JSON + scoped-corrections",
+      "remote_ci": {
+        "commit": "e13ad12b881010870570f35e90499f080926d51c",
+        "result": "success",
+        "url": "https://github.com/EnzoTironi/zoen/actions/runs/33984960541"
+      },
+      "unit_tests": 173,
+      "integration_tests": 86,
+      "browser_component_tests": 7,
+      "browser_acceptance_tests": 4,
+      "tooling_tests": 6,
+      "scope": "Primeiro incremento JSOND01/D02 com revisão cruzada e imagemreal; não concluiD01/D02integrais, apagamento, cloud ou22entregas. CSV/logoutevoluçõesposteriores ainda possuemseusgates."
     }
   ],
   "verified_deliveries": [],

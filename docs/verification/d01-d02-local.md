@@ -16,7 +16,7 @@ Este é um incremento funcional. CSV, merge/split de identidade, compartilhament
 | Aceitação Chromium + CLI | 4 testes | Conta normal, duas fontes, evidência, logout/abas/back/revogação, replay entre superfícies, histórico, Stale, unknown e undo |
 | Ferramentas de build/provisionamento | 6 contraprovas independentes | Limpeza não atravessa symlinks; credenciais são criadas em modo 0600 sem sobrescrita ou vazamento |
 | Build, TS7 e lint | Passaram localmente | Não substituem prova de serviço, navegador ou recuperação |
-| Contêiner e CI atual | A executar no runner real | O workflow exige a imagem construída e a aceitação; escrever o workflow não conta como execução |
+| Contêiner e CI | Passaram no commit `e13ad12` | Imagem construída, instalação real e 4 cenários de aceitação; não cobre alterações posteriores |
 
 A integração combinada passou sobre `44091d9` (API composta), com Node 24.20.0 e os serviços locais. A primeira execução reunida de navegador passou em 52,2 segundos; a repetição após a composição aditiva da API passou nos mesmos quatro cenários em 51,9 segundos. A CI histórica de bootstrap continua em [33974831478](https://github.com/EnzoTironi/zoen/actions/runs/33974831478); ela não prova as funcionalidades adicionadas depois.
 
@@ -38,3 +38,7 @@ A [prova EX15](../../tests/integration/d01-d02-independent/README.md) usa proces
 O processo principal verifica o digest admitido e os bytes reais de JS, web, manifests dos workspaces e lockfile antes de abrir pools. A manutenção percorre Worlds e capturas expiradas em páginas limitadas, com a mesma instalação/política e fence de publicação; payload admitido e pin ativo são conservados. Um build novo não pode rebatizar a instalação de Worlds antigos. Artefatos anteriores ficam retidos para suas instalações; upgrade e restore exigem operações próprias.
 
 `pnpm test:container` extrai `release.json` da imagem construída, provisiona um perfil exclusivo, usa o UID do host para ler a montagem de instalação 0600, restringe o container e espera `/ready` real antes de iniciar navegador e CLI. A CLI executada é a do host; o servidor e a web são da imagem. Os logs publicados pela CI excluem arquivos de credenciais, instalação e provisionamento.
+
+## CI completa do incremento JSON
+
+A [execução33984960541](https://github.com/EnzoTironi/zoen/actions/runs/33984960541), commit `e13ad12b881010870570f35e90499f080926d51c`, passou nos cinco jobs, incluindo o agregador obrigatório. O runner executou 173 testes unitários, 86 integrações, 7 componentes Chromium, 6 testes de ferramentas e 4 cenários contra o servidor/web da imagem construída com a CLI do host (56,4s). O caso anterior [33984626649](https://github.com/EnzoTironi/zoen/actions/runs/33984626649) construiu a imagem, mas falhou no verificador de readiness por um reset de conexão transitório; `e13ad12` conservou a exigência de HTTP200 real e passou a esperar também esse erro de transporte dentro do mesmo limite. Essa CI não aprova o incremento CSV nem as mudanças de logout posteriores.
