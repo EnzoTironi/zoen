@@ -94,3 +94,21 @@ export const applyDisclosureMigrations = Effect.fn(
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
   return [...base, ...extension];
 });
+
+/** Basis v2 is an explicit transition; the five-domain executables retain migrations 001–006. */
+export const applyIdentityBasisMigrations = Effect.fn(
+  "migrations.applyIdentityBasis"
+)(function* applyIdentityBasisMigrations(roles: D01DatabaseRoles) {
+  const base = yield* applyDisclosureMigrations(roles);
+  const fs = yield* FileSystem.FileSystem;
+  const sql = yield* SqlClient.SqlClient;
+  const identity = yield* fs.readFileString(
+    fileURLToPath(new URL("007_subject_identity_domain.sql", import.meta.url))
+  );
+  const extension = yield* PgMigrator.run({
+    loader: PgMigrator.fromRecord({
+      "7_subject_identity_domain": sql.unsafe(identity).pipe(Effect.asVoid),
+    }),
+  });
+  return [...base, ...extension];
+});
