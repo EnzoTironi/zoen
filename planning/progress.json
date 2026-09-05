@@ -5,7 +5,7 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "EX02",
+      "task": "EX05",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex02",
@@ -13,7 +13,7 @@
     },
     {
       "agent": "roadmap_redesign",
-      "task": "EX03",
+      "task": "EX06",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
@@ -21,20 +21,26 @@
     },
     {
       "agent": "tickets_redesign",
-      "task": "EX01-infrastructure-proof",
+      "task": "EX04",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
       "state": "in_progress"
     }
   ],
-  "temporary_ownership": [
+  "temporary_ownership": [],
+  "checkpoints": [
     {
-      "task": "EX01",
-      "path": "tests/infrastructure/**",
-      "owner": "worker-3",
-      "integration_owner": "root",
-      "reason": "Provas reais independentes enquanto root configura toolchain/CI; revisão cruzada antes de concluir EX01."
+      "date": "2026-09-05",
+      "commit": "6241437",
+      "packages": ["EX01", "EX02", "EX03"],
+      "state": "reviewed_and_verified_locally",
+      "evidence": "docs/verification/bootstrap.md",
+      "remote_ci": "pending",
+      "unit_tests": 67,
+      "infrastructure_tests": 4,
+      "browser_component_tests": 7,
+      "scope": "Bootstrap, contratos e componentes puros; não conclui D01 ou D02."
     }
   ],
   "verified_deliveries": [],

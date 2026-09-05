@@ -1,6 +1,6 @@
 # Qualidade e CI desde o primeiro código
 
-Este documento define checks a implementar. Nenhum comando de produto foi executado neste redesenho e nenhum requisito está marcado como aprovado por existir no plano.
+Este documento define os checks exigidos durante a implementação. Os scripts de qualidade, unidade, integração de infraestrutura e componentes web já existem; a [evidência do bootstrap](verification/bootstrap.md) registra seu escopo. Requisitos não são aprovados por existir no plano.
 
 ## Stack e comandos
 

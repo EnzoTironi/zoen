@@ -1,6 +1,6 @@
 # Execução inicial de D01/D02 — três workers e root
 
-Proposta de planejamento, 2026-09-05. Nenhum código de produto foi implementado, nenhum check de produto foi executado e nenhuma capacidade foi aceita por este documento. O [JSON](../planning/execution.json) contém allowlists, contratos consumidos, aceitação e checks planejados de cada pacote.
+Plano de execução, 2026-09-05. O [JSON](../planning/execution.json) preserva allowlists, contratos consumidos, aceitação e checks planejados de cada pacote. O [progresso](../planning/progress.json) e a [evidência](verification/bootstrap.md) registram a implementação executada separadamente; este plano não constitui aceitação de capacidade.
 
 ## Resultado escolhido
 
