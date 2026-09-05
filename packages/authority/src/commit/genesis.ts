@@ -14,7 +14,7 @@ import {
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { validateContext } from "../access/context.js";
+import { validateContext, withinRequestDeadline } from "../access/context.js";
 import { authorizeWorld } from "../access/world.js";
 import { DomainCut } from "../ports/d01/basis.js";
 import { DataPolicy } from "../ports/d01/context.js";
@@ -69,6 +69,7 @@ export const createPersonalWorld = Effect.fn(
       yield* validateContext(context);
       const lockKey = `genesis:${context.presence.principalId}:${request.operationId}`;
       yield* sql`SELECT pg_advisory_xact_lock(hashtextextended(${lockKey}, 0))`;
+      yield* validateContext(context);
       const [existing] = yield* sql`
         SELECT intent_digest, world_id, realm, receipt_id
         FROM authority.bootstrap_operations
@@ -114,7 +115,7 @@ export const createPersonalWorld = Effect.fn(
           VALUES (${worldRef.worldId}, ${worldRef.realm}, ${domain}, 0)
         `;
       }
-      return yield* persistReceipt({
+      const receipt = yield* persistReceipt({
         context,
         cut: initialCut,
         operation: request.operation,
@@ -122,7 +123,9 @@ export const createPersonalWorld = Effect.fn(
         result: { _tag: "WorldCreated", receiptRef, worldRef },
         worldRef,
       });
-    })
+      yield* validateContext(context);
+      return receipt;
+    }).pipe(withinRequestDeadline(context))
   );
   const created = yield* Schema.decodeUnknownEffect(WorldCreated)(result).pipe(
     Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))

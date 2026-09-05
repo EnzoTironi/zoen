@@ -38,3 +38,23 @@ export const validateContext = Effect.fn("authority.access.validateContext")(
     return context;
   }
 );
+
+/** Interrupt request work at its absolute deadline, including SQL lock waits. */
+export const withinRequestDeadline =
+  (context: VerifiedRequestContext) =>
+  <A, E, R>(body: Effect.Effect<A, E, R>) =>
+    Effect.gen(function* requestDeadline() {
+      yield* validateContext(context);
+      const remaining =
+        Date.parse(context.deadline) -
+        Date.parse(DateTime.formatIso(yield* DateTime.now));
+      if (remaining <= 0) {
+        return yield* new Expired({ code: "EXPIRED" });
+      }
+      return yield* body.pipe(
+        Effect.timeoutOrElse({
+          duration: remaining,
+          orElse: () => Effect.fail(new Expired({ code: "EXPIRED" })),
+        })
+      );
+    });
