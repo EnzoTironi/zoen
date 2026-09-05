@@ -3,8 +3,8 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { NodeServices } from "@effect/platform-node";
 import { DateTime, Effect, Layer, Redacted, Schema } from "effect";
 
-import { makeD01IdentityLayer } from "../../../../apps/server/src/identity/d01/identity.js";
 import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
+import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/d01/database.js";
 import { applySharingMigrations } from "../../../../ops/migrations/run.js";
 import {
   Presence,
@@ -22,7 +22,7 @@ export const withSharingDatabase = <A, E, R>(
       readonly secret: Redacted.Redacted;
       readonly sessionSeconds: number;
     };
-    readonly runtime: ReturnType<typeof makeD01IdentityLayer>;
+    readonly runtime: ReturnType<typeof makeTestIdentityLayer>;
   }) => Effect.Effect<A, E, R>
 ) =>
   withD01Database(
@@ -33,7 +33,11 @@ export const withSharingDatabase = <A, E, R>(
         secret: Redacted.make(randomBytes(32).toString("hex")),
         sessionSeconds: 3600,
       };
-      return run({ config, database, runtime: makeD01IdentityLayer(config) });
+      return run({
+        config,
+        database,
+        runtime: makeTestIdentityLayer(config, database),
+      });
     },
     undefined,
     (database) =>
