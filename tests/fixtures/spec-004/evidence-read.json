@@ -1,0 +1,11 @@
+{
+  "seed": "zn-0027-evidence-read-seed-v1",
+  "seedDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "purpose": "operations",
+  "sourceNamespace": "uploads.csv",
+  "domain": "records",
+  "predicate": "imported_row",
+  "mappingDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "maxBytes": 4096,
+  "retentionTtlSeconds": 3600
+}

@@ -4,6 +4,8 @@ import type {
   CaptureRef,
   DeclaredCaptureMetadata,
   QuarantinedCapture,
+  ReadEvidenceInput,
+  ReadEvidenceResult,
   SourceBinding,
   StageCaptureResult,
 } from './types.js';
@@ -14,6 +16,8 @@ export type {
   CaptureRef,
   DeclaredCaptureMetadata,
   QuarantinedCapture,
+  ReadEvidenceInput,
+  ReadEvidenceResult,
   SourceBinding,
   StageCaptureResult,
 };
@@ -30,4 +34,8 @@ export interface StageCapturePort {
 
 export interface AdmitCapturePort {
   admitCapture(input: AdmitCaptureInput): Promise<AdmissionReceipt>;
+}
+
+export interface ReadEvidencePort {
+  readEvidence(input: ReadEvidenceInput): Promise<ReadEvidenceResult>;
 }

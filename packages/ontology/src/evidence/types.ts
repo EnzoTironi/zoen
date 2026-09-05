@@ -64,3 +64,51 @@ export type AdmitCaptureInput = Readonly<{
   predicateId: string;
   subjectLabel: string;
 }>;
+
+export type EvidenceContentState = 'available' | 'expired' | 'erased' | 'unavailable';
+
+export type EvidenceRef = Readonly<{
+  evidenceId: UUID;
+  world: WorldRef;
+}>;
+
+export type EvidenceGrant = Readonly<{
+  grantHash: string;
+  principalId: UUID;
+  purpose: string;
+  securityRevision: number;
+  expiresAt: string;
+}>;
+
+/** Non-content metadata permitted after expiry/erasure (never bytes or storage locators). */
+export type EvidenceReceiptMeta = Readonly<{
+  evidenceId: UUID;
+  receiptId: UUID;
+  rightsRef: string;
+  retentionRef: string;
+  contentState: EvidenceContentState;
+  explanation: 'RETENTION_EXPIRED' | 'ERASED' | 'BYTES_UNAVAILABLE';
+}>;
+
+export type AuthorizedStream = Readonly<{
+  evidenceId: UUID;
+  mediaType: string;
+  size: number;
+  contentDigest: string;
+  bytes: Uint8Array;
+  readReceiptId: UUID;
+  rightsRef: string;
+  retentionRef: string;
+}>;
+
+export type ReadEvidenceInput = Readonly<{
+  evidence: EvidenceRef;
+  grant: EvidenceGrant;
+  nowIso: string;
+}>;
+
+export type ReadEvidenceResult =
+  | Readonly<{ tag: 'Ok'; value: AuthorizedStream }>
+  | Readonly<{ tag: 'HistoricalContentUnavailable'; value: EvidenceReceiptMeta }>
+  | Readonly<{ tag: 'NotFoundOrDenied' }>
+  | Readonly<{ tag: 'Denied'; reason: 'GRANT_EXPIRED' | 'GRANT_REVOKED' | 'RIGHTS_STALE' }>;
