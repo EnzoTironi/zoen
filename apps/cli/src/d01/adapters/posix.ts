@@ -37,7 +37,11 @@ export const readNoFollow = Effect.fn(function* readNoFollow(
       const file = yield* Effect.acquireRelease(
         Effect.tryPromise({
           catch: () => new CliFailure("CLI_INPUT"),
-          try: () => open(target, constants.O_RDONLY | constants.O_NOFOLLOW),
+          try: () =>
+            open(
+              target,
+              constants.O_RDONLY | constants.O_NOFOLLOW | constants.O_NONBLOCK
+            ),
         }),
         (handle) =>
           Effect.tryPromise({

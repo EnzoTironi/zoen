@@ -99,7 +99,14 @@ const createWorld = Command.make("create-world", { operationId }, (flags) =>
 ).pipe(
   Command.withDescription(
     "Create a private World using a caller-supplied retry identity"
-  )
+  ),
+  Command.withExamples([
+    {
+      command:
+        "zoen --base-url http://localhost:3000 create-world --operation-id <uuid>",
+      description: "Create a World; reuse this operation UUID when retrying",
+    },
+  ])
 );
 const importEvidence = Command.make(
   "import",
@@ -130,7 +137,14 @@ const importEvidence = Command.make(
 ).pipe(
   Command.withDescription(
     "Import authorized evidence through the public executor"
-  )
+  ),
+  Command.withExamples([
+    {
+      command:
+        "zoen --base-url http://localhost:3000 import --world-id <uuid> --operation-id <uuid> --file document.json",
+      description: "Send the original document using a stable operation UUID",
+    },
+  ])
 );
 const inspect = Command.make(
   "inspect",
@@ -158,7 +172,14 @@ const inspect = Command.make(
 ).pipe(
   Command.withDescription(
     "Inspect a subject at a recorded frame or the current frame"
-  )
+  ),
+  Command.withExamples([
+    {
+      command:
+        "zoen --base-url http://localhost:3000 inspect --world-id <uuid> --subject-key obligation-1",
+      description: "Print the current authorized frame as JSON",
+    },
+  ])
 );
 const openEvidence = Command.make(
   "open",
@@ -176,7 +197,16 @@ const openEvidence = Command.make(
         worldRef: { realm: flags.realm, worldId: flags.worldId },
       })
     )
-).pipe(Command.withDescription("Read authorized evidence through the server"));
+).pipe(
+  Command.withDescription("Read authorized evidence through the server"),
+  Command.withExamples([
+    {
+      command:
+        "zoen --base-url http://localhost:3000 open --world-id <uuid> --evidence-ref <uuid>",
+      description: "Read the original evidence through the server",
+    },
+  ])
+);
 
 const authCommand = (action: "sign-up" | "sign-in") =>
   Command.make(
@@ -211,7 +241,13 @@ const authCommand = (action: "sign-up" | "sign-in") =>
   ).pipe(
     Command.withDescription(
       "Authenticate with the server and store its session cookie privately"
-    )
+    ),
+    Command.withExamples([
+      {
+        command: `zoen --base-url http://localhost:3000 ${action} --email person@example.com --password-file /private/password${action === "sign-up" ? ' --name "Personal account"' : ""}`,
+        description: "Authenticate using a regular, owned 0600 password file",
+      },
+    ])
   );
 
 const logout = Command.make("sign-out", {}, () =>
@@ -227,7 +263,13 @@ const logout = Command.make("sign-out", {}, () =>
 ).pipe(
   Command.withDescription(
     "Revoke the server session, then remove the local session file"
-  )
+  ),
+  Command.withExamples([
+    {
+      command: "zoen --base-url http://localhost:3000 sign-out",
+      description: "Revoke the active session and remove its local credential",
+    },
+  ])
 );
 
 export const d01Command = root.pipe(
