@@ -2823,9 +2823,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-002/world-entry.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -8127,9 +8127,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "db/migrations/zn-0015_world-entry.sql.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -19087,9 +19087,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "packages/ontology/src/worlds/world-entry.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "packages/ontology/src/worlds/world-entry.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -20408,9 +20408,9 @@
         "ZN-0015"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-002/world-entry.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-002/world-entry.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -27588,9 +27588,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/component/spec-002/world-entry.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/component/spec-002/world-entry.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -32131,9 +32131,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-002/world-entry.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {

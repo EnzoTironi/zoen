@@ -1,0 +1,12 @@
+{
+  "seed": "zn-0015-world-entry-seed-v1",
+  "note": "Synthetic purpose-bound grant fixtures for ZN-0015. Real PostgreSQL required. Focus must never embed grantToken/permitToken.",
+  "seedDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "worldName": "Entry Grant World",
+  "purposeBilling": "billing.read",
+  "purposeClinical": "clinical.note.read",
+  "audienceHome": "audience.home",
+  "audienceClinic": "audience.clinic",
+  "grantTtlSeconds": 3600,
+  "permitTtlSeconds": 300
+}

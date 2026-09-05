@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-002/world-entry.schema.json",
+  "title": "SPEC-002 GrantRef and RequestPermitRef",
+  "oneOf": [
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "grantHash", "worldId", "realm", "purpose", "audienceHash", "assurance", "expiresAt", "securityRevision"],
+      "properties": {
+        "tag": { "const": "GrantRef" },
+        "grantHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "worldId": { "type": "string", "format": "uuid" },
+        "realm": { "enum": ["live", "evaluation"] },
+        "purpose": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$" },
+        "audienceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "assurance": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "securityRevision": { "type": "string", "pattern": "^[0-9]+$" }
+      }
+    },
+    {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tag", "permitHash", "grantHash", "worldId", "realm", "semanticOp", "bodyDigest", "audienceHash", "cellEpoch", "securityRevision", "expiresAt"],
+      "properties": {
+        "tag": { "const": "RequestPermitRef" },
+        "permitHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "grantHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "worldId": { "type": "string", "format": "uuid" },
+        "realm": { "enum": ["live", "evaluation"] },
+        "semanticOp": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]{0,127}$" },
+        "bodyDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "audienceHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "cellEpoch": { "type": "string", "pattern": "^[0-9]+$" },
+        "securityRevision": { "type": "string", "pattern": "^[0-9]+$" },
+        "expiresAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  ]
+}
