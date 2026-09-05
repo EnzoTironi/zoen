@@ -5,12 +5,12 @@ import type {
   FrameReopenOutcome,
   EvidenceDisclosureInput,
   EvidenceDisclosureOutcome,
-  FrameDisclosureService,
+  FrameRow,
 } from './frame-disclosure.js';
 
 export type { AcquireFrameBasisInput, FrameBasisOutcome, ResolveOpaqueRefInput, OpaqueRefOutcome };
 export type { DiscoverInput, DiscoverOutcome, ExplainOpaqueInput, ExplainOpaqueOutcome };
-export type { ReopenFrameInput, FrameReopenOutcome, EvidenceDisclosureInput, EvidenceDisclosureOutcome };
+export type { ReopenFrameInput, FrameReopenOutcome, EvidenceDisclosureInput, EvidenceDisclosureOutcome, FrameRow };
 
 export interface FrameBasisPort {
   acquire(input: AcquireFrameBasisInput): Promise<FrameBasisOutcome>;
@@ -23,9 +23,6 @@ export interface DiscoveryPort {
 }
 
 export interface FrameDisclosurePort {
-  reopen(
-    input: ReopenFrameInput,
-    row: Parameters<FrameDisclosureService['reopen']>[1],
-  ): FrameReopenOutcome;
+  reopen(input: ReopenFrameInput, row: FrameRow | null): FrameReopenOutcome;
   discloseEvidence(input: EvidenceDisclosureInput): EvidenceDisclosureOutcome;
 }

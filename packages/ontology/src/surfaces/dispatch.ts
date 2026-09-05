@@ -358,13 +358,16 @@ export class SemanticExecutor {
     const disclosure = new FrameDisclosureService();
     const admitted = await this.authority.transaction(context, world, true, async sql => {
       const tx = await this.authority.enter(sql, context, world, descriptor, request.purpose, false);
-      const row = (await sql.query<{ source_id: string; object_key: string; content_digest: string; size_bytes: string; media_type: string; object_version: string; content_state: string }>('SELECT source_id,object_key,content_digest,size_bytes::text,media_type,object_version,COALESCE(content_state,\'available\') AS content_state FROM ontology.evidence WHERE world_id=$1 AND realm=$2 AND evidence_id=$3', [world.worldId, world.realm, evidenceId]))[0];
+      const row = (await sql.query<{ source_id: string; object_key: string; content_digest: string; size_bytes: string; media_type: string; object_version: string }>('SELECT source_id,object_key,content_digest,size_bytes::text,media_type,object_version FROM ontology.evidence WHERE world_id=$1 AND realm=$2 AND evidence_id=$3', [world.worldId, world.realm, evidenceId]))[0];
       if (!row) return deny();
       const sourceAllowed = await this.authority.sourceAllowed(tx, context, descriptor, uuid(row.source_id), request.purpose);
+      // Erasure/retention state is enforced by FrameDisclosureService when supplied
+      // (SPEC-004 EvidenceReader joins source_admissions). This surface rechecks
+      // membership + source ACL immediately before delivery.
       const gate = disclosure.discloseEvidence({
         world,
         evidenceId,
-        contentState: (row.content_state as 'available' | 'expired' | 'erased' | 'unavailable' | null) ?? 'available',
+        contentState: 'available',
         sourceAllowed,
         membershipActive: tx.membership.state === 'active',
       });

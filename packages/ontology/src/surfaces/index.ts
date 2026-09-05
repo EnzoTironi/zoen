@@ -50,4 +50,5 @@ export type {
   ReopenFrameInput,
   EvidenceDisclosureInput,
   EvidenceDisclosureOutcome,
+  FrameRow,
 } from './frame-disclosure.js';
