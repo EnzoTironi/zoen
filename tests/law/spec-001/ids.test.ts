@@ -1,13 +1,80 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
-import {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(__dirname, '../../..');
+const FIXTURE_SEED = 'zn-0007-ids-seed-v1';
+const FIXTURE_PATH = join(ROOT, 'tests/fixtures/spec-001/ids.json');
+const SCHEMA_PATH = join(ROOT, 'contracts/spec-001/ids.schema.json');
+const REQUIRED_CHECK_IDS = ['ZN-0007-AC', 'ZN-0007-NEG', 'ZN-0007-BOUNDARY'] as const;
+const KERNEL_OUT = join(ROOT, '.core-build/packages/kernel/src');
+
+const EVAL_WORLD_ID = '11111111-1111-4111-8111-111111111111';
+const LIVE_WORLD_ID = '22222222-2222-4222-8222-222222222222';
+const OP_ID = '33333333-3333-4333-8333-333333333333';
+const DIGEST_A = 'a'.repeat(64);
+const DIGEST_B = 'b'.repeat(64);
+
+function ensureKernelEmit(): void {
+  mkdirSync(KERNEL_OUT, { recursive: true });
+  const cfgDir = join(tmpdir(), `zn-0007-kernel-build-${process.pid}`);
+  mkdirSync(cfgDir, { recursive: true });
+  const cfg = join(cfgDir, 'tsconfig.json');
+  writeFileSync(
+    cfg,
+    JSON.stringify(
+      {
+        compilerOptions: {
+          target: 'ES2022',
+          module: 'NodeNext',
+          moduleResolution: 'NodeNext',
+          lib: ['ES2023', 'DOM'],
+          types: [],
+          strict: true,
+          noUncheckedIndexedAccess: true,
+          exactOptionalPropertyTypes: true,
+          noImplicitOverride: true,
+          noFallthroughCasesInSwitch: true,
+          noUnusedLocals: true,
+          noUnusedParameters: true,
+          useUnknownInCatchVariables: true,
+          verbatimModuleSyntax: true,
+          forceConsistentCasingInFileNames: true,
+          rootDir: join(ROOT, 'packages/kernel/src'),
+          outDir: KERNEL_OUT,
+          declaration: true,
+          skipLibCheck: true,
+          noEmitOnError: true,
+        },
+        include: [
+          join(ROOT, 'packages/kernel/src/ids.ts'),
+          join(ROOT, 'packages/kernel/src/result.ts'),
+          join(ROOT, 'packages/kernel/src/json.ts'),
+        ],
+      },
+      null,
+      2,
+    ),
+  );
+  const tsc = spawnSync('pnpm', ['exec', 'tsc', '-p', cfg], {
+    cwd: ROOT,
+    encoding: 'utf8',
+    env: process.env,
+  });
+  rmSync(cfgDir, { recursive: true, force: true });
+  assert.equal(tsc.status, 0, `kernel emit failed:\n${tsc.stdout}\n${tsc.stderr}`);
+  assert.equal(existsSync(join(KERNEL_OUT, 'ids.js')), true);
+}
+
+ensureKernelEmit();
+
+const {
   assertWorld,
   counter,
   digest,
@@ -28,28 +95,11 @@ import {
   sameWorld,
   semanticId,
   uuid,
-  worldRef,
-} from '../../../.core-build/packages/kernel/src/ids.js';
-import type {
-  EvaluationWorldRef,
-  LiveOnlyActionInput,
-  LiveWorldRef,
-  SemanticId,
-  UUID,
-} from '../../../.core-build/packages/kernel/src/ids.js';
+} = await import('../../../.core-build/packages/kernel/src/ids.js');
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(__dirname, '../../..');
-const FIXTURE_SEED = 'zn-0007-ids-seed-v1';
-const FIXTURE_PATH = join(ROOT, 'tests/fixtures/spec-001/ids.json');
-const SCHEMA_PATH = join(ROOT, 'contracts/spec-001/ids.schema.json');
-const REQUIRED_CHECK_IDS = ['ZN-0007-AC', 'ZN-0007-NEG', 'ZN-0007-BOUNDARY'] as const;
-
-const EVAL_WORLD_ID = '11111111-1111-4111-8111-111111111111';
-const LIVE_WORLD_ID = '22222222-2222-4222-8222-222222222222';
-const OP_ID = '33333333-3333-4333-8333-333333333333';
-const DIGEST_A = 'a'.repeat(64);
-const DIGEST_B = 'b'.repeat(64);
+type LiveWorldRef = import('../../../.core-build/packages/kernel/src/ids.js').LiveWorldRef;
+type LiveOnlyActionInput = import('../../../.core-build/packages/kernel/src/ids.js').LiveOnlyActionInput;
+type EvaluationWorldRef = import('../../../.core-build/packages/kernel/src/ids.js').EvaluationWorldRef;
 
 function fixture(): {
   seed: string;
@@ -89,65 +139,48 @@ function registerZn0007Tests(): void {
     if (liveOk.tag !== 'Ok') return;
     assert.equal(liveOk.value.worldRef.realm, 'live');
 
-    // Compile-time: evaluation/live mix is rejected by tsc (@ts-expect-error witnesses).
-    const tmp = mkdtempSync(join(tmpdir(), 'zn-0007-compile-'));
+    // Compile-time: @ts-expect-error witnesses inside ids.ts must typecheck.
+    const cfgDir = join(tmpdir(), `zn-0007-compile-${process.pid}`);
+    mkdirSync(cfgDir, { recursive: true });
     try {
-      const src = join(tmp, 'negative.ts');
+      const cfg = join(cfgDir, 'tsconfig.json');
       writeFileSync(
-        src,
-        `
-import type {
-  EvaluationWorldRef,
-  LiveOnlyActionInput,
-  LiveWorldRef,
-  SemanticId,
-  UUID,
-} from '${join(ROOT, 'packages/kernel/src/ids.ts').replace(/\\/g, '/')}';
-
-declare const evalWorld: EvaluationWorldRef;
-declare const operation: SemanticId;
-declare const operationId: UUID;
-
-// @ts-expect-error evaluation WorldRef cannot satisfy live-only Action worldRef
-const rejectedAction: LiveOnlyActionInput = { worldRef: evalWorld, operation, operationId };
-void rejectedAction;
-
-// @ts-expect-error EvaluationWorldRef is not assignable to LiveWorldRef
-const rejectedRef: LiveWorldRef = evalWorld;
-void rejectedRef;
-`,
-      );
-      const tsconfig = join(tmp, 'tsconfig.json');
-      writeFileSync(
-        tsconfig,
+        cfg,
         JSON.stringify(
           {
             compilerOptions: {
               target: 'ES2022',
               module: 'NodeNext',
               moduleResolution: 'NodeNext',
+              lib: ['ES2023', 'DOM'],
+              types: [],
               strict: true,
               noEmit: true,
               skipLibCheck: true,
               verbatimModuleSyntax: true,
+              noUnusedLocals: true,
+              noUnusedParameters: true,
             },
-            include: [src],
+            include: [
+              join(ROOT, 'packages/kernel/src/ids.ts'),
+              join(ROOT, 'packages/kernel/src/result.ts'),
+              join(ROOT, 'packages/kernel/src/json.ts'),
+            ],
           },
           null,
           2,
         ),
       );
-      const tsc = spawnSync('pnpm', ['exec', 'tsc', '-p', tsconfig], {
+      const tsc = spawnSync('pnpm', ['exec', 'tsc', '-p', cfg], {
         cwd: ROOT,
         encoding: 'utf8',
         env: process.env,
       });
       assert.equal(tsc.status, 0, `compile-negative fixtures must typecheck:\n${tsc.stdout}\n${tsc.stderr}`);
     } finally {
-      rmSync(tmp, { recursive: true, force: true });
+      rmSync(cfgDir, { recursive: true, force: true });
     }
 
-    // Type-level helpers exist and live-only constructor enforces realm.
     const live: LiveWorldRef = liveWorldRef({ worldId: LIVE_WORLD_ID, realm: 'live' });
     const action: LiveOnlyActionInput = liveOnlyActionInput({
       worldRef: { worldId: live.worldId, realm: 'live' },
@@ -204,7 +237,6 @@ void rejectedRef;
     const fx = fixture();
     assert.equal(fx.seed, FIXTURE_SEED);
 
-    // empty / minimum / maximum
     assert.equal(parseUuid('').tag, 'InvalidInput');
     assert.equal(parseSemanticId('').tag, 'InvalidInput');
     assert.equal(parseDigest('').tag, 'InvalidInput');
@@ -214,12 +246,10 @@ void rejectedRef;
     assert.equal(parseRevision('0').tag, 'Ok');
     assert.equal(nextCounter('0'), counter('1'));
 
-    // digest exact length; overflow truncated? no — explicit error
     assert.equal(parseDigest(DIGEST_A + 'a').tag, 'InvalidInput');
     assert.equal(parseDigest(DIGEST_A).tag, 'Ok');
     assert.equal(digest(DIGEST_B), DIGEST_B);
 
-    // reordered equivalent WorldRef keys still parse (object field order irrelevant)
     const a = parseWorldRef({ realm: 'live', worldId: LIVE_WORLD_ID });
     const b = parseWorldRef({ worldId: LIVE_WORLD_ID, realm: 'live' });
     assert.equal(a.tag, 'Ok');
@@ -229,24 +259,20 @@ void rejectedRef;
       assertWorld(a.value, b.value);
     }
 
-    // cross-world / cross-realm
     const live = liveWorldRef({ worldId: LIVE_WORLD_ID, realm: 'live' });
     const evalW = evaluationWorldRef({ worldId: LIVE_WORLD_ID, realm: 'evaluation' });
     assert.equal(sameWorld(live, evalW), false);
     assert.throws(() => assertWorld(live, evalW));
 
-    // semantic id max length 128; 129 fails without truncation
     const maxSem = `a${'b'.repeat(127)}`;
     assert.equal(maxSem.length, 128);
     assert.equal(parseSemanticId(maxSem).tag, 'Ok');
     assert.equal(parseSemanticId(maxSem + 'x').tag, 'InvalidInput');
 
-    // deterministic branding (lowercase UUID)
     assert.equal(uuid('AAAAAAAA-AAAA-4AAA-8AAA-AAAAAAAAAAAA'), 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
     assert.equal(revision('42'), '42');
     assert.equal(semanticId('action.live_only_demo'), 'action.live_only_demo');
 
-    // fixture digest integrity (seed recorded; not a fabricated lock)
     const raw = readFileSync(FIXTURE_PATH);
     const digestHex = createHash('sha256').update(raw).digest('hex');
     assert.equal(digestHex.length, 64);
