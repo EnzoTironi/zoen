@@ -20,6 +20,7 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version-file: .node-version
+          package-manager-cache: false
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
       - run: pnpm install --frozen-lockfile
       - run: pnpm format:check
@@ -34,6 +35,7 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version-file: .node-version
+          package-manager-cache: false
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
       - run: pnpm install --frozen-lockfile
       - run: pnpm test:unit
@@ -45,9 +47,11 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version-file: .node-version
+          package-manager-cache: false
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
       - run: pnpm install --frozen-lockfile
       - name: Configure disposable services
+        id: services-config
         run: |
           python3 - <<'PY'
           import os, secrets
@@ -68,7 +72,7 @@ jobs:
           PY
       - run: docker compose --env-file .env.infra -f ops/compose.yaml up -d --wait
       - run: pnpm test:integration
-      - if: always()
+      - if: always() && steps.services-config.outcome == 'success'
         run: docker compose --env-file .env.infra -f ops/compose.yaml down --volumes
 
   components:
@@ -78,6 +82,7 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
         with:
           node-version-file: .node-version
+          package-manager-cache: false
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
