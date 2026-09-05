@@ -1,0 +1,11 @@
+{
+  "seed": "zn-0291-executor-binding-seed-v1",
+  "seedDigest": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1",
+  "purpose": "operations",
+  "subjectLabel": "executor-binding-subject-1",
+  "unit": "brl",
+  "billAmountA": "100.00",
+  "billAmountB": "120.00",
+  "sourceDateA": "2026-01-15",
+  "sourceDateB": "2026-01-15"
+}

@@ -52,3 +52,14 @@ export type {
   EvidenceDisclosureOutcome,
   FrameRow,
 } from './frame-disclosure.js';
+
+export {
+  BoundSemanticClient,
+  bindSemanticClient,
+  webIngress,
+  cliIngress,
+  internalIngress,
+  opaqueEntryDigest,
+  looksLikeSourceUrl,
+  EXECUTOR_BINDING_IMPL,
+} from './executor-binding.js';

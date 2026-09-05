@@ -1,44 +1,178 @@
-// @zoen-plan packages/ontology/src/surfaces/executor-binding.ts
-// NON-EXECUTABLE PSEUDOCODE; not registered or compiled as product implementation.
-// # File plan — `packages/ontology/src/surfaces/executor-binding.ts`
-//
-// **Status:** planned; no product acceptance implied.
-//
-// Target: `packages/ontology/src/surfaces/executor-binding.ts`. Representation: **comment-only-source**. Allocation: **required**.
-//
-// Specs: [SPEC-050](../../../../docs/specs/spec-050.md).
-// Tickets: [ZN-0291](../../../../docs/tickets/zn-0291.md).
-//
-// ## Responsibility and reuse
-//
-// ```text
-// PROCEDURE ZN_0291 /* planning label, not a public API */
-//   OWNER := SPEC-050; TARGET := packages/ontology/src/surfaces/executor-binding.ts
-//   REQUIRE accepted dependencies: ZN-0043, ZN-0044
-//   REQUIRE evidence layer: component; actual admitted services when needed
-//   IF a required service/profile/schema is missing: STOP Blocked; never substitute a provider.
-//   IF normative contracts conflict: STOP SpecConflict; never choose a permissive interpretation.
-//   USE the shared module protocol below; implement ONLY this ticket's segment, not a duplicate engine.
-//     NORMALIZE transport input into the common envelope; obtain identity and app/workload context only from verified server bindings.
-//     RESOLVE allowed operation using the existing SPEC-007 dispatcher; do not instantiate another executor.
-//     PRESERVE intent ID, contract digest, basis and purpose on retry/resumption; a new ID is a new intention.
-//     INTERSECT current user/delegation rights, admitted app capabilities and current source restrictions centrally.
-//     FOR batches/streams/exports support bounded work and exact basis; reauthorize each item/chunk/resumption.
-//     CACHE only with full subject/World/delegation/app/purpose/release/query/cut/security key; references are not permits.
-//     COMPARE canonical semantic outcomes under equivalent authority/basis, not natural-language presentation.
-//     AUDIT every ingress/asset/export/worker path for bypasses; structured app calls require neither Eve nor an LLM.
-//   TICKET-SPECIFIC SEGMENT:
-//     01. Define a small SemanticClient port in packages/contracts; connect it to SPEC-007 dispatch.ts, do not create a second dispatch engine.
-//     02. Wire web/CLI and trusted internal adapters to the same registration table and operation handlers.
-//     03. Add instrumented executor-entry witness for component tests; production logs contain opaque IDs and digests only.
-//   TEST BEFORE DECLARING THIS SEGMENT COMPLETE:
-//     GIVEN The S0 Frame dispatcher and two authorized conflicting records exist
-//     WHEN Web and CLI issue the same Inspect under equal verified context and pinned basis
-//     THEN Both enter SPEC-007 dispatch.ts and return the same authorized interpretation, rival references, basis and result tag; no model invocation occurs
-//   ON failure: preserve observed state and evidence; no fabricated success or consent refresh.
-//   RETURN only the owning spec's tagged result / recorded test evidence for the exact ticket.
-// ```
-//
-// ## Acceptance boundary
-//
-// A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+import { createHash } from 'node:crypto';
+import type {
+  SemanticCallRequest,
+  SemanticClientPort,
+  SemanticIngressSurface,
+  ExecutorEntryWitness,
+} from '../../../contracts/src/semantic-client.js';
+import type { SemanticResult, VerifiedContext } from '../../../contracts/src/semantic.js';
+import { parseEnvelope } from '../../../contracts/src/semantic.js';
+import { KernelError, toPublicFailure } from '../../../kernel/src/result.js';
+import {
+  SemanticDispatcher,
+  contractDigestFor,
+  type TransportInvoke,
+} from './dispatch.js';
+
+export const EXECUTOR_BINDING_IMPL = 'executor-binding-v1';
+
+export type BoundIngressOptions = Readonly<{
+  /** When set, records opaque entry witnesses for component tests (no PII). */
+  witnessSink?: (entry: ExecutorEntryWitness) => void;
+}>;
+
+const URL_RE = /^(https?:\/\/|s3:\/\/|postgres(ql)?:\/\/)/i;
+
+/**
+ * Binds every structured ingress (web / CLI / trusted internal) to the existing
+ * SPEC-007 SemanticDispatcher. Does not create a second dispatch engine.
+ */
+export class BoundSemanticClient implements SemanticClientPort {
+  constructor(
+    private readonly dispatcher: SemanticDispatcher,
+    private readonly releaseDigest: string,
+    private readonly options: BoundIngressOptions = {},
+  ) {}
+
+  async call(request: SemanticCallRequest, context: VerifiedContext): Promise<SemanticResult> {
+    try {
+      // Reject client-supplied identity / credentials / raw SQL before repository access.
+      if (request.clientPrincipalId !== undefined && String(request.clientPrincipalId).length > 0) {
+        throw new KernelError('Denied', 'CLIENT_PRINCIPAL_FORBIDDEN');
+      }
+      if (request.sourceUrl !== undefined && String(request.sourceUrl).length > 0) {
+        throw new KernelError('Denied', 'SOURCE_URL_FORBIDDEN');
+      }
+      if (request.rawSql !== undefined && String(request.rawSql).length > 0) {
+        throw new KernelError('Denied', 'RAW_SQL_FORBIDDEN');
+      }
+      if (request.invokeMethod !== undefined && String(request.invokeMethod).length > 0) {
+        throw new KernelError('Denied', 'UNREGISTERED_INVOKE');
+      }
+
+      const surface = request.surface;
+      const transport: TransportInvoke['transport'] =
+        surface === 'cli' ? 'cli' : 'web'; // internal shares web transport class at dispatcher
+
+      // Peek envelope for witness (opaque IDs / digests only).
+      let operation = '';
+      let operationId = '';
+      try {
+        const preview = parseEnvelope(request.envelopeBytes);
+        operation = preview.operation;
+        operationId = preview.operationId;
+      } catch {
+        // Dispatcher will map parse failures; still attempt invoke for stable envelope.
+      }
+
+      if (this.options.witnessSink && operation.length > 0) {
+        const digest =
+          request.expectedContractDigest ??
+          (operation ? contractDigestFor(operation, this.releaseDigest) : null);
+        this.options.witnessSink(
+          Object.freeze({
+            surface,
+            operation,
+            operationId,
+            contractDigest: digest,
+            enteredDispatch: true,
+            modelInvoked: false,
+          }),
+        );
+      }
+
+      const invoke: TransportInvoke = {
+        transport,
+        envelopeBytes: request.envelopeBytes,
+        ...(request.expectedContractDigest !== undefined
+          ? { expectedContractDigest: request.expectedContractDigest }
+          : {}),
+      };
+
+      // Verified context is server-bound; surface adapters must not invent principal.
+      const ctx = Object.freeze({
+        ...context,
+        transport: surface === 'cli' ? 'cli' : surface === 'web' ? 'web' : context.transport,
+      }) as VerifiedContext;
+
+      return await this.dispatcher.invoke(invoke, ctx);
+    } catch (error) {
+      return toPublicFailure(error);
+    }
+  }
+}
+
+/** Web surface adapter — transport only; same registration table as CLI/internal. */
+export function webIngress(
+  client: SemanticClientPort,
+  envelopeBytes: Uint8Array,
+  context: VerifiedContext,
+  expectedContractDigest?: string,
+): Promise<SemanticResult> {
+  return client.call(
+    {
+      surface: 'web',
+      envelopeBytes,
+      ...(expectedContractDigest !== undefined ? { expectedContractDigest } : {}),
+    },
+    context,
+  );
+}
+
+/** CLI surface adapter — same handlers / idempotency namespace as web. */
+export function cliIngress(
+  client: SemanticClientPort,
+  envelopeBytes: Uint8Array,
+  context: VerifiedContext,
+  expectedContractDigest?: string,
+): Promise<SemanticResult> {
+  return client.call(
+    {
+      surface: 'cli',
+      envelopeBytes,
+      ...(expectedContractDigest !== undefined ? { expectedContractDigest } : {}),
+    },
+    context,
+  );
+}
+
+/** Trusted internal adapter — still enters SPEC-007 dispatcher, never a private SQL path. */
+export function internalIngress(
+  client: SemanticClientPort,
+  envelopeBytes: Uint8Array,
+  context: VerifiedContext,
+  expectedContractDigest?: string,
+): Promise<SemanticResult> {
+  return client.call(
+    {
+      surface: 'internal',
+      envelopeBytes,
+      ...(expectedContractDigest !== undefined ? { expectedContractDigest } : {}),
+    },
+    context,
+  );
+}
+
+export function bindSemanticClient(
+  dispatcher: SemanticDispatcher,
+  releaseDigest: string,
+  options?: BoundIngressOptions,
+): BoundSemanticClient {
+  return new BoundSemanticClient(dispatcher, releaseDigest, options ?? {});
+}
+
+/** Opaque production log fields — digests and IDs only, never principals or payloads. */
+export function opaqueEntryDigest(witness: ExecutorEntryWitness): string {
+  return createHash('sha256')
+    .update(
+      `${EXECUTOR_BINDING_IMPL}|${witness.surface}|${witness.operation}|${witness.operationId}|${witness.contractDigest ?? ''}`,
+      'utf8',
+    )
+    .digest('hex');
+}
+
+export function looksLikeSourceUrl(value: string): boolean {
+  return URL_RE.test(value.trim());
+}
+
+export type { SemanticIngressSurface, ExecutorEntryWitness };

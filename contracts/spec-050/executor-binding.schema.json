@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-050/executor-binding.schema.json",
+  "title": "ZN-0291 executor-binding fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "subjectLabel", "unit", "billAmountA", "billAmountB", "sourceDateA", "sourceDateB"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0291-executor-binding-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "subjectLabel": { "type": "string" },
+    "unit": { "type": "string" },
+    "billAmountA": { "type": "string" },
+    "billAmountB": { "type": "string" },
+    "sourceDateA": { "type": "string" },
+    "sourceDateB": { "type": "string" }
+  }
+}
