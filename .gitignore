@@ -9,3 +9,5 @@ coverage/
 artifacts/current/
 *.log
 .DS_Store
+
+specification/v4/

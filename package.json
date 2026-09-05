@@ -1,0 +1,38 @@
+{
+  "name": "zoen-v4-implementation-candidate",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "build:core": "tsc -p tsconfig.core.json",
+    "test:laws": "node --test tests/laws/*.test.mjs",
+    "test:security": "node --test tests/security/*.test.mjs",
+    "test:real": "node tooling/real-tests.mjs",
+    "verify": "node tooling/verify.mjs",
+    "verify:core": "node tooling/verify-core.mjs",
+    "start": "node dist/apps/edge/src/main.js",
+    "build": "tsc -p tsconfig.json",
+    "test:mutations": "node tooling/mutations.mjs",
+    "db:migrate": "node tooling/migrate.mjs",
+    "db:provision": "node tooling/provision.mjs",
+    "cli": "node dist/packages/clients/src/cli.js",
+    "verify:syntax": "node tooling/syntax.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1116.0",
+    "@cedar-policy/cedar-wasm": "4.12.0",
+    "@hono/node-server": "2.1.1",
+    "better-auth": "1.7.2",
+    "hono": "4.13.7",
+    "pg": "8.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.0.0",
+    "@types/pg": "8.15.5",
+    "typescript": "6.0.3"
+  }
+}
