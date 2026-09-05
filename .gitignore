@@ -16,5 +16,5 @@ specification/v4/
 packets/
 __pycache__/
 *.pyc
-artifacts/
+/artifacts/
 .work/

@@ -1,5 +1,5 @@
 """Actual filesystem/control tests, not mocked Zoen integrations or product acceptance."""
-import copy, importlib.util, json, sys, tempfile, unittest
+import copy, importlib.util, json, sys, tempfile, unittest, subprocess
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 sys.path.insert(0,str(ROOT/'tooling'))
@@ -30,6 +30,13 @@ class PlanControls(unittest.TestCase):
   fs=json.loads((ROOT/'planning/files.json').read_text())['files']
   for f in fs:
    if f['representation']=='comment-only-source':self.assertTrue(plan_is_comments(f['target'],(ROOT/f['plan_path']).read_text()))
+ def test_gitignore_does_not_hide_registered_plans(self):
+  paths=[f['plan_path'] for f in json.loads((ROOT/'planning/files.json').read_text())['files']]
+  result=subprocess.run(['git','check-ignore','--no-index','--stdin'],cwd=ROOT,input='\n'.join(paths)+'\n',text=True,capture_output=True)
+  self.assertEqual(result.returncode,1,result.stdout+result.stderr)
+ def test_root_output_directory_is_ignored_not_nested_source(self):
+  result=subprocess.run(['git','check-ignore','--no-index','--stdin'],cwd=ROOT,input='artifacts/run.json\npackages/ontology/src/artifacts/artifact-build.ts\n',text=True,capture_output=True)
+  self.assertEqual(result.returncode,0,result.stderr);self.assertEqual(result.stdout.strip(),'artifacts/run.json')
  def test_no_fake_lock(self):self.assertFalse((ROOT/'pnpm-lock.yaml').exists());self.assertTrue((ROOT/'pnpm-lock.yaml.plan.md').is_file())
  def test_no_empty_migrations_activated(self):self.assertEqual(sorted(x.name for x in (ROOT/'db/migrations').glob('*.sql')),['0001_authority.sql','0002_door.sql'])
  def test_core_source_excludes_plans(self):

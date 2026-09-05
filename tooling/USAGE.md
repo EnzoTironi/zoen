@@ -15,3 +15,5 @@ Os scripts Node existentes exercitam o núcleo candidato ou tentam qualificaçã
 `seal-workspace.py --check` verifica os hashes da entrega; mudanças intencionais exigem um novo manifesto revisado, não alteração dos hashes antigos como se fossem originais.
 
 `validate-doc-contracts.py` verifica os schemas e exemplos documentais com a dependência de ferramentas herdada em `requirements.txt`. Não substitui testes do produto.
+
+`package-workspace.py --out /caminho/externo/zoen-workspace.zip` exige Git limpo, selo válido e todos os arquivos selados versionados. Inclui diretórios vazios do Git e exclui outputs não versionados. Execute só após revisar o conteúdo e histórico do repositório.

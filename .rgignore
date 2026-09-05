@@ -4,6 +4,6 @@ archives/
 node_modules/
 .core-build/
 dist/
-artifacts/
+/artifacts/
 packets/
 planning/
