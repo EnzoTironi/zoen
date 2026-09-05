@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-008/legacy-import.schema.json",
+  "title": "ZN-0050 legacy-import fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "legacyCommit",
+    "subjects",
+    "knownSubjects",
+    "productionMarker"
+  ],
+  "properties": {
+    "seed": {
+      "type": "string",
+      "const": "zn-0050-legacy-import-seed-v1"
+    },
+    "seedDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "legacyCommit": {
+      "type": "string"
+    },
+    "subjects": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "knownSubjects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "productionMarker": {
+      "type": "string"
+    }
+  }
+}

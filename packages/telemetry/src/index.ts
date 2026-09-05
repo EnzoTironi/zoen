@@ -43,3 +43,10 @@ export type {
 } from './types.js';
 export type { RecoveryFenceStore, ReadinessClock } from './ports.js';
 
+export { LegacyImportService, LEGACY_IMPORT_IMPL } from './legacy-import.js';
+export type {
+  LegacySubject,
+  LegacyImportManifest,
+  LegacyImportOutcome,
+} from './types.js';
+export type { LegacyManifestStore } from './ports.js';

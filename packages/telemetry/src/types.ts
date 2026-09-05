@@ -98,3 +98,28 @@ export type DrainResult = Readonly<{
   duplicateSuppressed?: boolean;
 }>;
 
+export type LegacySubject = Readonly<{
+  legacyId: string;
+  email: string;
+  role: string;
+}>;
+
+export type LegacyImportManifest = Readonly<{
+  manifestId: string;
+  version: string;
+  legacySourceCommit: string;
+  realm: 'evaluation';
+  rowCounts: Readonly<{ subjects: number; admitted: number; unmatched: number; rolesDenied: number }>;
+  rightsMapping: readonly Readonly<{ legacyId: string; mappedRole: string | null; admitted: boolean; reason: string }>[];
+  unmatchedRecords: readonly string[];
+  semanticDiffs: readonly string[];
+  cutoverApproved: false;
+  administratorAutoGranted: false;
+}>;
+
+export type LegacyImportOutcome =
+  | Readonly<{ tag: 'Ok'; value: LegacyImportManifest }>
+  | Readonly<{ tag: 'Denied'; reason: 'INVALID_INPUT' | 'FORBIDDEN_PAYLOAD' | 'LIVE_REALM_FORBIDDEN' }>
+  | Readonly<{ tag: 'Blocked'; reason: 'MISSING_STORE' | 'PRODUCTION_MUTATION_FORBIDDEN' }>
+  | Readonly<{ tag: 'Unsupported'; reason: 'PROFILE_LIMIT'; observed: number; limit: number }>;
+

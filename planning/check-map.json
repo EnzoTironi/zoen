@@ -1624,7 +1624,7 @@
     "ticket_id": "ZN-0050",
     "spec_id": "SPEC-008",
     "test_file": "tests/component/spec-008/legacy-import.test.ts",
-    "plan_path": "tests/component/spec-008/legacy-import.test.ts",
+    "plan_path": "tests/component/spec-008/legacy-import.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1635,7 +1635,7 @@
     "ticket_id": "ZN-0050",
     "spec_id": "SPEC-008",
     "test_file": "tests/component/spec-008/legacy-import.test.ts",
-    "plan_path": "tests/component/spec-008/legacy-import.test.ts",
+    "plan_path": "tests/component/spec-008/legacy-import.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1646,7 +1646,7 @@
     "ticket_id": "ZN-0050",
     "spec_id": "SPEC-008",
     "test_file": "tests/component/spec-008/legacy-import.test.ts",
-    "plan_path": "tests/component/spec-008/legacy-import.test.ts",
+    "plan_path": "tests/component/spec-008/legacy-import.test.ts.plan.md",
     "status": "not-executed"
   },
   {

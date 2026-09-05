@@ -1,0 +1,33 @@
+{
+  "seed": "zn-0050-legacy-import-seed-v1",
+  "seedDigest": "6b846380d58e44c5bbe59f42024e3785cedf7b8cfa476a544a0cf7aea4fc26a2",
+  "legacyCommit": "deadbeefcafebabe0123456789abcdef01234567",
+  "subjects": [
+    {
+      "legacyId": "user-1",
+      "email": "alice@example.test",
+      "role": "member"
+    },
+    {
+      "legacyId": "user-2",
+      "email": "bob@example.test",
+      "role": "member"
+    },
+    {
+      "legacyId": "user-admin",
+      "email": "admin@example.test",
+      "role": "administrator"
+    },
+    {
+      "legacyId": "user-orphan",
+      "email": "orphan@example.test",
+      "role": "member"
+    }
+  ],
+  "knownSubjects": [
+    "user-1",
+    "user-2",
+    "user-admin"
+  ],
+  "productionMarker": "os-production-untouched"
+}
