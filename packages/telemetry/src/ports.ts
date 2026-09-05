@@ -1,4 +1,4 @@
-import type { ExportScope, RedactedOperationalEvent } from './types.js';
+import type { ExportScope, RedactedOperationalEvent, RecoveryFence } from './types.js';
 
 export interface TelemetrySink {
   append(event: RedactedOperationalEvent): Promise<void>;
@@ -6,4 +6,13 @@ export interface TelemetrySink {
 
 export interface TelemetryExportPort {
   exportScope(scope: ExportScope, events: readonly RedactedOperationalEvent[]): readonly RedactedOperationalEvent[];
+}
+
+export interface ReadinessClock {
+  nowIso(): string;
+}
+
+export interface RecoveryFenceStore {
+  getFence(cellId: string): Promise<RecoveryFence | null>;
+  upsertFence(fence: RecoveryFence): Promise<RecoveryFence>;
 }

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-008/readiness.schema.json",
+  "title": "ZN-0048 readiness fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "requiredMigrations",
+    "admittedCapabilities",
+    "unadmittedCapabilities",
+    "cellId"
+  ],
+  "properties": {
+    "seed": {
+      "type": "string",
+      "const": "zn-0048-readiness-seed-v1"
+    },
+    "seedDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "requiredMigrations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "admittedCapabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "unadmittedCapabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "cellId": {
+      "type": "string",
+      "minLength": 1
+    }
+  }
+}

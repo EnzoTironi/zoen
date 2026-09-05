@@ -1,0 +1,16 @@
+{
+  "seed": "zn-0048-readiness-seed-v1",
+  "seedDigest": "97eaa71435fa444292c7dec88097b48a16d5ca36dbc4fc1102143e52f82e3c8a",
+  "requiredMigrations": [
+    "zn-0047_redaction.sql",
+    "zn-0048_readiness.sql"
+  ],
+  "admittedCapabilities": [
+    "file-path",
+    "postgres"
+  ],
+  "unadmittedCapabilities": [
+    "effect-provider"
+  ],
+  "cellId": "cell-s0-file-path"
+}

@@ -23,3 +23,23 @@ export type {
   RedactedOperationalEvent,
 } from './types.js';
 export type { TelemetrySink, TelemetryExportPort } from './ports.js';
+
+export {
+  ReadinessService,
+  READINESS_IMPL,
+  CORE_CAPABILITIES,
+  EFFECT_CAPABILITY,
+  isEffectsExplicitlyUnavailable,
+} from './readiness.js';
+export type {
+  Liveness,
+  AdmittedDependencies,
+  CapabilityReport,
+  CapabilityState,
+  ReadinessProbe,
+  ReadinessOutcome,
+  RecoveryFence,
+  DrainResult,
+} from './types.js';
+export type { RecoveryFenceStore, ReadinessClock } from './ports.js';
+
