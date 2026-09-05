@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-000/workspace.schema.json",
+  "title": "SPEC-000 workspace boundary report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "ticket",
+    "spec",
+    "profile",
+    "status",
+    "layout",
+    "scripts",
+    "configs",
+    "dependencyBoundaries",
+    "placeholderRoutes",
+    "schemaGeneration",
+    "toolAdmission",
+    "findings",
+    "disabledRoute",
+    "observations"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "spec-000.workspace.v1" },
+    "ticket": { "type": "string", "const": "ZN-0003" },
+    "spec": { "type": "string", "const": "SPEC-000" },
+    "profile": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "status": { "type": "string", "enum": ["Certified", "Rejected"] },
+    "layout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["apps", "packages", "missingApps", "missingPackages"],
+      "properties": {
+        "apps": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 64 }, "maxItems": 32 },
+        "packages": { "type": "array", "items": { "type": "string", "minLength": 1, "maxLength": 64 }, "maxItems": 32 },
+        "missingApps": { "type": "array", "items": { "type": "string" }, "maxItems": 32 },
+        "missingPackages": { "type": "array", "items": { "type": "string" }, "maxItems": 32 }
+      }
+    },
+    "scripts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present", "missing"],
+      "properties": {
+        "present": { "type": "array", "items": { "type": "string" }, "maxItems": 32 },
+        "missing": { "type": "array", "items": { "type": "string" }, "maxItems": 32 }
+      }
+    },
+    "configs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["present", "missing"],
+      "properties": {
+        "present": { "type": "array", "items": { "type": "string" }, "maxItems": 32 },
+        "missing": { "type": "array", "items": { "type": "string" }, "maxItems": 32 }
+      }
+    },
+    "dependencyBoundaries": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["forbiddenEdges", "allowedSamples"],
+      "properties": {
+        "forbiddenEdges": {
+          "type": "array",
+          "maxItems": 256,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["from", "to", "detail"],
+            "properties": {
+              "from": { "type": "string", "minLength": 1, "maxLength": 512 },
+              "to": { "type": "string", "minLength": 1, "maxLength": 512 },
+              "detail": { "type": "string", "minLength": 1, "maxLength": 128 }
+            }
+          }
+        },
+        "allowedSamples": { "type": "array", "items": { "type": "string" }, "maxItems": 32 }
+      }
+    },
+    "placeholderRoutes": { "type": "array", "items": { "type": "string" }, "maxItems": 64 },
+    "schemaGeneration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "notes"],
+      "properties": {
+        "status": { "type": "string", "enum": ["reproducible-source-present", "BLOCKED"] },
+        "notes": { "type": "string", "minLength": 1, "maxLength": 1024 }
+      }
+    },
+    "toolAdmission": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["typescript", "eslintPackage", "dependencyCruiserPackage", "notes"],
+      "properties": {
+        "typescript": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "eslintPackage": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "dependencyCruiserPackage": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "notes": { "type": "string", "minLength": 1, "maxLength": 1024 }
+      }
+    },
+    "artifactDigest": { "type": ["string", "null"], "pattern": "^([0-9a-f]{64})?$" },
+    "findings": {
+      "type": "array",
+      "maxItems": 512,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "severity", "message"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1, "maxLength": 128 },
+          "severity": { "type": "string", "enum": ["error", "warning"] },
+          "message": { "type": "string", "minLength": 1, "maxLength": 1024 },
+          "path": { "type": "string", "maxLength": 512 }
+        }
+      }
+    },
+    "disabledRoute": { "type": "string", "minLength": 1, "maxLength": 256 },
+    "observations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fixtureSeed", "commands"],
+      "properties": {
+        "fixtureSeed": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "commands": { "type": "array", "items": { "type": "string" }, "maxItems": 32 }
+      }
+    }
+  }
+}

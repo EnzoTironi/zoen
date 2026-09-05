@@ -1,13 +1,15 @@
 # File plan — `packages/adapters/package.json`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
-Target: `packages/adapters/package.json`. Representation: **sidecar-only**. Allocation: **conditional-support**.
+Target: `packages/adapters/package.json`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
 
 Specs: [SPEC-000](../../docs/specs/spec-000.md), [SPEC-011](../../docs/specs/spec-011.md), [SPEC-054](../../docs/specs/spec-054.md).
 Tickets: [ZN-0003](../../docs/tickets/zn-0003.md), [ZN-0064](../../docs/tickets/zn-0064.md), [ZN-0314](../../docs/tickets/zn-0314.md), [ZN-0316](../../docs/tickets/zn-0316.md).
 
 ## Responsibility and reuse
+
+The adjacent implementation is preserved. Read it first, extend it in place, and prove behavior at the ticket's required layer. Do not replace it with this plan or create a duplicate primitive.
 
 ```text
 CONDITIONAL SUPPORT SEGMENT.

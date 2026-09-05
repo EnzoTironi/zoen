@@ -10,7 +10,7 @@
 
 | Target | Role | Plan |
 |---|---|---|
-| `index.ts` | conditional-support | [read](index.ts) |
+| `index.ts` | conditional-support | [read](index.ts.plan.md) |
 | `legacy-import.ts` | required | [read](legacy-import.ts) |
 | `ports.ts` | conditional-support | [read](ports.ts) |
 | `readiness.ts` | required | [read](readiness.ts) |

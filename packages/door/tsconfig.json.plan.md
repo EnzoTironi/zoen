@@ -1,13 +1,15 @@
 # File plan — `packages/door/tsconfig.json`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
-Target: `packages/door/tsconfig.json`. Representation: **sidecar-only**. Allocation: **conditional-support**.
+Target: `packages/door/tsconfig.json`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
 
 Specs: [SPEC-000](../../docs/specs/spec-000.md).
 Tickets: [ZN-0003](../../docs/tickets/zn-0003.md).
 
 ## Responsibility and reuse
+
+The adjacent implementation is preserved. Read it first, extend it in place, and prove behavior at the ticket's required layer. Do not replace it with this plan or create a duplicate primitive.
 
 ```text
 CONDITIONAL SUPPORT SEGMENT.

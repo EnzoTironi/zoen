@@ -11,7 +11,7 @@
 | Target | Role | Plan |
 |---|---|---|
 | `door.ts` | required | [read](door.ts.plan.md) |
-| `index.ts` | conditional-support | [read](index.ts) |
+| `index.ts` | conditional-support | [read](index.ts.plan.md) |
 | `ports.ts` | conditional-support | [read](ports.ts) |
 | `types.ts` | conditional-support | [read](types.ts) |
 

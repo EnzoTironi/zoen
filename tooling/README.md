@@ -13,6 +13,6 @@
 | `supply-chain.ts` | required | [read](supply-chain.ts) |
 | `test-harness.ts` | required | [read](test-harness.ts) |
 | `verify-ticket.ts` | required | [read](verify-ticket.ts) |
-| `workspace.ts` | required | [read](workspace.ts) |
+| `workspace.ts` | required | [read](workspace.ts.plan.md) |
 
 Shared invariants and dependencies: [repository contract](../docs/architecture/repository-contract.md). Do not add another data/authorization path.

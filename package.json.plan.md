@@ -1,6 +1,6 @@
 # File plan — `package.json`
 
-**Status:** candidate-unaccepted; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `package.json`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
 

@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "spec-000.workspace.v1-incomplete",
+  "ticket": "ZN-0003",
+  "spec": "SPEC-000",
+  "profile": "static-workspace-boundaries",
+  "status": "Certified",
+  "layout": {
+    "apps": [],
+    "packages": [],
+    "missingApps": ["edge", "web"],
+    "missingPackages": ["kernel", "eve"]
+  },
+  "scripts": {
+    "present": [],
+    "missing": ["check", "test:law", "test:component", "test:journey", "verify:ticket"]
+  },
+  "configs": {
+    "present": [],
+    "missing": ["pnpm-workspace.yaml", "eslint.config.mjs", ".dependency-cruiser.cjs"]
+  },
+  "dependencyBoundaries": {
+    "forbiddenEdges": [],
+    "allowedSamples": []
+  },
+  "placeholderRoutes": [],
+  "schemaGeneration": {
+    "status": "BLOCKED",
+    "notes": "Synthetic incomplete fixture for ZN-0003-NEG. Not observed evidence."
+  },
+  "toolAdmission": {
+    "typescript": "unknown",
+    "eslintPackage": "not-admitted",
+    "dependencyCruiserPackage": "not-admitted",
+    "notes": "synthetic"
+  },
+  "findings": [],
+  "disabledRoute": "workspace-boundaries-implementation-and-merge",
+  "observations": {
+    "fixtureSeed": "zn-0003-neg-incomplete",
+    "commands": ["synthetic-incomplete-fixture"]
+  },
+  "note": "Synthetic incomplete/altered workspace certificate for ZN-0003-NEG. Checker must reject."
+}

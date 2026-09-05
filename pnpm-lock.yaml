@@ -37,6 +37,32 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
 
+  apps/authority-worker: {}
+
+  apps/edge: {}
+
+  apps/effect-worker: {}
+
+  apps/eve-worker: {}
+
+  apps/web: {}
+
+  packages/adapters: {}
+
+  packages/clients: {}
+
+  packages/contracts: {}
+
+  packages/door: {}
+
+  packages/eve: {}
+
+  packages/kernel: {}
+
+  packages/ontology: {}
+
+  packages/telemetry: {}
+
 packages:
 
   '@aws-sdk/checksums@3.1000.29':

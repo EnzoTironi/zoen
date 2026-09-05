@@ -1,34 +1,12 @@
-// @zoen-plan packages/eve/src/index.ts
-// NON-EXECUTABLE PSEUDOCODE; not registered or compiled as product implementation.
-// # File plan — `packages/eve/src/index.ts`
-//
-// **Status:** planned; no product acceptance implied.
-//
-// Target: `packages/eve/src/index.ts`. Representation: **comment-only-source**. Allocation: **conditional-support**.
-//
-// Specs: [SPEC-000](../../../docs/specs/spec-000.md).
-// Tickets: [ZN-0003](../../../docs/tickets/zn-0003.md).
-//
-// ## Responsibility and reuse
-//
-// ```text
-// COMPOSITION/REGISTRATION PLAN.
-// IMPORT only reviewed implemented ports and adapters under the existing dependency direction.
-// BIND the existing semantic executor once; register this module's released operation descriptors.
-// DO NOT add business rules, source credentials, alternate policy evaluators or a second dispatcher here.
-// GATE unavailable capabilities explicitly; an unwired implementation does not satisfy a ticket.
-// KEEP shared composition edits under the named exclusive lock.
-// ```
-//
-// ## Owning state / operation contracts
-//
-// ### SPEC-000
-// AdmitExecutionProfile(profile, candidateVersions, integrityDigests, compatibilityReport) -> AdmittedLock | Blocked; VerifyTicket(ticketId, commit, profile) -> EvidenceReport | MissingPrerequisite.
-//
-// No application tables. Track execution-lock.json, baseline-inventory.json and evidence-index.json as reviewed artifacts. Secret values never belong in these files.
-//
-// [algorithm SPEC-000](../../../docs/algorithms/spec-000.md)
-//
-// ## Acceptance boundary
-//
-// A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+/**
+ * Eve package entry — conversation-owned surface only.
+ * Forbidden: pg adapter, S3 evidence credentials, authority DB credentials, shell/file/web execution.
+ * Allowed: kernel, contracts ports, released ontology read/propose clients.
+ */
+export type { Database, SqlConnection, Authorizer } from '../../contracts/src/ports.js';
+
+export const EVE_DEPENDENCY_BOUNDARY = {
+  package: 'packages/eve',
+  mayImport: ['packages/kernel', 'packages/contracts', 'packages/clients'] as const,
+  mustNotImport: ['pg', 'packages/adapters/src/pg', 'packages/adapters/src/s3'] as const,
+} as const;

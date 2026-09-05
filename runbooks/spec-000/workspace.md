@@ -1,47 +1,44 @@
-# File plan — `runbooks/spec-000/workspace.md`
+# Runbook — workspace, strict build and dependency boundaries (ZN-0003)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not product-accepted.
 
-Target: `runbooks/spec-000/workspace.md`. Representation: **markdown-plan**. Allocation: **required**.
+## Scope
 
-Specs: [SPEC-000](../../docs/specs/spec-000.md).
-Tickets: [ZN-0003](../../docs/tickets/zn-0003.md).
+Create apps/packages layout per `docs/architecture/repository-contract.md`, enforce strict TypeScript + ESLint/dependency-cruiser configs, and require `check` / `test:law` / `test:component` / `test:journey` / `verify:ticket` scripts. Forbidden edges (Eve→pg, web→authority credentials) must fail the static checker.
 
-## Responsibility and reuse
+## Preconditions
 
-## ZN-0003 operational/repair procedure
+- ZN-0002 core toolchain admission artifact present (`admissions/spec-000/execution-lock.json`). Unaccepted deps may still block merge.
+- Node 24 + pnpm 11 from admitted profile; source `.toolchain-env.sh`.
+- Resource locks: `contract:kernel-and-tooling`, `module:tooling`.
 
-Scope: Create workspace, strict build and dependency boundaries. This is a plan; deployments and commands not yet qualified remain blocked.
+## Observe
 
-```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-An Eve module tries to import the PostgreSQL adapter and the web app tries to read an authority credential
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: ticket ID, repository commit, admitted profile, actual lock bytes, required check IDs.
-READ: current execution catalog and immutable evidence; never infer completion from file existence.
-VERIFY repository/data-preservation inventory before permitting destructive migration work.
-RESOLVE exact dependencies on the target using real registries; record actual integrity and compatibility, not guessed lock entries.
-COLLECT tests by required IDs; reject missing selection, duplicate ownership, zero executions and skipped required cases.
-RUN actual component/browser/provider dependencies; unavailable dependency => BLOCKED, not a substitute.
-BIND report to commit, lock, fixture seed, profile, commands and artifact digests.
-REQUIRE independent review and current external gate when applicable; keep all other routes disabled.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-Both forbidden dependencies fail CI; valid port imports build; no placeholder route is exposed
-RESUME only with current approval and intact unrelated tenant scopes.
+```sh
+source .toolchain-env.sh
+node --experimental-strip-types tooling/workspace.ts check
+node --experimental-strip-types --test tests/static/spec-000/workspace.test.ts
 ```
 
-## Owning state / operation contracts
+Record: commit, lock digest, fixture seed `zn-0003-workspace-seed-v1`, finding codes, artifact digest.
 
-### SPEC-000
-AdmitExecutionProfile(profile, candidateVersions, integrityDigests, compatibilityReport) -> AdmittedLock | Blocked; VerifyTicket(ticketId, commit, profile) -> EvidenceReport | MissingPrerequisite.
+## Typical failures
 
-No application tables. Track execution-lock.json, baseline-inventory.json and evidence-index.json as reviewed artifacts. Secret values never belong in these files.
+| Symptom | Likely cause | Repair |
+|---|---|---|
+| `missing-app-unit` / `missing-package-unit` | Incomplete workspace skeleton | Restore `package.json`, `tsconfig.json`, `src/index.ts` under allowlist |
+| `missing-required-script` | Altered root `package.json` | Restore `check`, `test:law`, `test:component`, `test:journey`, `verify:ticket` |
+| `eve-forbidden-pg-adapter` | Eve imported `pg` / adapters/pg | Remove import; use contracts ports only |
+| `web-forbidden-authority-credential` | Web read authority env / pg | Route data through semantic client only |
+| `placeholder-route-exposed` | Fake provider success route | Delete stub; keep capability disabled |
+| `verify:ticket` exits 1 | Expected until ZN-0005 | Do not fake success |
 
-[algorithm SPEC-000](../../docs/algorithms/spec-000.md)
+## Preserve
 
-## Acceptance boundary
+- Do not fabricate eslint/dependency-cruiser package digests; configs are present, packages remain `not-admitted` in the report.
+- Do not mark ZN-0003 accepted; independent review + `verify:ticket` required.
+- Keep unrelated tenant/scopes untouched; no force-push to main.
 
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+## Resume
+
+Only after independent review and evidence validation. Disabled route: `workspace-boundaries-implementation-and-merge`.

@@ -12,7 +12,7 @@
 |---|---|---|
 | `cli-generation.ts` | required | [read](cli-generation.ts) |
 | `cli.ts` | conditional-support | [read](cli.ts.plan.md) |
-| `index.ts` | conditional-support | [read](index.ts) |
+| `index.ts` | conditional-support | [read](index.ts.plan.md) |
 | `mcp.ts` | required | [read](mcp.ts) |
 | `ports.ts` | conditional-support | [read](ports.ts) |
 | `rest-openapi.ts` | required | [read](rest-openapi.ts) |

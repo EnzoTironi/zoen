@@ -20,7 +20,12 @@
     "db:migrate": "node tooling/migrate.mjs",
     "db:provision": "node tooling/provision.mjs",
     "cli": "node dist/packages/clients/src/cli.js",
-    "verify:syntax": "node tooling/syntax.mjs"
+    "verify:syntax": "node tooling/syntax.mjs",
+    "check": "node --experimental-strip-types tooling/workspace.ts check",
+    "test:law": "node --test tests/laws/*.test.mjs",
+    "test:component": "node --experimental-strip-types --test tests/static/**/*.test.ts",
+    "test:journey": "node --experimental-strip-types tooling/workspace.ts journey-gate",
+    "verify:ticket": "node --experimental-strip-types tooling/workspace.ts verify-ticket-gate"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1116.0",

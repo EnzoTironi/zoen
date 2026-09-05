@@ -4,7 +4,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 
 | Intended path | Existing / plan | State | Specs |
 |---|---|---|---|
-| `.dependency-cruiser.cjs` | [sidecar-only](../.dependency-cruiser.cjs.plan.md) | planned | SPEC-000, SPEC-050 |
+| `.dependency-cruiser.cjs` | [existing-with-sidecar](../.dependency-cruiser.cjs.plan.md) | implementation-in-progress | SPEC-000, SPEC-050 |
 | `.github/workflows/release.yml` | [sidecar-only](../.github/workflows/release.yml.plan.md) | planned | SPEC-000 |
 | `.github/workflows/verify.yml` | [sidecar-only](../.github/workflows/verify.yml.plan.md) | planned | SPEC-000 |
 | `.npmrc` | [existing-with-sidecar](../.npmrc.plan.md) | candidate-unaccepted | SPEC-000 |
@@ -49,9 +49,9 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `admissions/spec-054/extension-lock.json` | [sidecar-only](../admissions/spec-054/extension-lock.json.plan.md) | planned | SPEC-054 |
 | `admissions/spec-054/rivet-admission.json` | [sidecar-only](../admissions/spec-054/rivet-admission.json.plan.md) | planned | SPEC-054 |
 | `admissions/spec-055/v4-final-audit.json` | [sidecar-only](../admissions/spec-055/v4-final-audit.json.plan.md) | planned | SPEC-055 |
-| `apps/authority-worker/package.json` | [sidecar-only](../apps/authority-worker/package.json.plan.md) | planned | SPEC-000 |
+| `apps/authority-worker/package.json` | [existing-with-sidecar](../apps/authority-worker/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `apps/authority-worker/src/composition.ts` | [comment-only-source](../apps/authority-worker/src/composition.ts) | planned | SPEC-003, SPEC-004, SPEC-005, SPEC-006, SPEC-007, SPEC-013, SPEC-014, SPEC-015, SPEC-017, SPEC-018, SPEC-019, SPEC-020, SPEC-022, SPEC-023, SPEC-024, SPEC-025, SPEC-029, SPEC-031, SPEC-032, SPEC-033, SPEC-034, SPEC-036, SPEC-037, SPEC-040, SPEC-042, SPEC-043, SPEC-044, SPEC-050, SPEC-051, SPEC-052 |
-| `apps/authority-worker/src/index.ts` | [comment-only-source](../apps/authority-worker/src/index.ts) | planned | SPEC-000 |
+| `apps/authority-worker/src/index.ts` | [existing-with-sidecar](../apps/authority-worker/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `apps/authority-worker/src/registrations/spec-003.ts` | [comment-only-source](../apps/authority-worker/src/registrations/spec-003.ts) | planned | SPEC-003 |
 | `apps/authority-worker/src/registrations/spec-004.ts` | [comment-only-source](../apps/authority-worker/src/registrations/spec-004.ts) | planned | SPEC-004 |
 | `apps/authority-worker/src/registrations/spec-005.ts` | [comment-only-source](../apps/authority-worker/src/registrations/spec-005.ts) | planned | SPEC-005 |
@@ -82,32 +82,32 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `apps/authority-worker/src/registrations/spec-050.ts` | [comment-only-source](../apps/authority-worker/src/registrations/spec-050.ts) | planned | SPEC-050 |
 | `apps/authority-worker/src/registrations/spec-051.ts` | [comment-only-source](../apps/authority-worker/src/registrations/spec-051.ts) | planned | SPEC-051 |
 | `apps/authority-worker/src/registrations/spec-052.ts` | [comment-only-source](../apps/authority-worker/src/registrations/spec-052.ts) | planned | SPEC-052 |
-| `apps/authority-worker/tsconfig.json` | [sidecar-only](../apps/authority-worker/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `apps/edge/package.json` | [sidecar-only](../apps/edge/package.json.plan.md) | planned | SPEC-000 |
+| `apps/authority-worker/tsconfig.json` | [existing-with-sidecar](../apps/authority-worker/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `apps/edge/package.json` | [existing-with-sidecar](../apps/edge/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `apps/edge/src/app.ts` | [existing-with-sidecar](../apps/edge/src/app.ts.plan.md) | candidate-unaccepted | SPEC-007, SPEC-049, SPEC-050 |
 | `apps/edge/src/composition.ts` | [comment-only-source](../apps/edge/src/composition.ts) | planned | SPEC-002, SPEC-011, SPEC-026, SPEC-028, SPEC-035, SPEC-038, SPEC-050, SPEC-051, SPEC-053, SPEC-054 |
-| `apps/edge/src/index.ts` | [comment-only-source](../apps/edge/src/index.ts) | planned | SPEC-000 |
+| `apps/edge/src/index.ts` | [existing-with-sidecar](../apps/edge/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `apps/edge/src/main.ts` | [existing-with-sidecar](../apps/edge/src/main.ts.plan.md) | candidate-unaccepted | SPEC-007, SPEC-049, SPEC-050 |
 | `apps/edge/src/routes/app-assets.ts` | [comment-only-source](../apps/edge/src/routes/app-assets.ts) | planned | SPEC-053 |
 | `apps/edge/src/routes/app-proxy.ts` | [comment-only-source](../apps/edge/src/routes/app-proxy.ts) | planned | SPEC-053 |
 | `apps/edge/src/routes/continuations.ts` | [comment-only-source](../apps/edge/src/routes/continuations.ts) | planned | SPEC-051 |
-| `apps/edge/tsconfig.json` | [sidecar-only](../apps/edge/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `apps/effect-worker/package.json` | [sidecar-only](../apps/effect-worker/package.json.plan.md) | planned | SPEC-000 |
+| `apps/edge/tsconfig.json` | [existing-with-sidecar](../apps/edge/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `apps/effect-worker/package.json` | [existing-with-sidecar](../apps/effect-worker/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `apps/effect-worker/src/composition.ts` | [comment-only-source](../apps/effect-worker/src/composition.ts) | planned | SPEC-023 |
-| `apps/effect-worker/src/index.ts` | [comment-only-source](../apps/effect-worker/src/index.ts) | planned | SPEC-000 |
-| `apps/effect-worker/tsconfig.json` | [sidecar-only](../apps/effect-worker/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `apps/eve-worker/package.json` | [sidecar-only](../apps/eve-worker/package.json.plan.md) | planned | SPEC-000 |
+| `apps/effect-worker/src/index.ts` | [existing-with-sidecar](../apps/effect-worker/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
+| `apps/effect-worker/tsconfig.json` | [existing-with-sidecar](../apps/effect-worker/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `apps/eve-worker/package.json` | [existing-with-sidecar](../apps/eve-worker/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `apps/eve-worker/src/composition.ts` | [comment-only-source](../apps/eve-worker/src/composition.ts) | planned | SPEC-009, SPEC-010 |
-| `apps/eve-worker/src/index.ts` | [comment-only-source](../apps/eve-worker/src/index.ts) | planned | SPEC-000 |
-| `apps/eve-worker/tsconfig.json` | [sidecar-only](../apps/eve-worker/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `apps/web/package.json` | [sidecar-only](../apps/web/package.json.plan.md) | planned | SPEC-000 |
+| `apps/eve-worker/src/index.ts` | [existing-with-sidecar](../apps/eve-worker/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
+| `apps/eve-worker/tsconfig.json` | [existing-with-sidecar](../apps/eve-worker/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `apps/web/package.json` | [existing-with-sidecar](../apps/web/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `apps/web/src/app-host/app-bridge.ts` | [comment-only-source](../apps/web/src/app-host/app-bridge.ts) | planned | SPEC-035 |
 | `apps/web/src/app-host/index.ts` | [comment-only-source](../apps/web/src/app-host/index.ts) | planned | SPEC-035 |
 | `apps/web/src/app-host/ports.ts` | [comment-only-source](../apps/web/src/app-host/ports.ts) | planned | SPEC-035 |
 | `apps/web/src/app-host/types.ts` | [comment-only-source](../apps/web/src/app-host/types.ts) | planned | SPEC-035 |
 | `apps/web/src/approvals/host-confirmation.tsx` | [comment-only-source](../apps/web/src/approvals/host-confirmation.tsx) | planned | SPEC-052 |
 | `apps/web/src/experience/continuation.tsx` | [comment-only-source](../apps/web/src/experience/continuation.tsx) | planned | SPEC-051 |
-| `apps/web/src/index.ts` | [comment-only-source](../apps/web/src/index.ts) | planned | SPEC-000 |
+| `apps/web/src/index.ts` | [existing-with-sidecar](../apps/web/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `apps/web/src/living-world/index.ts` | [comment-only-source](../apps/web/src/living-world/index.ts) | planned | SPEC-027 |
 | `apps/web/src/living-world/ports.ts` | [comment-only-source](../apps/web/src/living-world/ports.ts) | planned | SPEC-027 |
 | `apps/web/src/living-world/types.ts` | [comment-only-source](../apps/web/src/living-world/types.ts) | planned | SPEC-027 |
@@ -124,7 +124,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `apps/web/src/registrations/spec-051.tsx` | [comment-only-source](../apps/web/src/registrations/spec-051.tsx) | planned | SPEC-051 |
 | `apps/web/src/registrations/spec-052.tsx` | [comment-only-source](../apps/web/src/registrations/spec-052.tsx) | planned | SPEC-052 |
 | `apps/web/src/routes.tsx` | [comment-only-source](../apps/web/src/routes.tsx) | planned | SPEC-027, SPEC-035, SPEC-051, SPEC-052 |
-| `apps/web/tsconfig.json` | [sidecar-only](../apps/web/tsconfig.json.plan.md) | planned | SPEC-000 |
+| `apps/web/tsconfig.json` | [existing-with-sidecar](../apps/web/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `compose.test.yaml` | [sidecar-only](../compose.test.yaml.plan.md) | planned | SPEC-000 |
 | `contracts/mini-app-definition.schema.json` | [sidecar-only](../contracts/mini-app-definition.schema.json.plan.md) | planned | SPEC-052 |
 | `contracts/spec-000/baseline-inventory.schema.json` | [existing-with-sidecar](../contracts/spec-000/baseline-inventory.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
@@ -132,7 +132,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `contracts/spec-000/supply-chain.schema.json` | [sidecar-only](../contracts/spec-000/supply-chain.schema.json.plan.md) | planned | SPEC-000 |
 | `contracts/spec-000/test-harness.schema.json` | [sidecar-only](../contracts/spec-000/test-harness.schema.json.plan.md) | planned | SPEC-000 |
 | `contracts/spec-000/verify-ticket.schema.json` | [sidecar-only](../contracts/spec-000/verify-ticket.schema.json.plan.md) | planned | SPEC-000 |
-| `contracts/spec-000/workspace.schema.json` | [sidecar-only](../contracts/spec-000/workspace.schema.json.plan.md) | planned | SPEC-000 |
+| `contracts/spec-000/workspace.schema.json` | [existing-with-sidecar](../contracts/spec-000/workspace.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `contracts/spec-001/canonical.schema.json` | [sidecar-only](../contracts/spec-001/canonical.schema.json.plan.md) | planned | SPEC-001 |
 | `contracts/spec-001/ids.schema.json` | [sidecar-only](../contracts/spec-001/ids.schema.json.plan.md) | planned | SPEC-001 |
 | `contracts/spec-001/laws.schema.json` | [sidecar-only](../contracts/spec-001/laws.schema.json.plan.md) | planned | SPEC-001 |
@@ -671,7 +671,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `db/migrations/zn-0317_rivet-host-profile.sql` | [sidecar-only](../db/migrations/zn-0317_rivet-host-profile.sql.plan.md) | planned | SPEC-054 |
 | `db/migrations/zn-0318_rivet-recovery.sql` | [sidecar-only](../db/migrations/zn-0318_rivet-recovery.sql.plan.md) | planned | SPEC-054 |
 | `db/roles.sql` | [existing-with-sidecar](../db/roles.sql.plan.md) | candidate-unaccepted | SPEC-002, SPEC-003, SPEC-004 |
-| `eslint.config.mjs` | [sidecar-only](../eslint.config.mjs.plan.md) | planned | SPEC-000, SPEC-050 |
+| `eslint.config.mjs` | [existing-with-sidecar](../eslint.config.mjs.plan.md) | implementation-in-progress | SPEC-000, SPEC-050 |
 | `execution-lock.json` | [sidecar-only](../execution-lock.json.plan.md) | planned | SPEC-000, SPEC-002, SPEC-004, SPEC-011, SPEC-013, SPEC-023, SPEC-030, SPEC-031, SPEC-038, SPEC-039, SPEC-046, SPEC-054 |
 | `infra/terraform/app-host/main.tf` | [sidecar-only](../infra/terraform/app-host/main.tf.plan.md) | planned | SPEC-053, SPEC-054 |
 | `infra/terraform/app-host/variables.tf` | [sidecar-only](../infra/terraform/app-host/variables.tf.plan.md) | planned | SPEC-053 |
@@ -690,8 +690,8 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `infra/terraform/pilot/pilot-topology.tf` | [sidecar-only](../infra/terraform/pilot/pilot-topology.tf.plan.md) | planned | SPEC-049 |
 | `infra/terraform/pilot/variables.tf` | [sidecar-only](../infra/terraform/pilot/variables.tf.plan.md) | planned | SPEC-049 |
 | `infra/terraform/pilot/versions.tf` | [sidecar-only](../infra/terraform/pilot/versions.tf.plan.md) | planned | SPEC-049 |
-| `package.json` | [existing-with-sidecar](../package.json.plan.md) | candidate-unaccepted | SPEC-000 |
-| `packages/adapters/package.json` | [sidecar-only](../packages/adapters/package.json.plan.md) | planned | SPEC-000, SPEC-011, SPEC-054 |
+| `package.json` | [existing-with-sidecar](../package.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/adapters/package.json` | [existing-with-sidecar](../packages/adapters/package.json.plan.md) | implementation-in-progress | SPEC-000, SPEC-011, SPEC-054 |
 | `packages/adapters/src/app-runtime/rivet/index.ts` | [comment-only-source](../packages/adapters/src/app-runtime/rivet/index.ts) | planned | SPEC-054 |
 | `packages/adapters/src/app-runtime/rivet/ports.ts` | [comment-only-source](../packages/adapters/src/app-runtime/rivet/ports.ts) | planned | SPEC-054 |
 | `packages/adapters/src/app-runtime/rivet/rivet-api-probe.ts` | [comment-only-source](../packages/adapters/src/app-runtime/rivet/rivet-api-probe.ts) | planned | SPEC-054 |
@@ -719,12 +719,12 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/adapters/src/config.ts` | [existing-with-sidecar](../packages/adapters/src/config.ts.plan.md) | candidate-unaccepted | SPEC-003, SPEC-004, SPEC-007 |
 | `packages/adapters/src/cryptography.ts` | [existing-with-sidecar](../packages/adapters/src/cryptography.ts.plan.md) | candidate-unaccepted | SPEC-003, SPEC-004, SPEC-007 |
 | `packages/adapters/src/http-security.ts` | [existing-with-sidecar](../packages/adapters/src/http-security.ts.plan.md) | candidate-unaccepted | SPEC-003, SPEC-004, SPEC-007 |
-| `packages/adapters/src/index.ts` | [comment-only-source](../packages/adapters/src/index.ts) | planned | SPEC-000 |
+| `packages/adapters/src/index.ts` | [existing-with-sidecar](../packages/adapters/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/adapters/src/pg.ts` | [existing-with-sidecar](../packages/adapters/src/pg.ts.plan.md) | candidate-unaccepted | SPEC-003, SPEC-004, SPEC-007 |
 | `packages/adapters/src/s3.ts` | [existing-with-sidecar](../packages/adapters/src/s3.ts.plan.md) | candidate-unaccepted | SPEC-003, SPEC-004, SPEC-007 |
 | `packages/adapters/src/semantic-http.ts` | [existing-with-sidecar](../packages/adapters/src/semantic-http.ts.plan.md) | candidate-unaccepted | SPEC-003, SPEC-004, SPEC-007 |
-| `packages/adapters/tsconfig.json` | [sidecar-only](../packages/adapters/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `packages/clients/package.json` | [sidecar-only](../packages/clients/package.json.plan.md) | planned | SPEC-000 |
+| `packages/adapters/tsconfig.json` | [existing-with-sidecar](../packages/adapters/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/clients/package.json` | [existing-with-sidecar](../packages/clients/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/clients/src/app-host/app-origins.ts` | [comment-only-source](../packages/clients/src/app-host/app-origins.ts) | planned | SPEC-053 |
 | `packages/clients/src/app-host/bridge-transport.ts` | [comment-only-source](../packages/clients/src/app-host/bridge-transport.ts) | planned | SPEC-053 |
 | `packages/clients/src/app-host/host-revocation.ts` | [comment-only-source](../packages/clients/src/app-host/host-revocation.ts) | planned | SPEC-053 |
@@ -733,7 +733,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/clients/src/app-host/types.ts` | [comment-only-source](../packages/clients/src/app-host/types.ts) | planned | SPEC-053 |
 | `packages/clients/src/cli-generation.ts` | [comment-only-source](../packages/clients/src/cli-generation.ts) | planned | SPEC-026 |
 | `packages/clients/src/cli.ts` | [existing-with-sidecar](../packages/clients/src/cli.ts.plan.md) | candidate-unaccepted | SPEC-026 |
-| `packages/clients/src/index.ts` | [comment-only-source](../packages/clients/src/index.ts) | planned | SPEC-000, SPEC-026, SPEC-050 |
+| `packages/clients/src/index.ts` | [existing-with-sidecar](../packages/clients/src/index.ts.plan.md) | implementation-in-progress | SPEC-000, SPEC-026, SPEC-050 |
 | `packages/clients/src/mcp-apps/index.ts` | [comment-only-source](../packages/clients/src/mcp-apps/index.ts) | planned | SPEC-035 |
 | `packages/clients/src/mcp-apps/mcp-apps.ts` | [comment-only-source](../packages/clients/src/mcp-apps/mcp-apps.ts) | planned | SPEC-035 |
 | `packages/clients/src/mcp-apps/ports.ts` | [comment-only-source](../packages/clients/src/mcp-apps/ports.ts) | planned | SPEC-035 |
@@ -745,17 +745,17 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/clients/src/semantic-client.ts` | [existing-with-sidecar](../packages/clients/src/semantic-client.ts.plan.md) | candidate-unaccepted | SPEC-050 |
 | `packages/clients/src/status-stream.ts` | [comment-only-source](../packages/clients/src/status-stream.ts) | planned | SPEC-026 |
 | `packages/clients/src/types.ts` | [comment-only-source](../packages/clients/src/types.ts) | planned | SPEC-026 |
-| `packages/clients/tsconfig.json` | [sidecar-only](../packages/clients/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `packages/contracts/package.json` | [sidecar-only](../packages/contracts/package.json.plan.md) | planned | SPEC-000 |
+| `packages/clients/tsconfig.json` | [existing-with-sidecar](../packages/clients/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/contracts/package.json` | [existing-with-sidecar](../packages/contracts/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/contracts/src/app-bridge.ts` | [comment-only-source](../packages/contracts/src/app-bridge.ts) | planned | SPEC-053 |
 | `packages/contracts/src/app-runtime-port.ts` | [comment-only-source](../packages/contracts/src/app-runtime-port.ts) | planned | SPEC-054 |
-| `packages/contracts/src/index.ts` | [comment-only-source](../packages/contracts/src/index.ts) | planned | SPEC-000 |
+| `packages/contracts/src/index.ts` | [existing-with-sidecar](../packages/contracts/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/contracts/src/mini-app.ts` | [comment-only-source](../packages/contracts/src/mini-app.ts) | planned | SPEC-052 |
 | `packages/contracts/src/ports.ts` | [existing-with-sidecar](../packages/contracts/src/ports.ts.plan.md) | candidate-unaccepted | SPEC-001, SPEC-007, SPEC-050 |
 | `packages/contracts/src/semantic-client.ts` | [comment-only-source](../packages/contracts/src/semantic-client.ts) | planned | SPEC-050, SPEC-053 |
 | `packages/contracts/src/semantic.ts` | [existing-with-sidecar](../packages/contracts/src/semantic.ts.plan.md) | candidate-unaccepted | SPEC-001, SPEC-007, SPEC-050 |
-| `packages/contracts/tsconfig.json` | [sidecar-only](../packages/contracts/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `packages/door/package.json` | [sidecar-only](../packages/door/package.json.plan.md) | planned | SPEC-000, SPEC-002, SPEC-038 |
+| `packages/contracts/tsconfig.json` | [existing-with-sidecar](../packages/contracts/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/door/package.json` | [existing-with-sidecar](../packages/door/package.json.plan.md) | implementation-in-progress | SPEC-000, SPEC-002, SPEC-038 |
 | `packages/door/src/continuation/browser-exchange.ts` | [comment-only-source](../packages/door/src/continuation/browser-exchange.ts) | planned | SPEC-051 |
 | `packages/door/src/continuation/index.ts` | [comment-only-source](../packages/door/src/continuation/index.ts) | planned | SPEC-051 |
 | `packages/door/src/continuation/ports.ts` | [comment-only-source](../packages/door/src/continuation/ports.ts) | planned | SPEC-051 |
@@ -768,11 +768,11 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/door/src/enterprise/scim.ts` | [comment-only-source](../packages/door/src/enterprise/scim.ts) | planned | SPEC-038 |
 | `packages/door/src/enterprise/types.ts` | [comment-only-source](../packages/door/src/enterprise/types.ts) | planned | SPEC-038 |
 | `packages/door/src/enterprise/workload-identity.ts` | [comment-only-source](../packages/door/src/enterprise/workload-identity.ts) | planned | SPEC-038 |
-| `packages/door/src/index.ts` | [comment-only-source](../packages/door/src/index.ts) | planned | SPEC-000, SPEC-002 |
+| `packages/door/src/index.ts` | [existing-with-sidecar](../packages/door/src/index.ts.plan.md) | implementation-in-progress | SPEC-000, SPEC-002 |
 | `packages/door/src/ports.ts` | [comment-only-source](../packages/door/src/ports.ts) | planned | SPEC-002 |
 | `packages/door/src/types.ts` | [comment-only-source](../packages/door/src/types.ts) | planned | SPEC-002 |
-| `packages/door/tsconfig.json` | [sidecar-only](../packages/door/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `packages/eve/package.json` | [sidecar-only](../packages/eve/package.json.plan.md) | planned | SPEC-000 |
+| `packages/door/tsconfig.json` | [existing-with-sidecar](../packages/door/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/eve/package.json` | [existing-with-sidecar](../packages/eve/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/eve/src/context/compaction.ts` | [comment-only-source](../packages/eve/src/context/compaction.ts) | planned | SPEC-010 |
 | `packages/eve/src/context/compile-context.ts` | [comment-only-source](../packages/eve/src/context/compile-context.ts) | planned | SPEC-010 |
 | `packages/eve/src/context/composition.ts` | [comment-only-source](../packages/eve/src/context/composition.ts) | planned | SPEC-010 |
@@ -781,7 +781,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/eve/src/context/ports.ts` | [comment-only-source](../packages/eve/src/context/ports.ts) | planned | SPEC-010 |
 | `packages/eve/src/context/types.ts` | [comment-only-source](../packages/eve/src/context/types.ts) | planned | SPEC-010 |
 | `packages/eve/src/context/voice.ts` | [comment-only-source](../packages/eve/src/context/voice.ts) | planned | SPEC-010 |
-| `packages/eve/src/index.ts` | [comment-only-source](../packages/eve/src/index.ts) | planned | SPEC-000 |
+| `packages/eve/src/index.ts` | [existing-with-sidecar](../packages/eve/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/eve/src/turns/index.ts` | [comment-only-source](../packages/eve/src/turns/index.ts) | planned | SPEC-009 |
 | `packages/eve/src/turns/model-attempt.ts` | [comment-only-source](../packages/eve/src/turns/model-attempt.ts) | planned | SPEC-009 |
 | `packages/eve/src/turns/ports.ts` | [comment-only-source](../packages/eve/src/turns/ports.ts) | planned | SPEC-009 |
@@ -790,20 +790,20 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/eve/src/turns/turn-stop.ts` | [comment-only-source](../packages/eve/src/turns/turn-stop.ts) | planned | SPEC-009 |
 | `packages/eve/src/turns/turn-store.ts` | [comment-only-source](../packages/eve/src/turns/turn-store.ts) | planned | SPEC-009 |
 | `packages/eve/src/turns/types.ts` | [comment-only-source](../packages/eve/src/turns/types.ts) | planned | SPEC-009 |
-| `packages/eve/tsconfig.json` | [sidecar-only](../packages/eve/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `packages/kernel/package.json` | [sidecar-only](../packages/kernel/package.json.plan.md) | planned | SPEC-000 |
+| `packages/eve/tsconfig.json` | [existing-with-sidecar](../packages/eve/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/kernel/package.json` | [existing-with-sidecar](../packages/kernel/package.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/kernel/src/decimal.ts` | [existing-with-sidecar](../packages/kernel/src/decimal.ts.plan.md) | candidate-unaccepted | SPEC-001 |
 | `packages/kernel/src/graph.ts` | [existing-with-sidecar](../packages/kernel/src/graph.ts.plan.md) | candidate-unaccepted | SPEC-001 |
 | `packages/kernel/src/ids.ts` | [existing-with-sidecar](../packages/kernel/src/ids.ts.plan.md) | candidate-unaccepted | SPEC-001 |
-| `packages/kernel/src/index.ts` | [comment-only-source](../packages/kernel/src/index.ts) | planned | SPEC-000, SPEC-001 |
+| `packages/kernel/src/index.ts` | [existing-with-sidecar](../packages/kernel/src/index.ts.plan.md) | implementation-in-progress | SPEC-000, SPEC-001 |
 | `packages/kernel/src/json.ts` | [existing-with-sidecar](../packages/kernel/src/json.ts.plan.md) | candidate-unaccepted | SPEC-001 |
 | `packages/kernel/src/laws.ts` | [comment-only-source](../packages/kernel/src/laws.ts) | planned | SPEC-001 |
 | `packages/kernel/src/ports.ts` | [comment-only-source](../packages/kernel/src/ports.ts) | planned | SPEC-001 |
 | `packages/kernel/src/result.ts` | [existing-with-sidecar](../packages/kernel/src/result.ts.plan.md) | candidate-unaccepted | SPEC-001 |
 | `packages/kernel/src/time.ts` | [existing-with-sidecar](../packages/kernel/src/time.ts.plan.md) | candidate-unaccepted | SPEC-001 |
 | `packages/kernel/src/types.ts` | [comment-only-source](../packages/kernel/src/types.ts) | planned | SPEC-001 |
-| `packages/kernel/tsconfig.json` | [sidecar-only](../packages/kernel/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `packages/ontology/package.json` | [sidecar-only](../packages/ontology/package.json.plan.md) | planned | SPEC-000, SPEC-004, SPEC-013, SPEC-023, SPEC-031 |
+| `packages/kernel/tsconfig.json` | [existing-with-sidecar](../packages/kernel/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/ontology/package.json` | [existing-with-sidecar](../packages/ontology/package.json.plan.md) | implementation-in-progress | SPEC-000, SPEC-004, SPEC-013, SPEC-023, SPEC-031 |
 | `packages/ontology/src/actions/action-plan.ts` | [comment-only-source](../packages/ontology/src/actions/action-plan.ts) | planned | SPEC-022 |
 | `packages/ontology/src/actions/approvals.ts` | [comment-only-source](../packages/ontology/src/actions/approvals.ts) | planned | SPEC-022 |
 | `packages/ontology/src/actions/case-commit.ts` | [comment-only-source](../packages/ontology/src/actions/case-commit.ts) | planned | SPEC-022 |
@@ -930,7 +930,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/ontology/src/identity/ports.ts` | [comment-only-source](../packages/ontology/src/identity/ports.ts) | planned | SPEC-006 |
 | `packages/ontology/src/identity/split.ts` | [comment-only-source](../packages/ontology/src/identity/split.ts) | planned | SPEC-006 |
 | `packages/ontology/src/identity/types.ts` | [comment-only-source](../packages/ontology/src/identity/types.ts) | planned | SPEC-006 |
-| `packages/ontology/src/index.ts` | [comment-only-source](../packages/ontology/src/index.ts) | planned | SPEC-000 |
+| `packages/ontology/src/index.ts` | [existing-with-sidecar](../packages/ontology/src/index.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/ontology/src/interpretation/claims.ts` | [existing-with-sidecar](../packages/ontology/src/interpretation/claims.ts.plan.md) | candidate-unaccepted | SPEC-005 |
 | `packages/ontology/src/interpretation/comparability.ts` | [comment-only-source](../packages/ontology/src/interpretation/comparability.ts) | planned | SPEC-005 |
 | `packages/ontology/src/interpretation/correction.ts` | [comment-only-source](../packages/ontology/src/interpretation/correction.ts) | planned | SPEC-005 |
@@ -1048,15 +1048,15 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/ontology/src/worlds/revocation.ts` | [comment-only-source](../packages/ontology/src/worlds/revocation.ts) | planned | SPEC-002 |
 | `packages/ontology/src/worlds/types.ts` | [comment-only-source](../packages/ontology/src/worlds/types.ts) | planned | SPEC-002 |
 | `packages/ontology/src/worlds/world-entry.ts` | [comment-only-source](../packages/ontology/src/worlds/world-entry.ts) | planned | SPEC-002 |
-| `packages/ontology/tsconfig.json` | [sidecar-only](../packages/ontology/tsconfig.json.plan.md) | planned | SPEC-000 |
-| `packages/telemetry/package.json` | [sidecar-only](../packages/telemetry/package.json.plan.md) | planned | SPEC-000 |
-| `packages/telemetry/src/index.ts` | [comment-only-source](../packages/telemetry/src/index.ts) | planned | SPEC-000, SPEC-008 |
+| `packages/ontology/tsconfig.json` | [existing-with-sidecar](../packages/ontology/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/telemetry/package.json` | [existing-with-sidecar](../packages/telemetry/package.json.plan.md) | implementation-in-progress | SPEC-000 |
+| `packages/telemetry/src/index.ts` | [existing-with-sidecar](../packages/telemetry/src/index.ts.plan.md) | implementation-in-progress | SPEC-000, SPEC-008 |
 | `packages/telemetry/src/legacy-import.ts` | [comment-only-source](../packages/telemetry/src/legacy-import.ts) | planned | SPEC-008 |
 | `packages/telemetry/src/ports.ts` | [comment-only-source](../packages/telemetry/src/ports.ts) | planned | SPEC-008 |
 | `packages/telemetry/src/readiness.ts` | [comment-only-source](../packages/telemetry/src/readiness.ts) | planned | SPEC-008 |
 | `packages/telemetry/src/redaction.ts` | [comment-only-source](../packages/telemetry/src/redaction.ts) | planned | SPEC-008 |
 | `packages/telemetry/src/types.ts` | [comment-only-source](../packages/telemetry/src/types.ts) | planned | SPEC-008 |
-| `packages/telemetry/tsconfig.json` | [sidecar-only](../packages/telemetry/tsconfig.json.plan.md) | planned | SPEC-000 |
+| `packages/telemetry/tsconfig.json` | [existing-with-sidecar](../packages/telemetry/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `packs/bakery/pack.json` | [sidecar-only](../packs/bakery/pack.json.plan.md) | planned | SPEC-016 |
 | `packs/clinic/pack.json` | [sidecar-only](../packs/clinic/pack.json.plan.md) | planned | SPEC-021 |
 | `packs/clinic/spec-021/clinic-actions.json` | [sidecar-only](../packs/clinic/spec-021/clinic-actions.json.plan.md) | planned | SPEC-021 |
@@ -1097,13 +1097,13 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packs/spec-016/pack.json` | [sidecar-only](../packs/spec-016/pack.json.plan.md) | planned | SPEC-016 |
 | `playwright.config.ts` | [sidecar-only](../playwright.config.ts.plan.md) | planned | SPEC-000 |
 | `pnpm-lock.yaml` | [existing-with-sidecar](../pnpm-lock.yaml.plan.md) | implementation-in-progress | SPEC-000, SPEC-002, SPEC-004, SPEC-011, SPEC-013, SPEC-023, SPEC-030, SPEC-031, SPEC-038, SPEC-039, SPEC-046, SPEC-054 |
-| `pnpm-workspace.yaml` | [sidecar-only](../pnpm-workspace.yaml.plan.md) | planned | SPEC-000 |
+| `pnpm-workspace.yaml` | [existing-with-sidecar](../pnpm-workspace.yaml.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-000/baseline-inventory.md` | [existing-with-sidecar](../runbooks/spec-000/baseline-inventory.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-000/execution-lock.md` | [existing-with-sidecar](../runbooks/spec-000/execution-lock.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-000/supply-chain.md` | [markdown-plan](../runbooks/spec-000/supply-chain.md) | planned | SPEC-000 |
 | `runbooks/spec-000/test-harness.md` | [markdown-plan](../runbooks/spec-000/test-harness.md) | planned | SPEC-000 |
 | `runbooks/spec-000/verify-ticket.md` | [markdown-plan](../runbooks/spec-000/verify-ticket.md) | planned | SPEC-000 |
-| `runbooks/spec-000/workspace.md` | [markdown-plan](../runbooks/spec-000/workspace.md) | planned | SPEC-000 |
+| `runbooks/spec-000/workspace.md` | [existing-with-sidecar](../runbooks/spec-000/workspace.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-001/canonical.md` | [markdown-plan](../runbooks/spec-001/canonical.md) | planned | SPEC-001 |
 | `runbooks/spec-001/ids.md` | [markdown-plan](../runbooks/spec-001/ids.md) | planned | SPEC-001 |
 | `runbooks/spec-001/laws.md` | [markdown-plan](../runbooks/spec-001/laws.md) | planned | SPEC-001 |
@@ -1720,7 +1720,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/fixtures/spec-000/supply-chain.json` | [sidecar-only](../tests/fixtures/spec-000/supply-chain.json.plan.md) | planned | SPEC-000 |
 | `tests/fixtures/spec-000/test-harness.json` | [sidecar-only](../tests/fixtures/spec-000/test-harness.json.plan.md) | planned | SPEC-000 |
 | `tests/fixtures/spec-000/verify-ticket.json` | [sidecar-only](../tests/fixtures/spec-000/verify-ticket.json.plan.md) | planned | SPEC-000 |
-| `tests/fixtures/spec-000/workspace.json` | [sidecar-only](../tests/fixtures/spec-000/workspace.json.plan.md) | planned | SPEC-000 |
+| `tests/fixtures/spec-000/workspace.json` | [existing-with-sidecar](../tests/fixtures/spec-000/workspace.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/fixtures/spec-001/canonical.json` | [sidecar-only](../tests/fixtures/spec-001/canonical.json.plan.md) | planned | SPEC-001 |
 | `tests/fixtures/spec-001/ids.json` | [sidecar-only](../tests/fixtures/spec-001/ids.json.plan.md) | planned | SPEC-001 |
 | `tests/fixtures/spec-001/laws.json` | [sidecar-only](../tests/fixtures/spec-001/laws.json.plan.md) | planned | SPEC-001 |
@@ -2312,7 +2312,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/real/vertical-slice.test.mjs` | [existing-with-sidecar](../tests/real/vertical-slice.test.mjs.plan.md) | candidate-unaccepted | SPEC-000 |
 | `tests/security/boundaries.test.mjs` | [existing-with-sidecar](../tests/security/boundaries.test.mjs.plan.md) | candidate-unaccepted | SPEC-000 |
 | `tests/static/spec-000/verify-ticket.test.ts` | [comment-only-source](../tests/static/spec-000/verify-ticket.test.ts) | planned | SPEC-000 |
-| `tests/static/spec-000/workspace.test.ts` | [comment-only-source](../tests/static/spec-000/workspace.test.ts) | planned | SPEC-000 |
+| `tests/static/spec-000/workspace.test.ts` | [existing-with-sidecar](../tests/static/spec-000/workspace.test.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/static/spec-050/no-bypass-graph.test.ts` | [comment-only-source](../tests/static/spec-050/no-bypass-graph.test.ts) | planned | SPEC-050 |
 | `tooling/semantic-boundaries/index.ts` | [comment-only-source](../tooling/semantic-boundaries/index.ts) | planned | SPEC-050 |
 | `tooling/semantic-boundaries/no-bypass-graph.ts` | [comment-only-source](../tooling/semantic-boundaries/no-bypass-graph.ts) | planned | SPEC-050 |
@@ -2321,6 +2321,6 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tooling/supply-chain.ts` | [comment-only-source](../tooling/supply-chain.ts) | planned | SPEC-000 |
 | `tooling/test-harness.ts` | [comment-only-source](../tooling/test-harness.ts) | planned | SPEC-000 |
 | `tooling/verify-ticket.ts` | [comment-only-source](../tooling/verify-ticket.ts) | planned | SPEC-000 |
-| `tooling/workspace.ts` | [comment-only-source](../tooling/workspace.ts) | planned | SPEC-000 |
-| `tsconfig.json` | [existing-with-sidecar](../tsconfig.json.plan.md) | candidate-unaccepted | SPEC-000 |
+| `tooling/workspace.ts` | [existing-with-sidecar](../tooling/workspace.ts.plan.md) | implementation-in-progress | SPEC-000 |
+| `tsconfig.json` | [existing-with-sidecar](../tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `vitest.config.ts` | [sidecar-only](../vitest.config.ts.plan.md) | planned | SPEC-000 |
