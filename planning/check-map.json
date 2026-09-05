@@ -1459,7 +1459,7 @@
     "ticket_id": "ZN-0045",
     "spec_id": "SPEC-007",
     "test_file": "tests/journey/spec-007/first-surface.test.ts",
-    "plan_path": "tests/journey/spec-007/first-surface.test.ts",
+    "plan_path": "tests/journey/spec-007/first-surface.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1470,7 +1470,7 @@
     "ticket_id": "ZN-0045",
     "spec_id": "SPEC-007",
     "test_file": "tests/journey/spec-007/first-surface.test.ts",
-    "plan_path": "tests/journey/spec-007/first-surface.test.ts",
+    "plan_path": "tests/journey/spec-007/first-surface.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1481,7 +1481,7 @@
     "ticket_id": "ZN-0045",
     "spec_id": "SPEC-007",
     "test_file": "tests/journey/spec-007/first-surface.test.ts",
-    "plan_path": "tests/journey/spec-007/first-surface.test.ts",
+    "plan_path": "tests/journey/spec-007/first-surface.test.ts.plan.md",
     "status": "not-executed"
   },
   {

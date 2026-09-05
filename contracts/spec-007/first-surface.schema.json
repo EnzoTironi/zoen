@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-007/first-surface.schema.json",
+  "title": "ZN-0045 first-surface fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "purpose",
+    "subjectLabel",
+    "billAmountA",
+    "billAmountB",
+    "unit",
+    "sourceDateA",
+    "sourceDateB"
+  ],
+  "properties": {
+    "seed": {
+      "type": "string",
+      "const": "zn-0045-first-surface-seed-v1"
+    },
+    "seedDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "subjectLabel": {
+      "type": "string"
+    },
+    "billAmountA": {
+      "type": "string"
+    },
+    "billAmountB": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "sourceDateA": {
+      "type": "string"
+    },
+    "sourceDateB": {
+      "type": "string"
+    }
+  }
+}

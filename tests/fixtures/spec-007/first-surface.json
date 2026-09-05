@@ -1,0 +1,11 @@
+{
+  "seed": "zn-0045-first-surface-seed-v1",
+  "seedDigest": "b6077933dd815e1d1ed3c66b614c5da044ea8649bc639b7d23a199caa8ed4ca4",
+  "purpose": "operations",
+  "subjectLabel": "two-source-bill",
+  "billAmountA": "100.00",
+  "billAmountB": "120.00",
+  "unit": "brl",
+  "sourceDateA": "2026-01-15",
+  "sourceDateB": "2026-01-20"
+}
