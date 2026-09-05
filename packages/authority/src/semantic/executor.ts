@@ -3,16 +3,20 @@ import {
   InvalidInput,
   Unauthenticated,
   Unavailable,
+  Expired,
   Unsupported,
 } from "@zoen/contracts/d01/errors";
-import { D01Success } from "@zoen/contracts/d01/operations";
+import { D01Success, WorldCreated } from "@zoen/contracts/d01/operations";
 import { D01_LIMITS, Instant } from "@zoen/contracts/d01/values";
 import type { Redacted } from "effect";
 import { Context, DateTime, Effect, Layer, Schema } from "effect";
 
-import { validateContext } from "../access/context.js";
+import { validateContext, withinRequestDeadline } from "../access/context.js";
 import { authorizeWorld } from "../access/world.js";
 import { createPersonalWorld } from "../commit/genesis.js";
+import { importEvidence } from "../evidence/d01/import.js";
+import { openEvidence } from "../evidence/d01/open.js";
+import { inspect } from "../knowledge/d01/inspect.js";
 import { Presence } from "../ports/d01/context.js";
 import { canonicalJson } from "../values/canonical.js";
 import { parseEnvelopeBytes } from "../values/json.js";
@@ -32,7 +36,12 @@ export class SemanticExecutor extends Context.Service<
       const presence = yield* Presence;
       const dependencies =
         yield* Effect.context<
-          Effect.Services<ReturnType<typeof createPersonalWorld>>
+          Effect.Services<
+            | ReturnType<typeof createPersonalWorld>
+            | ReturnType<typeof importEvidence>
+            | ReturnType<typeof openEvidence>
+            | ReturnType<typeof inspect>
+          >
         >();
       const execute = Effect.fn("authority.semantic.execute")(
         function* execute(credential: Redacted.Redacted, bytes: Uint8Array) {
@@ -51,10 +60,25 @@ export class SemanticExecutor extends Context.Service<
             presence: verified,
             purpose: request.purpose,
           });
-          if (request.operation !== "CreatePersonalWorld") {
-            return yield* new Unsupported({ code: "UNSUPPORTED" });
-          }
-          const result = yield* createPersonalWorld(context, request);
+          const result = yield* Effect.gen(function* dispatch() {
+            switch (request.operation) {
+              case "CreatePersonalWorld": {
+                return yield* createPersonalWorld(context, request);
+              }
+              case "ImportEvidence": {
+                return yield* importEvidence(context, request);
+              }
+              case "Inspect": {
+                return yield* inspect(context, request);
+              }
+              case "OpenEvidence": {
+                return yield* openEvidence(context, request);
+              }
+              default: {
+                return yield* new Unsupported({ code: "UNSUPPORTED" });
+              }
+            }
+          }).pipe(withinRequestDeadline(context));
           const decoded = yield* Schema.decodeEffect(D01Success)(result).pipe(
             Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
           );
@@ -76,13 +100,25 @@ export class SemanticExecutor extends Context.Service<
             ...context,
             presence: currentPresence,
           });
-          yield* authorizeWorld(currentContext, result.worldRef);
+          const worldRef =
+            request.operation === "CreatePersonalWorld"
+              ? (yield* Schema.decodeUnknownEffect(WorldCreated)(decoded).pipe(
+                  Effect.mapError(
+                    () => new Unavailable({ code: "UNAVAILABLE" })
+                  )
+                )).worldRef
+              : request.worldRef;
+          yield* authorizeWorld(currentContext, worldRef);
           return decoded;
         },
         Effect.catchTag(
           "SqlError",
           () => new Unavailable({ code: "UNAVAILABLE" })
         ),
+        Effect.timeoutOrElse({
+          duration: `${D01_LIMITS.requestSeconds} seconds`,
+          orElse: () => Effect.fail(new Expired({ code: "EXPIRED" })),
+        }),
         Effect.provide(dependencies)
       );
       return SemanticExecutor.of({ execute });

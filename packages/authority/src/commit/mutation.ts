@@ -10,6 +10,7 @@ import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import type { SqlError } from "effect/unstable/sql";
 
+import { validateContext, withinRequestDeadline } from "../access/context.js";
 import { authorizeWorld } from "../access/world.js";
 import { DomainKey } from "../ports/d01/basis.js";
 import type { DomainCut, InternalBasis } from "../ports/d01/basis.js";
@@ -27,6 +28,11 @@ const OperationRow = Schema.Struct({
   receipt_id: ReceiptRef,
 }).annotate(exact);
 
+export interface MutationOutcome {
+  readonly result: typeof StoredOperationResult.Type;
+  readonly changedDomains: readonly (typeof DomainKey.Type)[];
+}
+
 export interface MutationPlan {
   readonly basis: InternalBasis | null;
   readonly domains: readonly (typeof DomainKey.Type)[];
@@ -34,7 +40,7 @@ export interface MutationPlan {
     receiptRef: typeof ReceiptRef.Type,
     cut: DomainCut
   ) => Effect.Effect<
-    typeof StoredOperationResult.Type,
+    MutationOutcome,
     D01Error | SqlError.SqlError,
     SqlClient.SqlClient
   >;
@@ -132,30 +138,39 @@ export const commitMutation = Effect.fn("authority.commit.commitMutation")(
           ${request.operation}, ${request.operationId}, ${bound.digest}, ${receiptRef})
         ON CONFLICT (world_id, realm, principal_id, semantic_operation, operation_id) DO NOTHING
       `;
+        const applied = yield* plan.apply(receiptRef, cut);
+        const changed = yield* Schema.decodeEffect(Schema.Array(DomainKey))(
+          applied.changedDomains
+        ).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
+        const changedDomains = [...new Set(changed)].toSorted();
+        if (changedDomains.some((domain) => !lockedDomains.includes(domain))) {
+          return yield* new Unavailable({ code: "UNAVAILABLE" });
+        }
         const nextCut = { ...cut };
-        for (const domain of lockedDomains) {
+        for (const domain of changedDomains) {
           const version = yield* Schema.decodeEffect(Revision)(
             (BigInt(cut[domain]) + 1n).toString()
           ).pipe(
             Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
           );
           yield* sql`
-          UPDATE authority.domains SET version = ${version}
-          WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm} AND domain_key = ${domain}
-        `;
+            UPDATE authority.domains SET version = ${version}
+            WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm} AND domain_key = ${domain}
+          `;
           nextCut[domain] = version;
         }
-        const applied = yield* plan.apply(receiptRef, nextCut);
         yield* authorizeWorld(context, worldRef);
-        return yield* persistReceipt({
+        const receipt = yield* persistReceipt({
           context,
           cut: nextCut,
           operation: request.operation,
           receiptRef,
-          result: applied,
+          result: applied.result,
           worldRef,
         });
-      })
+        yield* validateContext(context);
+        return receipt;
+      }).pipe(withinRequestDeadline(context))
     );
     yield* authorizeWorld(context, worldRef);
     return result;

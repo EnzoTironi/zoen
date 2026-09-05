@@ -10,6 +10,33 @@ export const isTransactionConflict = (error: unknown): boolean =>
   (error.reason._tag === "SerializationError" ||
     error.reason._tag === "DeadlockError");
 
+/** Restore only the single SQL defect emitted by RC112 at COMMIT. */
+export const restoreSqlDefect = <A, E, R>(self: Effect.Effect<A, E, R>) =>
+  self.pipe(
+    Effect.catchCause((cause): Effect.Effect<never, E | SqlError.SqlError> => {
+      const [reason] = cause.reasons;
+      return cause.reasons.length === 1 &&
+        reason !== undefined &&
+        Cause.isDieReason(reason) &&
+        SqlError.isSqlError(reason.defect)
+        ? Effect.fail(reason.defect)
+        : Effect.failCause(cause);
+    })
+  );
+
+const publicSqlFailure = (error: unknown) =>
+  Effect.fail(
+    isTransactionConflict(error)
+      ? new RetryableInfrastructureFailure({
+          code: "RETRYABLE_INFRASTRUCTURE_FAILURE",
+        })
+      : new Unavailable({ code: "UNAVAILABLE" })
+  );
+
+export const sanitizeSqlFailure = <A, E, R>(
+  self: Effect.Effect<A, E | SqlError.SqlError, R>
+) => self.pipe(Effect.catchTag("SqlError", publicSqlFailure));
+
 /** The body contains authority SQL only. Its bound intent survives every retry. */
 export const serializable = Effect.fn("authority.commit.serializable")(
   function* serializable<A, E, R>(body: Effect.Effect<A, E, R>) {
@@ -21,27 +48,9 @@ export const serializable = Effect.fn("authority.commit.serializable")(
         )
       )
       .pipe(
-        Effect.catchCause((cause) => {
-          const [reason] = cause.reasons;
-          // RC112 turns COMMIT failures into a single SQL defect. Restore only
-          // that typed failure; preserve mixed causes and interruptions.
-          return cause.reasons.length === 1 &&
-            reason !== undefined &&
-            Cause.isDieReason(reason) &&
-            SqlError.isSqlError(reason.defect)
-            ? Effect.fail(reason.defect)
-            : Effect.failCause(cause);
-        }),
+        restoreSqlDefect,
         Effect.retry({ times: 2, while: isTransactionConflict }),
-        Effect.catchTag("SqlError", (error) =>
-          Effect.fail(
-            isTransactionConflict(error)
-              ? new RetryableInfrastructureFailure({
-                  code: "RETRYABLE_INFRASTRUCTURE_FAILURE",
-                })
-              : new Unavailable({ code: "UNAVAILABLE" })
-          )
-        )
+        sanitizeSqlFailure
       );
   }
 );
