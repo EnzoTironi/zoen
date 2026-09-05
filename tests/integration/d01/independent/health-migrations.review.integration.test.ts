@@ -157,6 +157,7 @@ it.live(
           expect(metadata).toStrictEqual([
             { migration_id: 1, name: "d01_authority" },
             { migration_id: 2, name: "d01_identity" },
+            { migration_id: 3, name: "scoped_corrections" },
           ]);
           const authority = yield* SqlClient.SqlClient.use(
             (sql) =>
