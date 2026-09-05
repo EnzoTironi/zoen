@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "status": "partial-implementation-unqualified",
+  "testedSourceCommit": "faf262f159ba03c1299af892209b00c41a675687",
+  "cleanWorktreeAtTest": true,
+  "preservedV4Sha256": "a373b45fc488df178707d0e25b5685b1071039172fc357c3bda16af347a4fbd8",
+  "localEvidence": {
+    "runtime": {
+      "node": "22.16.0",
+      "compiler": "Version 5.8.3"
+    },
+    "strictCoreCompilation": "passed",
+    "coreTests": {
+      "executed": 72,
+      "passed": 72,
+      "failed": 0,
+      "skipped": 0
+    },
+    "selectedMutations": {
+      "executed": 9,
+      "caughtByTests": 9,
+      "scope": "Selected regression defects, not exhaustive mutation coverage"
+    },
+    "typescriptSourceFiles": 31,
+    "externalAdapterSyntax": "passed; grammar only, not full type checking"
+  },
+  "realServiceEvidence": {
+    "status": "blocked",
+    "testsAuthored": 10,
+    "testsExecuted": 0,
+    "testsPassed": 0,
+    "postgresqlExecuted": false,
+    "externalProviderRequestsExecuted": false,
+    "fullTargetBuildExecuted": false,
+    "dependencyLock": "not resolved; none fabricated"
+  },
+  "fullVerification": {
+    "exitCode": 2,
+    "status": "blocked at target dependency/runtime admission"
+  },
+  "v4": {
+    "specifications": 56,
+    "tickets": 325,
+    "productChecks": 975,
+    "ticketsAccepted": 0,
+    "productChecksAccepted": 0
+  },
+  "notImplemented": [
+    "Complete S0 acceptance",
+    "Eve and model-provider conversation",
+    "WhatsApp and other channels",
+    "Accessible browser product",
+    "Full runtime definition release/evaluation/preparation/activation",
+    "Persistent protected app links/sessions and hosted mini apps",
+    "Rivet adapter qualification",
+    "Production hosting, recovery and CI evidence",
+    "Search and dense data pipelines",
+    "Institutional/federation/financial execution"
+  ],
+  "noSubstitutes": {
+    "mockProviders": false,
+    "inMemoryDatabaseReplacement": false,
+    "authenticationBypass": false,
+    "applicationOfflineMode": false
+  },
+  "review": "Self-produced local evidence, not independent acceptance or production attestation.",
+  "nextAssignment": "Finish implementation and real-dependency qualification. This is not a complete v4 awaiting only local tests."
+}

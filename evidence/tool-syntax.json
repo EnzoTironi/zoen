@@ -1,0 +1,78 @@
+{
+  "status": "passed",
+  "nodeChecks": [
+    {
+      "path": "tests/laws/definitions.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/laws/interpretation.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/laws/kernel.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/laws/protocol.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/real/vertical-slice.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tests/security/boundaries.test.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/architecture.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/files.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/migrate.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/mutations.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/preflight.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/provision.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/real-tests.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/syntax.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/typescript.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/verify-core.mjs",
+      "exitCode": 0
+    },
+    {
+      "path": "tooling/verify.mjs",
+      "exitCode": 0
+    }
+  ],
+  "pythonChecks": [
+    "tooling/extract_specification.py",
+    "tooling/check_integrity.py"
+  ],
+  "scope": "Syntax, not service behavior"
+}

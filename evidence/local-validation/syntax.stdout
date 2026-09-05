@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "compiler": "5.8.3",
+  "files": 31,
+  "failures": [],
+  "scope": "Grammar only. Does NOT resolve or typecheck uninstalled external dependencies."
+}
