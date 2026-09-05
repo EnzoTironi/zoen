@@ -139,7 +139,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `contracts/spec-001/outcomes.schema.json` | [existing-with-sidecar](../contracts/spec-001/outcomes.schema.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `contracts/spec-001/scalars.schema.json` | [existing-with-sidecar](../contracts/spec-001/scalars.schema.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `contracts/spec-001/temporal.schema.json` | [existing-with-sidecar](../contracts/spec-001/temporal.schema.json.plan.md) | implementation-in-progress | SPEC-001 |
-| `contracts/spec-002/entry-isolation.schema.json` | [sidecar-only](../contracts/spec-002/entry-isolation.schema.json.plan.md) | planned | SPEC-002 |
+| `contracts/spec-002/entry-isolation.schema.json` | [existing-with-sidecar](../contracts/spec-002/entry-isolation.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-002/genesis.schema.json` | [existing-with-sidecar](../contracts/spec-002/genesis.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-002/invitations.schema.json` | [existing-with-sidecar](../contracts/spec-002/invitations.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `contracts/spec-002/presence.schema.json` | [existing-with-sidecar](../contracts/spec-002/presence.schema.json.plan.md) | implementation-in-progress | SPEC-002 |
@@ -459,7 +459,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `db/migrations/zn-0015_world-entry.sql` | [existing-with-sidecar](../db/migrations/zn-0015_world-entry.sql.plan.md) | implementation-in-progress | SPEC-002 |
 | `db/migrations/zn-0016_invitations.sql` | [existing-with-sidecar](../db/migrations/zn-0016_invitations.sql.plan.md) | implementation-in-progress | SPEC-002 |
 | `db/migrations/zn-0017_revocation.sql` | [existing-with-sidecar](../db/migrations/zn-0017_revocation.sql.plan.md) | implementation-in-progress | SPEC-002 |
-| `db/migrations/zn-0018_entry-isolation.sql` | [sidecar-only](../db/migrations/zn-0018_entry-isolation.sql.plan.md) | planned | SPEC-002 |
+| `db/migrations/zn-0018_entry-isolation.sql` | [existing-with-sidecar](../db/migrations/zn-0018_entry-isolation.sql.plan.md) | implementation-in-progress | SPEC-002 |
 | `db/migrations/zn-0019_schema.sql` | [sidecar-only](../db/migrations/zn-0019_schema.sql.plan.md) | planned | SPEC-003 |
 | `db/migrations/zn-0020_commit.sql` | [sidecar-only](../db/migrations/zn-0020_commit.sql.plan.md) | planned | SPEC-003 |
 | `db/migrations/zn-0021_idempotency.sql` | [sidecar-only](../db/migrations/zn-0021_idempotency.sql.plan.md) | planned | SPEC-003 |
@@ -1040,7 +1040,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/ontology/src/surfaces/registry.ts` | [existing-with-sidecar](../packages/ontology/src/surfaces/registry.ts.plan.md) | candidate-unaccepted | SPEC-007 |
 | `packages/ontology/src/surfaces/streaming-path.ts` | [comment-only-source](../packages/ontology/src/surfaces/streaming-path.ts) | planned | SPEC-050 |
 | `packages/ontology/src/surfaces/types.ts` | [comment-only-source](../packages/ontology/src/surfaces/types.ts) | planned | SPEC-007, SPEC-050 |
-| `packages/ontology/src/worlds/entry-isolation.ts` | [comment-only-source](../packages/ontology/src/worlds/entry-isolation.ts) | planned | SPEC-002 |
+| `packages/ontology/src/worlds/entry-isolation.ts` | [existing-with-sidecar](../packages/ontology/src/worlds/entry-isolation.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `packages/ontology/src/worlds/genesis.ts` | [existing-with-sidecar](../packages/ontology/src/worlds/genesis.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `packages/ontology/src/worlds/index.ts` | [existing-with-sidecar](../packages/ontology/src/worlds/index.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `packages/ontology/src/worlds/invitations.ts` | [existing-with-sidecar](../packages/ontology/src/worlds/invitations.ts.plan.md) | implementation-in-progress | SPEC-002 |
@@ -1110,7 +1110,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `runbooks/spec-001/outcomes.md` | [existing-with-sidecar](../runbooks/spec-001/outcomes.md.plan.md) | implementation-in-progress | SPEC-001 |
 | `runbooks/spec-001/scalars.md` | [existing-with-sidecar](../runbooks/spec-001/scalars.md.plan.md) | implementation-in-progress | SPEC-001 |
 | `runbooks/spec-001/temporal.md` | [existing-with-sidecar](../runbooks/spec-001/temporal.md.plan.md) | implementation-in-progress | SPEC-001 |
-| `runbooks/spec-002/entry-isolation.md` | [markdown-plan](../runbooks/spec-002/entry-isolation.md) | planned | SPEC-002 |
+| `runbooks/spec-002/entry-isolation.md` | [existing-with-sidecar](../runbooks/spec-002/entry-isolation.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-002/genesis.md` | [existing-with-sidecar](../runbooks/spec-002/genesis.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-002/invitations.md` | [existing-with-sidecar](../runbooks/spec-002/invitations.md.plan.md) | implementation-in-progress | SPEC-002 |
 | `runbooks/spec-002/presence.md` | [existing-with-sidecar](../runbooks/spec-002/presence.md.plan.md) | implementation-in-progress | SPEC-002 |
@@ -1486,7 +1486,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/chaos/spec-055/no-bypass-campaign.test.ts` | [comment-only-source](../tests/chaos/spec-055/no-bypass-campaign.test.ts) | planned | SPEC-055 |
 | `tests/component/spec-000/supply-chain.test.ts` | [existing-with-sidecar](../tests/component/spec-000/supply-chain.test.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/component/spec-000/test-harness.test.ts` | [existing-with-sidecar](../tests/component/spec-000/test-harness.test.ts.plan.md) | implementation-in-progress | SPEC-000 |
-| `tests/component/spec-002/entry-isolation.test.ts` | [comment-only-source](../tests/component/spec-002/entry-isolation.test.ts) | planned | SPEC-002 |
+| `tests/component/spec-002/entry-isolation.test.ts` | [existing-with-sidecar](../tests/component/spec-002/entry-isolation.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-002/genesis.test.ts` | [existing-with-sidecar](../tests/component/spec-002/genesis.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-002/invitations.test.ts` | [existing-with-sidecar](../tests/component/spec-002/invitations.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/component/spec-002/presence.test.ts` | [existing-with-sidecar](../tests/component/spec-002/presence.test.ts.plan.md) | implementation-in-progress | SPEC-002 |
@@ -1727,7 +1727,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/fixtures/spec-001/outcomes.json` | [existing-with-sidecar](../tests/fixtures/spec-001/outcomes.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `tests/fixtures/spec-001/scalars.json` | [existing-with-sidecar](../tests/fixtures/spec-001/scalars.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `tests/fixtures/spec-001/temporal.json` | [existing-with-sidecar](../tests/fixtures/spec-001/temporal.json.plan.md) | implementation-in-progress | SPEC-001 |
-| `tests/fixtures/spec-002/entry-isolation.json` | [sidecar-only](../tests/fixtures/spec-002/entry-isolation.json.plan.md) | planned | SPEC-002 |
+| `tests/fixtures/spec-002/entry-isolation.json` | [existing-with-sidecar](../tests/fixtures/spec-002/entry-isolation.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-002/genesis.json` | [existing-with-sidecar](../tests/fixtures/spec-002/genesis.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-002/invitations.json` | [existing-with-sidecar](../tests/fixtures/spec-002/invitations.json.plan.md) | implementation-in-progress | SPEC-002 |
 | `tests/fixtures/spec-002/presence.json` | [existing-with-sidecar](../tests/fixtures/spec-002/presence.json.plan.md) | implementation-in-progress | SPEC-002 |

@@ -1,13 +1,15 @@
 # File plan — `contracts/spec-002/entry-isolation.schema.json`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
-Target: `contracts/spec-002/entry-isolation.schema.json`. Representation: **sidecar-only**. Allocation: **conditional-support**.
+Target: `contracts/spec-002/entry-isolation.schema.json`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
 
 Specs: [SPEC-002](../../docs/specs/spec-002.md).
 Tickets: [ZN-0018](../../docs/tickets/zn-0018.md).
 
 ## Responsibility and reuse
+
+The adjacent implementation is preserved. Read it first, extend it in place, and prove behavior at the ticket's required layer. Do not replace it with this plan or create a duplicate primitive.
 
 ```text
 CONDITIONAL SCHEMA PLAN — no permissive {} schema or fabricated generated types.

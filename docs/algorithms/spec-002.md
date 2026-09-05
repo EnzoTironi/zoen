@@ -40,7 +40,7 @@ ON revocation: advance deny/security state, reject new use, preserve audit; do n
 | [ZN-0015](../tickets/zn-0015.md) | Issue fresh purpose-bound grants and request permits | [packages/ontology/src/worlds/world-entry.ts](../../packages/ontology/src/worlds/world-entry.ts.plan.md) |
 | [ZN-0016](../tickets/zn-0016.md) | Implement single-use invitation acceptance | [packages/ontology/src/worlds/invitations.ts](../../packages/ontology/src/worlds/invitations.ts.plan.md) |
 | [ZN-0017](../tickets/zn-0017.md) | Implement session termination and emergency deny | [packages/ontology/src/worlds/revocation.ts](../../packages/ontology/src/worlds/revocation.ts.plan.md) |
-| [ZN-0018](../tickets/zn-0018.md) | Prove genesis and entry isolation on real roles | [packages/ontology/src/worlds/entry-isolation.ts](../../packages/ontology/src/worlds/entry-isolation.ts) |
+| [ZN-0018](../tickets/zn-0018.md) | Prove genesis and entry isolation on real roles | [packages/ontology/src/worlds/entry-isolation.ts](../../packages/ontology/src/worlds/entry-isolation.ts.plan.md) |
 
 ## Required proof boundaries
 

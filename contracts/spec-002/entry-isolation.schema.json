@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-002/entry-isolation.schema.json",
+  "title": "SPEC-002 RoleIsolationReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tag", "roles", "forbiddenDenied", "legitimateEntryOk", "noSuperuserRuntime"],
+  "properties": {
+    "tag": { "const": "RoleIsolationReport" },
+    "roles": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["zoen_authority", "zoen_door", "zoen_eve", "zoen_channel", "zoen_outbox"] }
+    },
+    "forbiddenDenied": { "type": "boolean" },
+    "legitimateEntryOk": { "type": "boolean" },
+    "noSuperuserRuntime": { "type": "boolean" }
+  }
+}

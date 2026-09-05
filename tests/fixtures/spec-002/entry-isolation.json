@@ -1,0 +1,9 @@
+{
+  "seed": "zn-0018-entry-isolation-seed-v1",
+  "note": "Synthetic role-isolation fixtures for ZN-0018. Real PostgreSQL roles via SET ROLE. No fabricated digests.",
+  "seedDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "worldName": "Isolation World",
+  "purpose": "billing.read",
+  "audience": "audience.home",
+  "runtimeRoles": ["zoen_authority", "zoen_door", "zoen_eve", "zoen_channel", "zoen_outbox"]
+}
