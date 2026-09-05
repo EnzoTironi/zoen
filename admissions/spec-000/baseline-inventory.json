@@ -86,6 +86,7 @@
       "id": "os-crates-zoen-core",
       "sourceRepository": "os-migration-source",
       "path": "crates/zoen-core",
+      "pathKind": "repository-path",
       "classification": "discard",
       "evidence": "absent",
       "rationale": "Rust kernel must not be automatically ported into zoen TypeScript ownership."
@@ -94,6 +95,7 @@
       "id": "os-crates-zoen-engine",
       "sourceRepository": "os-migration-source",
       "path": "crates/zoen-engine",
+      "pathKind": "repository-path",
       "classification": "discard",
       "evidence": "absent",
       "rationale": "Old execution engine topology is not an admitted zoen import."
@@ -102,6 +104,7 @@
       "id": "os-crates-zoen-adapters",
       "sourceRepository": "os-migration-source",
       "path": "crates/zoen-adapters",
+      "pathKind": "repository-path",
       "classification": "rewrite",
       "evidence": "absent",
       "rationale": "Adapter surface is a reuse candidate, but no verified journey evidence; default rewrite."
@@ -110,6 +113,7 @@
       "id": "os-crates-zoen-proto",
       "sourceRepository": "os-migration-source",
       "path": "crates/zoen-proto",
+      "pathKind": "repository-path",
       "classification": "rewrite",
       "evidence": "absent",
       "rationale": "Wire shapes may inform contracts; no evidence for direct import; default rewrite."
@@ -118,6 +122,7 @@
       "id": "os-crates-zoen-query",
       "sourceRepository": "os-migration-source",
       "path": "crates/zoen-query",
+      "pathKind": "repository-path",
       "classification": "discard",
       "evidence": "absent",
       "rationale": "Query stack bound to OS topology; not an automatic import."
@@ -126,6 +131,7 @@
       "id": "os-apps-zoend",
       "sourceRepository": "os-migration-source",
       "path": "apps/zoend",
+      "pathKind": "repository-path",
       "classification": "discard",
       "evidence": "absent",
       "rationale": "OS daemon entrypoint is not the zoen semantic edge; discard for reuse."
@@ -134,6 +140,7 @@
       "id": "os-proto",
       "sourceRepository": "os-migration-source",
       "path": "proto",
+      "pathKind": "repository-path",
       "classification": "rewrite",
       "evidence": "absent",
       "rationale": "Protobuf definitions may inform migration; no import evidence; default rewrite."
@@ -142,6 +149,7 @@
       "id": "os-deploy",
       "sourceRepository": "os-migration-source",
       "path": "deploy",
+      "pathKind": "repository-path",
       "classification": "discard",
       "evidence": "absent",
       "rationale": "OS deployment must never be reset by this admission; not imported."
@@ -150,6 +158,7 @@
       "id": "os-authentication-adapters",
       "sourceRepository": "os-migration-source",
       "path": "apps/authentication-adapters",
+      "pathKind": "conceptual-label",
       "classification": "rewrite",
       "evidence": "absent",
       "rationale": "Authentication adapters are reuse candidates; evidence absent → rewrite."
@@ -158,6 +167,7 @@
       "id": "os-provider-wiring",
       "sourceRepository": "os-migration-source",
       "path": "provider-wiring",
+      "pathKind": "conceptual-label",
       "classification": "rewrite",
       "evidence": "absent",
       "rationale": "Provider wiring is a reuse candidate; evidence absent → rewrite."
@@ -166,6 +176,7 @@
       "id": "os-ui-components",
       "sourceRepository": "os-migration-source",
       "path": "ui-components",
+      "pathKind": "conceptual-label",
       "classification": "rewrite",
       "evidence": "absent",
       "rationale": "UI components are reuse candidates; evidence absent → rewrite."
@@ -174,6 +185,7 @@
       "id": "os-domain-vocabulary",
       "sourceRepository": "os-migration-source",
       "path": "domain-vocabulary",
+      "pathKind": "conceptual-label",
       "classification": "rewrite",
       "evidence": "absent",
       "rationale": "Domain vocabulary is a reuse candidate; evidence absent → rewrite."
@@ -182,6 +194,7 @@
       "id": "os-database-schema",
       "sourceRepository": "os-migration-source",
       "path": "database-schema",
+      "pathKind": "conceptual-label",
       "classification": "discard",
       "evidence": "absent",
       "rationale": "Do not automatically port OS database schema into zoen authority migrations."
@@ -190,6 +203,7 @@
       "id": "os-eve-execution-topology",
       "sourceRepository": "os-migration-source",
       "path": "eve-execution-topology",
+      "pathKind": "conceptual-label",
       "classification": "discard",
       "evidence": "absent",
       "rationale": "Old Eve execution topology is explicitly not auto-ported."
@@ -198,6 +212,7 @@
       "id": "v2-hashed-package-docs",
       "sourceRepository": "hashed-v2-package",
       "path": "archives/zoen-execution-v4.zip",
+      "pathKind": "archive-path",
       "classification": "import",
       "evidence": "present",
       "rationale": "Hashed v2 package is the preserved architecture archive; import as immutable historical input only."
@@ -222,7 +237,8 @@
       "curl raw zoen package.json @ c7f59e37587de751c0d075f5861cd127bf197b55",
       "sha256sum archives/zoen-execution-v4.zip -> a373b45fc488df178707d0e25b5685b1071039172fc357c3bda16af347a4fbd8",
       "git ls-remote (post) OS -> 88bfa34a9bcc1a793f1e6b2d7574bad033b44f25",
-      "git ls-remote (post) zoen -> c7f59e37587de751c0d075f5861cd127bf197b55"
+      "git ls-remote (post) zoen -> c7f59e37587de751c0d075f5861cd127bf197b55",
+      "Catalog review: curl -q https://api.github.com/repos/EnzoTironi/OS/git/trees/88bfa34a9bcc1a793f1e6b2d7574bad033b44f25?recursive=1 -> sha256 7fa258ede09f3ad18e54bf1fab94ca5aff154535cdd6d5a55209e59ab551386a; eight repository paths present; six conceptual labels absent"
     ],
     "profile": "admission-read-only",
     "fixtureSeed": "zn-0001-admission-seed-v1"

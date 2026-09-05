@@ -214,6 +214,7 @@
           "id",
           "sourceRepository",
           "path",
+          "pathKind",
           "classification",
           "evidence"
         ],
@@ -236,6 +237,11 @@
           "classification": {
             "type": "string",
             "enum": ["import", "rewrite", "discard"]
+          },
+          "pathKind": {
+            "type": "string",
+            "enum": ["repository-path", "conceptual-label", "archive-path"],
+            "description": "For conceptual-label, path preserves an earlier category label and does not assert a real repository location or observed reuse evidence."
           },
           "evidence": {
             "type": "string",

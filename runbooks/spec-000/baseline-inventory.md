@@ -15,9 +15,9 @@ Record commit-pinned repository and data-preservation baseline before any destru
 - No write credentials, deploy tokens, or OS mutation authority.
 - `GIT_TERMINAL_PROMPT=0`; do not `git push`, `git commit` in foreign clones, or force-push.
 
-## Inventory command (read-only)
+## Initial inventory command
 
-From the workspace root:
+From the workspace root, capture a new baseline only when the artifact does not exist. The command reads the remote repositories and writes the local artifact exclusively; it refuses to replace earlier evidence.
 
 ```sh
 node --experimental-strip-types --input-type=module <<'JS'
@@ -27,6 +27,7 @@ const inventory = runBaselineInventory();
 writeFileSync(
   'admissions/spec-000/baseline-inventory.json',
   JSON.stringify(inventory, null, 2) + '\n',
+  { flag: 'wx' },
 );
 console.log({
   os: inventory.repositories[0].commit,
@@ -46,6 +47,16 @@ Equivalent observations performed by the command:
 6. Record `liveDataPreservation.status = unresolved` (never empty)
 7. `git ls-remote` again (post) and require pre=post for both repos
 
+## Reverify the recorded baseline
+
+The required suite reads immutable source snapshots using the recorded commit pins. It observes each current branch head before and after the reads to check that the repositories stayed unchanged during that run. A later commit on `main` does not replace the selected snapshot or invalidate its historical contents.
+
+Only a confirmed HTTP 404 records an optional LICENSE or Cargo.toml as absent. DNS, TLS, process and other HTTP failures stop the command as unavailable. An incomplete artifact, duplicate repository identity or missing observation is rejected before it can qualify the baseline.
+
+The AC check also reads the real zoen predecessor `407da157771807ce397529a50a67bc8964a335b6` to prove verification works after a branch head advances. NEG exercises malformed records directly, and BOUNDARY tests pure transport-result classification plus explicit pin/digest drift. No HTTP service is simulated.
+
+Catalog entries distinguish `repository-path`, `archive-path` and `conceptual-label` with `pathKind`. The six conceptual labels preserve the previous planning categories and decisions; their `path` strings assert no repository location. They stay evidence-absent and cannot qualify a direct import. The anonymous GitHub tree read at OS pin `88bfa34a9bcc1a793f1e6b2d7574bad033b44f25` confirmed the eight actual repository paths and the absence of those six labels. Its raw-response digest is appended to the original observations; the original pins, timestamp, license conflict and live-data unknown state remain recorded.
+
 ## Required checks
 
 ```sh
@@ -61,7 +72,7 @@ Exact IDs: `ZN-0001-AC`, `ZN-0001-NEG`, `ZN-0001-BOUNDARY`.
 1. **PRECHECK** profile `admission-read-only`, operator authority, ticket evidence.
 2. **STOP** destructive migration / OS reset for the affected scope.
 3. **OBSERVE** raw inventory errors; preserve original commits and digests.
-4. **REPAIR** by re-running the read-only inventory command; never invent license, digest, tenant list, or lock entries.
+4. **REPAIR** by re-running the required suite against the recorded pins; preserve the original artifact. A new baseline selection requires a reviewed change that retains the previous evidence. Never invent license, digest, tenant list, or lock entries.
 5. **VERIFY** AC + NEG + BOUNDARY on the real command boundary.
 6. **RESUME** only after independent review. Incomplete, expired, or commit-mismatched qualification artifacts remain blocked; previous evidence does not transfer silently when pins change.
 

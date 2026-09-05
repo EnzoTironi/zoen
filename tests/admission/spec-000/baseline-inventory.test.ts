@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -84,32 +84,30 @@ function lsRemoteHead(repoUrl: string, ref: string): string {
   return sha;
 }
 
-function fetchRaw(url: string): { ok: true; text: string } | { ok: false; status: number } {
-  const out = execFileSync(
+function optionalRawResult(result: { status: number | null; stdout: string; stderr: string }): string | null {
+  if (result.status !== 0) {
+    throw new Error(`repository content unavailable: curl=${result.status}; ${result.stderr}`);
+  }
+  const split = result.stdout.lastIndexOf('\n');
+  const status = Number(result.stdout.slice(split + 1));
+  if (split >= 0 && status === 404) return null;
+  if (split < 0 || status !== 200) {
+    throw new Error(`repository content unavailable: curl=${result.status}, HTTP=${status}; ${result.stderr}`);
+  }
+  return result.stdout.slice(0, split);
+}
+
+function fetchRawAllow404(url: string): string | null {
+  const result = spawnSync(
     'curl',
-    ['-fsSL', '-w', '\n%{http_code}', url],
+    ['-sSL', '--max-time', '30', '-w', '\n%{http_code}', url],
     {
       encoding: 'utf8',
       stdio: ['ignore', 'pipe', 'pipe'],
       env: { ...process.env, CURL_HOME: '/nonexistent' },
     },
   );
-  // curl -f fails on HTTP errors; success path ends with code
-  const lines = out.replace(/\n$/, '').split('\n');
-  const status = Number(lines.pop());
-  const text = lines.join('\n');
-  if (!Number.isFinite(status) || status >= 400) return { ok: false, status: status || 0 };
-  return { ok: true, text };
-}
-
-function fetchRawAllow404(url: string): string | null {
-  try {
-    const res = fetchRaw(url);
-    return res.ok ? res.text : null;
-  } catch {
-    // curl -f exits non-zero on 404
-    return null;
-  }
+  return optionalRawResult(result);
 }
 
 function parsePackageName(packageJsonText: string): Record<string, unknown> {
@@ -137,6 +135,7 @@ function componentCatalog(): Array<{
   id: string;
   sourceRepository: string;
   path: string;
+  pathKind: 'repository-path' | 'conceptual-label' | 'archive-path';
   classification: Classification;
   evidence: 'present' | 'absent';
   rationale: string;
@@ -148,6 +147,7 @@ function componentCatalog(): Array<{
       id: 'os-crates-zoen-core',
       sourceRepository: OS_REPO.id,
       path: 'crates/zoen-core',
+      pathKind: 'repository-path',
       classification: 'discard',
       evidence: 'absent',
       rationale: 'Rust kernel must not be automatically ported into zoen TypeScript ownership.',
@@ -156,6 +156,7 @@ function componentCatalog(): Array<{
       id: 'os-crates-zoen-engine',
       sourceRepository: OS_REPO.id,
       path: 'crates/zoen-engine',
+      pathKind: 'repository-path',
       classification: 'discard',
       evidence: 'absent',
       rationale: 'Old execution engine topology is not an admitted zoen import.',
@@ -164,6 +165,7 @@ function componentCatalog(): Array<{
       id: 'os-crates-zoen-adapters',
       sourceRepository: OS_REPO.id,
       path: 'crates/zoen-adapters',
+      pathKind: 'repository-path',
       classification: 'rewrite',
       evidence: 'absent',
       rationale: 'Adapter surface is a reuse candidate, but no verified journey evidence; default rewrite.',
@@ -172,6 +174,7 @@ function componentCatalog(): Array<{
       id: 'os-crates-zoen-proto',
       sourceRepository: OS_REPO.id,
       path: 'crates/zoen-proto',
+      pathKind: 'repository-path',
       classification: 'rewrite',
       evidence: 'absent',
       rationale: 'Wire shapes may inform contracts; no evidence for direct import; default rewrite.',
@@ -180,6 +183,7 @@ function componentCatalog(): Array<{
       id: 'os-crates-zoen-query',
       sourceRepository: OS_REPO.id,
       path: 'crates/zoen-query',
+      pathKind: 'repository-path',
       classification: 'discard',
       evidence: 'absent',
       rationale: 'Query stack bound to OS topology; not an automatic import.',
@@ -188,6 +192,7 @@ function componentCatalog(): Array<{
       id: 'os-apps-zoend',
       sourceRepository: OS_REPO.id,
       path: 'apps/zoend',
+      pathKind: 'repository-path',
       classification: 'discard',
       evidence: 'absent',
       rationale: 'OS daemon entrypoint is not the zoen semantic edge; discard for reuse.',
@@ -196,6 +201,7 @@ function componentCatalog(): Array<{
       id: 'os-proto',
       sourceRepository: OS_REPO.id,
       path: 'proto',
+      pathKind: 'repository-path',
       classification: 'rewrite',
       evidence: 'absent',
       rationale: 'Protobuf definitions may inform migration; no import evidence; default rewrite.',
@@ -204,6 +210,7 @@ function componentCatalog(): Array<{
       id: 'os-deploy',
       sourceRepository: OS_REPO.id,
       path: 'deploy',
+      pathKind: 'repository-path',
       classification: 'discard',
       evidence: 'absent',
       rationale: 'OS deployment must never be reset by this admission; not imported.',
@@ -212,6 +219,7 @@ function componentCatalog(): Array<{
       id: 'os-authentication-adapters',
       sourceRepository: OS_REPO.id,
       path: 'apps/authentication-adapters',
+      pathKind: 'conceptual-label',
       classification: 'rewrite',
       evidence: 'absent',
       rationale: 'Authentication adapters are reuse candidates; evidence absent → rewrite.',
@@ -220,6 +228,7 @@ function componentCatalog(): Array<{
       id: 'os-provider-wiring',
       sourceRepository: OS_REPO.id,
       path: 'provider-wiring',
+      pathKind: 'conceptual-label',
       classification: 'rewrite',
       evidence: 'absent',
       rationale: 'Provider wiring is a reuse candidate; evidence absent → rewrite.',
@@ -228,6 +237,7 @@ function componentCatalog(): Array<{
       id: 'os-ui-components',
       sourceRepository: OS_REPO.id,
       path: 'ui-components',
+      pathKind: 'conceptual-label',
       classification: 'rewrite',
       evidence: 'absent',
       rationale: 'UI components are reuse candidates; evidence absent → rewrite.',
@@ -236,6 +246,7 @@ function componentCatalog(): Array<{
       id: 'os-domain-vocabulary',
       sourceRepository: OS_REPO.id,
       path: 'domain-vocabulary',
+      pathKind: 'conceptual-label',
       classification: 'rewrite',
       evidence: 'absent',
       rationale: 'Domain vocabulary is a reuse candidate; evidence absent → rewrite.',
@@ -244,6 +255,7 @@ function componentCatalog(): Array<{
       id: 'os-database-schema',
       sourceRepository: OS_REPO.id,
       path: 'database-schema',
+      pathKind: 'conceptual-label',
       classification: 'discard',
       evidence: 'absent',
       rationale: 'Do not automatically port OS database schema into zoen authority migrations.',
@@ -252,6 +264,7 @@ function componentCatalog(): Array<{
       id: 'os-eve-execution-topology',
       sourceRepository: OS_REPO.id,
       path: 'eve-execution-topology',
+      pathKind: 'conceptual-label',
       classification: 'discard',
       evidence: 'absent',
       rationale: 'Old Eve execution topology is explicitly not auto-ported.',
@@ -260,6 +273,7 @@ function componentCatalog(): Array<{
       id: 'v2-hashed-package-docs',
       sourceRepository: 'hashed-v2-package',
       path: 'archives/zoen-execution-v4.zip',
+      pathKind: 'archive-path',
       classification: 'import',
       evidence: 'present',
       rationale: 'Hashed v2 package is the preserved architecture archive; import as immutable historical input only.',
@@ -267,10 +281,18 @@ function componentCatalog(): Array<{
   ];
 }
 
-function requireCommitPin(value: unknown, label: string, missing: string[]): asserts value is string {
+function requireCommitPin(value: unknown, label: string, missing: string[]): void {
   if (typeof value !== 'string' || !/^[0-9a-f]{40}$/.test(value)) {
     missing.push(`${label} must be a 40-char lowercase commit sha`);
   }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isNonemptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0;
 }
 
 /** Structural admission check aligned to contracts/spec-000/baseline-inventory.schema.json */
@@ -300,27 +322,51 @@ export function admitBaselineInventory(
     missingRequirements.push('writeCredentialsUsed must be false');
   }
 
-  if (!Array.isArray(inv.repositories) || inv.repositories.length < 2) {
-    missingRequirements.push('repositories must include both public repos');
+  if (!Array.isArray(inv.repositories) || inv.repositories.length !== 2) {
+    missingRequirements.push('repositories must include each public repo exactly once');
   } else {
+    for (const expected of [OS_REPO, ZOEN_REPO]) {
+      const matches = inv.repositories.filter((repo) => isRecord(repo) && repo.id === expected.id);
+      if (matches.length !== 1) {
+        missingRequirements.push(`repositories must include ${expected.id} exactly once`);
+      }
+    }
     for (const [i, repo] of inv.repositories.entries()) {
-      if (!repo || typeof repo !== 'object') {
+      if (!isRecord(repo)) {
         missingRequirements.push(`repositories[${i}] invalid`);
         continue;
       }
-      const r = repo as Record<string, unknown>;
+      const r = repo;
+      const expected = [OS_REPO, ZOEN_REPO].find((entry) => entry.id === r.id);
+      if (!expected || r.url !== expected.url.replace(/\.git$/, '') || r.role !== expected.role || r.ref !== expected.ref) {
+        missingRequirements.push(`repositories[${i}] identity/url/role/ref mismatch`);
+      }
       requireCommitPin(r.commit, `repositories[${i}].commit`, missingRequirements);
-      const uv = r.unchangedVerification as Record<string, unknown> | undefined;
-      if (!uv || uv.matched !== true) {
+      const uv = r.unchangedVerification;
+      if (!isRecord(uv) || uv.method !== 'git-ls-remote' || uv.matched !== true) {
         missingRequirements.push(`repositories[${i}].unchangedVerification.matched`);
       }
-      if (!uv || uv.preCommit !== uv.postCommit) {
+      if (isRecord(uv)) {
+        requireCommitPin(uv.preCommit, `repositories[${i}].unchangedVerification.preCommit`, missingRequirements);
+        requireCommitPin(uv.postCommit, `repositories[${i}].unchangedVerification.postCommit`, missingRequirements);
+      }
+      if (!isRecord(uv) || uv.preCommit !== uv.postCommit) {
         missingRequirements.push(`repositories[${i}] pre/post commit mismatch marks repos changed`);
       }
-      if (!r.license || typeof r.license !== 'object') {
+      const license = r.license;
+      if (!isRecord(license) || !['observed', 'observed-with-conflict', 'absent'].includes(String(license.status))) {
         missingRequirements.push(`repositories[${i}].license`);
+      } else if (license.status === 'absent') {
+        if (license.file !== null || license.sha256 !== null) {
+          missingRequirements.push(`repositories[${i}].license absent must have null file/digest`);
+        }
+      } else if (license.file !== 'LICENSE' || typeof license.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(license.sha256)) {
+        missingRequirements.push(`repositories[${i}].license observed requires file/digest`);
       }
-      if (!r.rootManifests || typeof r.rootManifests !== 'object') {
+      const manifests = r.rootManifests;
+      const pkg = isRecord(manifests) ? manifests['package.json'] : undefined;
+      if (!isRecord(pkg) || !isNonemptyString(pkg.name) ||
+          !['private', 'packageManager', 'engines'].every((field) => Object.hasOwn(pkg, field))) {
         missingRequirements.push(`repositories[${i}].rootManifests`);
       }
     }
@@ -329,17 +375,38 @@ export function admitBaselineInventory(
   if (!Array.isArray(inv.hashedPackages) || inv.hashedPackages.length < 1) {
     missingRequirements.push('hashedPackages must include the v2 package');
   } else {
-    const pkg = inv.hashedPackages[0] as Record<string, unknown>;
-    if (typeof pkg.sha256 !== 'string' || !/^[0-9a-f]{64}$/.test(pkg.sha256)) {
+    const pkg = inv.hashedPackages[0];
+    if (!isRecord(pkg) || pkg.id !== 'zoen-execution-v4' || pkg.path !== 'archives/zoen-execution-v4.zip' ||
+        pkg.label !== 'hashed-v2-package' || pkg.sha256 !== LEDGER_SHA256 ||
+        typeof pkg.bytes !== 'number' || !Number.isSafeInteger(pkg.bytes) || pkg.bytes < 1) {
       missingRequirements.push('hashedPackages[0].sha256');
     }
   }
 
-  if (!Array.isArray(inv.components) || inv.components.length < 1) {
+  const expectedComponents = componentCatalog();
+  if (!Array.isArray(inv.components) || inv.components.length !== expectedComponents.length) {
     missingRequirements.push('components classification list');
   } else {
+    if (new Set(inv.components.filter(isRecord).map((row) => row.id)).size !== expectedComponents.length) {
+      missingRequirements.push('components must contain each reviewed catalog identity exactly once');
+    }
     for (const [i, c] of inv.components.entries()) {
-      const row = c as Record<string, unknown>;
+      if (!isRecord(c)) {
+        missingRequirements.push(`components[${i}] invalid`);
+        continue;
+      }
+      const row = c;
+      const known = expectedComponents.find((entry) => entry.id === row.id);
+      if (!known || row.path !== known.path || row.pathKind !== known.pathKind || row.sourceRepository !== known.sourceRepository) {
+        missingRequirements.push(`components[${i}] path identity/kind requires reviewed catalog selection`);
+      }
+      if (row.pathKind === 'conceptual-label' && (row.evidence !== 'absent' || row.classification === 'import')) {
+        missingRequirements.push(`components[${i}] conceptual label is not observed import evidence`);
+      }
+      if (!['id', 'sourceRepository', 'path'].every((key) => isNonemptyString(row[key])) ||
+          !['present', 'absent'].includes(String(row.evidence))) {
+        missingRequirements.push(`components[${i}] identity/path/evidence`);
+      }
       if (!['import', 'rewrite', 'discard'].includes(String(row.classification))) {
         missingRequirements.push(`components[${i}].classification`);
       }
@@ -351,8 +418,8 @@ export function admitBaselineInventory(
     }
   }
 
-  const live = inv.liveDataPreservation as Record<string, unknown> | undefined;
-  if (!live || typeof live !== 'object') {
+  const live = inv.liveDataPreservation;
+  if (!isRecord(live)) {
     missingRequirements.push('liveDataPreservation must be present (unresolved, not empty)');
   } else {
     if (live.status !== 'unresolved') {
@@ -364,6 +431,9 @@ export function admitBaselineInventory(
     if (live.tenantsVerified !== false) {
       missingRequirements.push('liveDataPreservation.tenantsVerified must be false');
     }
+    if (live.ownerSupplyRequired !== true) {
+      missingRequirements.push('liveDataPreservation.ownerSupplyRequired must be true');
+    }
     if (live.osDeploymentResetForbidden !== true) {
       missingRequirements.push('osDeploymentResetForbidden must be true');
     }
@@ -373,10 +443,18 @@ export function admitBaselineInventory(
     }
   }
 
+  const observations = inv.observations;
+  if (!isRecord(observations) || observations.profile !== 'admission-read-only' ||
+      !isNonemptyString(observations.fixtureSeed) || !Array.isArray(observations.commands) ||
+      observations.commands.length === 0 || !observations.commands.every(isNonemptyString)) {
+    missingRequirements.push('observations must include commands, profile and fixtureSeed');
+  }
+
   if (options?.expectedPins?.os || options?.expectedPins?.zoen) {
     const repos = Array.isArray(inv.repositories) ? inv.repositories : [];
     for (const repo of repos) {
-      const r = repo as Record<string, unknown>;
+      if (!isRecord(repo)) continue;
+      const r = repo;
       if (r.id === OS_REPO.id && options.expectedPins.os && r.commit !== options.expectedPins.os) {
         missingRequirements.push(
           `OS commit pin drift: artifact=${r.commit} selection=${options.expectedPins.os}`,
@@ -395,7 +473,7 @@ export function admitBaselineInventory(
   }
   if (options?.expectedPins?.v2Sha256) {
     const pkgs = Array.isArray(inv.hashedPackages) ? inv.hashedPackages : [];
-    const sha = (pkgs[0] as Record<string, unknown> | undefined)?.sha256;
+    const sha = isRecord(pkgs[0]) ? pkgs[0].sha256 : undefined;
     if (sha !== options.expectedPins.v2Sha256) {
       missingRequirements.push(
         `v2 package digest drift: artifact=${sha} selection=${options.expectedPins.v2Sha256}`,
@@ -417,13 +495,37 @@ export function admitBaselineInventory(
 }
 
 /** Read-only inventory command: no write credentials; does not mutate remote repos. */
-export function runBaselineInventory(): Record<string, unknown> {
+export function runBaselineInventory(selectedPins?: { os: string; zoen: string }): Record<string, unknown> {
   const commands: string[] = [];
 
-  const osPre = lsRemoteHead(OS_REPO.url, OS_REPO.ref);
-  commands.push(`git ls-remote ${OS_REPO.url} ${OS_REPO.ref} -> ${osPre}`);
-  const zoenPre = lsRemoteHead(ZOEN_REPO.url, ZOEN_REPO.ref);
-  commands.push(`git ls-remote ${ZOEN_REPO.url} ${ZOEN_REPO.ref} -> ${zoenPre}`);
+  if (selectedPins) {
+    const missing: string[] = [];
+    requireCommitPin(selectedPins.os, 'selected OS pin', missing);
+    requireCommitPin(selectedPins.zoen, 'selected zoen pin', missing);
+    if (missing.length) throw new Error(missing.join('; '));
+  }
+  const osHeadPre = lsRemoteHead(OS_REPO.url, OS_REPO.ref);
+  commands.push(`git ls-remote ${OS_REPO.url} ${OS_REPO.ref} -> ${osHeadPre}`);
+  const zoenHeadPre = lsRemoteHead(ZOEN_REPO.url, ZOEN_REPO.ref);
+  commands.push(`git ls-remote ${ZOEN_REPO.url} ${ZOEN_REPO.ref} -> ${zoenHeadPre}`);
+  const osPre = selectedPins?.os ?? osHeadPre;
+  const zoenPre = selectedPins?.zoen ?? zoenHeadPre;
+  commands.push(`read immutable repository snapshots: OS=${osPre}; zoen=${zoenPre}`);
+
+  const treeText = fetchRawAllow404(`https://api.github.com/repos/EnzoTironi/OS/git/trees/${osPre}?recursive=1`);
+  if (!treeText) throw new Error('OS repository tree unavailable at selected pin');
+  const tree: unknown = JSON.parse(treeText);
+  if (!isRecord(tree) || tree.truncated !== false || !Array.isArray(tree.tree) ||
+      !tree.tree.every((entry) => isRecord(entry) && isNonemptyString(entry.path))) {
+    throw new Error('OS repository tree incomplete at selected pin');
+  }
+  const observedPaths = new Set(tree.tree.map((entry) => entry.path));
+  for (const component of componentCatalog()) {
+    if (component.pathKind === 'repository-path' && !observedPaths.has(component.path)) {
+      throw new Error(`catalog repository path unavailable at ${osPre}: ${component.path}`);
+    }
+  }
+  commands.push(`curl OS git tree @ ${osPre} -> sha256 ${sha256Buffer(Buffer.from(treeText))}`);
 
   const osLicenseText = fetchRawAllow404(`${OS_REPO.rawBase}/${osPre}/LICENSE`);
   commands.push(`curl raw OS LICENSE @ ${osPre}`);
@@ -496,9 +598,9 @@ export function runBaselineInventory(): Record<string, unknown> {
         },
         unchangedVerification: {
           method: 'git-ls-remote',
-          preCommit: osPre,
+          preCommit: osHeadPre,
           postCommit: osPost,
-          matched: osPre === osPost,
+          matched: osHeadPre === osPost,
         },
       },
       {
@@ -522,9 +624,9 @@ export function runBaselineInventory(): Record<string, unknown> {
         },
         unchangedVerification: {
           method: 'git-ls-remote',
-          preCommit: zoenPre,
+          preCommit: zoenHeadPre,
           postCommit: zoenPost,
-          matched: zoenPre === zoenPost,
+          matched: zoenHeadPre === zoenPost,
         },
       },
     ],
@@ -572,8 +674,15 @@ export function runBaselineInventory(): Record<string, unknown> {
 function registerZn0001Tests(): void {
   test('ZN-0001-AC', async () => {
     assert.equal(existsSync(SCHEMA_PATH), true, 'schema must exist for admission boundary');
+    assert.equal(existsSync(ADMISSION_PATH), true, 'commit-pinned admission artifact must be recorded');
+    const recorded = JSON.parse(readFileSync(ADMISSION_PATH, 'utf8')) as Record<string, unknown>;
+    assert.equal(admitBaselineInventory(recorded).ok, true);
+    const recRepos = recorded.repositories as Array<Record<string, unknown>>;
+    const recordedOs = recRepos.find((repo) => repo.id === OS_REPO.id);
+    const recordedZoen = recRepos.find((repo) => repo.id === ZOEN_REPO.id);
+    assert.ok(recordedOs && recordedZoen);
 
-    const inventory = runBaselineInventory();
+    const inventory = runBaselineInventory({ os: String(recordedOs.commit), zoen: String(recordedZoen.commit) });
     const admitted = admitBaselineInventory(inventory);
     assert.equal(admitted.ok, true);
     assert.equal(inventory.writeCredentialsUsed, false);
@@ -596,20 +705,36 @@ function registerZn0001Tests(): void {
     const pkgs = inventory.hashedPackages as Array<Record<string, unknown>>;
     assert.equal(pkgs[0]?.sha256, LEDGER_SHA256);
 
-    assert.equal(existsSync(ADMISSION_PATH), true, 'commit-pinned admission artifact must be recorded');
-    const recorded = JSON.parse(readFileSync(ADMISSION_PATH, 'utf8')) as Record<string, unknown>;
-    const recordedAdmit = admitBaselineInventory(recorded);
-    assert.equal(recordedAdmit.ok, true);
     const recordedLive = recorded.liveDataPreservation as Record<string, unknown>;
     assert.equal(recordedLive.status, 'unresolved');
     assert.equal(recorded.writeCredentialsUsed, false);
 
-    // Fresh command pins must match recorded pins for the same heads (no silent rewrite of history).
-    const recRepos = recorded.repositories as Array<Record<string, unknown>>;
+    // Read source bytes at the recorded snapshots even when either current head has advanced.
     for (const fresh of repos) {
       const prior = recRepos.find((r) => r.id === fresh.id);
       assert.ok(prior, `recorded repo ${fresh.id}`);
       assert.equal(prior?.commit, fresh.commit);
+      assert.deepEqual(prior.license, fresh.license);
+      assert.deepEqual(prior.rootManifests, fresh.rootManifests);
+    }
+
+    // This real earlier commit remains verifiable after the repository head advances.
+    const historicalZoen = '407da157771807ce397529a50a67bc8964a335b6';
+    const historical = runBaselineInventory({
+      os: String(recordedOs.commit),
+      zoen: historicalZoen,
+    });
+    const historicalRepos = historical.repositories as Array<Record<string, unknown>>;
+    assert.equal(historicalRepos.find((r) => r.id === ZOEN_REPO.id)?.commit, historicalZoen);
+
+    const conceptualPaths = new Set([
+      'apps/authentication-adapters', 'provider-wiring', 'ui-components',
+      'domain-vocabulary', 'database-schema', 'eve-execution-topology',
+    ]);
+    for (const component of componentCatalog()) {
+      if (conceptualPaths.has(component.path)) {
+        assert.equal(component.pathKind, 'conceptual-label', `${component.path} is not an observed repository path`);
+      }
     }
   });
 
@@ -629,10 +754,52 @@ function registerZn0001Tests(): void {
       const recorded = JSON.parse(readFileSync(ADMISSION_PATH, 'utf8'));
       assert.notDeepEqual(recorded, incomplete);
       assert.equal(admitBaselineInventory(recorded).ok, true);
+
+      const duplicateTarget = structuredClone(recorded);
+      duplicateTarget.repositories = [recorded.repositories[1], recorded.repositories[1]];
+      const duplicateResult = admitBaselineInventory(duplicateTarget, {
+        expectedPins: { os: recorded.repositories[0].commit, zoen: recorded.repositories[1].commit },
+      });
+      assert.equal(duplicateResult.ok, false, 'two target records cannot stand in for the OS repository');
+
+      for (const field of ['license', 'rootManifests']) {
+        const missingMetadata = structuredClone(recorded);
+        missingMetadata.repositories[0][field] = {};
+        assert.equal(admitBaselineInventory(missingMetadata).ok, false, `empty ${field} is incomplete`);
+      }
+      const missingObservations = structuredClone(recorded);
+      delete missingObservations.observations;
+      assert.equal(admitBaselineInventory(missingObservations).ok, false, 'observations are required');
+      const missingComponent = structuredClone(recorded);
+      missingComponent.components.pop();
+      assert.equal(admitBaselineInventory(missingComponent).ok, false, 'catalog coverage is required');
+
+      const relabeledConcept = structuredClone(recorded);
+      const concept = relabeledConcept.components.find((component: Record<string, unknown>) => component.pathKind === 'conceptual-label');
+      assert.ok(concept);
+      concept.pathKind = 'repository-path';
+      assert.equal(admitBaselineInventory(relabeledConcept).ok, false, 'conceptual labels cannot claim observed repository paths');
+
+      for (const field of ['repositories', 'hashedPackages', 'components']) {
+        const nullEntry = structuredClone(recorded);
+        nullEntry[field][0] = null;
+        assert.equal(admitBaselineInventory(nullEntry).ok, false, `${field} null entry is denied without throwing`);
+      }
     }
   });
 
   test('ZN-0001-BOUNDARY', async () => {
+    // Pure transport-result classification. No HTTP peer or service is substituted.
+    assert.equal(optionalRawResult({ status: 0, stdout: 'license\n\n200', stderr: '' }), 'license\n');
+    assert.equal(optionalRawResult({ status: 0, stdout: '404: Not Found\n404', stderr: '' }), null);
+    for (const result of [
+      { status: 22, stdout: '\n500', stderr: 'HTTP 500' },
+      { status: 6, stdout: '\n000', stderr: 'DNS lookup failed' },
+      { status: 60, stdout: '\n000', stderr: 'TLS verification failed' },
+      { status: null, stdout: '', stderr: 'curl unavailable' },
+    ]) {
+      assert.throws(() => optionalRawResult(result), /unavailable/, result.stderr);
+    }
     assert.equal(existsSync(ADMISSION_PATH), true);
     const recorded = JSON.parse(readFileSync(ADMISSION_PATH, 'utf8')) as Record<string, unknown>;
     assert.equal(admitBaselineInventory(recorded).ok, true);
@@ -683,4 +850,3 @@ const underNodeTest = process.execArgv.some((a) => a === '--test' || a.startsWit
 if (underNodeTest || entry === thisFile || process.env.ZN_0001_RUN_TESTS === '1') {
   registerZn0001Tests();
 }
-
