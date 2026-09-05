@@ -12,7 +12,7 @@ import { withD01IdentityDatabase } from "../d01/database.ts";
 import { createAccount, postAuth } from "../d01/http.ts";
 
 it.live(
-  "EX22 a real logout waits for the reader's physical session gate and confirms absence before returning",
+  "EX22 real logout stays unavailable across pending ACK, then confirms absence on retry",
   () =>
     withD01IdentityDatabase((fixture) =>
       Effect.gen(function* logoutOrdering() {
@@ -64,9 +64,37 @@ it.live(
         expect((yield* presence.verify(account.credential)).sessionId).toBe(
           verified.sessionId
         );
+        const ackBlocked = yield* Deferred.make<null>();
+        const allowAck = yield* Deferred.make<null>();
+        const barrier = yield* SqlClient.SqlClient.use((sql) =>
+          sql.withTransaction(
+            Effect.gen(function* pendingAcknowledgement() {
+              // SHARE blocks DELETE's RowExclusive lock but permits the logout's SELECT.
+              yield* sql`LOCK TABLE jobs.disclosure_pending IN SHARE MODE`;
+              yield* Deferred.succeed(ackBlocked, null);
+              yield* Deferred.await(allowAck);
+            })
+          )
+        ).pipe(Effect.provide(fixture.database.migration), Effect.forkChild);
+        yield* Deferred.await(ackBlocked);
         yield* Deferred.succeed(release, null);
+        const blocked = yield* Fiber.join(logout);
+        expect(blocked.status).toBe(503);
+        expect(blocked.headers.getSetCookie()).toStrictEqual([]);
+        expect((yield* presence.verify(account.credential)).sessionId).toBe(
+          verified.sessionId
+        );
+        yield* Deferred.succeed(allowAck, null);
+        yield* Fiber.join(barrier);
         yield* Fiber.join(reader);
-        expect((yield* Fiber.join(logout)).status).toBe(200);
+        expect(
+          (yield* postAuth(
+            fixture.config.baseUrl,
+            "sign-out",
+            {},
+            account.credential
+          )).status
+        ).toBe(200);
         expect(
           yield* presence.verify(account.credential).pipe(Effect.flip)
         ).toMatchObject({ _tag: "Unauthenticated" });

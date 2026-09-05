@@ -103,6 +103,7 @@ export const makeDisclosureFenceLayer = (config: D01PostgresConfig) =>
                 orElse: () => Effect.fail(expired()),
               })
             );
+            yield* remaining(deadline);
           }),
         shared: (presence, world, deadline) =>
           Effect.gen(function* registerDisclosure() {

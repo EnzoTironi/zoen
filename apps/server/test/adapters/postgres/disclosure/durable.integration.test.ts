@@ -299,3 +299,43 @@ it.live(
       }).pipe(Effect.provide(runtime(database)))
     )
 );
+
+it.live(
+  "EX22 registration obeys its deadline even when its caller is uninterruptible and PostgreSQL blocks the subject write",
+  () =>
+    withD01Database((database) =>
+      Effect.gen(function* boundedRegistration() {
+        const sql = yield* SqlClient.SqlClient;
+        const fence = yield* DisclosureFence;
+        const test = yield* context;
+        const ready = yield* Deferred.make<null>();
+        const release = yield* Deferred.make<null>();
+        const holder = yield* sql
+          .withTransaction(
+            Effect.gen(function* blockSubjectTable() {
+              yield* sql`LOCK TABLE jobs.disclosure_subjects IN ACCESS EXCLUSIVE MODE`;
+              yield* Deferred.succeed(ready, null);
+              yield* Deferred.await(release).pipe(Effect.timeout("2 seconds"));
+            })
+          )
+          .pipe(Effect.forkChild);
+        yield* Deferred.await(ready);
+        const now = yield* DateTime.now;
+        const deadline = yield* Schema.decodeEffect(Instant)(
+          DateTime.formatIso(DateTime.add(now, { milliseconds: 100 }))
+        );
+        const failure = yield* Effect.scoped(
+          fence.shared(test.presence, test.world, deadline)
+        ).pipe(Effect.uninterruptible, Effect.flip);
+        expect(failure).toMatchObject({ _tag: "Expired" });
+        yield* Deferred.succeed(release, null);
+        yield* Fiber.join(holder);
+        expect(
+          yield* sql`SELECT count(*)::int AS count FROM jobs.disclosure_pending`
+        ).toStrictEqual([{ count: 0 }]);
+        expect(
+          yield* sql`SELECT count(*)::int AS count FROM jobs.disclosure_subjects`
+        ).toStrictEqual([{ count: 0 }]);
+      }).pipe(Effect.provide(runtime(database)))
+    )
+);
