@@ -21,16 +21,19 @@ const AllowedRole = Schema.Tuple([
 export const checkD01RuntimeRole = Effect.gen(function* checkD01DatabaseRole() {
   const sql = yield* SqlClient.SqlClient;
   yield* sql`
-    SELECT NOT (
+    SELECT NOT EXISTS (
+      SELECT FROM pg_roles
+      WHERE (rolname = current_user OR pg_has_role(current_user, oid, 'SET'))
+      AND (
       rolsuper OR rolcreaterole OR rolcreatedb OR rolbypassrls OR rolreplication
-      OR has_database_privilege(current_user, current_database(), 'CREATE')
-      OR has_database_privilege(current_user, current_database(), 'TEMPORARY')
-      OR has_schema_privilege(current_user, 'authority', 'CREATE')
-      OR has_schema_privilege(current_user, 'identity', 'CREATE')
-      OR has_schema_privilege(current_user, 'jobs', 'CREATE')
-      OR has_schema_privilege(current_user, 'public', 'CREATE')
+      OR has_database_privilege(oid, current_database(), 'CREATE')
+      OR has_database_privilege(oid, current_database(), 'TEMPORARY')
+      OR has_schema_privilege(oid, 'authority', 'CREATE')
+      OR has_schema_privilege(oid, 'identity', 'CREATE')
+      OR has_schema_privilege(oid, 'jobs', 'CREATE')
+      OR has_schema_privilege(oid, 'public', 'CREATE')
+      )
     ) AS allowed
-    FROM pg_roles WHERE rolname = current_user
   `.pipe(
     Effect.flatMap(Schema.decodeUnknownEffect(AllowedRole)),
     Effect.catchTag(
