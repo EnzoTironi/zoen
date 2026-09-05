@@ -11,12 +11,14 @@ import {
   QuestionRef,
   exact,
 } from "@zoen/contracts/d01/values";
+import { SharingMutationSuccess } from "@zoen/contracts/sharing/operations";
 import { Schema } from "effect";
 
 export const StoredOperationResult = Schema.Union([
   WorldCreated,
   EvidenceImported,
   CorrectionSuccess,
+  SharingMutationSuccess,
 ]);
 export const StoredQuestion = Schema.Struct({
   allowedAnswers: Schema.Array(QuestionAnswer).check(

@@ -15,6 +15,8 @@ const resultTags = {
   AnswerQuestion: "CorrectionApplied",
   CreatePersonalWorld: "WorldCreated",
   ImportEvidence: "EvidenceImported",
+  GrantWorldReadAccess: "WorldReadAccessGranted",
+  RevokeWorldReadAccess: "WorldReadAccessRevoked",
   ProposeCorrection: "CorrectionProposed",
   UndoCorrection: "CorrectionUndone",
 } as const;
@@ -28,7 +30,7 @@ const resultMatches = (
 ): boolean =>
   result._tag === resultTags[operation] &&
   result.receiptRef === receiptRef &&
-  (result._tag !== "WorldCreated" ||
+  (!("worldRef" in result) ||
     (result.worldRef.worldId === world.worldId &&
       result.worldRef.realm === world.realm));
 
