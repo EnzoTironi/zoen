@@ -1,10 +1,60 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
-import {
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(__dirname, '../../..');
+const FIXTURE_SEED = 'zn-0008-scalars-seed-v1';
+const FIXTURE_PATH = join(ROOT, 'tests/fixtures/spec-001/scalars.json');
+const SCHEMA_PATH = join(ROOT, 'contracts/spec-001/scalars.schema.json');
+const KERNEL_OUT = join(ROOT, '.core-build/packages/kernel/src');
+
+function ensureKernelEmit(): void {
+  mkdirSync(KERNEL_OUT, { recursive: true });
+  const cfgDir = join(tmpdir(), `zn-0008-kernel-build-${process.pid}`);
+  mkdirSync(cfgDir, { recursive: true });
+  const cfg = join(cfgDir, 'tsconfig.json');
+  writeFileSync(
+    cfg,
+    JSON.stringify(
+      {
+        compilerOptions: {
+          target: 'ES2022',
+          module: 'NodeNext',
+          moduleResolution: 'NodeNext',
+          lib: ['ES2023', 'DOM'],
+          types: [],
+          strict: true,
+          noUncheckedIndexedAccess: true,
+          exactOptionalPropertyTypes: true,
+          verbatimModuleSyntax: true,
+          forceConsistentCasingInFileNames: true,
+          rootDir: join(ROOT, 'packages/kernel/src'),
+          outDir: KERNEL_OUT,
+          declaration: true,
+          skipLibCheck: true,
+          noEmitOnError: true,
+        },
+        include: [
+          join(ROOT, 'packages/kernel/src/decimal.ts'),
+          join(ROOT, 'packages/kernel/src/result.ts'),
+        ],
+      },
+      null,
+      2,
+    ),
+  );
+  const tsc = spawnSync('pnpm', ['exec', 'tsc', '-p', cfg], { cwd: ROOT, encoding: 'utf8', env: process.env });
+  assert.equal(tsc.status, 0, `kernel emit failed:\n${tsc.stdout}\n${tsc.stderr}`);
+}
+
+ensureKernelEmit();
+
+const {
   addMoney,
   compareMoney,
   compareQuantities,
@@ -17,13 +67,7 @@ import {
   quantity,
   releasedConversion,
   tryAddMoney,
-} from '../../../.core-build/packages/kernel/src/decimal.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(__dirname, '../../..');
-const FIXTURE_SEED = 'zn-0008-scalars-seed-v1';
-const FIXTURE_PATH = join(ROOT, 'tests/fixtures/spec-001/scalars.json');
-const SCHEMA_PATH = join(ROOT, 'contracts/spec-001/scalars.schema.json');
+} = await import('../../../.core-build/packages/kernel/src/decimal.js');
 
 type Fixture = {
   seed: string;
