@@ -16,15 +16,15 @@
       "task": "EX25-versioned-basis-compatibility",
       "model": "gpt-6-astra",
       "effort": "low",
-      "worktree": "/Users/enzotironi/zoen-ex03",
-      "state": "contract_audited_implementation_assigned"
+      "worktree": "/Users/enzotironi/zoen-basis-v2",
+      "state": "implemented_unverified"
     },
     {
       "agent": "tickets_redesign",
-      "task": "EX26-legacy-baseline-proof-design",
+      "task": "EX26-real-legacy-history-and-component-compatibility",
       "model": "gpt-6-astra",
       "effort": "low",
-      "worktree": "/Users/enzotironi/zoen-ex01-proof",
+      "worktree": "/Users/enzotironi/zoen-ex26-compatibility",
       "state": "in_progress"
     }
   ],

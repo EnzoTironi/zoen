@@ -42,7 +42,7 @@ import {
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.ts";
 import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
-import { applyDisclosureMigrations } from "../../../../ops/migrations/run.ts";
+import { applyIdentityBasisMigrations } from "../../../../ops/migrations/run.ts";
 import { configuration } from "../../d01/commit/fixture.ts";
 import { makeHttpProcessConfiguration } from "./http-process-configuration.ts";
 
@@ -450,7 +450,7 @@ for (const intention of ["same", "distinct"] as const) {
           ),
         undefined,
         (database) =>
-          applyDisclosureMigrations(database.names).pipe(
+          applyIdentityBasisMigrations(database.names).pipe(
             Effect.provide(
               Layer.mergeAll(database.migration, NodeServices.layer)
             )

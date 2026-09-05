@@ -14,7 +14,7 @@ import {
 import { bindWorldIntent } from "../../../../packages/authority/src/commit/intent.js";
 import { commitMutation } from "../../../../packages/authority/src/commit/mutation.js";
 import {
-  InternalBasis,
+  CurrentInternalBasis,
   ReadSet,
 } from "../../../../packages/authority/src/ports/d01/basis.js";
 import { VerifiedRequestContext } from "../../../../packages/authority/src/ports/d01/context.js";
@@ -51,10 +51,11 @@ it.live(
               version: cut.claims,
             },
           ],
+          schemaVersion: "authority.read-set.v2",
           sources: [],
           temporalGuards: [],
         });
-        const basis = yield* Schema.decodeEffect(InternalBasis)({
+        const basis = yield* Schema.decodeEffect(CurrentInternalBasis)({
           cut,
           head: {
             cellEpoch: access.cell_epoch,
@@ -64,12 +65,15 @@ it.live(
           },
           readSet,
           readSetDigest: yield* structuredDigest("read-set", readSet),
+          schemaVersion: "authority.basis.v2",
           worldRef: created.worldRef,
         });
         yield* validateBasis(basis, {
           cut,
           head: basis.head,
           membershipRevision: access.membership_revision,
+          principalId: context.presence.principalId,
+          purpose: context.purpose,
           worldRef: created.worldRef,
         });
         const document = yield* canonicalJson({

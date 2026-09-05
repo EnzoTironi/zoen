@@ -5,7 +5,7 @@ import { DateTime, Effect, Layer, Redacted, Schema } from "effect";
 
 import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
 import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/d01/database.js";
-import { applyDisclosureMigrations } from "../../../../ops/migrations/run.js";
+import { applyIdentityBasisMigrations } from "../../../../ops/migrations/run.js";
 import {
   Presence,
   VerifiedRequestContext,
@@ -41,7 +41,7 @@ export const withSharingDatabase = <A, E, R>(
     },
     undefined,
     (database) =>
-      applyDisclosureMigrations(database.names).pipe(
+      applyIdentityBasisMigrations(database.names).pipe(
         Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
       )
   );

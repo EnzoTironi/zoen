@@ -152,6 +152,17 @@ export const withD01Database = <A, E, R, E2 = never, R2 = never>(
             )
           ).pipe(Effect.provide(NodeFileSystem.layer));
           yield* sql.withTransaction(sql.unsafe(disclosure));
+          const identityBasis = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/007_subject_identity_domain.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(identityBasis));
           yield* grantD01Roles(names);
           yield* grantDisclosureRole(names.authority);
           if (misconfiguration === "public-create") {
