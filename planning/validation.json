@@ -1,0 +1,53 @@
+{
+  "status": "passed",
+  "scope": "Structural planning validation only; no product checks executed or approved",
+  "source_commit": "517d1e204fd4193cdb3b1748481702a2b1a09ba8",
+  "hashed_snapshots": 4,
+  "coverage": {
+    "tickets": 325,
+    "specs": 56,
+    "capabilities": 157,
+    "file_targets": 2341,
+    "original_checks_preserved": 975
+  },
+  "old_dag": {
+    "nodes": 325,
+    "edges": 514,
+    "roots": 1,
+    "longest_path_nodes": 170,
+    "transitive_redundant_edges": 118,
+    "distinct_oracle_texts": 457,
+    "most_repeated_oracle_count": 133
+  },
+  "new_plan": {
+    "deliveries": 22,
+    "quality_lanes": 1,
+    "phases": 6,
+    "tasks": 15,
+    "workspaces_initial": 5,
+    "max_workers": 3,
+    "unordered_different_owner_pairs_checked": 20,
+    "concurrent_path_conflicts": 0,
+    "dependency_cycles": 0
+  },
+  "ticket_dispositions": {
+    "cross_cutting_requirement": 9,
+    "activation_criterion": 19,
+    "implementation": 242,
+    "test_obligation": 47,
+    "consolidate_duplicate": 7,
+    "conditional_work": 1
+  },
+  "file_dispositions": {
+    "rewrite": 296,
+    "retain-intent": 79,
+    "consolidate": 1944,
+    "retire": 22
+  },
+  "product_tests_run": 0,
+  "limitations": [
+    "Semantic correctness of every historical pseudoplan was not reviewed",
+    "Delivery dependencies need exact integrated contracts before implementation dispatch",
+    "Path analysis checks declared glob ownership, not future code imports or behavior"
+  ]
+}

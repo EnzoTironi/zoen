@@ -1,9 +1,0 @@
-# Context hygiene, not an access-control boundary.
-archives/
-.git/
-node_modules/
-.core-build/
-dist/
-/artifacts/
-packets/
-planning/

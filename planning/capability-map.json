@@ -1,0 +1,3848 @@
+[
+  {
+    "id": "C001",
+    "capability": "Natural-language interaction",
+    "phase": "P2",
+    "delivery": "Conversa textual grounded por provedor real admitido; structured calls continuam independentes.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0052",
+      "ZN-0053",
+      "ZN-0054",
+      "ZN-0057",
+      "ZN-0061",
+      "ZN-0281"
+    ],
+    "spec_ids": [
+      "SPEC-009",
+      "SPEC-010",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D05",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C002",
+    "capability": "Cross-turn continuity",
+    "phase": "P2",
+    "delivery": "Histórico único com reabertura autorizada e continuidade entre turnos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0052",
+      "ZN-0054",
+      "ZN-0056",
+      "ZN-0057",
+      "ZN-0058"
+    ],
+    "spec_ids": [
+      "SPEC-009",
+      "SPEC-010"
+    ],
+    "delivery_ids": [
+      "D05"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C003",
+    "capability": "Voice/transcription with provenance",
+    "phase": "P4",
+    "delivery": "Áudio retido e transcrição atribuída/corrigível após qualificação real de voz.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0062",
+      "ZN-0063",
+      "ZN-0071",
+      "ZN-0281"
+    ],
+    "spec_ids": [
+      "SPEC-010",
+      "SPEC-012",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D05",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C004",
+    "capability": "Progressive source setup",
+    "phase": "P1",
+    "delivery": "Onboarding útil por upload; P2 amplia para configuração gradual de conectores.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0070",
+      "ZN-0074"
+    ],
+    "spec_ids": [
+      "SPEC-012"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D05"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C005",
+    "capability": "Honest empty/partial state",
+    "phase": "P1",
+    "delivery": "Estados vazio, parcial e desconhecido visíveis desde a primeira Frame.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0045",
+      "ZN-0058",
+      "ZN-0061",
+      "ZN-0070",
+      "ZN-0097"
+    ],
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-010",
+      "SPEC-012",
+      "SPEC-016"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D05",
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C006",
+    "capability": "Context compaction without factual authority",
+    "phase": "P2",
+    "delivery": "Compaction só para contexto, sem converter resumo em evidência.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0059"
+    ],
+    "spec_ids": [
+      "SPEC-010"
+    ],
+    "delivery_ids": [
+      "D05"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C007",
+    "capability": "Interrupted-stream recovery",
+    "phase": "P2",
+    "delivery": "Stream provisório e interrupção explícita; replay de mensagem persistida.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0053",
+      "ZN-0055",
+      "ZN-0057"
+    ],
+    "spec_ids": [
+      "SPEC-009"
+    ],
+    "delivery_ids": [
+      "D05"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C008",
+    "capability": "Model-provider routing",
+    "phase": "P2",
+    "delivery": "Um modelo real e roteamento por perfil admitido; múltiplos provedores exigem admissão individual.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0060",
+      "ZN-0063"
+    ],
+    "spec_ids": [
+      "SPEC-010"
+    ],
+    "delivery_ids": [
+      "D05"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C009",
+    "capability": "Accessible large-text and keyboard flows",
+    "phase": "P1",
+    "delivery": "Teclado, foco, texto ampliado e HTML semântico na primeira jornada; novas telas herdam as provas.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0071",
+      "ZN-0074",
+      "ZN-0160",
+      "ZN-0163",
+      "ZN-0281"
+    ],
+    "spec_ids": [
+      "SPEC-012",
+      "SPEC-027",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D05",
+      "D08",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C010",
+    "capability": "Conversation-to-evidence deepening",
+    "phase": "P2",
+    "delivery": "P1 inspeciona fonte/evidência; P2 liga conversa ao mesmo objeto/corte.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0045",
+      "ZN-0046",
+      "ZN-0072",
+      "ZN-0161",
+      "ZN-0163"
+    ],
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-012",
+      "SPEC-027"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D05",
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C011",
+    "capability": "Shared-device safe views",
+    "phase": "P1",
+    "delivery": "Logout/revogação removem acesso e reabertura autentica antes de exibir conteúdo.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0073",
+      "ZN-0162",
+      "ZN-0163"
+    ],
+    "spec_ids": [
+      "SPEC-012",
+      "SPEC-027"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C012",
+    "capability": "Charts/tables/text alternatives",
+    "phase": "P3",
+    "delivery": "P1 tabela/texto acessíveis; P3 gráficos declarativos com mesmas lacunas e basis.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0159",
+      "ZN-0160",
+      "ZN-0163",
+      "ZN-0208"
+    ],
+    "spec_ids": [
+      "SPEC-027",
+      "SPEC-036"
+    ],
+    "delivery_ids": [
+      "D08",
+      "D17"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C013",
+    "capability": "Authority-free Focus bookmarks",
+    "phase": "P3",
+    "delivery": "P1 referências sem autoridade; P2 links privados; P3 Focus integrado a apps e superfícies.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0046",
+      "ZN-0068",
+      "ZN-0073",
+      "ZN-0161",
+      "ZN-0163",
+      "ZN-0291",
+      "ZN-0296",
+      "ZN-0297",
+      "ZN-0298",
+      "ZN-0305",
+      "ZN-0320"
+    ],
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-011",
+      "SPEC-012",
+      "SPEC-027",
+      "SPEC-050",
+      "SPEC-051",
+      "SPEC-052",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03",
+      "D06",
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C014",
+    "capability": "Immutable retained evidence",
+    "phase": "P1",
+    "delivery": "Bytes reais duráveis e digest, sujeitos a retenção e ausência explicável.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0025",
+      "ZN-0026",
+      "ZN-0029",
+      "ZN-0030"
+    ],
+    "spec_ids": [
+      "SPEC-004"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C015",
+    "capability": "Attributed competing claims",
+    "phase": "P1",
+    "delivery": "Claims atribuídas concorrentes; expansão enterprise/offline preserva a mesma distinção.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0026",
+      "ZN-0030",
+      "ZN-0031",
+      "ZN-0244",
+      "ZN-0257"
+    ],
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-005",
+      "SPEC-041",
+      "SPEC-044"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D09",
+      "D20"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C016",
+    "capability": "Scoped interpretation rules",
+    "phase": "P1",
+    "delivery": "Regras image-pinned de interpretação com escopo; P3 permite edição runtime governada.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0031",
+      "ZN-0033",
+      "ZN-0244"
+    ],
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C017",
+    "capability": "Unknown/disputed/provisional states",
+    "phase": "P1",
+    "delivery": "Unknown/unresolved/selected/set-valued, contestação e verificação independentes.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0011",
+      "ZN-0030",
+      "ZN-0033"
+    ],
+    "spec_ids": [
+      "SPEC-001",
+      "SPEC-004",
+      "SPEC-005"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C018",
+    "capability": "Dependent-source family deduplication",
+    "phase": "P1",
+    "delivery": "Cópias contam como família dependente sem apagar proveniência.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0032"
+    ],
+    "spec_ids": [
+      "SPEC-005"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C019",
+    "capability": "Question impact prioritization",
+    "phase": "P2",
+    "delivery": "P1 pergunta simples; P2 rubric de consequência/prazo/custo e roteamento autorizado.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0072",
+      "ZN-0101",
+      "ZN-0102",
+      "ZN-0104"
+    ],
+    "spec_ids": [
+      "SPEC-012",
+      "SPEC-017"
+    ],
+    "delivery_ids": [
+      "D02",
+      "D05"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C020",
+    "capability": "Human answer attribution",
+    "phase": "P1",
+    "delivery": "Resposta explícita como afirmação/decisão com autor e escopo, nunca regra implícita.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0034",
+      "ZN-0062",
+      "ZN-0072",
+      "ZN-0103"
+    ],
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-010",
+      "SPEC-012",
+      "SPEC-017"
+    ],
+    "delivery_ids": [
+      "D02",
+      "D05"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C021",
+    "capability": "Correction reversal and impact propagation",
+    "phase": "P1",
+    "delivery": "Correção/undo e propagação com consumidores stale; novos derivados devem integrar a closure.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0034",
+      "ZN-0035",
+      "ZN-0040",
+      "ZN-0104",
+      "ZN-0117"
+    ],
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-006",
+      "SPEC-017",
+      "SPEC-019"
+    ],
+    "delivery_ids": [
+      "D02",
+      "D03"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C022",
+    "capability": "Coverage/freshness/quality vector",
+    "phase": "P1",
+    "delivery": "Vetor de cobertura/freshness/qualidade sem porcentagem fabricada.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0035",
+      "ZN-0089",
+      "ZN-0101",
+      "ZN-0105",
+      "ZN-0244"
+    ],
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-015",
+      "SPEC-017",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D02",
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C023",
+    "capability": "Source namespace identity",
+    "phase": "P1",
+    "delivery": "Namespace e revisão de fonte como identidade, independente do nome do arquivo.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0007",
+      "ZN-0037"
+    ],
+    "spec_ids": [
+      "SPEC-001",
+      "SPEC-006"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D02"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C024",
+    "capability": "Reversible subject merge/split",
+    "phase": "P2",
+    "delivery": "P1 ambiguidade sem merge automático; P2 same-as/different-from e split reversível.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0039",
+      "ZN-0040"
+    ],
+    "spec_ids": [
+      "SPEC-006"
+    ],
+    "delivery_ids": [
+      "D02"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C025",
+    "capability": "Ambiguous identity resolution",
+    "phase": "P2",
+    "delivery": "P1 impede resolução por fuzzy match; P2 Case de identidade e revisão por pessoa autorizada.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0038"
+    ],
+    "spec_ids": [
+      "SPEC-006"
+    ],
+    "delivery_ids": [
+      "D02"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C026",
+    "capability": "Valid time and knowledge cut",
+    "phase": "P1",
+    "delivery": "Tempo válido separado de corte conhecido desde claims/Frame; futuro lake mantém a semântica.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0009",
+      "ZN-0041",
+      "ZN-0042",
+      "ZN-0189",
+      "ZN-0240"
+    ],
+    "spec_ids": [
+      "SPEC-001",
+      "SPEC-006",
+      "SPEC-007",
+      "SPEC-032",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D02",
+      "D09",
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C027",
+    "capability": "Units/currency/decimal semantics",
+    "phase": "P1",
+    "delivery": "Decimais exatos, unidades e moedas explícitas nos dados iniciais.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0008",
+      "ZN-0028",
+      "ZN-0031",
+      "ZN-0098"
+    ],
+    "spec_ids": [
+      "SPEC-001",
+      "SPEC-004",
+      "SPEC-005",
+      "SPEC-016"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C028",
+    "capability": "Point-in-time explanations",
+    "phase": "P1",
+    "delivery": "Explicação no corte retido; futuras fontes financeiras preservam point-in-time.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0035",
+      "ZN-0036",
+      "ZN-0039",
+      "ZN-0041",
+      "ZN-0042",
+      "ZN-0046",
+      "ZN-0184",
+      "ZN-0212",
+      "ZN-0263"
+    ],
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-006",
+      "SPEC-007",
+      "SPEC-031",
+      "SPEC-036",
+      "SPEC-045"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D02",
+      "D16",
+      "D17",
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C029",
+    "capability": "Instance changes without deploy",
+    "phase": "P1",
+    "delivery": "Correção e decisão local sem deploy; P3 amplia gramática de instâncias.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0082",
+      "ZN-0088",
+      "ZN-0100",
+      "ZN-0103",
+      "ZN-0282"
+    ],
+    "spec_ids": [
+      "SPEC-014",
+      "SPEC-016",
+      "SPEC-017",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D02",
+      "D07",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C030",
+    "capability": "Runtime object/link/interface definitions",
+    "phase": "P3",
+    "delivery": "Definições limitadas de objetos/links/interfaces compiladas e liberadas em runtime.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0075",
+      "ZN-0080",
+      "ZN-0096",
+      "ZN-0302"
+    ],
+    "spec_ids": [
+      "SPEC-013",
+      "SPEC-016",
+      "SPEC-052"
+    ],
+    "delivery_ids": [
+      "D07",
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C031",
+    "capability": "Runtime metrics and resolution rules",
+    "phase": "P3",
+    "delivery": "Métricas e resolução configuráveis com semântica estável e avaliação.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0076"
+    ],
+    "spec_ids": [
+      "SPEC-013"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C032",
+    "capability": "Runtime source mappings",
+    "phase": "P3",
+    "delivery": "Mappings runtime versionados; extração P1 é perfil fixo admitido.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0077"
+    ],
+    "spec_ids": [
+      "SPEC-013"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C033",
+    "capability": "Runtime skill/workflow configuration",
+    "phase": "P3",
+    "delivery": "Skills/workflows declarativos limitados; mandatos e efeitos só habilitam após P4.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0076",
+      "ZN-0077"
+    ],
+    "spec_ids": [
+      "SPEC-013"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C034",
+    "capability": "Current-policy change approval",
+    "phase": "P3",
+    "delivery": "P1 aprova Case vigente; P3 política atual governa alterações e publicação.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0082",
+      "ZN-0088",
+      "ZN-0284",
+      "ZN-0304",
+      "ZN-0315",
+      "ZN-0316"
+    ],
+    "spec_ids": [
+      "SPEC-014",
+      "SPEC-048",
+      "SPEC-052",
+      "SPEC-054"
+    ],
+    "delivery_ids": [
+      "D07",
+      "D08",
+      "D15",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C035",
+    "capability": "Semantic diff and blast radius",
+    "phase": "P3",
+    "delivery": "Diff distingue label de mudança de significado e mostra impacto.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0079"
+    ],
+    "spec_ids": [
+      "SPEC-013"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C036",
+    "capability": "Scoped stewardship and explicit rule learning",
+    "phase": "P3",
+    "delivery": "P2 stewardship de ambiguidades; P3 ensino de regra reutilizável como mudança separada.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0082",
+      "ZN-0100",
+      "ZN-0102",
+      "ZN-0103",
+      "ZN-0105",
+      "ZN-0244",
+      "ZN-0282"
+    ],
+    "spec_ids": [
+      "SPEC-014",
+      "SPEC-016",
+      "SPEC-017",
+      "SPEC-041",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D02",
+      "D07",
+      "D09",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C037",
+    "capability": "Immutable release graph",
+    "phase": "P3",
+    "delivery": "Grafo imutável de releases/dependências e manifests publicados.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0078",
+      "ZN-0081",
+      "ZN-0084"
+    ],
+    "spec_ids": [
+      "SPEC-013",
+      "SPEC-014"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C038",
+    "capability": "Isolated EvaluationWorld",
+    "phase": "P3",
+    "delivery": "Avaliação isolada sem credenciais/destinos de produção.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0083",
+      "ZN-0084"
+    ],
+    "spec_ids": [
+      "SPEC-014"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C039",
+    "capability": "Prepared generation catch-up",
+    "phase": "P3",
+    "delivery": "Geração candidata não autoritativa e catch-up de commits completos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0085"
+    ],
+    "spec_ids": [
+      "SPEC-014"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C040",
+    "capability": "Atomic release activation",
+    "phase": "P3",
+    "delivery": "Ativação atômica rechecando approval, head, cut e deny.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0086",
+      "ZN-0088"
+    ],
+    "spec_ids": [
+      "SPEC-014"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C041",
+    "capability": "Concurrent edit/rebase",
+    "phase": "P3",
+    "delivery": "Conflito de edição e rebase explícitos sem consentimento silencioso.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0087",
+      "ZN-0202"
+    ],
+    "spec_ids": [
+      "SPEC-014",
+      "SPEC-035"
+    ],
+    "delivery_ids": [
+      "D07",
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C042",
+    "capability": "Forward rollback/repair",
+    "phase": "P3",
+    "delivery": "Rollback como novo avanço preparado com repair visível.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0087"
+    ],
+    "spec_ids": [
+      "SPEC-014"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C043",
+    "capability": "Open Case and Watch compatibility",
+    "phase": "P3",
+    "delivery": "Compatibilidade/revisão de Cases e Watches abertos após mudança de release.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0079",
+      "ZN-0085",
+      "ZN-0088"
+    ],
+    "spec_ids": [
+      "SPEC-013",
+      "SPEC-014"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C044",
+    "capability": "Source inventory and honest coverage",
+    "phase": "P1",
+    "delivery": "Inventário de fontes esperadas e ausentes desde arquivo; P5 amplia o estate.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0089",
+      "ZN-0095",
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0239",
+      "ZN-0240",
+      "ZN-0242",
+      "ZN-0243",
+      "ZN-0244"
+    ],
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C045",
+    "capability": "OAuth/secret source bindings",
+    "phase": "P2",
+    "delivery": "Primeiro OAuth real com segredos no broker e grants revogáveis.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0090",
+      "ZN-0095",
+      "ZN-0243"
+    ],
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C046",
+    "capability": "Structured/unstructured file admission",
+    "phase": "P2",
+    "delivery": "P1 texto/CSV/JSON reais; P2 extração de documentos não estruturados isolada e atribuída.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0025",
+      "ZN-0028"
+    ],
+    "spec_ids": [
+      "SPEC-004"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C047",
+    "capability": "Declarative HTTP integration",
+    "phase": "P2",
+    "delivery": "Um perfil HTTP declarativo delimitado e real; gramática extensível governada em P3.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0091",
+      "ZN-0095"
+    ],
+    "spec_ids": [
+      "SPEC-015"
+    ],
+    "delivery_ids": [
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C048",
+    "capability": "Source ACL and identity mapping",
+    "phase": "P2",
+    "delivery": "ACL e identidade da fonte qualificadas antes de seu conteúdo ser compartilhado.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0093",
+      "ZN-0110",
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0241",
+      "ZN-0243"
+    ],
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-018",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D03",
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C049",
+    "capability": "Incremental pagination and checkpoints",
+    "phase": "P2",
+    "delivery": "P1 handoff durável de arquivo; P2 paginação/checkpoints reais sem avanço antes de captura.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0026",
+      "ZN-0092",
+      "ZN-0095",
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0239",
+      "ZN-0243"
+    ],
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C050",
+    "capability": "Source schema drift quarantine",
+    "phase": "P2",
+    "delivery": "P1 schema inválido rejeita/quarentena; P2 drift de conector preserva os dados e interrompe admissão.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0028",
+      "ZN-0093",
+      "ZN-0239",
+      "ZN-0240",
+      "ZN-0243"
+    ],
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C051",
+    "capability": "Deletion/tombstone propagation",
+    "phase": "P2",
+    "delivery": "Tombstones explícitos e retirada de derivados; snapshot incompleto não prova deleção.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0094",
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0243"
+    ],
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D09"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C052",
+    "capability": "Passkey/OIDC identity and step-up",
+    "phase": "P2",
+    "delivery": "P1 identidade real admitida; P2 cobertura passkey/OIDC e step-up requerido por operação.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0013",
+      "ZN-0107",
+      "ZN-0219",
+      "ZN-0296",
+      "ZN-0297",
+      "ZN-0301"
+    ],
+    "spec_ids": [
+      "SPEC-002",
+      "SPEC-018",
+      "SPEC-038",
+      "SPEC-051"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03",
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C053",
+    "capability": "Membership/invitations",
+    "phase": "P2",
+    "delivery": "P1 membership owner explícita; P2 convites idempotentes e compartilhamento.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0014",
+      "ZN-0016",
+      "ZN-0221"
+    ],
+    "spec_ids": [
+      "SPEC-002",
+      "SPEC-038"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03",
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C054",
+    "capability": "Narrow delegation and revocation",
+    "phase": "P2",
+    "delivery": "Revogação desde P1; P2 delegação estreita e rechecagem em background/replay.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0017",
+      "ZN-0107",
+      "ZN-0110",
+      "ZN-0220",
+      "ZN-0223",
+      "ZN-0293",
+      "ZN-0299",
+      "ZN-0300",
+      "ZN-0311"
+    ],
+    "spec_ids": [
+      "SPEC-002",
+      "SPEC-018",
+      "SPEC-038",
+      "SPEC-050",
+      "SPEC-051",
+      "SPEC-053"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03",
+      "D08",
+      "D15",
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C055",
+    "capability": "Field/object/evidence restrictions",
+    "phase": "P2",
+    "delivery": "P1 direitos reais de evidência; P2 campo/objeto/fonte com não interferência.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0027",
+      "ZN-0044",
+      "ZN-0106",
+      "ZN-0110",
+      "ZN-0111",
+      "ZN-0124"
+    ],
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-007",
+      "SPEC-018",
+      "SPEC-021"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03",
+      "D14"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C056",
+    "capability": "Purpose and destination limits",
+    "phase": "P2",
+    "delivery": "P1 propósito ligado à sessão; P2 destinos/delegações; P6 preserva em federação.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0015",
+      "ZN-0106",
+      "ZN-0222",
+      "ZN-0250"
+    ],
+    "spec_ids": [
+      "SPEC-002",
+      "SPEC-018",
+      "SPEC-038",
+      "SPEC-043"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03",
+      "D19",
+      "D20"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C057",
+    "capability": "Derived rights/lineage propagation",
+    "phase": "P1",
+    "delivery": "Derivado carrega restrições da origem desde primeira extração/Frame.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0108",
+      "ZN-0111",
+      "ZN-0162"
+    ],
+    "spec_ids": [
+      "SPEC-018",
+      "SPEC-027"
+    ],
+    "delivery_ids": [
+      "D03",
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C058",
+    "capability": "Hidden-rival perspective protection",
+    "phase": "P1",
+    "delivery": "Evidência oculta não afeta texto, contagem, erros nem seleção visível.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0036",
+      "ZN-0109",
+      "ZN-0111",
+      "ZN-0127",
+      "ZN-0148",
+      "ZN-0284"
+    ],
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-018",
+      "SPEC-021",
+      "SPEC-025",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03",
+      "D13",
+      "D14",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C059",
+    "capability": "Group audience intersection",
+    "phase": "P4",
+    "delivery": "P2 compartilhamento web; P4 interseção real de audiência antes de mensagem a grupo.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0109",
+      "ZN-0111",
+      "ZN-0127",
+      "ZN-0166"
+    ],
+    "spec_ids": [
+      "SPEC-018",
+      "SPEC-021",
+      "SPEC-028"
+    ],
+    "delivery_ids": [
+      "D03",
+      "D06",
+      "D14"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C060",
+    "capability": "Caregiver access without presumed authority",
+    "phase": "P2",
+    "delivery": "Cuidador recebe autorização explícita, vínculo familiar não implica poder.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0107",
+      "ZN-0281",
+      "ZN-0298",
+      "ZN-0300"
+    ],
+    "spec_ids": [
+      "SPEC-018",
+      "SPEC-048",
+      "SPEC-051"
+    ],
+    "delivery_ids": [
+      "D03",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C061",
+    "capability": "Retention/license expiry",
+    "phase": "P1",
+    "delivery": "Retenção e expiração implementadas sobre artefatos existentes desde a captura.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0027",
+      "ZN-0112",
+      "ZN-0117"
+    ],
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-019"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C062",
+    "capability": "Deletion across derived artifacts",
+    "phase": "P2",
+    "delivery": "Apagamento inclui todos os derivados existentes; cada novo tipo deve aderir ao inventário.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade. Ajuste consolidado: P1 não conclui apagamento/restore com supressão; D03 precede piloto sensível D04.",
+    "ticket_ids": [
+      "ZN-0113",
+      "ZN-0114",
+      "ZN-0117",
+      "ZN-0185"
+    ],
+    "spec_ids": [
+      "SPEC-019",
+      "SPEC-031"
+    ],
+    "delivery_ids": [
+      "D03",
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C063",
+    "capability": "Legal hold conflict review",
+    "phase": "P2",
+    "delivery": "P1 conflito impede eliminar; P2 fluxo auditado de revisão de legal hold.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0115",
+      "ZN-0117"
+    ],
+    "spec_ids": [
+      "SPEC-019"
+    ],
+    "delivery_ids": [
+      "D03"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C064",
+    "capability": "Post-restore deletion suppression",
+    "phase": "P2",
+    "delivery": "Ledger de supressão aplicado antes de reabrir restore para leituras/efeitos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S3; os limites da entrega estão descritos sem remover o restante da capacidade. Ajuste consolidado: P1 não conclui apagamento/restore com supressão; D03 precede piloto sensível D04.",
+    "ticket_ids": [
+      "ZN-0049",
+      "ZN-0116",
+      "ZN-0117",
+      "ZN-0229",
+      "ZN-0284"
+    ],
+    "spec_ids": [
+      "SPEC-008",
+      "SPEC-019",
+      "SPEC-039",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D03",
+      "D04",
+      "D19",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C065",
+    "capability": "Guarded ActionCases",
+    "phase": "P1",
+    "delivery": "Case mínimo compartilhado para correção/decisão com intenção, digest e guards; efeitos expandem P4.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0129",
+      "ZN-0130",
+      "ZN-0133",
+      "ZN-0134"
+    ],
+    "spec_ids": [
+      "SPEC-022"
+    ],
+    "delivery_ids": [
+      "D11"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C066",
+    "capability": "Scoped/quorum approval",
+    "phase": "P3",
+    "delivery": "P1 aprovação owner de revisão exata; P2 escopo delegado; P3 quorum na mesma gramática.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0131",
+      "ZN-0133",
+      "ZN-0306",
+      "ZN-0311",
+      "ZN-0321"
+    ],
+    "spec_ids": [
+      "SPEC-022",
+      "SPEC-052",
+      "SPEC-053",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D11",
+      "D15"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C067",
+    "capability": "Idempotent local decisions",
+    "phase": "P1",
+    "delivery": "Commit único e replays reautorizados; intenção alterada não reutiliza resultado.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0020",
+      "ZN-0021",
+      "ZN-0132",
+      "ZN-0134"
+    ],
+    "spec_ids": [
+      "SPEC-003",
+      "SPEC-022"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D11"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C068",
+    "capability": "Predicate/clock/source guards",
+    "phase": "P1",
+    "delivery": "Guards de predicado/ausência/fonte/clock desde Case mínimo, preservados em risco e agenda.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0022",
+      "ZN-0126",
+      "ZN-0129",
+      "ZN-0134",
+      "ZN-0270"
+    ],
+    "spec_ids": [
+      "SPEC-003",
+      "SPEC-021",
+      "SPEC-022",
+      "SPEC-046"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D11",
+      "D14",
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C069",
+    "capability": "Effect intent and durable attempts",
+    "phase": "P4",
+    "delivery": "P1 outbox durável; P4 EffectIntent e tentativa persistida antes de envio real.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0023",
+      "ZN-0132",
+      "ZN-0135",
+      "ZN-0136",
+      "ZN-0140",
+      "ZN-0227"
+    ],
+    "spec_ids": [
+      "SPEC-003",
+      "SPEC-022",
+      "SPEC-023",
+      "SPEC-039"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D11",
+      "D12",
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C070",
+    "capability": "Provider Unknown reconciliation",
+    "phase": "P4",
+    "delivery": "Unknown reconciliado com evidência real ou bloqueio explícito, sem retry inseguro.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0135",
+      "ZN-0137",
+      "ZN-0138",
+      "ZN-0140",
+      "ZN-0227",
+      "ZN-0249"
+    ],
+    "spec_ids": [
+      "SPEC-023",
+      "SPEC-039",
+      "SPEC-042"
+    ],
+    "delivery_ids": [
+      "D12",
+      "D19",
+      "D20"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C071",
+    "capability": "Partial external outcomes",
+    "phase": "P4",
+    "delivery": "Parcial externo visível por etapa sem equiparar aceitação à liquidação.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0137",
+      "ZN-0138",
+      "ZN-0140"
+    ],
+    "spec_ids": [
+      "SPEC-023"
+    ],
+    "delivery_ids": [
+      "D12"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C072",
+    "capability": "Cancellation and compensation",
+    "phase": "P4",
+    "delivery": "P1 cancelar Case local; P4 cancelar/compensar efeitos como novas ações.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0130",
+      "ZN-0136",
+      "ZN-0139",
+      "ZN-0140",
+      "ZN-0144"
+    ],
+    "spec_ids": [
+      "SPEC-022",
+      "SPEC-023",
+      "SPEC-024"
+    ],
+    "delivery_ids": [
+      "D11",
+      "D12"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C073",
+    "capability": "Transactional budget reservation",
+    "phase": "P4",
+    "delivery": "Reservas conservadas transacionalmente e mantidas em resultado financeiro desconhecido.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0141",
+      "ZN-0146",
+      "ZN-0232"
+    ],
+    "spec_ids": [
+      "SPEC-024",
+      "SPEC-040"
+    ],
+    "delivery_ids": [
+      "D12",
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C074",
+    "capability": "Semantic Watches and checkpoints",
+    "phase": "P2",
+    "delivery": "Watches locais sobre commits completos com cursor e deduplicação semântica.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0118",
+      "ZN-0119",
+      "ZN-0122"
+    ],
+    "spec_ids": [
+      "SPEC-020"
+    ],
+    "delivery_ids": [
+      "D10"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C075",
+    "capability": "Materiality and stale-data alerts",
+    "phase": "P2",
+    "delivery": "Stale e materialidade explícitos baseados no significado e cobertura.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0119",
+      "ZN-0123"
+    ],
+    "spec_ids": [
+      "SPEC-020"
+    ],
+    "delivery_ids": [
+      "D10"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C076",
+    "capability": "Quiet/merged/deferred Notice delivery",
+    "phase": "P4",
+    "delivery": "P2 Notice local durável; P4 quiet hours, merge e deferência por canal reautorizados.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0120",
+      "ZN-0121",
+      "ZN-0122",
+      "ZN-0123"
+    ],
+    "spec_ids": [
+      "SPEC-020"
+    ],
+    "delivery_ids": [
+      "D10"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C077",
+    "capability": "Bounded Mandates",
+    "phase": "P4",
+    "delivery": "Mandato com scope, allowlist, prazo, orçamento e resultado observável.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0142",
+      "ZN-0145",
+      "ZN-0146"
+    ],
+    "spec_ids": [
+      "SPEC-024"
+    ],
+    "delivery_ids": [
+      "D12"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C078",
+    "capability": "Observable goal status",
+    "phase": "P4",
+    "delivery": "Status mostra observação do objetivo, não apenas sucesso de ferramenta.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0143",
+      "ZN-0146"
+    ],
+    "spec_ids": [
+      "SPEC-024"
+    ],
+    "delivery_ids": [
+      "D12"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C079",
+    "capability": "Stop/escalation/deadline policy",
+    "phase": "P4",
+    "delivery": "Stop/escalation/deadline interrompem responsabilidade e conservam desconhecidos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0142",
+      "ZN-0144",
+      "ZN-0146"
+    ],
+    "spec_ids": [
+      "SPEC-024"
+    ],
+    "delivery_ids": [
+      "D12"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C080",
+    "capability": "Child-agent shared budgets",
+    "phase": "P4",
+    "delivery": "Filhos compartilham orçamento e limites agregados do pai.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S4; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0141",
+      "ZN-0144",
+      "ZN-0146",
+      "ZN-0151"
+    ],
+    "spec_ids": [
+      "SPEC-024",
+      "SPEC-025"
+    ],
+    "delivery_ids": [
+      "D12",
+      "D13"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C081",
+    "capability": "Hybrid text/vector/structured retrieval",
+    "phase": "P5",
+    "delivery": "P2 busca textual/estruturada autorizada; P5 híbrida vetorial com admissão de recall/visibilidade.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0147",
+      "ZN-0149",
+      "ZN-0152"
+    ],
+    "spec_ids": [
+      "SPEC-025"
+    ],
+    "delivery_ids": [
+      "D13"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C082",
+    "capability": "Authorization before ranking/aggregation",
+    "phase": "P1",
+    "delivery": "Autorizar antes de seleção/agregação; novos rankings e superfícies reutilizam a garantia.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0148",
+      "ZN-0152",
+      "ZN-0293",
+      "ZN-0294",
+      "ZN-0320"
+    ],
+    "spec_ids": [
+      "SPEC-025",
+      "SPEC-050",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D08",
+      "D13"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C083",
+    "capability": "Evidence-grounded responses",
+    "phase": "P2",
+    "delivery": "Resposta grounded em evidência autorizada e cut explícito, não resumo autoritativo.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0058",
+      "ZN-0061",
+      "ZN-0149",
+      "ZN-0152",
+      "ZN-0211"
+    ],
+    "spec_ids": [
+      "SPEC-010",
+      "SPEC-025",
+      "SPEC-036"
+    ],
+    "delivery_ids": [
+      "D05",
+      "D13",
+      "D17"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C084",
+    "capability": "Prompt-injection containment",
+    "phase": "P2",
+    "delivery": "Conteúdo de fonte tratado como dado; tentativa de injeção não amplia ferramentas nem grants.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0150",
+      "ZN-0152",
+      "ZN-0284"
+    ],
+    "spec_ids": [
+      "SPEC-025",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D13",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C085",
+    "capability": "Model-use/residency restrictions",
+    "phase": "P2",
+    "delivery": "Uso/residência de modelo admitidos antes do primeiro envio; P5 amplia perfis institucionais.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0060",
+      "ZN-0108",
+      "ZN-0147",
+      "ZN-0152",
+      "ZN-0228",
+      "ZN-0264"
+    ],
+    "spec_ids": [
+      "SPEC-010",
+      "SPEC-018",
+      "SPEC-025",
+      "SPEC-039",
+      "SPEC-045"
+    ],
+    "delivery_ids": [
+      "D03",
+      "D05",
+      "D13",
+      "D19",
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C086",
+    "capability": "Permitted specialized agents",
+    "phase": "P4",
+    "delivery": "Agentes especializados estreitam ferramentas e executam em mandatos/budgets reais.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0151",
+      "ZN-0152"
+    ],
+    "spec_ids": [
+      "SPEC-025"
+    ],
+    "delivery_ids": [
+      "D13"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C087",
+    "capability": "WhatsApp signed durable admission",
+    "phase": "P4",
+    "delivery": "WhatsApp por conta/API real, assinatura e ingresso durável antes do ACK.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0064",
+      "ZN-0069",
+      "ZN-0288"
+    ],
+    "spec_ids": [
+      "SPEC-011",
+      "SPEC-049"
+    ],
+    "delivery_ids": [
+      "D04",
+      "D06"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C088",
+    "capability": "Channel consent and window policy",
+    "phase": "P4",
+    "delivery": "Consentimento, template e janela checados antes de cada envio do canal.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0066",
+      "ZN-0069",
+      "ZN-0121"
+    ],
+    "spec_ids": [
+      "SPEC-011",
+      "SPEC-020"
+    ],
+    "delivery_ids": [
+      "D06",
+      "D10"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C089",
+    "capability": "Secure web continuation",
+    "phase": "P2",
+    "delivery": "Continuação web autenticada sem bearer grant; WhatsApp apenas reutiliza o mecanismo em P4.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0065",
+      "ZN-0068"
+    ],
+    "spec_ids": [
+      "SPEC-011"
+    ],
+    "delivery_ids": [
+      "D06"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C090",
+    "capability": "Delivery ambiguity handling",
+    "phase": "P4",
+    "delivery": "Accepted/delivered/read/unknown conforme evidência real, sem inferir sucesso.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S1; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0067",
+      "ZN-0069",
+      "ZN-0167"
+    ],
+    "spec_ids": [
+      "SPEC-011",
+      "SPEC-028"
+    ],
+    "delivery_ids": [
+      "D06"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C091",
+    "capability": "Telegram adapter",
+    "phase": "P4",
+    "delivery": "Telegram real qualificado individualmente sobre executor/ingress comum.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0164",
+      "ZN-0167",
+      "ZN-0168"
+    ],
+    "spec_ids": [
+      "SPEC-028"
+    ],
+    "delivery_ids": [
+      "D06"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C092",
+    "capability": "Email adapter",
+    "phase": "P4",
+    "delivery": "Email real com verificação própria, anexos limitados e remetente sem autoridade presumida.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0165",
+      "ZN-0167",
+      "ZN-0168"
+    ],
+    "spec_ids": [
+      "SPEC-028"
+    ],
+    "delivery_ids": [
+      "D06"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C093",
+    "capability": "Channel migration without context reset",
+    "phase": "P4",
+    "delivery": "Troca de canais vinculados mantém relação, revalida audiência e não reinicia contexto.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Responsabilidade e comunicação externas precisam de intenção durável, autorização, orçamento e observação reais. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0157",
+      "ZN-0166",
+      "ZN-0167",
+      "ZN-0168"
+    ],
+    "spec_ids": [
+      "SPEC-026",
+      "SPEC-028"
+    ],
+    "delivery_ids": [
+      "D06",
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C094",
+    "capability": "REST/OpenAPI semantic API",
+    "phase": "P3",
+    "delivery": "P1 adapter semantic HTTP mínimo; P3 OpenAPI gerada completa do manifest.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0043",
+      "ZN-0045",
+      "ZN-0153",
+      "ZN-0157",
+      "ZN-0158",
+      "ZN-0291",
+      "ZN-0292",
+      "ZN-0294",
+      "ZN-0295",
+      "ZN-0309"
+    ],
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-026",
+      "SPEC-050",
+      "SPEC-053"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D08",
+      "D15"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C095",
+    "capability": "Generated CLI",
+    "phase": "P3",
+    "delivery": "P1 CLI mínima para jornada; P3 comandos gerados e falhas estruturadas.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0043",
+      "ZN-0045",
+      "ZN-0154",
+      "ZN-0158"
+    ],
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-026"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C096",
+    "capability": "MCP tools/resources",
+    "phase": "P3",
+    "delivery": "MCP tools/resources como transporte do executor com autorização server-side.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0156",
+      "ZN-0158"
+    ],
+    "spec_ids": [
+      "SPEC-026"
+    ],
+    "delivery_ids": [
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C097",
+    "capability": "Dynamic capability discovery",
+    "phase": "P3",
+    "delivery": "P1 discovery image-pinned; P3 manifest runtime autorizado sem vazamento de catálogo.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0044",
+      "ZN-0078",
+      "ZN-0155",
+      "ZN-0156",
+      "ZN-0158",
+      "ZN-0291",
+      "ZN-0294",
+      "ZN-0303"
+    ],
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-013",
+      "SPEC-026",
+      "SPEC-050",
+      "SPEC-052"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D07",
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C098",
+    "capability": "Static TypeScript SDK generation",
+    "phase": "P3",
+    "delivery": "SDK TypeScript gerado por release, rejeitando incompatibilidade consequencial.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0155",
+      "ZN-0158"
+    ],
+    "spec_ids": [
+      "SPEC-026"
+    ],
+    "delivery_ids": [
+      "D08"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C099",
+    "capability": "Cross-surface meaning parity",
+    "phase": "P3",
+    "delivery": "P1 web/CLI iguais em significado; P3 adiciona SDK/MCP/apps, P4+ estende conformance.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S5; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0043",
+      "ZN-0045",
+      "ZN-0078",
+      "ZN-0099",
+      "ZN-0133",
+      "ZN-0153",
+      "ZN-0154",
+      "ZN-0158"
+    ],
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-013",
+      "SPEC-016",
+      "SPEC-022",
+      "SPEC-026"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D07",
+      "D08",
+      "D11"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C100",
+    "capability": "Signed custom connector artifacts",
+    "phase": "P5",
+    "delivery": "Artefato de conector assinado, avaliado e instalado com capabilities explicitamente concedidas.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S6; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0169",
+      "ZN-0170",
+      "ZN-0173",
+      "ZN-0179"
+    ],
+    "spec_ids": [
+      "SPEC-029",
+      "SPEC-030"
+    ],
+    "delivery_ids": [
+      "D15"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C101",
+    "capability": "Sandboxed Python/R/SQL analysis",
+    "phase": "P5",
+    "delivery": "Python/R/SQL de análise isolados sobre inputs imutáveis, sem publicar diretamente.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S6; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0177",
+      "ZN-0179"
+    ],
+    "spec_ids": [
+      "SPEC-030"
+    ],
+    "delivery_ids": [
+      "D15"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C102",
+    "capability": "Bounded tool/secret leases",
+    "phase": "P5",
+    "delivery": "P2 broker fonte/P4 efeito já estreitos; P5 leases de código hostil e revogação real.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S6; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0171",
+      "ZN-0175",
+      "ZN-0178",
+      "ZN-0179",
+      "ZN-0310",
+      "ZN-0317"
+    ],
+    "spec_ids": [
+      "SPEC-029",
+      "SPEC-030",
+      "SPEC-053",
+      "SPEC-054"
+    ],
+    "delivery_ids": [
+      "D15"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C103",
+    "capability": "Egress/SSRF/resource control",
+    "phase": "P5",
+    "delivery": "P1 limites de input; P2 egress de connector; P5 SSRF/egress/resource fora do código hóspede.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S6; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0091",
+      "ZN-0170",
+      "ZN-0174",
+      "ZN-0176",
+      "ZN-0179",
+      "ZN-0284",
+      "ZN-0292",
+      "ZN-0308",
+      "ZN-0310",
+      "ZN-0312",
+      "ZN-0314",
+      "ZN-0317",
+      "ZN-0319",
+      "ZN-0322"
+    ],
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-029",
+      "SPEC-030",
+      "SPEC-048",
+      "SPEC-050",
+      "SPEC-053",
+      "SPEC-054",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D09",
+      "D15",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C104",
+    "capability": "Artifact recall and evaluation",
+    "phase": "P5",
+    "delivery": "Avaliação e recall negam novas leases e reconciliam trabalho em andamento.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S6; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0169",
+      "ZN-0172",
+      "ZN-0173",
+      "ZN-0178",
+      "ZN-0179",
+      "ZN-0318"
+    ],
+    "spec_ids": [
+      "SPEC-029",
+      "SPEC-030",
+      "SPEC-054"
+    ],
+    "delivery_ids": [
+      "D15"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C105",
+    "capability": "Agent-proposed capability installation",
+    "phase": "P5",
+    "delivery": "Agente propõe instalação e usuário/política vigente decide; não há autoampliação.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S6; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0077",
+      "ZN-0171",
+      "ZN-0173"
+    ],
+    "spec_ids": [
+      "SPEC-013",
+      "SPEC-029"
+    ],
+    "delivery_ids": [
+      "D07",
+      "D15"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C106",
+    "capability": "Batch/incremental/CDC flows",
+    "phase": "P5",
+    "delivery": "P2 batch/incremental da fonte escolhida; P5 CDC e flows governados completos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0092",
+      "ZN-0186",
+      "ZN-0187",
+      "ZN-0188",
+      "ZN-0191",
+      "ZN-0241"
+    ],
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-032",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D09",
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C107",
+    "capability": "Streaming watermarks and gaps",
+    "phase": "P5",
+    "delivery": "Watermark, atraso, gaps e correções tardias explícitos em streams reais.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0188",
+      "ZN-0189",
+      "ZN-0191",
+      "ZN-0192",
+      "ZN-0241"
+    ],
+    "spec_ids": [
+      "SPEC-032",
+      "SPEC-033",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D09",
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C108",
+    "capability": "Virtual/federated sources",
+    "phase": "P5",
+    "delivery": "Fonte virtual declara consistência/retentividade e bloqueia ações sem basis adequado.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0197",
+      "ZN-0198",
+      "ZN-0201",
+      "ZN-0242"
+    ],
+    "spec_ids": [
+      "SPEC-034",
+      "SPEC-041"
+    ],
+    "delivery_ids": [
+      "D09",
+      "D17"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C109",
+    "capability": "Field-level lineage",
+    "phase": "P5",
+    "delivery": "P1 lineage básico por extração; P5 lineage por campo e versão de transformação.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0186",
+      "ZN-0190",
+      "ZN-0191",
+      "ZN-0239",
+      "ZN-0240",
+      "ZN-0244",
+      "ZN-0295"
+    ],
+    "spec_ids": [
+      "SPEC-032",
+      "SPEC-041",
+      "SPEC-050"
+    ],
+    "delivery_ids": [
+      "D08",
+      "D09",
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C110",
+    "capability": "Tri-state/unknown quality gates",
+    "phase": "P1",
+    "delivery": "Qualidade pass/fail/unknown desde admissão; P5 compõe a mesma regra em DAGs.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Garantia ou utilidade necessária ao primeiro dado e à primeira decisão local; antecipar evita caminho provisório inseguro. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0190",
+      "ZN-0191",
+      "ZN-0295"
+    ],
+    "spec_ids": [
+      "SPEC-032",
+      "SPEC-050"
+    ],
+    "delivery_ids": [
+      "D08",
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C111",
+    "capability": "Partitioned Parquet/Iceberg datasets",
+    "phase": "P5",
+    "delivery": "Datasets Parquet/Iceberg com versões/pins reais e perfil reader/catalog qualificado.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0180",
+      "ZN-0181",
+      "ZN-0184",
+      "ZN-0185",
+      "ZN-0195"
+    ],
+    "spec_ids": [
+      "SPEC-031",
+      "SPEC-033"
+    ],
+    "delivery_ids": [
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C112",
+    "capability": "Exact snapshot publication",
+    "phase": "P5",
+    "delivery": "Publicação atômica de referências exatas após retenção física comprovada.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0181",
+      "ZN-0182",
+      "ZN-0183",
+      "ZN-0184",
+      "ZN-0185",
+      "ZN-0191"
+    ],
+    "spec_ids": [
+      "SPEC-031",
+      "SPEC-032"
+    ],
+    "delivery_ids": [
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C113",
+    "capability": "Conflated and unconflated live feeds",
+    "phase": "P5",
+    "delivery": "Feeds conflated/unconflated separados, sem reconstruir eventos descartados.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0192",
+      "ZN-0193",
+      "ZN-0195",
+      "ZN-0196"
+    ],
+    "spec_ids": [
+      "SPEC-033"
+    ],
+    "delivery_ids": [
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C114",
+    "capability": "Entitled live subscriptions",
+    "phase": "P5",
+    "delivery": "Entitlement rechecado por dispatch/resume de assinatura real.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0193",
+      "ZN-0196"
+    ],
+    "spec_ids": [
+      "SPEC-033"
+    ],
+    "delivery_ids": [
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C115",
+    "capability": "Exact capture before action",
+    "phase": "P5",
+    "delivery": "Captura exata de valor live antes de consequência, freshness revalidada no commit.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0194",
+      "ZN-0196"
+    ],
+    "spec_ids": [
+      "SPEC-033"
+    ],
+    "delivery_ids": [
+      "D16"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C116",
+    "capability": "Distributed/GPU compute adapter contract",
+    "phase": "P5",
+    "delivery": "Jobs distribuídos/GPU com leases, custo e outputs; sem engine como autoridade.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S7; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0199",
+      "ZN-0200",
+      "ZN-0201"
+    ],
+    "spec_ids": [
+      "SPEC-034"
+    ],
+    "delivery_ids": [
+      "D17"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C117",
+    "capability": "Domain pack installation",
+    "phase": "P3",
+    "delivery": "Pack doméstico inicial P1; P3 instalação governada e registry de packs.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0096",
+      "ZN-0213",
+      "ZN-0218"
+    ],
+    "spec_ids": [
+      "SPEC-016",
+      "SPEC-037"
+    ],
+    "delivery_ids": [
+      "D07",
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C118",
+    "capability": "Local overlays and dependencies",
+    "phase": "P3",
+    "delivery": "Overlays locais separados e dependências imutáveis de packs declarativos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0214",
+      "ZN-0218"
+    ],
+    "spec_ids": [
+      "SPEC-037"
+    ],
+    "delivery_ids": [
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C119",
+    "capability": "Pack upgrade/rebase/removal",
+    "phase": "P3",
+    "delivery": "Upgrade/rebase/remoção considera dados, Cases, Watches e retenção.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0215",
+      "ZN-0218"
+    ],
+    "spec_ids": [
+      "SPEC-037"
+    ],
+    "delivery_ids": [
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C120",
+    "capability": "Publisher signature/reputation contract",
+    "phase": "P6",
+    "delivery": "P3 assinatura/integridade; P6 contrato completo de publisher/reputação e recall comercial.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0213",
+      "ZN-0216",
+      "ZN-0218"
+    ],
+    "spec_ids": [
+      "SPEC-037"
+    ],
+    "delivery_ids": [
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C121",
+    "capability": "Commercial marketplace prerequisites",
+    "phase": "P6",
+    "delivery": "Marketplace só após suporte, segurança, licença e entitlements comprovados.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0217"
+    ],
+    "spec_ids": [
+      "SPEC-037"
+    ],
+    "delivery_ids": [
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C122",
+    "capability": "No automatic cross-customer training",
+    "phase": "P2",
+    "delivery": "Treino entre clientes desligado desde primeiro modelo; qualquer mudança exige direitos explícitos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0210",
+      "ZN-0216",
+      "ZN-0218"
+    ],
+    "spec_ids": [
+      "SPEC-036",
+      "SPEC-037"
+    ],
+    "delivery_ids": [
+      "D17",
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C123",
+    "capability": "Runtime Studio/workbench",
+    "phase": "P5",
+    "delivery": "P3 editor declarativo útil; P5 Studio completo com análise/extensões admitidas.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0202",
+      "ZN-0206",
+      "ZN-0324"
+    ],
+    "spec_ids": [
+      "SPEC-035",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C124",
+    "capability": "Declarative operational apps",
+    "phase": "P3",
+    "delivery": "Apps declarativos imutáveis sobre operações liberadas, sem JS/SQL arbitrário.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S2; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0203",
+      "ZN-0206",
+      "ZN-0293",
+      "ZN-0299",
+      "ZN-0300",
+      "ZN-0301",
+      "ZN-0302",
+      "ZN-0303",
+      "ZN-0304",
+      "ZN-0305",
+      "ZN-0306",
+      "ZN-0307",
+      "ZN-0320",
+      "ZN-0321",
+      "ZN-0322",
+      "ZN-0323",
+      "ZN-0324",
+      "ZN-0325"
+    ],
+    "spec_ids": [
+      "SPEC-035",
+      "SPEC-050",
+      "SPEC-051",
+      "SPEC-052",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D03",
+      "D08",
+      "D11",
+      "D15",
+      "D16",
+      "D18",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C125",
+    "capability": "Signed isolated executable apps",
+    "phase": "P5",
+    "delivery": "Frontend executável assinado em host isolado; backend opcional e qualificado separadamente.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S6; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0204",
+      "ZN-0206",
+      "ZN-0307",
+      "ZN-0308",
+      "ZN-0309",
+      "ZN-0310",
+      "ZN-0311",
+      "ZN-0312",
+      "ZN-0314",
+      "ZN-0315",
+      "ZN-0316",
+      "ZN-0317",
+      "ZN-0318",
+      "ZN-0319",
+      "ZN-0322",
+      "ZN-0323",
+      "ZN-0324",
+      "ZN-0325"
+    ],
+    "spec_ids": [
+      "SPEC-035",
+      "SPEC-052",
+      "SPEC-053",
+      "SPEC-054",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D15",
+      "D16",
+      "D18",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C126",
+    "capability": "MCP Apps compatibility",
+    "phase": "P5",
+    "delivery": "Compatibilidade com host MCP Apps real e fallback para link autorizado sem alegar equivalência.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S6; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0205",
+      "ZN-0206",
+      "ZN-0313",
+      "ZN-0324"
+    ],
+    "spec_ids": [
+      "SPEC-035",
+      "SPEC-053",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D15",
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C127",
+    "capability": "Read-only scenarios and compare",
+    "phase": "P3",
+    "delivery": "Cenário read-only com base/hipóteses explícitas e zero effect lease.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0207",
+      "ZN-0208",
+      "ZN-0212"
+    ],
+    "spec_ids": [
+      "SPEC-036"
+    ],
+    "delivery_ids": [
+      "D17"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C128",
+    "capability": "Fresh live Case from scenario",
+    "phase": "P3",
+    "delivery": "Aplicar resultado hipotético abre Case vivo novo com fatos atuais e aprovação vigente.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Variação de significado e novas superfícies usam a autoridade já exercitada; não precisam de código hostil ou canal externo. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0209",
+      "ZN-0212",
+      "ZN-0307"
+    ],
+    "spec_ids": [
+      "SPEC-036",
+      "SPEC-052"
+    ],
+    "delivery_ids": [
+      "D17",
+      "D18"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C129",
+    "capability": "Notebooks and evaluated model artifacts",
+    "phase": "P5",
+    "delivery": "Notebooks/modelos avaliados com isolamento, lineage e permissões de treino.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S8; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0200",
+      "ZN-0210",
+      "ZN-0211",
+      "ZN-0212",
+      "ZN-0271"
+    ],
+    "spec_ids": [
+      "SPEC-034",
+      "SPEC-036",
+      "SPEC-046"
+    ],
+    "delivery_ids": [
+      "D17",
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C130",
+    "capability": "Personal/household pack",
+    "phase": "P4",
+    "delivery": "P1 compromissos domésticos; P2 pack pessoal/doméstico mais amplo; P4 adiciona responsabilidade delegada.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Pack útil começa em P1/P2; a responsabilidade delegada prevista na capacidade só completa em P4. Preserva o público e o resultado amplo sem confundir preview operacional com entrega integral.",
+    "ticket_ids": [
+      "ZN-0097",
+      "ZN-0099",
+      "ZN-0100",
+      "ZN-0145",
+      "ZN-0281"
+    ],
+    "spec_ids": [
+      "SPEC-016",
+      "SPEC-024",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D07",
+      "D08",
+      "D12",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C131",
+    "capability": "Confectionery orders/inventory/capacity pack",
+    "phase": "P4",
+    "delivery": "Confeitaria com pedido/produção/entrega/estoque/capacidade distintos; compras externas só P4.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Pack útil começa em P1/P2; a responsabilidade delegada prevista na capacidade só completa em P4. Preserva o público e o resultado amplo sem confundir preview operacional com entrega integral.",
+    "ticket_ids": [
+      "ZN-0098",
+      "ZN-0099",
+      "ZN-0100",
+      "ZN-0145",
+      "ZN-0282"
+    ],
+    "spec_ids": [
+      "SPEC-016",
+      "SPEC-024",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D07",
+      "D08",
+      "D12",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C132",
+    "capability": "Dental operations with restricted clinical scope",
+    "phase": "P4",
+    "delivery": "Agenda administrativa real e restrição clínica; nenhuma recomendação clínica implícita.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Pack útil começa em P1/P2; a responsabilidade delegada prevista na capacidade só completa em P4. Preserva o público e o resultado amplo sem confundir preview operacional com entrega integral.",
+    "ticket_ids": [
+      "ZN-0124",
+      "ZN-0125",
+      "ZN-0126",
+      "ZN-0127",
+      "ZN-0128",
+      "ZN-0145",
+      "ZN-0282"
+    ],
+    "spec_ids": [
+      "SPEC-021",
+      "SPEC-024",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D12",
+      "D14",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C133",
+    "capability": "Dedicated/regional cells",
+    "phase": "P5",
+    "delivery": "P2 Fly compartilhado regional; P5 células dedicadas/regionais por perfil medido.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S9; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0225",
+      "ZN-0230",
+      "ZN-0283",
+      "ZN-0287"
+    ],
+    "spec_ids": [
+      "SPEC-039",
+      "SPEC-048",
+      "SPEC-049"
+    ],
+    "delivery_ids": [
+      "D04",
+      "D19",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C134",
+    "capability": "SSO/SCIM lifecycle",
+    "phase": "P5",
+    "delivery": "SSO/SCIM reais com desprovisionamento sem reviver grants antigos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S9; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0219",
+      "ZN-0220",
+      "ZN-0221",
+      "ZN-0223",
+      "ZN-0224"
+    ],
+    "spec_ids": [
+      "SPEC-038"
+    ],
+    "delivery_ids": [
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C135",
+    "capability": "Private connectivity",
+    "phase": "P5",
+    "delivery": "Conectividade privada medida no perfil escolhido, não dependência do Docker local.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S9; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0225",
+      "ZN-0228",
+      "ZN-0230"
+    ],
+    "spec_ids": [
+      "SPEC-039"
+    ],
+    "delivery_ids": [
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C136",
+    "capability": "HA and disaster recovery",
+    "phase": "P5",
+    "delivery": "P1 restore/P2 backup piloto; P5 HA e DR institucional com RPO/RTO medidos.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S9; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0226",
+      "ZN-0227",
+      "ZN-0229",
+      "ZN-0230",
+      "ZN-0234",
+      "ZN-0289",
+      "ZN-0290"
+    ],
+    "spec_ids": [
+      "SPEC-039",
+      "SPEC-040",
+      "SPEC-049"
+    ],
+    "delivery_ids": [
+      "D04",
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C137",
+    "capability": "Residency and key isolation",
+    "phase": "P5",
+    "delivery": "P2 região/segredos do piloto; P5 residência e isolamento de chaves por política comprovada.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S9; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0222",
+      "ZN-0225",
+      "ZN-0226",
+      "ZN-0228",
+      "ZN-0230",
+      "ZN-0290"
+    ],
+    "spec_ids": [
+      "SPEC-038",
+      "SPEC-039",
+      "SPEC-049"
+    ],
+    "delivery_ids": [
+      "D04",
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C138",
+    "capability": "Audited support access",
+    "phase": "P2",
+    "delivery": "Suporte com metadados por padrão e acesso excepcional temporário auditado antes do piloto.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S9; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0223",
+      "ZN-0233",
+      "ZN-0234",
+      "ZN-0284"
+    ],
+    "spec_ids": [
+      "SPEC-038",
+      "SPEC-040",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D19",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C139",
+    "capability": "Measured workload admission",
+    "phase": "P5",
+    "delivery": "P1 limites explícitos/P2 carga piloto medida; P5 envelope misto institucional completo.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Escala, extensibilidade e operação institucional exigem consumidores e qualificação próprias; não bloqueiam utilidade local. A fatia anterior era S9; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0235",
+      "ZN-0236",
+      "ZN-0283",
+      "ZN-0286",
+      "ZN-0290",
+      "ZN-0323"
+    ],
+    "spec_ids": [
+      "SPEC-040",
+      "SPEC-048",
+      "SPEC-049",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D04",
+      "D16",
+      "D19",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C140",
+    "capability": "Per-tenant quotas/fairness",
+    "phase": "P2",
+    "delivery": "Quotas e fairness por World antes de piloto compartilhado; P5 mede escala institucional.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Expande uso cotidiano e colaboração depois da jornada local, com admissão própria de modelo/fonte quando aplicável. A fatia anterior era S9; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0231",
+      "ZN-0232",
+      "ZN-0235",
+      "ZN-0236"
+    ],
+    "spec_ids": [
+      "SPEC-040"
+    ],
+    "delivery_ids": [
+      "D19"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C141",
+    "capability": "Fenced epoch cell migration",
+    "phase": "P6",
+    "delivery": "Promoção de célula só com fencing real do escritor anterior e epoch admitido.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S10; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0245",
+      "ZN-0246",
+      "ZN-0247",
+      "ZN-0248",
+      "ZN-0249",
+      "ZN-0283"
+    ],
+    "spec_ids": [
+      "SPEC-042",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D20",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C142",
+    "capability": "Independent-cut federated Frames",
+    "phase": "P6",
+    "delivery": "Frame federada expõe vetor de cortes, skew e lacunas sem snapshot global fictício.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S10; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0250",
+      "ZN-0251",
+      "ZN-0254",
+      "ZN-0283"
+    ],
+    "spec_ids": [
+      "SPEC-043",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D20",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C143",
+    "capability": "Cross-World coordinated Cases",
+    "phase": "P6",
+    "delivery": "Cases locais coordenados com aprovação independente e autoridade de recursos explícita.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S10; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0252",
+      "ZN-0253",
+      "ZN-0254"
+    ],
+    "spec_ids": [
+      "SPEC-043"
+    ],
+    "delivery_ids": [
+      "D20"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C144",
+    "capability": "Partial global outcomes",
+    "phase": "P6",
+    "delivery": "Resultado global parcial e compensação local visíveis, sem ACID global presumido.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S10; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0252",
+      "ZN-0253",
+      "ZN-0254"
+    ],
+    "spec_ids": [
+      "SPEC-043"
+    ],
+    "delivery_ids": [
+      "D20"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C145",
+    "capability": "Offline leased child scope",
+    "phase": "P6",
+    "delivery": "Child World offline com lease/clock confiável e recursos particionados; não cache escritor.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S10; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0255",
+      "ZN-0256",
+      "ZN-0257",
+      "ZN-0260"
+    ],
+    "spec_ids": [
+      "SPEC-044"
+    ],
+    "delivery_ids": [
+      "D20"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C146",
+    "capability": "Self-hosted equivalence contract",
+    "phase": "P6",
+    "delivery": "Self-hosted prova equivalência por contrato; Docker local não é certificação operacional.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S10; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0258",
+      "ZN-0260"
+    ],
+    "spec_ids": [
+      "SPEC-044"
+    ],
+    "delivery_ids": [
+      "D20"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C147",
+    "capability": "Fleet release and policy controls",
+    "phase": "P6",
+    "delivery": "Atualização de frota assinada, avaliada e aprovada localmente sem override remoto.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S10; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0259",
+      "ZN-0260"
+    ],
+    "spec_ids": [
+      "SPEC-044"
+    ],
+    "delivery_ids": [
+      "D20"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C148",
+    "capability": "Instrument/listing/issuer master",
+    "phase": "P6",
+    "delivery": "Master financeiro separa instrumento/listing/issuer; pode desenvolver após P1/P2 sem federação.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0261",
+      "ZN-0265"
+    ],
+    "spec_ids": [
+      "SPEC-045"
+    ],
+    "delivery_ids": [
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C149",
+    "capability": "Corporate actions/revisions",
+    "phase": "P6",
+    "delivery": "Corporate actions e revisões com datas e quantidades explícitas, sem identidade por ticker.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0262",
+      "ZN-0265"
+    ],
+    "spec_ids": [
+      "SPEC-045"
+    ],
+    "delivery_ids": [
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C150",
+    "capability": "Point-in-time licensed fundamentals/news",
+    "phase": "P6",
+    "delivery": "Fundamentos/news point-in-time com direitos de armazenamento/exibição/modelo licenciados.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0263",
+      "ZN-0264",
+      "ZN-0265",
+      "ZN-0266"
+    ],
+    "spec_ids": [
+      "SPEC-045"
+    ],
+    "delivery_ids": [
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C151",
+    "capability": "Entitled quotes/trades/market depth",
+    "phase": "P6",
+    "delivery": "Quotes/trades/depth licenciados com sequência, clocks, entitlement e gaps.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0267",
+      "ZN-0272"
+    ],
+    "spec_ids": [
+      "SPEC-046"
+    ],
+    "delivery_ids": [
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C152",
+    "capability": "Portfolio/position/risk analytics",
+    "phase": "P6",
+    "delivery": "Posição/valuation/risk com quantidade exata, FX/basis e cobertura; analytics não depende de offline.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0268",
+      "ZN-0269",
+      "ZN-0270",
+      "ZN-0271",
+      "ZN-0272"
+    ],
+    "spec_ids": [
+      "SPEC-046"
+    ],
+    "delivery_ids": [
+      "D21"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C153",
+    "capability": "Order/fill/allocation lifecycle",
+    "phase": "P6",
+    "delivery": "Ordens/ack/fill/alocação separados e integrados a provedor real admitido.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0273",
+      "ZN-0274",
+      "ZN-0276",
+      "ZN-0279",
+      "ZN-0283"
+    ],
+    "spec_ids": [
+      "SPEC-047",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D22",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C154",
+    "capability": "Bust/cancel/partial handling",
+    "phase": "P6",
+    "delivery": "Bust/cancel/replace/partial conservam quantidade e reconhecem races reais.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0273",
+      "ZN-0274",
+      "ZN-0275",
+      "ZN-0279"
+    ],
+    "spec_ids": [
+      "SPEC-047"
+    ],
+    "delivery_ids": [
+      "D22"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C155",
+    "capability": "Clearing/custody/actual settlement",
+    "phase": "P6",
+    "delivery": "Clearing/custódia/settlement observados separadamente, nunca inferidos do envio da ordem.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0276",
+      "ZN-0277",
+      "ZN-0279",
+      "ZN-0283"
+    ],
+    "spec_ids": [
+      "SPEC-047",
+      "SPEC-048"
+    ],
+    "delivery_ids": [
+      "D22",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C156",
+    "capability": "Supervised professional collaboration",
+    "phase": "P6",
+    "delivery": "Colaboração profissional com participação/retenção/supervisão sem membership automática.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0278",
+      "ZN-0279"
+    ],
+    "spec_ids": [
+      "SPEC-047"
+    ],
+    "delivery_ids": [
+      "D22"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  },
+  {
+    "id": "C157",
+    "capability": "Provider/legal/commercial certification gates",
+    "phase": "P6",
+    "delivery": "Gates externos por rota desde P2; P6 aceita matriz completa só com licenças/contratos/provas reais.",
+    "disposition": "reordenar_e_preservar",
+    "reason": "Preserva a ambição de ecossistema e finanças, com dependências semânticas reais e qualificação independente por perfil. A fatia anterior era S11; os limites da entrega estão descritos sem remover o restante da capacidade.",
+    "ticket_ids": [
+      "ZN-0266",
+      "ZN-0272",
+      "ZN-0280",
+      "ZN-0283",
+      "ZN-0285",
+      "ZN-0286",
+      "ZN-0288",
+      "ZN-0325"
+    ],
+    "spec_ids": [
+      "SPEC-045",
+      "SPEC-046",
+      "SPEC-047",
+      "SPEC-048",
+      "SPEC-049",
+      "SPEC-055"
+    ],
+    "delivery_ids": [
+      "D04",
+      "D21",
+      "D22",
+      "Q"
+    ],
+    "status": "planned",
+    "completion_semantics": "Fase do alcance completo; incrementos menores podem ocorrer antes sem concluir a capacidade."
+  }
+]

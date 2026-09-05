@@ -1,0 +1,958 @@
+[
+  {
+    "id": "SPEC-000",
+    "title": "Execution baseline, dependency admission and fail-closed CI",
+    "ticket_ids": [
+      "ZN-0001",
+      "ZN-0002",
+      "ZN-0003",
+      "ZN-0004",
+      "ZN-0005",
+      "ZN-0006"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-000"
+  },
+  {
+    "id": "SPEC-001",
+    "title": "Kernel values, contract algebra and canonical encoding",
+    "ticket_ids": [
+      "ZN-0007",
+      "ZN-0008",
+      "ZN-0009",
+      "ZN-0010",
+      "ZN-0011",
+      "ZN-0012"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-001"
+  },
+  {
+    "id": "SPEC-002",
+    "title": "Door, World genesis and fresh purpose-bound entry",
+    "ticket_ids": [
+      "ZN-0013",
+      "ZN-0014",
+      "ZN-0015",
+      "ZN-0016",
+      "ZN-0017",
+      "ZN-0018"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D03"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-002"
+  },
+  {
+    "id": "SPEC-003",
+    "title": "Atomic authority, domain guards and durable handoff",
+    "ticket_ids": [
+      "ZN-0019",
+      "ZN-0020",
+      "ZN-0021",
+      "ZN-0022",
+      "ZN-0023",
+      "ZN-0024"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-003"
+  },
+  {
+    "id": "SPEC-004",
+    "title": "Retained evidence and file-based source admission",
+    "ticket_ids": [
+      "ZN-0025",
+      "ZN-0026",
+      "ZN-0027",
+      "ZN-0028",
+      "ZN-0029",
+      "ZN-0030"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-004"
+  },
+  {
+    "id": "SPEC-005",
+    "title": "Comparable claims, interpretations and scoped correction",
+    "ticket_ids": [
+      "ZN-0031",
+      "ZN-0032",
+      "ZN-0033",
+      "ZN-0034",
+      "ZN-0035",
+      "ZN-0036"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D02"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-005"
+  },
+  {
+    "id": "SPEC-006",
+    "title": "Reversible domain identity and temporal explanations",
+    "ticket_ids": [
+      "ZN-0037",
+      "ZN-0038",
+      "ZN-0039",
+      "ZN-0040",
+      "ZN-0041"
+    ],
+    "delivery_ids": [
+      "D02"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-006"
+  },
+  {
+    "id": "SPEC-007",
+    "title": "WorldFrames and the first semantic surface",
+    "ticket_ids": [
+      "ZN-0042",
+      "ZN-0043",
+      "ZN-0044",
+      "ZN-0045",
+      "ZN-0046"
+    ],
+    "delivery_ids": [
+      "D01"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-007"
+  },
+  {
+    "id": "SPEC-008",
+    "title": "Baseline observability, local operations and safe migration preparation",
+    "ticket_ids": [
+      "ZN-0047",
+      "ZN-0048",
+      "ZN-0049",
+      "ZN-0050",
+      "ZN-0051"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D04"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-008"
+  },
+  {
+    "id": "SPEC-009",
+    "title": "Eve fenced turn machine and visible-message recovery",
+    "ticket_ids": [
+      "ZN-0052",
+      "ZN-0053",
+      "ZN-0054",
+      "ZN-0055",
+      "ZN-0056",
+      "ZN-0057"
+    ],
+    "delivery_ids": [
+      "D05"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-009"
+  },
+  {
+    "id": "SPEC-010",
+    "title": "Context, grounded composition, model routing and voice",
+    "ticket_ids": [
+      "ZN-0058",
+      "ZN-0059",
+      "ZN-0060",
+      "ZN-0061",
+      "ZN-0062",
+      "ZN-0063"
+    ],
+    "delivery_ids": [
+      "D05"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-010"
+  },
+  {
+    "id": "SPEC-011",
+    "title": "WhatsApp durable ingress, consent and secure continuation",
+    "ticket_ids": [
+      "ZN-0064",
+      "ZN-0065",
+      "ZN-0066",
+      "ZN-0067",
+      "ZN-0068",
+      "ZN-0069"
+    ],
+    "delivery_ids": [
+      "D06"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-011"
+  },
+  {
+    "id": "SPEC-012",
+    "title": "Progressive onboarding and accessible conversation inspection",
+    "ticket_ids": [
+      "ZN-0070",
+      "ZN-0071",
+      "ZN-0072",
+      "ZN-0073",
+      "ZN-0074"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D05"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-012"
+  },
+  {
+    "id": "SPEC-013",
+    "title": "Bounded ontology grammar and deterministic release compiler",
+    "ticket_ids": [
+      "ZN-0075",
+      "ZN-0076",
+      "ZN-0077",
+      "ZN-0078",
+      "ZN-0079",
+      "ZN-0080",
+      "ZN-0081"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-013"
+  },
+  {
+    "id": "SPEC-014",
+    "title": "Runtime change governance, evaluation, preparation and activation",
+    "ticket_ids": [
+      "ZN-0082",
+      "ZN-0083",
+      "ZN-0084",
+      "ZN-0085",
+      "ZN-0086",
+      "ZN-0087",
+      "ZN-0088"
+    ],
+    "delivery_ids": [
+      "D07"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-014"
+  },
+  {
+    "id": "SPEC-015",
+    "title": "Source inventory, OAuth bindings and declarative integration plans",
+    "ticket_ids": [
+      "ZN-0089",
+      "ZN-0090",
+      "ZN-0091",
+      "ZN-0092",
+      "ZN-0093",
+      "ZN-0094",
+      "ZN-0095"
+    ],
+    "delivery_ids": [
+      "D09"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-015"
+  },
+  {
+    "id": "SPEC-016",
+    "title": "Foundation, household and confectionery domain packs",
+    "ticket_ids": [
+      "ZN-0096",
+      "ZN-0097",
+      "ZN-0098",
+      "ZN-0099",
+      "ZN-0100"
+    ],
+    "delivery_ids": [
+      "D07",
+      "D08"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-016"
+  },
+  {
+    "id": "SPEC-017",
+    "title": "Clarification prioritization and scoped stewardship",
+    "ticket_ids": [
+      "ZN-0101",
+      "ZN-0102",
+      "ZN-0103",
+      "ZN-0104",
+      "ZN-0105"
+    ],
+    "delivery_ids": [
+      "D02"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-017"
+  },
+  {
+    "id": "SPEC-018",
+    "title": "Fine-grained rights, delegation and audience-safe disclosure",
+    "ticket_ids": [
+      "ZN-0106",
+      "ZN-0107",
+      "ZN-0108",
+      "ZN-0109",
+      "ZN-0110",
+      "ZN-0111"
+    ],
+    "delivery_ids": [
+      "D03"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-018"
+  },
+  {
+    "id": "SPEC-019",
+    "title": "Retention, erasure, legal holds and restore suppression",
+    "ticket_ids": [
+      "ZN-0112",
+      "ZN-0113",
+      "ZN-0114",
+      "ZN-0115",
+      "ZN-0116",
+      "ZN-0117"
+    ],
+    "delivery_ids": [
+      "D03"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-019"
+  },
+  {
+    "id": "SPEC-020",
+    "title": "Semantic Watches, Notices and quiet attention",
+    "ticket_ids": [
+      "ZN-0118",
+      "ZN-0119",
+      "ZN-0120",
+      "ZN-0121",
+      "ZN-0122",
+      "ZN-0123"
+    ],
+    "delivery_ids": [
+      "D10"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-020"
+  },
+  {
+    "id": "SPEC-021",
+    "title": "Dental operations pack with clinical separation",
+    "ticket_ids": [
+      "ZN-0124",
+      "ZN-0125",
+      "ZN-0126",
+      "ZN-0127",
+      "ZN-0128"
+    ],
+    "delivery_ids": [
+      "D14"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-021"
+  },
+  {
+    "id": "SPEC-022",
+    "title": "Released Actions, approvals and accountable local decisions",
+    "ticket_ids": [
+      "ZN-0129",
+      "ZN-0130",
+      "ZN-0131",
+      "ZN-0132",
+      "ZN-0133",
+      "ZN-0134"
+    ],
+    "delivery_ids": [
+      "D11"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-022"
+  },
+  {
+    "id": "SPEC-023",
+    "title": "Effect execution, provider evidence and honest settlement",
+    "ticket_ids": [
+      "ZN-0135",
+      "ZN-0136",
+      "ZN-0137",
+      "ZN-0138",
+      "ZN-0139",
+      "ZN-0140"
+    ],
+    "delivery_ids": [
+      "D12"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-023"
+  },
+  {
+    "id": "SPEC-024",
+    "title": "Budget conservation, bounded Mandates and observed outcomes",
+    "ticket_ids": [
+      "ZN-0141",
+      "ZN-0142",
+      "ZN-0143",
+      "ZN-0144",
+      "ZN-0145",
+      "ZN-0146"
+    ],
+    "delivery_ids": [
+      "D12"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-024"
+  },
+  {
+    "id": "SPEC-025",
+    "title": "Authorized retrieval and permitted specialized agents",
+    "ticket_ids": [
+      "ZN-0147",
+      "ZN-0148",
+      "ZN-0149",
+      "ZN-0150",
+      "ZN-0151",
+      "ZN-0152"
+    ],
+    "delivery_ids": [
+      "D13"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-025"
+  },
+  {
+    "id": "SPEC-026",
+    "title": "REST, CLI, TypeScript SDK and MCP from one manifest",
+    "ticket_ids": [
+      "ZN-0153",
+      "ZN-0154",
+      "ZN-0155",
+      "ZN-0156",
+      "ZN-0157",
+      "ZN-0158"
+    ],
+    "delivery_ids": [
+      "D08"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-026"
+  },
+  {
+    "id": "SPEC-027",
+    "title": "Living World charts, tables, timelines and safe Focus",
+    "ticket_ids": [
+      "ZN-0159",
+      "ZN-0160",
+      "ZN-0161",
+      "ZN-0162",
+      "ZN-0163"
+    ],
+    "delivery_ids": [
+      "D08"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-027"
+  },
+  {
+    "id": "SPEC-028",
+    "title": "Telegram, email and cross-channel continuity",
+    "ticket_ids": [
+      "ZN-0164",
+      "ZN-0165",
+      "ZN-0166",
+      "ZN-0167",
+      "ZN-0168"
+    ],
+    "delivery_ids": [
+      "D06"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-028"
+  },
+  {
+    "id": "SPEC-029",
+    "title": "Signed capability artifacts and controlled installation",
+    "ticket_ids": [
+      "ZN-0169",
+      "ZN-0170",
+      "ZN-0171",
+      "ZN-0172",
+      "ZN-0173"
+    ],
+    "delivery_ids": [
+      "D15"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-029"
+  },
+  {
+    "id": "SPEC-030",
+    "title": "Isolated runners, credential brokers and programmable analysis",
+    "ticket_ids": [
+      "ZN-0174",
+      "ZN-0175",
+      "ZN-0176",
+      "ZN-0177",
+      "ZN-0178",
+      "ZN-0179"
+    ],
+    "delivery_ids": [
+      "D15"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-030"
+  },
+  {
+    "id": "SPEC-031",
+    "title": "Dense Parquet/Iceberg datasets and atomic publication",
+    "ticket_ids": [
+      "ZN-0180",
+      "ZN-0181",
+      "ZN-0182",
+      "ZN-0183",
+      "ZN-0184",
+      "ZN-0185"
+    ],
+    "delivery_ids": [
+      "D16"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-031"
+  },
+  {
+    "id": "SPEC-032",
+    "title": "Governed batch, incremental, CDC and stream data flows",
+    "ticket_ids": [
+      "ZN-0186",
+      "ZN-0187",
+      "ZN-0188",
+      "ZN-0189",
+      "ZN-0190",
+      "ZN-0191"
+    ],
+    "delivery_ids": [
+      "D16"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-032"
+  },
+  {
+    "id": "SPEC-033",
+    "title": "Entitled live feeds, gap-aware subscriptions and action capture",
+    "ticket_ids": [
+      "ZN-0192",
+      "ZN-0193",
+      "ZN-0194",
+      "ZN-0195",
+      "ZN-0196"
+    ],
+    "delivery_ids": [
+      "D16"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-033"
+  },
+  {
+    "id": "SPEC-034",
+    "title": "Virtual sources and distributed/GPU compute adapters",
+    "ticket_ids": [
+      "ZN-0197",
+      "ZN-0198",
+      "ZN-0199",
+      "ZN-0200",
+      "ZN-0201"
+    ],
+    "delivery_ids": [
+      "D17"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-034"
+  },
+  {
+    "id": "SPEC-035",
+    "title": "Progressive Workshop: early declarative apps, isolated views and full Studio",
+    "ticket_ids": [
+      "ZN-0202",
+      "ZN-0203",
+      "ZN-0204",
+      "ZN-0205",
+      "ZN-0206"
+    ],
+    "delivery_ids": [
+      "D08",
+      "D15",
+      "D18"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-035"
+  },
+  {
+    "id": "SPEC-036",
+    "title": "Read-only scenarios, notebooks and evaluated model artifacts",
+    "ticket_ids": [
+      "ZN-0207",
+      "ZN-0208",
+      "ZN-0209",
+      "ZN-0210",
+      "ZN-0211",
+      "ZN-0212"
+    ],
+    "delivery_ids": [
+      "D17"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-036"
+  },
+  {
+    "id": "SPEC-037",
+    "title": "Pack registry, overlays, upgrades and marketplace governance",
+    "ticket_ids": [
+      "ZN-0213",
+      "ZN-0214",
+      "ZN-0215",
+      "ZN-0216",
+      "ZN-0217",
+      "ZN-0218"
+    ],
+    "delivery_ids": [
+      "D18"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-037"
+  },
+  {
+    "id": "SPEC-038",
+    "title": "Enterprise SSO, SCIM and workload identity lifecycle",
+    "ticket_ids": [
+      "ZN-0219",
+      "ZN-0220",
+      "ZN-0221",
+      "ZN-0222",
+      "ZN-0223",
+      "ZN-0224"
+    ],
+    "delivery_ids": [
+      "D19"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-038"
+  },
+  {
+    "id": "SPEC-039",
+    "title": "Dedicated regional cells, private networking and recovery",
+    "ticket_ids": [
+      "ZN-0225",
+      "ZN-0226",
+      "ZN-0227",
+      "ZN-0228",
+      "ZN-0229",
+      "ZN-0230"
+    ],
+    "delivery_ids": [
+      "D19"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-039"
+  },
+  {
+    "id": "SPEC-040",
+    "title": "Fairness, economics, capacity admission and audited support",
+    "ticket_ids": [
+      "ZN-0231",
+      "ZN-0232",
+      "ZN-0233",
+      "ZN-0234",
+      "ZN-0235",
+      "ZN-0236"
+    ],
+    "delivery_ids": [
+      "D19"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-040"
+  },
+  {
+    "id": "SPEC-041",
+    "title": "Enterprise source recipes and domain-wide reconciliation",
+    "ticket_ids": [
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0239",
+      "ZN-0240",
+      "ZN-0241",
+      "ZN-0242",
+      "ZN-0243",
+      "ZN-0244"
+    ],
+    "delivery_ids": [
+      "D09"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-041"
+  },
+  {
+    "id": "SPEC-042",
+    "title": "Fenced cell migration and single-writer authority epochs",
+    "ticket_ids": [
+      "ZN-0245",
+      "ZN-0246",
+      "ZN-0247",
+      "ZN-0248",
+      "ZN-0249"
+    ],
+    "delivery_ids": [
+      "D20"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-042"
+  },
+  {
+    "id": "SPEC-043",
+    "title": "Federated Frames, independent approvals and partial global outcomes",
+    "ticket_ids": [
+      "ZN-0250",
+      "ZN-0251",
+      "ZN-0252",
+      "ZN-0253",
+      "ZN-0254"
+    ],
+    "delivery_ids": [
+      "D20"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-043"
+  },
+  {
+    "id": "SPEC-044",
+    "title": "Offline child scopes, self-hosted equivalence and fleet policy",
+    "ticket_ids": [
+      "ZN-0255",
+      "ZN-0256",
+      "ZN-0257",
+      "ZN-0258",
+      "ZN-0259",
+      "ZN-0260"
+    ],
+    "delivery_ids": [
+      "D20"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-044"
+  },
+  {
+    "id": "SPEC-045",
+    "title": "Finance security master, corporate actions and licensed information",
+    "ticket_ids": [
+      "ZN-0261",
+      "ZN-0262",
+      "ZN-0263",
+      "ZN-0264",
+      "ZN-0265",
+      "ZN-0266"
+    ],
+    "delivery_ids": [
+      "D21"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-045"
+  },
+  {
+    "id": "SPEC-046",
+    "title": "Market data, portfolio analytics and pre-trade risk",
+    "ticket_ids": [
+      "ZN-0267",
+      "ZN-0268",
+      "ZN-0269",
+      "ZN-0270",
+      "ZN-0271",
+      "ZN-0272"
+    ],
+    "delivery_ids": [
+      "D21"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-046"
+  },
+  {
+    "id": "SPEC-047",
+    "title": "Orders, executions, allocations, custody and supervision",
+    "ticket_ids": [
+      "ZN-0273",
+      "ZN-0274",
+      "ZN-0275",
+      "ZN-0276",
+      "ZN-0277",
+      "ZN-0278",
+      "ZN-0279",
+      "ZN-0280"
+    ],
+    "delivery_ids": [
+      "D22"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-047"
+  },
+  {
+    "id": "SPEC-048",
+    "title": "Full-ambition integration, adversarial assurance and final acceptance",
+    "ticket_ids": [
+      "ZN-0281",
+      "ZN-0282",
+      "ZN-0283",
+      "ZN-0284",
+      "ZN-0285",
+      "ZN-0286"
+    ],
+    "delivery_ids": [
+      "Q"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-048"
+  },
+  {
+    "id": "SPEC-049",
+    "title": "Shared hosted pilot and progressive product activation",
+    "ticket_ids": [
+      "ZN-0287",
+      "ZN-0288",
+      "ZN-0289",
+      "ZN-0290"
+    ],
+    "delivery_ids": [
+      "D04"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-049"
+  },
+  {
+    "id": "SPEC-050",
+    "title": "One semantic executor and transport-only client contract",
+    "ticket_ids": [
+      "ZN-0291",
+      "ZN-0292",
+      "ZN-0293",
+      "ZN-0294",
+      "ZN-0295"
+    ],
+    "delivery_ids": [
+      "D01",
+      "D08"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-050"
+  },
+  {
+    "id": "SPEC-051",
+    "title": "Authority-free continuation links and scoped application sessions",
+    "ticket_ids": [
+      "ZN-0296",
+      "ZN-0297",
+      "ZN-0298",
+      "ZN-0299",
+      "ZN-0300",
+      "ZN-0301"
+    ],
+    "delivery_ids": [
+      "D03"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-051"
+  },
+  {
+    "id": "SPEC-052",
+    "title": "Early declarative mini apps as released data",
+    "ticket_ids": [
+      "ZN-0302",
+      "ZN-0303",
+      "ZN-0304",
+      "ZN-0305",
+      "ZN-0306",
+      "ZN-0307"
+    ],
+    "delivery_ids": [
+      "D08",
+      "D11",
+      "D18"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-052"
+  },
+  {
+    "id": "SPEC-053",
+    "title": "Isolated app host and transport-only bridge",
+    "ticket_ids": [
+      "ZN-0308",
+      "ZN-0309",
+      "ZN-0310",
+      "ZN-0311",
+      "ZN-0312",
+      "ZN-0313"
+    ],
+    "delivery_ids": [
+      "D15"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-053"
+  },
+  {
+    "id": "SPEC-054",
+    "title": "Rivet Dynamic Apps Core qualification and immutable runtime adapter",
+    "ticket_ids": [
+      "ZN-0314",
+      "ZN-0315",
+      "ZN-0316",
+      "ZN-0317",
+      "ZN-0318",
+      "ZN-0319"
+    ],
+    "delivery_ids": [
+      "D15"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-054"
+  },
+  {
+    "id": "SPEC-055",
+    "title": "Cross-surface equivalence, adversarial app journeys and capacity",
+    "ticket_ids": [
+      "ZN-0320",
+      "ZN-0321",
+      "ZN-0322",
+      "ZN-0323",
+      "ZN-0324",
+      "ZN-0325"
+    ],
+    "delivery_ids": [
+      "D08",
+      "D11",
+      "D15",
+      "D16",
+      "D18",
+      "Q"
+    ],
+    "status": "planned",
+    "source": "reference/2026-09-05/catalog.json#specs/SPEC-055"
+  }
+]

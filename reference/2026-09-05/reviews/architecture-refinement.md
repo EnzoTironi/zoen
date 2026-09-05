@@ -1,0 +1,17 @@
+# Parecer independente: cinco workspaces iniciais
+
+**Favorável.** Começar com `apps/server`, `apps/web`, `apps/cli`, `packages/contracts` e `packages/authority` preserva as fronteiras necessárias e evita pacotes sem consumidores suficientes. Pacote separado não constitui isolamento de credencial; o essencial é a direção dos imports, a composição real e o controle de acesso em execução.
+
+O desenho é consistente se:
+
+- `contracts` contém somente schemas, resultados, definições HttpApi e valores compartilháveis; não importa autoridade, SQL, configuração de servidor ou implementações de autenticação. Tipos de contexto interno não viram campos aceitos da requisição. Basis público permanece uma projeção autorizada, distinta das dependências internas.
+- `authority` contém o único executor, política, commit e semântica de domínio. Depende de Effect e portas concretas necessárias, nunca de `apps/server`. Não criar uma segunda interface genérica de banco ou unidade de trabalho para abstrair toda a API SQL do Effect: usar recursos SQL existentes internamente é compatível com o módulo de autoridade. A composição fornece driver/pool e credencial; nenhuma porta de provider fica disponível ao trabalho transacional.
+- `apps/server/src/identity` verifica presença por integração admitida; `authority` determina membership, grants e disclosure. `apps/server/src/adapters` implementa PG/S3 e demais I/O; adapters não passam a possuir regras de autorização, reconciliação ou settlement. O executor não pode ser contornado por handlers que consultam diretamente esses adapters.
+- Web e CLI importam contratos e usam HttpApiClient diretamente. Não importam `authority` nem módulos do servidor, inclusive via reexports/dynamic imports. Cada borda continua responsável por transporte, sessão e apresentação; nenhuma duplica a autorização. Extrair `packages/client` apenas quando surgir comportamento compartilhado concreto além do cliente já derivado de HttpApi.
+- O integrador possui composição, configuração raiz, lock e ordem global das migrações. Workers propõem DDL e testes no escopo de seu domínio; integração serializa a migração final e sua validação. Propriedade do arquivo não transfere a decisão semântica de uma tabela ao integrador por conveniência.
+
+Identity e authority no mesmo processo inicial exigem papéis/conexões SQL distintos para a biblioteca de presença e a autoridade, sem conceder à primeira operações sobre membership por conveniência. Isso estabelece separação de responsabilidade e privilégio de conexão, **não** uma barreira contra comprometimento arbitrário do processo servidor. A separação de processo é necessária quando a ameaça ou a credencial exige: Eve, jobs de provider e compute não recebem o ambiente irrestrito desse servidor ao nascerem.
+
+A única tensão prática é evitar que `apps/server/src/adapters` vire depósito genérico: manter módulos específicos por recurso, com implementação de portas da autoridade e composição explícita. Também impedir que `packages/authority` vire um arquivo central: donos exclusivos por subdiretório e handlers de família preservam paralelismo; o executor comum fica pequeno e estável.
+
+**Conclusão:** cinco workspaces são suficientes para a primeira jornada servidor/UI/CLI. Contracts separado é uma fronteira imediatamente útil; client, identity e connectors como pacotes independentes podem esperar. A redução é organizacional e não reduz as provas necessárias de commit, não interferência, revogação e equivalência entre superfícies. Parecer de desenho, sem execução de produto.

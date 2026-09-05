@@ -1,0 +1,30 @@
+{
+  "role": "historical-reference-not-active-instructions",
+  "sourceCommit": "517d1e204fd4193cdb3b1748481702a2b1a09ba8",
+  "files": [
+    {
+      "source": "planning/catalog.json",
+      "snapshot": "catalog.json",
+      "sha256": "8e85abd524450f9c49de0e7c4640a52f5508683d01f2eccc56073e1120a10026",
+      "bytes": 1339453
+    },
+    {
+      "source": "planning/files.json",
+      "snapshot": "files.json",
+      "sha256": "8ac16e4e0436057a27e1ae79eeefbebc0dc91446f9612aa810d211cd24dbc246",
+      "bytes": 1089725
+    },
+    {
+      "source": "planning/capability-coverage.json",
+      "snapshot": "capabilities.json",
+      "sha256": "e74d86858c016ae2e992637efa8bbe216d303ea3ea9888a258ff95dafeaf9154",
+      "bytes": 124685
+    },
+    {
+      "source": "docs/architecture/constitution.md",
+      "snapshot": "constitution-v4.md",
+      "sha256": "97020bf575a61c695a4fd47d9c602a3edbafc6503ba3df65b17ccba331c738d5",
+      "bytes": 10203
+    }
+  ]
+}

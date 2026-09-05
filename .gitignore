@@ -1,20 +1,3 @@
-node_modules/
-.core-build/
-dist/
-coverage/
-.env
-.env.*
-!.env.example
-.qualification/
-artifacts/current/
-*.log
 .DS_Store
-
-specification/v4/
-
-# Generated context and verification outputs; not product state
-packets/
 __pycache__/
-*.pyc
-/artifacts/
-.work/
+*.py[cod]

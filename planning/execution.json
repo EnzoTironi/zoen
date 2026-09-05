@@ -1,0 +1,1255 @@
+{
+  "schema_version": 1,
+  "status": "planned",
+  "scope": "D01 e primeiro incremento D02; nenhuma implementação ou verificação executada por esta proposta",
+  "workers": {
+    "worker-1": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "role": "contratos, autoridade e conhecimento"
+    },
+    "worker-2": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "role": "UI, PostgreSQL e identidade"
+    },
+    "worker-3": {
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "role": "valores, storage, CLI e verificação independente com revisão cruzada"
+    },
+    "root": {
+      "role": "orquestração, root manifests/lock/CI/configs, composição, migration numbering e revisão cruzada"
+    }
+  },
+  "workspaces": [
+    "apps/server",
+    "apps/web",
+    "apps/cli",
+    "packages/contracts",
+    "packages/authority"
+  ],
+  "path_policy": "Globs são allowlists propostas, não ordem para criar arquivos vazios. Worker escreve somente seus paths; root detém configs/entrypoints/composição/migrações numeradas e conecta exports. Propostas SQL não numeradas podem ser testadas isoladamente. Entrypoints dos cinco workspaces e scripts são root. Nenhum worker edita root manifests/lock/CI/configs/composição ou numbering.",
+  "dependency_semantics": {
+    "hard": "Pré-requisito para iniciar implementação consumidora: contrato/artefato real está estabilizado. Não é mera sequência de ID.",
+    "optional": "Informação útil; ausência não impede trabalho independente. Nunca vale como fallback fake.",
+    "acceptance_requires": "Pode implementar componentes antes, mas não concluir/aceitar o pacote sem essas integrações reais. Não significa que um teste tenha sido executado."
+  },
+  "contract_inputs": {
+    "identity": "World/realm, principal verificado somente no servidor, finalidade e revisão de autorização; cliente fornece só referência opaca de sessão pelo fluxo suportado.",
+    "operation": "Versão de envelope, operationId estável, operação discriminada, payload validado, digest de intenção e base/guard quando requeridos.",
+    "initial_operations": [
+      "create private World com seed aprovado na imagem",
+      "stage/admit um formato explícito JSON ou CSV",
+      "inspect evidência e interpretação em base identificada",
+      "propor/aplicar correção limitada, unknown e undo por operação posterior"
+    ],
+    "results": "Tags de sucesso/negação/invalid/stale/conflict/unavailable preservam unknown, contested e verification separadamente; nomes exatos de símbolos serão definidos no schema real EX02.",
+    "minimum_evidence": "WorldRef, fonte/namespace, externalId/revisão, digest dos bytes, EvidenceRef opaco, coordenada do registro, predicado/sujeito explícito/intervalo, valor textual exato e estado de verificação.",
+    "private_ports": "Usar SqlClient/withTransaction/driver existentes do Effect para SQL; não criar API transacional genérica duplicada. Portas privadas só para recursos/semântica específicos realmente injetados. Nenhum port de provider no trabalho transacional. PresenceProof verificada e object storage têm schemas privados concretos.",
+    "fixed_story": "Duas fontes autorizadas atribuem valores diferentes à mesma obrigação/intervalo. Nenhuma fornece settlement observado. Mostrar desacordo e fonte; correção de uma obrigação não altera outra; unknown não escolhe vencedor; undo preserva histórico."
+  },
+  "packages": [
+    {
+      "id": "EX01",
+      "title": "Baseline executável, CI e dependências reais",
+      "owner": "root",
+      "depends_on": {
+        "hard": [],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "contracts_consumed": [
+        "Requisitos fixos: Effect 4 nativo, TypeScript 7 único, Ultracite zero diagnósticos; PostgreSQL e S3 compatível reais via Docker; Fly no deploy"
+      ],
+      "scope": "Preparar os cinco workspaces e ferramentas mínimas; manter os testes funcionais junto aos pacotes correspondentes. Fly é próximo ambiente real de execução, não claim de deploy feito.",
+      "acceptance": [
+        "Instalação limpa resolve versões reais compatíveis; incompatibilidade permanece bloqueio concreto, não lock inventado.",
+        "CI executa typecheck TS7 e Ultracite; falha real em qualquer diagnóstico impede integração.",
+        "PostgreSQL e S3 sobem em namespaces descartáveis; conectividade exercita transação SQL e gravação/leitura de bytes reais.",
+        "Nenhuma identidade privilegiada de desenvolvimento, rota de produto falsa ou framework de admissão é criado."
+      ],
+      "planned_direct_checks": [
+        "Rodar instalação congelada a partir do lock produzido legitimamente.",
+        "Executar compilador TS7 e Ultracite, registrando saída e versões.",
+        "Em PostgreSQL real, abrir transação, gravar/ler dado de teste e rollback; em S3 real, upload/read e remoção apenas dos objetos da execução.",
+        "Desligar uma dependência do harness e verificar falha explícita, sem skip/fallback."
+      ],
+      "owns": [
+        "package.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml",
+        "tsconfig*.json",
+        "oxlint.config.ts",
+        ".oxfmtrc.jsonc",
+        ".github/workflows/**",
+        "vitest.config.ts",
+        "playwright.config.ts",
+        ".node-version",
+        ".npmrc",
+        ".gitignore",
+        ".rgignore",
+        ".dockerignore",
+        "apps/*/package.json",
+        "packages/*/package.json",
+        "apps/*/tsconfig*.json",
+        "packages/*/tsconfig*.json",
+        "ops/compose.yaml",
+        "ops/containers/**",
+        "ops/fly/**",
+        "apps/server/src/main.ts",
+        "apps/server/src/composition.ts",
+        "apps/server/src/http/**",
+        "apps/web/src/main.*",
+        "apps/cli/src/main.*",
+        "packages/contracts/src/index.ts",
+        "packages/authority/src/index.ts",
+        "ops/migrations/**",
+        "tests/infrastructure/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": null,
+      "reasoning_effort": null,
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm install --frozen-lockfile",
+        "docker compose -f ops/compose.yaml up -d",
+        "pnpm test:integration -- infrastructure"
+      ],
+      "source_ticket_ids": [
+        "ZN-0001",
+        "ZN-0002",
+        "ZN-0003",
+        "ZN-0004",
+        "ZN-0005",
+        "ZN-0006"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX01"
+      ]
+    },
+    {
+      "id": "EX02",
+      "title": "Contratos mínimos de operações, resultados e portas privadas",
+      "owner": "worker-1",
+      "depends_on": {
+        "hard": [],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX01"
+      ],
+      "contracts_consumed": [
+        "Vocabulário concreto descrito na seção contract_inputs deste arquivo; API real de Effect Schema/HttpApi a confirmar na versão instalada EX01"
+      ],
+      "scope": "Fixar schemas e portas sem lógica de negócio duplicada. Não desenhar toda API futura, gerar todos SDKs ou prometer métodos de provedor não verificados.",
+      "acceptance": [
+        "Schemas distinguem identificador/World/realm, decimal textual, tempo, evidência, corte e erro tipado; valores desconhecidos não viram zero/sucesso.",
+        "Contrato de cliente nunca aceita actor/principal como autoridade declarada pelo chamador nem retorna chave S3/credencial.",
+        "Operações privadas mínimas têm identidade/idempotência, entradas e resultados; o HttpApi só publica operações apoiadas por handlers reais quando EX10 compuser.",
+        "Contexto interno e portas específicas de storage/presença são privados; SQL usa abstrações existentes do Effect, sem reexportar backend por contracts.",
+        "Contrato físico mínimo e política de dados acima estão explícitos e revisados; SQL candidato EX06 e queries EX05 partem da mesma definição.",
+        "Política declarada não concede autoridade do cliente; o servidor resolve perfil permitido e rejeita requisito de eliminação/hold/restore que o perfil inicial não consiga cumprir."
+      ],
+      "planned_direct_checks": [
+        "Decode de envelopes inválidos, decimal malformado, discriminante desconhecido e propriedade extra conforme schema real.",
+        "Round-trip de tags Known/Unknown e referências opacas sem coerção.",
+        "Inspeção estática do export público não expõe portas privadas nem módulos de infraestrutura."
+      ],
+      "owns": [
+        "packages/contracts/src/d01/**",
+        "packages/contracts/test/d01/**",
+        "packages/authority/src/ports/d01/**",
+        "packages/authority/test/ports/d01/**",
+        "docs/contracts/d01.md"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit -- EX02"
+      ],
+      "consumed_by": [
+        "EX04",
+        "EX05",
+        "EX06",
+        "EX07",
+        "EX08",
+        "EX09",
+        "EX10",
+        "EX11",
+        "EX12",
+        "EX13"
+      ],
+      "outputs": [
+        "Schemas/HttpApi públicos importáveis em packages/contracts/src/d01; nenhuma operação exposta sem handler real.",
+        "Contratos privados específicos em packages/authority/src/ports/d01; SQL continua usando SqlClient Effect.",
+        "docs/contracts/d01.md: contrato curto congelado do incremento, consumido por EX05/EX06/EX08/EX09 e validado pelo integrador."
+      ],
+      "persistence_handoff": {
+        "artifact": "docs/contracts/d01.md",
+        "producer": "EX02",
+        "consumers": [
+          "EX05",
+          "EX06",
+          "EX08",
+          "EX09"
+        ],
+        "required_content": [
+          "tabelas/colunas/chaves mínimas de World, head, membership, operation, receipt, outbox, capture/evidence, claim e cuts",
+          "unicidade genesis/principal e demais operações World/principal/semanticOperation/operationId, sem transporte",
+          "tipo físico de IDs/decimais/tempo e schema de cada coluna serializada; consultas de guard/predicado/ausência",
+          "writer epoch, release/generation/security revisions e ordem de locks; roles de presença/autoridade/migração",
+          "estados de staging/admissão/pins/supressão e domínio responsável por cada gravação; não implementação SQL duplicada",
+          "política de dados resolvida pelo servidor: formatos/limites, retenção cumprível, pins/GC e capacidades de apagamento/restore disponíveis"
+        ],
+        "handoff_rule": "Integrator e workers consumidores revisam o contrato antes de EX05/EX06 iniciarem queries/DDL; mudança de coluna/semântica volta ao produtor e invalida só consumidores afetados."
+      },
+      "source_ticket_ids": [
+        "ZN-0007",
+        "ZN-0011",
+        "ZN-0019",
+        "ZN-0042",
+        "ZN-0112",
+        "ZN-0291",
+        "ZN-0292"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX02"
+      ]
+    },
+    {
+      "id": "EX03",
+      "title": "Primeira tela em estados honestos e acessíveis",
+      "owner": "worker-2",
+      "depends_on": {
+        "hard": [],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX01"
+      ],
+      "contracts_consumed": [
+        "Estados visuais concretos: vazio; upload em andamento; duas fontes divergentes; erro de autorização; recurso indisponível. Estes exemplos visuais não são respostas de serviço."
+      ],
+      "scope": "UI pura pode iniciar antes dos contratos. Tipos visuais locais não reproduzem schemas do domínio; EX12 cria o mapeamento dos resultados reais.",
+      "acceptance": [
+        "Componentes puros apresentam duas fontes e estado não verificado sem declarar pagamento concluído.",
+        "Controles de arquivo, inspeção e correção têm rótulo/foco/teclado e zoom 200% sem esconder informação essencial.",
+        "Não existem fetch, login fake, store de autoridade ou conexão simulada no componente."
+      ],
+      "planned_direct_checks": [
+        "Renderizar componentes diretamente com props sintéticas declaradas, verificando texto de estado e nomes acessíveis.",
+        "Inspecionar tab order e layout em navegador real sem ativar rota operacional."
+      ],
+      "owns": [
+        "apps/web/src/components/d01/**",
+        "apps/web/test/components/d01/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit -- EX03"
+      ],
+      "source_ticket_ids": [
+        "ZN-0045",
+        "ZN-0070",
+        "ZN-0071",
+        "ZN-0072",
+        "ZN-0073"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX03"
+      ]
+    },
+    {
+      "id": "EX04",
+      "title": "Valores puros de quantidade, identidade e tempo",
+      "owner": "worker-3",
+      "depends_on": {
+        "hard": [
+          "EX02"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "contracts_consumed": [
+        "Schemas de valor EX02; erros tipados e limites decididos no contrato"
+      ],
+      "scope": "Implementar apenas os valores consumidos por D01/D02; preservar o requisito futuro de perfis completos, sem criar bibliotecas especulativas.",
+      "acceptance": [
+        "0.10+0.20 BRL resulta exatamente 0.30; dinheiro não usa Number.",
+        "Comparação entre moedas/unidades incompatíveis retorna não comparável sem fator explícito.",
+        "Intervalos adjacentes não se sobrepõem; data civil não vira instante implicitamente.",
+        "Normalização/canonicalização preserva significado e rejeita entradas malformadas dentro dos limites definidos."
+      ],
+      "planned_direct_checks": [
+        "Leis puras diretas de decimal, arredondamento explícito, unidades e intervalos com contraprovas relevantes.",
+        "Casos de duplicate JSON keys e limites de tamanho/profundidade no parser escolhido; nenhuma chamada de I/O.",
+        "Compilação negativa para mistura de IDs se suportada pelo contrato TS7 real."
+      ],
+      "owns": [
+        "packages/authority/src/values/**",
+        "packages/authority/test/values/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-2",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit -- EX04"
+      ],
+      "source_ticket_ids": [
+        "ZN-0007",
+        "ZN-0008",
+        "ZN-0009",
+        "ZN-0010",
+        "ZN-0012"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX04"
+      ]
+    },
+    {
+      "id": "EX05",
+      "title": "Executor único, commit/access e genesis",
+      "owner": "worker-1",
+      "depends_on": {
+        "hard": [
+          "EX02"
+        ],
+        "optional": [
+          "EX04"
+        ]
+      },
+      "acceptance_requires": [
+        "EX01",
+        "EX06"
+      ],
+      "contracts_consumed": [
+        "SqlClient e driver Effect reais EX01; schemas/contexto EX02; sem port transacional genérico duplicado"
+      ],
+      "scope": "Política real mínima do owner privado e revogação; não implementar duas políticas temporária/definitiva. Ampliar política fina futuramente no mesmo componente.",
+      "acceptance": [
+        "Uma intenção duplicada retorna um único resultado autorizado; mesmo operationId com digest diferente conflita.",
+        "Grants são derivados de identidade/membership atual, nunca de campos confiados do cliente; replay reautoriza antes de divulgar.",
+        "Commit reúne alteração semântica, receipt e handoff/outbox atomicamente; guard alterado retorna Stale sem consentimento recalculado.",
+        "Genesis usa a mesma primitiva transacional e escopo de operação anterior ao World, sem superusuário de desenvolvimento.",
+        "Um único pipeline semântico valida operação, direitos, handler e disclosure; HTTP/CLI não contornam esse pipeline.",
+        "Genesis/chaves/retry e INV-01–13, INV-17, INV-20–21 seguem docs/invariants.md; máximo de três tentativas totais só por serialização/deadlock."
+      ],
+      "planned_direct_checks": [
+        "Leis diretas de comparação de intenção e decisão de autorização com entradas sintéticas, sem imitar serviço.",
+        "No PostgreSQL real via EX06, corrida de duas operações iguais e inspeção independente das linhas/receipts.",
+        "Revogar membership antes do replay e observar ausência de payload; falha transacional não deixa parcial."
+      ],
+      "owns": [
+        "packages/authority/src/commit/**",
+        "packages/authority/src/access/**",
+        "packages/authority/test/commit/**",
+        "packages/authority/test/access/**",
+        "packages/authority/src/semantic/**",
+        "packages/authority/test/semantic/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX05"
+      ],
+      "outputs": [
+        "Executor comum e primitivas de commit/access/genesis consumidos pelos handlers EX08 e composição EX10; sem outro executor em HTTP."
+      ],
+      "source_ticket_ids": [
+        "ZN-0014",
+        "ZN-0015",
+        "ZN-0020",
+        "ZN-0021",
+        "ZN-0022",
+        "ZN-0023",
+        "ZN-0043",
+        "ZN-0046",
+        "ZN-0291"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX05"
+      ]
+    },
+    {
+      "id": "EX06",
+      "title": "Adapter PostgreSQL e schema candidato mínimo",
+      "owner": "worker-2",
+      "depends_on": {
+        "hard": [
+          "EX02"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX01"
+      ],
+      "contracts_consumed": [
+        "SqlClient/driver Effect reais e schema mínimo acordado em EX02; semântica do commit pertence EX05"
+      ],
+      "scope": "Somente SQL/adapter candidato e testes locais. Root decide numbering e instalação de migração definitiva; worker não edita composição nem configs.",
+      "acceptance": [
+        "Layer fornece pool/driver SQL real com roles distintos; consultas parametrizadas e constraints são exercitadas, runtime sem DDL.",
+        "DDL candidato pode instalar namespace descartável para o teste; arquivos de migração numerados só são publicados por root EX10.",
+        "Constraints rejeitam duplicidade e referências cruzadas de World; concorrência é testada no PostgreSQL real.",
+        "Contrato de read snapshot retorna corte coerente e dados autorizáveis sem filtro posterior de outro tenant."
+      ],
+      "planned_direct_checks": [
+        "Aplicar DDL candidato a banco descartável com role de migração; executar adapter sob role de runtime.",
+        "Tentativas de DDL e leitura/escrita cross-World sem contexto autorizado falham na fronteira prevista.",
+        "Dois clientes reais fazem corrida e rollback; observar constraints e estados sem inferir sucesso por log."
+      ],
+      "owns": [
+        "apps/server/src/adapters/postgres/d01/**",
+        "apps/server/sql/proposals/d01/**",
+        "apps/server/test/adapters/postgres/d01/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX06"
+      ],
+      "source_ticket_ids": [
+        "ZN-0018",
+        "ZN-0019",
+        "ZN-0020",
+        "ZN-0021",
+        "ZN-0022",
+        "ZN-0024"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX06"
+      ]
+    },
+    {
+      "id": "EX07",
+      "title": "Adapter S3 e captura limitada de bytes",
+      "owner": "worker-3",
+      "depends_on": {
+        "hard": [
+          "EX02"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX01"
+      ],
+      "contracts_consumed": [
+        "Porta de armazenamento privada EX02; limite de bytes/content type e refs opacas; digest definido no contrato"
+      ],
+      "scope": "Não implementar presigned URL pública, parser de todos formatos nem cliente fake. Quarentena/pins/admissão semântica pertencem a EX08.",
+      "acceptance": [
+        "Upload completo e digest verificado produz referência interna; truncado, grande demais ou tipo inválido não se torna evidência.",
+        "Chaves S3 e credenciais não aparecem no resultado público; objeto é scoped e bytes são lidos pela porta interna.",
+        "Falha real de storage é indisponibilidade explícita e não sucesso sintético."
+      ],
+      "planned_direct_checks": [
+        "Enviar bytes sintéticos ao S3 real, ler e comparar hash e bytes.",
+        "Interromper stream/ultrapassar limite e verificar que não existe artefato admitido; remover apenas objetos de teste.",
+        "Negar/retirar acesso ao storage no ambiente isolado e observar erro tipado sem segredo no diagnóstico."
+      ],
+      "owns": [
+        "apps/server/src/adapters/object-storage/d01/**",
+        "apps/server/test/adapters/object-storage/d01/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-2",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX07"
+      ],
+      "source_ticket_ids": [
+        "ZN-0025",
+        "ZN-0027",
+        "ZN-0029"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX07"
+      ]
+    },
+    {
+      "id": "EX08",
+      "title": "Admitir evidência e inspecionar divergência",
+      "owner": "worker-1",
+      "depends_on": {
+        "hard": [
+          "EX02",
+          "EX04",
+          "EX05"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX06",
+        "EX07"
+      ],
+      "contracts_consumed": [
+        "Commit/access/executor EX05; SqlClient Effect real; storage privado EX02/EX07; Frame/VisibleFrame EX02; contrato de persistência e política docs/contracts/d01.md"
+      ],
+      "scope": "Formato inicial JSON ou CSV explícito decidido em EX02; aceitar apenas esse formato até seu teste real. Não contar formato futuro como entregue. Frame é parte desta implementação antes de sua prova integrada.",
+      "acceptance": [
+        "Dois registros comparáveis preservam duas fontes atribuídas; divergência fica não resolvida/contestada conforme regra explícita.",
+        "Duplicar a mesma captura/revisão não duplica admissão; bytes distintos não sobrescrevem evidência anterior.",
+        "Inspect lê base coerente, separa evidência/afirmação/verificação e não inventa Settlement.",
+        "Apenas bytes duráveis podem ser admitidos; falha após staging deixa capture não admitido e cleanup seguro.",
+        "Admissão verifica política de dados conhecida e cumprível antes de aceitar referência: perfil incompatível retorna recusa explícita sem evidência admitida; staging pode ser limpo somente conforme política.",
+        "Pins e GC não removem conteúdo admitido; cópias mantêm linhagem e não contam como suporte independente. Apagamento ainda não implementado não é anunciado como disponível."
+      ],
+      "planned_direct_checks": [
+        "Testar parser/mapa de um formato explícito diretamente com entradas válidas e ambíguas.",
+        "Integração real SQL+S3: importar duas fontes, reinspecionar, duplicar upload e ler linhagem/corte.",
+        "Comparar respostas de dois Worlds e revogar antes da leitura dos bytes; nenhum identificador/conteúdo privado cruza contexto.",
+        "Tentar admitir captura que exige apagamento/restore não suportado no perfil: recusa observada e zero referência admitida.",
+        "Fazer GC concorrente e falha de staging no store real; preservar objetos pinned e limpar somente órfãos elegíveis."
+      ],
+      "owns": [
+        "packages/authority/src/evidence/d01/**",
+        "packages/authority/src/knowledge/d01/**",
+        "packages/authority/test/evidence/d01/**",
+        "packages/authority/test/knowledge/d01/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX08"
+      ],
+      "source_ticket_ids": [
+        "ZN-0026",
+        "ZN-0027",
+        "ZN-0028",
+        "ZN-0029",
+        "ZN-0031",
+        "ZN-0032",
+        "ZN-0033",
+        "ZN-0036",
+        "ZN-0037",
+        "ZN-0042",
+        "ZN-0044",
+        "ZN-0112"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX08"
+      ]
+    },
+    {
+      "id": "EX09",
+      "title": "Identidade real e sessão web sem autoridade implícita",
+      "owner": "worker-2",
+      "depends_on": {
+        "hard": [
+          "EX02",
+          "EX06"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX01",
+        "EX05"
+      ],
+      "contracts_consumed": [
+        "Porta presence EX02; provider/session real e versão compatível confirmados; membership/grant EX05"
+      ],
+      "scope": "Reutilizar implementação real de autenticação compatível; não inventar API nem criptografia de senha. Seleção/instalação da dependência é executada por root, após achado concreto do worker.",
+      "acceptance": [
+        "Fluxo suportado real de autenticação produz identidade verificada; sessão por si só não cria grant arbitrário.",
+        "Sessão expirada/revogada e audience inválida são rejeitadas; logout encerra acesso e protege leitura seguinte.",
+        "Nenhum login fixo, usuário privilegiado, token hardcoded ou confiança em header de actor fornecido pelo cliente.",
+        "Falta de API suportada/configuração real é bloqueio explícito do adapter de identidade."
+      ],
+      "planned_direct_checks": [
+        "Exercitar fluxo real de sessão contra provider local/real oficialmente suportado, observando verificação, expiração e logout.",
+        "Requests com headers forjados ou sessão de outra conta não assumem principal.",
+        "Verificar cookies/CSRF/origin conforme fluxo real adotado no navegador durante EX15."
+      ],
+      "owns": [
+        "apps/server/src/identity/d01/**",
+        "apps/server/test/identity/d01/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX09"
+      ],
+      "source_ticket_ids": [
+        "ZN-0013",
+        "ZN-0015",
+        "ZN-0017",
+        "ZN-0018"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX09"
+      ]
+    },
+    {
+      "id": "EX10",
+      "title": "Compor primeira jornada e publicar migrações mínimas",
+      "owner": "root",
+      "depends_on": {
+        "hard": [
+          "EX01",
+          "EX02",
+          "EX04",
+          "EX05",
+          "EX06",
+          "EX07",
+          "EX08",
+          "EX09"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "contracts_consumed": [
+        "Handlers reais EX05/EX08; identity EX09; adapters EX06/EX07; HttpApi EX02"
+      ],
+      "scope": "Este é o primeiro ponto de integração; root não delega composição, manifests ou numbering. Prova de deploy Fly fica explicitamente futura se não executada nesta rodada.",
+      "acceptance": [
+        "Server é iniciado e CreateWorld/import/Inspect chegam aos mesmos handlers reais, com identity server-side e grants atuais.",
+        "Root numera/aplica migrações necessárias sem sobrescrever histórico e monta Effect layers reais.",
+        "Readiness verifica dependências; log redigido permite correlação sem conteúdo ou segredo.",
+        "Nenhuma rota é exposta com handler vazio ou API prevista sem implementação."
+      ],
+      "planned_direct_checks": [
+        "Criar duas identidades pelo fluxo real; autenticar, criar World, importar e Inspect pelo transporte real.",
+        "Retry de operationId e revogação comprovados pela resposta e estado SQL.",
+        "Reiniciar servidor com DB/S3 persistidos e repetir Inspect no corte retido."
+      ],
+      "owns": [
+        "apps/server/src/main.ts",
+        "apps/server/src/composition.ts",
+        "apps/server/src/http/**",
+        "ops/migrations/**",
+        "packages/contracts/src/index.ts",
+        "packages/authority/src/index.ts",
+        "apps/server/test/composition/d01/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": null,
+      "reasoning_effort": null,
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX10",
+        "pnpm build",
+        "pnpm test:container"
+      ],
+      "source_ticket_ids": [
+        "ZN-0014",
+        "ZN-0024",
+        "ZN-0030",
+        "ZN-0043",
+        "ZN-0047",
+        "ZN-0048",
+        "ZN-0051",
+        "ZN-0291",
+        "ZN-0292"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX10"
+      ]
+    },
+    {
+      "id": "EX11",
+      "title": "CLI mínima sobre o HttpApi real",
+      "owner": "worker-3",
+      "depends_on": {
+        "hard": [
+          "EX02"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX09",
+        "EX10"
+      ],
+      "contracts_consumed": [
+        "Operações e erros públicos EX02; mecanismo real de autenticação/entrada EX09"
+      ],
+      "scope": "Preparar parser/formatter após contrato; só considerar concluído após processo contra servidor real. Entrypoint/package script são conectados por root.",
+      "acceptance": [
+        "CLI autentica pelo mecanismo autorizado e importa/inspeciona usando exclusivamente API pública.",
+        "JSON de resultado tem a mesma base/tags/proveniência do servidor; erro tipado gera exit code diferente de zero.",
+        "CLI não contém credenciais PostgreSQL/S3 nem caminho alternativo de verdade.",
+        "Subpasso de integração do entrypoint realizado por root antes da aceitação; aplicação real usa candidato exportado, sem esperar EX14."
+      ],
+      "planned_direct_checks": [
+        "Testar formatação/exit mapping diretamente sem cliente fake.",
+        "Executar processo CLI real contra EX10 com as mesmas operações e base usadas no browser.",
+        "Alterar identidade/corte/retry e observar denials/idempotência reais."
+      ],
+      "owns": [
+        "apps/cli/src/d01/**",
+        "apps/cli/test/d01/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-2",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX11"
+      ],
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "Candidato do worker com export real e checks locais; estado implemented_unverified, EX10 disponível.",
+          "owns": [
+            "apps/cli/src/main.ts"
+          ],
+          "action": "Ligar comando derivado de HttpApiClient e fluxo real de sessão ao entrypoint real com imports explícitos; instalar/configurar dependência somente se necessária; não criar handler fake.",
+          "completion": "Executar a aplicação real com o worker e só então concluir aceitação do pacote; não depende EX14."
+        }
+      ],
+      "source_ticket_ids": [
+        "ZN-0045",
+        "ZN-0046",
+        "ZN-0291",
+        "ZN-0292"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX11"
+      ]
+    },
+    {
+      "id": "EX12",
+      "title": "Web conectada com sessão, importação e evidência",
+      "owner": "worker-2",
+      "depends_on": {
+        "hard": [
+          "EX02",
+          "EX03"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX09",
+        "EX10"
+      ],
+      "contracts_consumed": [
+        "Componentes puros EX03; HttpApi/Frame EX02; sessão real EX09"
+      ],
+      "scope": "Root conecta rota/entrypoint/build; worker só implementa feature e testes. Não usar rota mock, fake server ou provider fabricado.",
+      "acceptance": [
+        "Usuário autentica, cria World, importa registros e abre evidência com base/estado explícitos.",
+        "Spinner/interrupção/erro não mostram sucesso; logout limpa views privadas e voltar no histórico não revela dados ao próximo usuário.",
+        "Cliente usa um transporte sem duplicar interpretação, ACL ou reconciliação.",
+        "Subpasso de integração do entrypoint realizado por root antes da aceitação; aplicação real usa candidato exportado, sem esperar EX14."
+      ],
+      "planned_direct_checks": [
+        "Mapeamento puro de tags do servidor para estados visuais.",
+        "Jornada Playwright contra app+server+SQL+S3 reais, sem interceptação de respostas.",
+        "Duas sessões reais, logout/back e erro de autorização; keyboard e zoom 200%."
+      ],
+      "owns": [
+        "apps/web/src/features/d01/**",
+        "apps/web/test/features/d01/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX12"
+      ],
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "Candidato do worker com export real e checks locais; estado implemented_unverified, EX10 disponível.",
+          "owns": [
+            "apps/web/src/main.tsx"
+          ],
+          "action": "Ligar componente raiz da feature e cliente HttpApi ao entrypoint real com imports explícitos; instalar/configurar dependência somente se necessária; não criar handler fake.",
+          "completion": "Executar a aplicação real com o worker e só então concluir aceitação do pacote; não depende EX14."
+        }
+      ],
+      "source_ticket_ids": [
+        "ZN-0045",
+        "ZN-0046",
+        "ZN-0070",
+        "ZN-0071",
+        "ZN-0072",
+        "ZN-0073",
+        "ZN-0291",
+        "ZN-0292"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX12"
+      ]
+    },
+    {
+      "id": "EX13",
+      "title": "Correção limitada, unknown e undo com histórico",
+      "owner": "worker-1",
+      "depends_on": {
+        "hard": [
+          "EX02",
+          "EX04",
+          "EX05",
+          "EX08"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [
+        "EX06",
+        "EX07"
+      ],
+      "contracts_consumed": [
+        "Contrato de correção reservado em EX02: target/question digest, base/guards, explicit answer kind e operation identity; append-only receipt EX05"
+      ],
+      "scope": "Primeiro incremento D02 é correção de afirmação por identidade explícita já conhecida. Merge/split de identidade, priorização/stewardship e propagação para sistemas ainda inexistentes ficam preservados no backlog D02, sem alegação de conclusão integral.",
+      "acceptance": [
+        "Corrigir um registro/intervalo afeta apenas esse escopo; outro registro e regra reutilizável permanecem semanticamente inalterados.",
+        "Unknown não seleciona fonte; undo acrescenta retraction/successor e preserva receipt anterior.",
+        "Alterar uma dependência relevante entre proposta e commit retorna Stale sem recomputar consentimento.",
+        "Inspect no corte anterior mantém o resultado anterior e o novo corte mostra correção com autoria/proveniência permitidas."
+      ],
+      "planned_direct_checks": [
+        "Funções de classificação de resposta e escopo testadas diretamente.",
+        "Integração real: duas entidades, uma correção; reinspecionar ambas em cortes antes/depois e depois de undo.",
+        "Dois clientes correm mesma operação; apenas um receipt. Atualizar guard via outra operação real; resposta antiga é rejeitada."
+      ],
+      "owns": [
+        "packages/authority/src/knowledge/corrections/**",
+        "packages/authority/test/knowledge/corrections/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX13"
+      ],
+      "source_ticket_ids": [
+        "ZN-0034",
+        "ZN-0035",
+        "ZN-0036",
+        "ZN-0038",
+        "ZN-0041"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX13"
+      ]
+    },
+    {
+      "id": "EX14",
+      "title": "Integrar correção nas mesmas superfícies",
+      "owner": "root",
+      "depends_on": {
+        "hard": [
+          "EX10",
+          "EX11",
+          "EX12",
+          "EX13"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "contracts_consumed": [
+        "Correção EX13, HttpApi EX02, componentes EX03 e transportes reais EX11/EX12"
+      ],
+      "scope": "Integração pequena controlada por root. O worker pode preparar handlers e componentes, mas só root toca entrypoints/composição e registra operação publicada.",
+      "acceptance": [
+        "Web e CLI chamam o mesmo handler de correção/undo/unknown com operationId preservado; nenhuma segunda regra aparece em frontend.",
+        "Proposta mostra alvo, base e consequência limitada; rejeição Stale exige nova intenção explícita.",
+        "Migrations/export/registrations apenas do comportamento real são integradas por root."
+      ],
+      "planned_direct_checks": [
+        "Criar correção pela web e repetir exatamente sua identidade na CLI; uma operação/receipt e resposta autorizada.",
+        "Criar segunda proposta, modificar dependência e tentar confirmar: Stale sem alteração semântica.",
+        "Abrir corte antigo e desfazer correção pelo fluxo real."
+      ],
+      "owns": [
+        "apps/server/src/composition.ts",
+        "apps/server/src/http/**",
+        "ops/migrations/**",
+        "apps/web/src/integration/d02/**",
+        "apps/cli/src/integration/d02/**",
+        "apps/web/src/main.*",
+        "apps/cli/src/main.*",
+        "apps/server/test/composition/d02/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": null,
+      "reasoning_effort": null,
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX14",
+        "pnpm test:acceptance",
+        "pnpm build",
+        "pnpm test:container"
+      ],
+      "source_ticket_ids": [
+        "ZN-0034",
+        "ZN-0045",
+        "ZN-0046",
+        "ZN-0072",
+        "ZN-0291"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX14"
+      ]
+    },
+    {
+      "id": "EX15",
+      "title": "Verificação independente de D01 e primeiro incremento D02",
+      "owner": "worker-3",
+      "depends_on": {
+        "hard": [
+          "EX10",
+          "EX11",
+          "EX12",
+          "EX14"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "contracts_consumed": [
+        "Composição real EX10/EX14 e resultados públicos; oráculos concretos EX08/EX13"
+      ],
+      "scope": "Não modificar resultados esperados para passar nem código de produto durante revisão; falha volta ao dono com reprodução. Sem claim de restore/apagamento completo, cloud ou D02 identidade reversível ainda não implementados.",
+      "acceptance": [
+        "Revisor distinto de worker-1 verifica core e de worker-2 verifica identidade/UI; não aprova sozinho sua própria CLI de EX11. Root ou worker-2 revisa CLI separadamente.",
+        "Jornada real compara significado/base/proveniência sob mesmo contexto e não exige texto visual byte-idêntico.",
+        "Falha de processo em ponto de commit reproduzível deixa tudo ou nada; retry mantém identidade; nenhum efeito externo é alegado.",
+        "Relatório separa checks passados, bloqueios reais e funcionalidades ainda fora do incremento, sem 975 testes fictícios."
+      ],
+      "planned_direct_checks": [
+        "Navegador+CLI+PostgreSQL+S3: criar World, importar duas fontes, comparar, corrigir, unknown, undo, reler cortes.",
+        "Segunda identidade sem membership não obtém payload, contagem privada, chave storage ou diferença explicativa de fonte oculta.",
+        "Matar processo após escrita antes do acknowledgement em barreira de teste local e inspecionar SQL; reiniciar e repetir operationId.",
+        "Executar CI/typecheck/Ultracite reais via root; revisão independente do diff de CLI por root/worker-2."
+      ],
+      "owns": [
+        "tests/acceptance/d01-d02/**",
+        "tests/integration/d01-d02-independent/**",
+        "tests/security/d01-d02/**"
+      ],
+      "status": "planned",
+      "reviewer": "worker-2",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "A criar no bootstrap; critérios de tarefa planejados, não comandos existentes.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:integration -- EX15",
+        "pnpm test:acceptance",
+        "pnpm build",
+        "pnpm test:container"
+      ],
+      "independent_review_split": {
+        "worker-3": [
+          "core de worker-1",
+          "identidade/web de worker-2",
+          "composição de root"
+        ],
+        "worker-2": [
+          "CLI de worker-3",
+          "storage/valores de worker-3",
+          "testemunhas de EX15"
+        ]
+      },
+      "source_ticket_ids": [
+        "ZN-0018",
+        "ZN-0024",
+        "ZN-0030",
+        "ZN-0036",
+        "ZN-0041",
+        "ZN-0045",
+        "ZN-0046",
+        "ZN-0051",
+        "ZN-0073",
+        "ZN-0281",
+        "ZN-0282",
+        "ZN-0283",
+        "ZN-0284",
+        "ZN-0285",
+        "ZN-0286",
+        "ZN-0325"
+      ],
+      "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/execution.md",
+        "planning/execution.json#packages/EX15"
+      ]
+    }
+  ],
+  "suggested_schedule": [
+    {
+      "wave": "A",
+      "worker-1": [
+        "EX02"
+      ],
+      "worker-2": [
+        "EX03"
+      ],
+      "worker-3": [
+        "preparar contraprovas concretas de EX04, sem implementar contratos ainda não aceitos"
+      ],
+      "root": [
+        "EX01"
+      ]
+    },
+    {
+      "wave": "B",
+      "worker-1": [
+        "EX05"
+      ],
+      "worker-2": [
+        "EX06"
+      ],
+      "worker-3": [
+        "EX04",
+        "EX07"
+      ],
+      "root": [
+        "validar contrato EX02 e revisar instalação real, sem duplicar trabalho"
+      ]
+    },
+    {
+      "wave": "C",
+      "worker-1": [
+        "EX08"
+      ],
+      "worker-2": [
+        "EX09"
+      ],
+      "worker-3": [
+        "EX11 — implementação de parser/formatter; aceitação espera EX10"
+      ],
+      "root": [
+        "integrar exports/configs demandados por contratos reais"
+      ]
+    },
+    {
+      "wave": "D",
+      "worker-1": [
+        "EX13"
+      ],
+      "worker-2": [
+        "EX12 — implementação; aceitação espera EX10"
+      ],
+      "worker-3": [
+        "EX11 contra EX10 quando disponível"
+      ],
+      "root": [
+        "EX10"
+      ]
+    },
+    {
+      "wave": "E",
+      "worker-1": [
+        "corrigir falhas independentes identificadas"
+      ],
+      "worker-2": [
+        "revisão independente da CLI EX11"
+      ],
+      "worker-3": [
+        "EX15 após EX14"
+      ],
+      "root": [
+        "EX14",
+        "revisão final da evidência e CI"
+      ]
+    }
+  ],
+  "preserved_but_not_completed": [
+    "D01 completo ainda exige todos incrementos de formato/retenção/recuperação e critérios de sua entrega; esta proposta não declara tudo aceito.",
+    "D02 merge/split reversível de identidade, workbench/priorização e closure para futuros consumers permanecem no mapa original; não contar sua ausência como conclusão.",
+    "Deploy Fly, backups/restore incluindo supressão de apagamento e ampliação de direitos são próximas entregas reais; Docker local não prova cloud.",
+    "Modelos, canais, fontes externas, efeitos, runners e finanças seguem fora da primeira composição; indisponíveis, nunca simulados."
+  ],
+  "max_active_workers": 3,
+  "private_port_rule": "Usar SqlClient/withTransaction/driver existentes do Effect para SQL; não criar API transacional genérica duplicada. Portas privadas só para recursos/semântica específicos realmente injetados. Nenhum port de provider no trabalho transacional.",
+  "integrator_owned_paths": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "pnpm-workspace.yaml",
+    "tsconfig*.json",
+    "oxlint.config.ts",
+    ".oxfmtrc.jsonc",
+    ".github/workflows/**",
+    "vitest.config.ts",
+    "playwright.config.ts",
+    ".node-version",
+    ".npmrc",
+    ".gitignore",
+    ".rgignore",
+    ".dockerignore",
+    "apps/*/package.json",
+    "packages/*/package.json",
+    "apps/*/tsconfig*.json",
+    "packages/*/tsconfig*.json",
+    "ops/compose.yaml",
+    "ops/containers/**",
+    "ops/fly/**",
+    "apps/server/src/main.ts",
+    "apps/server/src/composition.ts",
+    "apps/server/src/http/**",
+    "apps/web/src/main.*",
+    "apps/cli/src/main.*",
+    "packages/contracts/src/index.ts",
+    "packages/authority/src/index.ts",
+    "ops/migrations/**"
+  ],
+  "invariant_contract": "docs/invariants.md",
+  "integration_assistance_rule": "Root integra candidatos de EX11/EX12 assim que os exports existirem, antes da aceitação desses pacotes. É subpasso explícito do pacote em implemented_unverified, não aguarda EX14 nem exige pacote já aceito. Somente root altera os paths reservados; consumidor só encerra depois do teste real.",
+  "bootstrap_readiness": "EX01 pode iniciar pela direção tecnológica; EX02/EX03 podem preparar contratos/componentes enquanto EX01 verifica a stack, mas não são aceitos sem EX01. Demais pacotes seguem depends_on e contratos produzidos, não são todos ready agora."
+}
