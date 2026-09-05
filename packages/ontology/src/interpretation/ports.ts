@@ -44,3 +44,16 @@ export type { InterpretInput, InterpretOutcome };
 export interface InterpretPort {
   interpret(input: InterpretInput): Promise<InterpretOutcome>;
 }
+
+import type {
+  ApplyCorrectionInput,
+  RetractCorrectionInput,
+  CorrectionOutcome,
+} from './correction.js';
+
+export type { ApplyCorrectionInput, RetractCorrectionInput, CorrectionOutcome };
+
+export interface CorrectionPort {
+  applyCorrection(input: ApplyCorrectionInput): Promise<CorrectionOutcome>;
+  retractCorrection(input: RetractCorrectionInput): Promise<CorrectionOutcome>;
+}

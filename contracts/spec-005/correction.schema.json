@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-005/correction.schema.json",
+  "title": "ZN-0034 correction fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "caseId", "questionDigest", "cutDigest", "priorCutDigest", "amountBefore", "amountAfter"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0034-correction-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "caseId": { "type": "string" },
+    "questionDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "cutDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "priorCutDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "amountBefore": { "type": "string" },
+    "amountAfter": { "type": "string" }
+  }
+}

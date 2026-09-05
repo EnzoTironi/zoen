@@ -1096,7 +1096,7 @@
     "ticket_id": "ZN-0034",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/correction.test.ts",
-    "plan_path": "tests/component/spec-005/correction.test.ts",
+    "plan_path": "tests/component/spec-005/correction.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1107,7 +1107,7 @@
     "ticket_id": "ZN-0034",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/correction.test.ts",
-    "plan_path": "tests/component/spec-005/correction.test.ts",
+    "plan_path": "tests/component/spec-005/correction.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1118,7 +1118,7 @@
     "ticket_id": "ZN-0034",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/correction.test.ts",
-    "plan_path": "tests/component/spec-005/correction.test.ts",
+    "plan_path": "tests/component/spec-005/correction.test.ts.plan.md",
     "status": "not-executed"
   },
   {

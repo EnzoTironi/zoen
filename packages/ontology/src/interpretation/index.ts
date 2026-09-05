@@ -48,3 +48,16 @@ export type {
   InterpretOutcome,
 } from './interpret.js';
 export type { InterpretPort } from './ports.js';
+export { CorrectionService, CORRECTION_IMPL } from './correction.js';
+export type {
+  AnswerKind,
+  CaseGuards,
+  ApplyCorrectionInput,
+  RetractCorrectionInput,
+  CorrectionReceipt,
+  CorrectionOk,
+  CorrectionStale,
+  CorrectionDenied,
+  CorrectionOutcome,
+} from './correction.js';
+export type { CorrectionPort } from './ports.js';
