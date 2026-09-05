@@ -39,6 +39,8 @@ export default defineConfig({
           exclude: generated,
           hookTimeout: 30_000,
           include: ["**/*.integration.test.{ts,tsx}"],
+          // These workers share real PostgreSQL/S3 and launch additional native processes.
+          maxWorkers: 2,
           name: "integration",
           testTimeout: 30_000,
         },
