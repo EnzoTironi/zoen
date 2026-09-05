@@ -8,21 +8,21 @@ import { HttpApiBuilder } from "effect/unstable/httpapi";
 
 import { checkRequestAudience, readJsonBody } from "./request.ts";
 
-export const makeD01HttpGroup = (publicUrl: URL) =>
+export const makeSharingHttpGroup = (publicUrl: URL) =>
   HttpApiBuilder.group(
     ApplicationApi,
-    "d01",
-    Effect.fn("http.makeD01Group")(function* makeD01Group(handlers) {
+    "sharing",
+    Effect.fn("http.makeSharingGroup")(function* makeSharingGroup(handlers) {
       const executor = yield* SemanticExecutor;
       return handlers.handleRaw(
         "execute",
         ({ request }) =>
-          Effect.gen(function* executeRequest() {
+          Effect.gen(function* executeSharingRequest() {
             yield* checkRequestAudience(request, publicUrl);
             const bytes = yield* readJsonBody(request);
             const requestScope = yield* Scope.Scope;
             return yield* executor
-              .executeWithEmission(
+              .executeSharingWithEmission(
                 Redacted.make(request.headers.cookie ?? ""),
                 bytes,
                 (jsonBytes) =>

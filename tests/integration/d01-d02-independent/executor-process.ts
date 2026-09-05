@@ -3,6 +3,7 @@ import { Config, Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 
 import type * as StorageModule from "../../../apps/server/src/adapters/object-storage/d01/s3.ts";
 import type * as PostgresModule from "../../../apps/server/src/adapters/postgres/d01/postgres.ts";
+import type * as DisclosureModule from "../../../apps/server/src/adapters/postgres/disclosure/fence.ts";
 import type * as IdentityModule from "../../../apps/server/src/identity/d01/identity.ts";
 import type * as InstallationModule from "../../../packages/authority/src/commit/configuration.ts";
 import type * as PolicyModule from "../../../packages/authority/src/ports/d01/context.ts";
@@ -97,6 +98,20 @@ const program = Effect.scoped(
           ).href
         ),
     });
+    const { makeDisclosureFenceLayer } = yield* Effect.tryPromise({
+      catch: () =>
+        new BuildRequired({
+          message:
+            "Build the application before disclosure process integration",
+        }),
+      try: (): Promise<typeof DisclosureModule> =>
+        import(
+          new URL(
+            "../../../apps/server/dist/adapters/postgres/disclosure/fence.js",
+            import.meta.url
+          ).href
+        ),
+    });
     const fs = yield* FileSystem.FileSystem;
     const file = yield* Config.string("ZOEN_REVIEW_CONFIG");
     const holdAcknowledgement = yield* Config.boolean("ZOEN_REVIEW_HOLD_ACK");
@@ -126,7 +141,15 @@ const program = Effect.scoped(
         ...config.identity,
         databaseUrl: Redacted.make(config.identity.databaseUrl),
         secret: Redacted.make(config.identity.secret),
-      }),
+      }).pipe(
+        Layer.provideMerge(
+          makeDisclosureFenceLayer({
+            applicationName: "zoen-ex15-child-disclosure",
+            maxConnections: 2,
+            url: Redacted.make(config.authorityUrl),
+          })
+        )
+      ),
       storageLayer({
         bucket: config.storage.bucket,
         connectionTimeoutMillis: 3000,
@@ -143,10 +166,25 @@ const program = Effect.scoped(
     );
     const result = yield* Effect.gen(function* runExecutor() {
       const executor = yield* SemanticExecutor;
-      return yield* executor.execute(
-        Redacted.make(config.credential),
-        new TextEncoder().encode(config.request)
-      );
+      const credential = Redacted.make(config.credential);
+      const bytes = new TextEncoder().encode(config.request);
+      switch (config.family) {
+        case "sharing": {
+          return yield* executor.executeSharing(credential, bytes);
+        }
+        case "correction": {
+          return yield* executor.executeCorrection(credential, bytes);
+        }
+        case "d01":
+        case undefined: {
+          return yield* executor.execute(credential, bytes);
+        }
+        default: {
+          return yield* new BuildRequired({
+            message: "Unknown semantic family",
+          });
+        }
+      }
     }).pipe(
       Effect.provide(Layer.provide(SemanticExecutor.layer, infrastructure))
     );

@@ -4,6 +4,7 @@ import {
   HttpApiGroup,
 } from "effect/unstable/httpapi";
 
+import { SharingRequest, SharingSuccess } from "../sharing/operations.js";
 import { D01Error } from "./errors.js";
 import {
   CorrectionRequest,
@@ -27,4 +28,11 @@ export const CorrectionApiGroup = HttpApiGroup.make("corrections").add(
   })
 );
 export const D01Api = HttpApi.make("zoen-d01").add(D01ApiGroup);
-export const ApplicationApi = D01Api.add(CorrectionApiGroup);
+export const SharingApiGroup = HttpApiGroup.make("sharing").add(
+  HttpApiEndpoint.post("execute", "/api/d03/sharing", {
+    error: D01Error.members,
+    payload: SharingRequest,
+    success: SharingSuccess,
+  })
+);
+export const ApplicationApi = D01Api.add(CorrectionApiGroup, SharingApiGroup);

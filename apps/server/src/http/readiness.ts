@@ -1,3 +1,4 @@
+import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import { Effect, Layer } from "effect";
 import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
@@ -12,6 +13,7 @@ export const readinessRoutes = Layer.effectDiscard(
     const sql = yield* SqlClient.SqlClient;
     const identity = yield* D01Auth;
     const storage = yield* S3Health;
+    const disclosure = yield* DisclosureFence;
     const check = Effect.all(
       [
         checkD01AuthorityRole.pipe(
@@ -19,8 +21,9 @@ export const readinessRoutes = Layer.effectDiscard(
         ),
         identity.checkHealth,
         storage.check,
+        disclosure.checkHealth,
       ],
-      { concurrency: 3, discard: true }
+      { concurrency: 4, discard: true }
     ).pipe(Effect.timeout("3 seconds"));
     yield* check;
     yield* router.add(
