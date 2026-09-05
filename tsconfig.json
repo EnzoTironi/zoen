@@ -15,8 +15,8 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "paths": {
-      "@zoen/contracts/*": ["./packages/contracts/src/*"],
-      "@zoen/authority/*": ["./packages/authority/src/*"]
+      "@zoen/contracts/*": ["./packages/contracts/src/*.ts"],
+      "@zoen/authority/*": ["./packages/authority/src/*.ts"]
     },
     "jsx": "react-jsx",
     "types": ["node"],
