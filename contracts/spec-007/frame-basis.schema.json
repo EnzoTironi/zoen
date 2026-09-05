@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-007/frame-basis.schema.json",
+  "title": "ZN-0042 frame-basis fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "domainId", "rowLimit", "preBody", "postBody"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0042-frame-basis-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string", "minLength": 1, "maxLength": 64 },
+    "domainId": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "rowLimit": { "type": "integer", "minimum": 1, "maximum": 256 },
+    "preBody": { "type": "string" },
+    "postBody": { "type": "string" }
+  }
+}

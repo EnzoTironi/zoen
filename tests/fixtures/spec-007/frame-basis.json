@@ -1,0 +1,9 @@
+{
+  "seed": "zn-0042-frame-basis-seed-v1",
+  "seedDigest": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
+  "purpose": "inspect",
+  "domainId": "operations",
+  "rowLimit": 32,
+  "preBody": "sparse-pre-ingestion",
+  "postBody": "sparse-post-ingestion"
+}

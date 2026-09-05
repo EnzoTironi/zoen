@@ -1360,7 +1360,7 @@
     "ticket_id": "ZN-0042",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/frame-basis.test.ts",
-    "plan_path": "tests/component/spec-007/frame-basis.test.ts",
+    "plan_path": "tests/component/spec-007/frame-basis.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1371,7 +1371,7 @@
     "ticket_id": "ZN-0042",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/frame-basis.test.ts",
-    "plan_path": "tests/component/spec-007/frame-basis.test.ts",
+    "plan_path": "tests/component/spec-007/frame-basis.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1382,7 +1382,7 @@
     "ticket_id": "ZN-0042",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/frame-basis.test.ts",
-    "plan_path": "tests/component/spec-007/frame-basis.test.ts",
+    "plan_path": "tests/component/spec-007/frame-basis.test.ts.plan.md",
     "status": "not-executed"
   },
   {
