@@ -4,6 +4,7 @@ import {
   SessionId,
   VerifiedPresence,
 } from "@zoen/authority/ports/d01/context";
+import { PrincipalDirectory } from "@zoen/authority/ports/sharing/directory";
 import { Unauthenticated, Unavailable } from "@zoen/contracts/d01/errors";
 import { betterAuth } from "better-auth";
 import {
@@ -25,6 +26,7 @@ import {
   acquireD01IdentityPool,
   checkD01IdentityPool,
   identitySessionExists,
+  identityPrincipalExists,
 } from "./database.ts";
 
 export class D01Auth extends Context.Service<
@@ -173,6 +175,12 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
         return response;
       });
       return Context.make(Presence, Presence.of({ verify })).pipe(
+        Context.add(
+          PrincipalDirectory,
+          PrincipalDirectory.of({
+            exists: (principalId) => identityPrincipalExists(pool, principalId),
+          })
+        ),
         Context.add(
           D01Auth,
           D01Auth.of({

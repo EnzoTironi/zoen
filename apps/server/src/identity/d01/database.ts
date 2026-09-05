@@ -1,5 +1,5 @@
 import { PgClient } from "@effect/sql-pg";
-import type { SessionId } from "@zoen/authority/ports/d01/context";
+import type { PrincipalId, SessionId } from "@zoen/authority/ports/d01/context";
 import { Unavailable } from "@zoen/contracts/d01/errors";
 import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
@@ -15,6 +15,27 @@ export const identitySessionExists = (
   SqlClient.SqlClient.use(
     (sql) =>
       sql`SELECT EXISTS (SELECT 1 FROM identity.session WHERE id = ${sessionId}) AS present`
+  ).pipe(
+    Effect.flatMap(
+      Schema.decodeUnknownEffect(
+        Schema.Tuple([Schema.Struct({ present: Schema.Boolean })])
+      )
+    ),
+    Effect.map(([row]) => row.present),
+    Effect.provide(
+      PgClient.layerFrom(PgClient.fromPool({ acquire: Effect.succeed(pool) }))
+    ),
+    Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+  );
+
+/** Exact UUID lookup through the existing identity role and pool. */
+export const identityPrincipalExists = (
+  pool: Pool,
+  principalId: typeof PrincipalId.Type
+) =>
+  SqlClient.SqlClient.use(
+    (sql) =>
+      sql`SELECT EXISTS (SELECT 1 FROM identity."user" WHERE id = ${principalId}) AS present`
   ).pipe(
     Effect.flatMap(
       Schema.decodeUnknownEffect(
