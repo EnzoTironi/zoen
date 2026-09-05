@@ -1,13 +1,11 @@
-import { fileURLToPath } from "node:url";
-
 import { AuthorityInstallationSchema } from "@zoen/authority/commit/configuration";
 import { DataPolicySchema } from "@zoen/authority/ports/d01/context";
-import { digestBytes } from "@zoen/authority/values/canonical";
 import { parseJsonBytes } from "@zoen/authority/values/json";
 import { exact } from "@zoen/contracts/d01/values";
 import { Config, Effect, FileSystem, Schema } from "effect";
 
 import type { D01ApplicationConfig } from "./composition.ts";
+import { verifyRelease } from "./release.ts";
 
 const InstallationFile = Schema.Struct({
   installation: AuthorityInstallationSchema,
@@ -26,10 +24,7 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
   const installed = yield* parseJsonBytes(installationBytes, 65_536).pipe(
     Effect.flatMap(Schema.decodeUnknownEffect(InstallationFile))
   );
-  const releaseBytes = yield* fs.readFile(
-    fileURLToPath(new URL("release.json", import.meta.url))
-  );
-  if (digestBytes(releaseBytes) !== installed.installation.releaseDigest) {
+  if ((yield* verifyRelease) !== installed.installation.releaseDigest) {
     return yield* new ServerConfigurationError({ code: "RELEASE_MISMATCH" });
   }
   const listenPort = yield* Config.int("ZOEN_PORT");

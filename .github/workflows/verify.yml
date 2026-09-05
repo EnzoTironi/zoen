@@ -26,7 +26,7 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
-      - run: pnpm build:core
+      - run: pnpm build
       - name: Load compiled core with Node
         run: |
           node packages/contracts/dist/d01/api.js
@@ -76,6 +76,7 @@ jobs:
           os.chmod(target, 0o600)
           PY
       - run: docker compose --env-file .env.infra -f ops/compose.yaml up -d --wait
+      - run: pnpm build
       - run: pnpm test:integration
       - if: always() && steps.services-config.outcome == 'success'
         run: docker compose --env-file .env.infra -f ops/compose.yaml down --volumes

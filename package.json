@@ -10,12 +10,15 @@
     "lint": "oxlint",
     "typecheck": "tsc --noEmit",
     "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/authority/tsconfig.build.json",
-    "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json && python3 tooling/build_release.py",
+    "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json",
     "start:server": "node --env-file=.env.application apps/server/dist/main.js",
     "cli": "node apps/cli/dist/main.js",
     "test:unit": "vitest run --project unit",
     "test:integration": "node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration",
-    "test:components": "playwright test"
+    "test:components": "playwright test",
+    "build:web": "vite build --config vite.application.config.ts",
+    "build": "pnpm build:apps && pnpm build:web && python3 tooling/build_release.py",
+    "provision:local": "node --env-file=.env.infra ops/local/provision.ts"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "3.1127.0",

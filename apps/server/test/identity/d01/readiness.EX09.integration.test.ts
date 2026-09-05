@@ -84,11 +84,12 @@ it.live(
           }
         }
         expect(failures).toHaveLength(20);
-        for (const failure of failures)
-          {expect(failure).toMatchObject({
+        for (const failure of failures) {
+          expect(failure).toMatchObject({
             _tag: "Failure",
             failure: { _tag: "Unavailable", code: "UNAVAILABLE" },
-          });}
+          });
+        }
       }).pipe(Effect.provide(fixture.runtime))
     )
 );

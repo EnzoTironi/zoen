@@ -116,8 +116,19 @@ export const withD01Database = <A, E, R, E2 = never, R2 = never>(
               )
             )
           ).pipe(Effect.provide(NodeFileSystem.layer));
+          const corrections = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/003_scoped_corrections.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
           const sql = yield* SqlClient.SqlClient;
           yield* sql.withTransaction(sql.unsafe(schema));
+          yield* sql.withTransaction(sql.unsafe(corrections));
           yield* grantD01Roles(names);
           if (misconfiguration === "public-create") {
             yield* sql`GRANT CREATE ON SCHEMA public TO ${sql(names.authority)}`;

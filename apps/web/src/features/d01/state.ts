@@ -80,8 +80,11 @@ export const createWorkspaceController = (origin: string) => {
   };
   const consume = (result: D01Success) => {
     const patch = successPatch(state, result);
-    if (result._tag === "WorldCreated") {invalidate(patch);}
-    else {publish(patch);}
+    if (result._tag === "WorldCreated") {
+      invalidate(patch);
+    } else {
+      publish(patch);
+    }
   };
   const execute = Effect.fn("web.execute")(function* executeRequest(
     request: D01Request

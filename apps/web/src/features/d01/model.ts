@@ -48,7 +48,9 @@ export const successPatch = (
     }
     case "FrameInspected": {
       const { session } = state;
-      if (session === null) {return {};}
+      if (session === null) {
+        return {};
+      }
       return {
         busy: false,
         feedback: "",
@@ -64,7 +66,9 @@ export const successPatch = (
     }
     case "EvidenceOpened": {
       const { session, frame } = state;
-      if (session === null || frame === null) {return { busy: false };}
+      if (session === null || frame === null) {
+        return { busy: false };
+      }
       return {
         busy: false,
         view: {

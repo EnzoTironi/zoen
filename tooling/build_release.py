@@ -12,10 +12,11 @@ def main():
         "packages/authority/dist",
         "apps/server/dist",
         "apps/cli/dist",
+        "apps/web/dist",
     ]
     files = []
     for folder in folders:
-        paths = sorted((root / folder).rglob("*.js"))
+        paths = sorted(p for p in (root / folder).rglob("*") if p.is_file() and (p.suffix == ".js" or folder == "apps/web/dist"))
         if not paths:
             raise RuntimeError(f"No executable build files found in {folder}")
         for path in paths:
@@ -23,6 +24,9 @@ def main():
                 "path": path.relative_to(root).as_posix(),
                 "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             })
+    for package in ["packages/contracts", "packages/authority", "apps/server", "apps/cli", "apps/web"]:
+        path = root / package / "package.json"
+        files.append({"path": path.relative_to(root).as_posix(), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
     manifest = {
         "format": "zoen-local-build-v1",
         "files": files,
