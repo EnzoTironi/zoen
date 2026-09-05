@@ -268,9 +268,14 @@
   margin-top: 2.5rem;
   border-top: 1px solid var(--d01-line);
   padding-top: 2rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem 3rem;
+}
+.d01-correction > div:first-child,
+.d01-correction > form {
+  flex: 1 1 26rem;
+  min-width: 0;
 }
 .d01-correction > div > p + p {
   margin-top: 0.8rem;
@@ -310,7 +315,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
-  grid-column: 1 / -1;
+  flex-basis: 100%;
   justify-content: flex-end;
 }
 .d01-upload {
@@ -404,7 +409,7 @@
     gap: 1.5rem;
   }
   .d01-action-row {
-    grid-column: 1;
+    justify-content: flex-start;
   }
   .d01-footer {
     padding: 1.5rem 1.25rem;
