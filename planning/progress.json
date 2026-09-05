@@ -5,7 +5,7 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "D02-subject-identity-contract",
+      "task": "D02-subject-identity-graph-contract",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-subject-identity-contract",
@@ -13,19 +13,19 @@
     },
     {
       "agent": "roadmap_redesign",
-      "task": "D03-erasure-contract-review",
+      "task": "D03-logout-CI-review / D02-identity-review-pending",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
-      "state": "review_complete_with_blockers"
+      "state": "in_progress"
     },
     {
       "agent": "tickets_redesign",
-      "task": "SH05-independent-process-proof",
+      "task": "D03-S3-provider-feasibility",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
-      "state": "integrated"
+      "state": "in_progress"
     }
   ],
   "temporary_ownership": [
@@ -314,6 +314,24 @@
       "browser_acceptance_tests": 12,
       "container_acceptance_tests": 12,
       "scope": "Migrações005/006, core, emissão nativa durável, 12 ordenações de leitura/revoke/logout e 2 concorrências de grant em processos reais, Web/CLI e imagem nova com revisão independente. CI remota pendente; não conclui D03 integral, apagamento, restore, cloud ou 22entregas."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "40ab4db5411535bf17212072a903dad2039e09d2",
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "state": "remote_ci_failed_browser_logout_history",
+      "evidence": "docs/verification/sharing-local.md",
+      "remote_ci": {
+        "commit": "40ab4db5411535bf17212072a903dad2039e09d2",
+        "result": "failure",
+        "url": "https://github.com/EnzoTironi/zoen/actions/runs/33992182271"
+      },
+      "unit_tests": 198,
+      "integration_tests": 168,
+      "browser_component_tests": 7,
+      "container_acceptance_passed": 11,
+      "container_acceptance_failed": 1,
+      "scope": "Qualidade e integração passaram; EX12 falhou no retorno após logout, sem Frame/evidência restaurados. Causa sob revisão independente; não contar CI como verde."
     }
   ],
   "verified_deliveries": [],
