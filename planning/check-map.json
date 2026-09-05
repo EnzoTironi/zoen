@@ -1393,7 +1393,7 @@
     "ticket_id": "ZN-0043",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/dispatch.test.ts",
-    "plan_path": "tests/component/spec-007/dispatch.test.ts",
+    "plan_path": "tests/component/spec-007/dispatch.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1404,7 +1404,7 @@
     "ticket_id": "ZN-0043",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/dispatch.test.ts",
-    "plan_path": "tests/component/spec-007/dispatch.test.ts",
+    "plan_path": "tests/component/spec-007/dispatch.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1415,7 +1415,7 @@
     "ticket_id": "ZN-0043",
     "spec_id": "SPEC-007",
     "test_file": "tests/component/spec-007/dispatch.test.ts",
-    "plan_path": "tests/component/spec-007/dispatch.test.ts",
+    "plan_path": "tests/component/spec-007/dispatch.test.ts.plan.md",
     "status": "not-executed"
   },
   {

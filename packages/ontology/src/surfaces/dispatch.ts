@@ -4,10 +4,90 @@ import { parseEnvelope, type SemanticEnvelope, type SemanticResult, type Verifie
 import { uuid, nextCounter, type UUID, type WorldRef } from '../../../kernel/src/ids.js';
 import { canonicalJson, exactKeys, list, object, parseJsonText, text, type JsonValue } from '../../../kernel/src/json.js';
 import { KernelError, requireThat, ok, toPublicFailure } from '../../../kernel/src/result.js';
+import { createHash } from 'node:crypto';
 import { OPERATIONS, FOUNDATION, operation } from './registry.js';
 import { comparableGroups, parseClaim, parseValidTime } from '../interpretation/claims.js';
 import { interpretVisible } from '../interpretation/reconcile.js';
 import { operationScope } from '../authority/guards.js';
+
+export const DISPATCH_IMPL = 'semantic-dispatch-v1';
+export const CONTRACT_DIGEST_IMPL = 'semantic-contract-v1';
+
+const SQL_OR_TABLE_RE = /\b(select|insert|update|delete|drop|alter|truncate|union|pg_|information_schema|ontology\.|jobs\.)\b/i;
+const FORBIDDEN_INVOKE = new Set([
+  'query', 'sql', 'executeSql', 'rawQuery', 'table', 'from', 'invokeSql', 'runSql',
+]);
+
+export function contractDigestFor(operationId: string, releaseDigest: string): string {
+  const desc = operation(operationId);
+  return createHash('sha256')
+    .update(`${CONTRACT_DIGEST_IMPL}|${operationId}|${releaseDigest}|${desc?.inputSchemaId ?? ''}`, 'utf8')
+    .digest('hex');
+}
+
+export type TransportInvoke = Readonly<{
+  transport: 'web' | 'cli';
+  envelopeBytes: Uint8Array;
+  /** Optional pin to released contract; mismatch => ContractChanged (no silent version fallback). */
+  expectedContractDigest?: string;
+  /** Forbidden escape hatch — any non-empty value is rejected. */
+  invokeMethod?: string;
+  rawSql?: string;
+}>;
+
+/**
+ * Shared web/CLI/agent entry: only known released operations, disclosure-safe errors,
+ * and no direct SQL/table invoke path. Transports must not implement authorization.
+ */
+export class SemanticDispatcher {
+  constructor(
+    private readonly executor: SemanticExecutor,
+    private readonly releaseDigest: string,
+  ) {}
+
+  async invoke(request: TransportInvoke, context: VerifiedContext): Promise<SemanticResult> {
+    try {
+      if (request.rawSql !== undefined && String(request.rawSql).length > 0) {
+        throw new KernelError('Denied', 'RAW_SQL_FORBIDDEN');
+      }
+      if (request.invokeMethod !== undefined && String(request.invokeMethod).length > 0) {
+        const method = String(request.invokeMethod);
+        if (FORBIDDEN_INVOKE.has(method) || SQL_OR_TABLE_RE.test(method)) {
+          throw new KernelError('Denied', 'UNREGISTERED_INVOKE');
+        }
+        throw new KernelError('Unsupported', 'INVOKE_METHOD_NOT_RELEASED');
+      }
+      // Peek operation name for contract pin before executor side effects.
+      let peekedOp = '';
+      try {
+        const preview = parseEnvelope(request.envelopeBytes);
+        peekedOp = preview.operation;
+        if (SQL_OR_TABLE_RE.test(preview.operation) || SQL_OR_TABLE_RE.test(canonicalJson(preview.input))) {
+          throw new KernelError('Denied', 'SQL_OR_TABLE_FORBIDDEN');
+        }
+        const desc = operation(preview.operation);
+        if (!desc) throw new KernelError('Unsupported', 'OPERATION_NOT_RELEASED');
+        if (request.expectedContractDigest !== undefined) {
+          if (!/^[a-f0-9]{64}$/.test(request.expectedContractDigest)) {
+            throw new KernelError('InvalidInput', 'CONTRACT_DIGEST');
+          }
+          const actual = contractDigestFor(preview.operation, this.releaseDigest);
+          if (request.expectedContractDigest !== actual) {
+            throw new KernelError('ContractChanged', 'CONTRACT_DIGEST_MISMATCH');
+          }
+        }
+      } catch (error) {
+        if (error instanceof KernelError) throw error;
+        throw error;
+      }
+      void peekedOp;
+      const ctx = Object.freeze({ ...context, transport: request.transport });
+      return await this.executor.execute(request.envelopeBytes, ctx);
+    } catch (error) {
+      return toPublicFailure(error);
+    }
+  }
+}
 const asJson = (value: unknown): JsonValue => parseJsonText(canonicalJson(value as JsonValue));
 const deny = (): never => { throw new KernelError('NotFoundOrDenied', 'NOT_FOUND_OR_DENIED'); };
 /** The single executor. The edge, SDK, CLI and trusted declarative host call this path. */
@@ -15,7 +95,11 @@ export class SemanticExecutor {
   constructor(private readonly authority: Authority, private readonly store: EvidenceStore, readonly releaseDigest: string) {}
   async execute(bytes: Uint8Array, context: VerifiedContext): Promise<SemanticResult> {
     try {
-      const request = parseEnvelope(bytes); const descriptor = operation(request.operation);
+      const request = parseEnvelope(bytes);
+      if (SQL_OR_TABLE_RE.test(request.operation) || SQL_OR_TABLE_RE.test(canonicalJson(request.input))) {
+        throw new KernelError('Denied', 'SQL_OR_TABLE_FORBIDDEN');
+      }
+      const descriptor = operation(request.operation);
       if (!descriptor) throw new KernelError('Unsupported', 'OPERATION_NOT_RELEASED');
       if (request.operation === 'CreatePersonalWorld') return ok(await this.createWorld(request, context));
       requireThat(request.worldRef !== null, 'WORLD_REQUIRED');

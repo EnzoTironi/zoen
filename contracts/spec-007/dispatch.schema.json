@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-007/dispatch.schema.json",
+  "title": "ZN-0043 dispatch fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "subjectLabel"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0043-dispatch-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "subjectLabel": { "type": "string" }
+  }
+}

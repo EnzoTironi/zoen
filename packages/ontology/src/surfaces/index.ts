@@ -17,3 +17,6 @@ export type {
   FramePin,
   FrameBasis,
 } from './types.js';
+
+export { SemanticExecutor, SemanticDispatcher, DISPATCH_IMPL, CONTRACT_DIGEST_IMPL, contractDigestFor } from './dispatch.js';
+export type { TransportInvoke } from './dispatch.js';
