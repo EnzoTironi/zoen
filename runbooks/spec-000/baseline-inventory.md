@@ -1,47 +1,82 @@
-# File plan — `runbooks/spec-000/baseline-inventory.md`
+# Runbook — SPEC-000 baseline inventory (ZN-0001)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not product acceptance.  
+**Primary artifact:** `admissions/spec-000/baseline-inventory.json`  
+**Schema:** `contracts/spec-000/baseline-inventory.schema.json`
 
-Target: `runbooks/spec-000/baseline-inventory.md`. Representation: **markdown-plan**. Allocation: **required**.
+## Purpose
 
-Specs: [SPEC-000](../../docs/specs/spec-000.md).
-Tickets: [ZN-0001](../../docs/tickets/zn-0001.md).
+Record commit-pinned repository and data-preservation baseline before any destructive migration work. OS remains a read-only migration source. Live tenant/production-data inventory stays **unresolved** until the owner supplies it. Never reset the OS deployment to obtain a green run.
 
-## Responsibility and reuse
+## Preconditions
 
-## ZN-0001 operational/repair procedure
+- Read-only network access to `https://github.com/EnzoTironi/OS` and `https://github.com/EnzoTironi/zoen`.
+- Local workspace contains `archives/zoen-execution-v4.zip` matching `docs/lineage/source-ledger.md`.
+- No write credentials, deploy tokens, or OS mutation authority.
+- `GIT_TERMINAL_PROMPT=0`; do not `git push`, `git commit` in foreign clones, or force-push.
 
-Scope: Record repository and data-preservation baseline. This is a plan; deployments and commands not yet qualified remain blocked.
+## Inventory command (read-only)
 
-```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-The inventory command runs without write credentials
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: ticket ID, repository commit, admitted profile, actual lock bytes, required check IDs.
-READ: current execution catalog and immutable evidence; never infer completion from file existence.
-VERIFY repository/data-preservation inventory before permitting destructive migration work.
-RESOLVE exact dependencies on the target using real registries; record actual integrity and compatibility, not guessed lock entries.
-COLLECT tests by required IDs; reject missing selection, duplicate ownership, zero executions and skipped required cases.
-RUN actual component/browser/provider dependencies; unavailable dependency => BLOCKED, not a substitute.
-BIND report to commit, lock, fixture seed, profile, commands and artifact digests.
-REQUIRE independent review and current external gate when applicable; keep all other routes disabled.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-It produces a commit-pinned inventory, leaves both repositories unchanged, and marks live-data preservation unresolved rather than empty
-RESUME only with current approval and intact unrelated tenant scopes.
+From the workspace root:
+
+```sh
+node --experimental-strip-types --input-type=module <<'JS'
+import { writeFileSync } from 'node:fs';
+import { runBaselineInventory } from './tests/admission/spec-000/baseline-inventory.test.ts';
+const inventory = runBaselineInventory();
+writeFileSync(
+  'admissions/spec-000/baseline-inventory.json',
+  JSON.stringify(inventory, null, 2) + '\n',
+);
+console.log({
+  os: inventory.repositories[0].commit,
+  zoen: inventory.repositories[1].commit,
+  live: inventory.liveDataPreservation.status,
+});
+JS
 ```
 
-## Owning state / operation contracts
+Equivalent observations performed by the command:
 
-### SPEC-000
-AdmitExecutionProfile(profile, candidateVersions, integrityDigests, compatibilityReport) -> AdmittedLock | Blocked; VerifyTicket(ticketId, commit, profile) -> EvidenceReport | MissingPrerequisite.
+1. `git ls-remote https://github.com/EnzoTironi/OS.git refs/heads/main` (pre)
+2. `git ls-remote https://github.com/EnzoTironi/zoen.git refs/heads/main` (pre)
+3. Fetch LICENSE / `package.json` / `Cargo.toml` via public raw URLs at the pinned SHAs
+4. `sha256sum archives/zoen-execution-v4.zip` and compare to ledger digest `a373b45f…`
+5. Classify reused components as `import` | `rewrite` | `discard` (default **rewrite** when evidence is absent; discard Rust kernel / DB schema / old Eve topology / OS deploy)
+6. Record `liveDataPreservation.status = unresolved` (never empty)
+7. `git ls-remote` again (post) and require pre=post for both repos
 
-No application tables. Track execution-lock.json, baseline-inventory.json and evidence-index.json as reviewed artifacts. Secret values never belong in these files.
+## Required checks
 
-[algorithm SPEC-000](../../docs/algorithms/spec-000.md)
+```sh
+node --experimental-strip-types --test tests/admission/spec-000/baseline-inventory.test.ts
+```
 
-## Acceptance boundary
+Exact IDs: `ZN-0001-AC`, `ZN-0001-NEG`, `ZN-0001-BOUNDARY`.
 
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+`pnpm verify:ticket --ticket ZN-0001` is delivered by later SPEC-000 tickets. Until that target exists, report **BLOCKED** for verify tooling and attach the node test output above.
+
+## Failure / repair
+
+1. **PRECHECK** profile `admission-read-only`, operator authority, ticket evidence.
+2. **STOP** destructive migration / OS reset for the affected scope.
+3. **OBSERVE** raw inventory errors; preserve original commits and digests.
+4. **REPAIR** by re-running the read-only inventory command; never invent license, digest, tenant list, or lock entries.
+5. **VERIFY** AC + NEG + BOUNDARY on the real command boundary.
+6. **RESUME** only after independent review. Incomplete, expired, or commit-mismatched qualification artifacts remain blocked; previous evidence does not transfer silently when pins change.
+
+## Live-data rule
+
+If owner-supplied tenant inventory is still missing, keep:
+
+```json
+"liveDataPreservation": {
+  "status": "unresolved",
+  "inventory": "unknown",
+  "tenantsVerified": false,
+  "ownerSupplyRequired": true,
+  "osDeploymentResetForbidden": true
+}
+```
+
+Do not replace this with `[]`, `{}` success, or a fabricated empty tenant list.
