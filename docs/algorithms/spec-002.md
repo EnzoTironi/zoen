@@ -36,7 +36,7 @@ ON revocation: advance deny/security state, reject new use, preserve audit; do n
 | Ticket | Segment | Primary implementation or plan |
 |---|---|---|
 | [ZN-0013](../tickets/zn-0013.md) | Integrate Better Auth behind a presence-only port | [packages/door/src/door.ts](../../packages/door/src/door.ts.plan.md) |
-| [ZN-0014](../tickets/zn-0014.md) | Implement idempotent private World genesis | [packages/ontology/src/worlds/genesis.ts](../../packages/ontology/src/worlds/genesis.ts) |
+| [ZN-0014](../tickets/zn-0014.md) | Implement idempotent private World genesis | [packages/ontology/src/worlds/genesis.ts](../../packages/ontology/src/worlds/genesis.ts.plan.md) |
 | [ZN-0015](../tickets/zn-0015.md) | Issue fresh purpose-bound grants and request permits | [packages/ontology/src/worlds/world-entry.ts](../../packages/ontology/src/worlds/world-entry.ts) |
 | [ZN-0016](../tickets/zn-0016.md) | Implement single-use invitation acceptance | [packages/ontology/src/worlds/invitations.ts](../../packages/ontology/src/worlds/invitations.ts) |
 | [ZN-0017](../tickets/zn-0017.md) | Implement session termination and emergency deny | [packages/ontology/src/worlds/revocation.ts](../../packages/ontology/src/worlds/revocation.ts) |

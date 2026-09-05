@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-002/genesis.schema.json",
+  "title": "SPEC-002 GenesisReceipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tag", "worldId", "realm", "receiptId", "commitId", "operationId", "intentDigest", "seedDigest", "replay"],
+  "properties": {
+    "tag": { "const": "GenesisReceipt" },
+    "worldId": { "type": "string", "format": "uuid" },
+    "realm": { "const": "live" },
+    "receiptId": { "type": "string", "format": "uuid" },
+    "commitId": { "type": "string", "format": "uuid" },
+    "operationId": { "type": "string", "format": "uuid" },
+    "intentDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "replay": { "type": "boolean" }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "seed": "zn-0014-genesis-seed-v1",
+  "note": "Synthetic genesis fixtures for ZN-0014. seedDigest is image-pinned foundation bytes hash placeholder computed in-test. Real PostgreSQL required.",
+  "seedDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "worldName": "Genesis Test World"
+}
