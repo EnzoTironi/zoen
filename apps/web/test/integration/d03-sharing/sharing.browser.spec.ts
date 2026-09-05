@@ -1,4 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
+import { setTimeout } from "node:timers/promises";
 
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
@@ -74,6 +75,9 @@ const inspectRecipient = async (page: Page, principal: string) => {
 
 test.use({ baseURL });
 test.setTimeout(60_000);
+test.beforeEach(async () => {
+  await setTimeout(10_100);
+});
 
 test("EX23 owner confirms the whole World; viewer reads own history and clears private content after revoke", async ({
   page,

@@ -1,4 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
+import { setTimeout } from "node:timers/promises";
 
 import { expect, request, test } from "@playwright/test";
 import {
@@ -74,6 +75,10 @@ const account = async (directory: string) => {
 };
 
 test.setTimeout(90_000);
+// Respect the real provider's signup limit when this file follows other acceptance scenarios.
+test.beforeEach(async () => {
+  await setTimeout(10_100);
+});
 
 test("EX23 real CLI sharing preserves historical receipts and reauthorizes viewer evidence across revoke and regrant", async () => {
   const owner = await makeSessionDirectory();
