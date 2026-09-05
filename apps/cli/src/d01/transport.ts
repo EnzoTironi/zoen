@@ -42,8 +42,12 @@ export const execute = Effect.fn(function* execute(
     case "UndoCorrection": {
       return yield* client.corrections.execute({ payload });
     }
-    case "GrantWorldReadAccess":
-    case "InspectWorldAccess":
+    case "GrantWorldReadAccess": {
+      return yield* client.sharing.execute({ payload });
+    }
+    case "InspectWorldAccess": {
+      return yield* client.sharing.execute({ payload });
+    }
     case "RevokeWorldReadAccess": {
       return yield* client.sharing.execute({ payload });
     }
