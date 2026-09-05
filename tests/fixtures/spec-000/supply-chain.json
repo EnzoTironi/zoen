@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "denied": false,
+  "sbomDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "provenanceDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "evidence": [],
+  "disabledRoute": "release-promotion-and-merge",
+  "note": "Synthetic incomplete promotion allow for ZN-0006-NEG. Must not be treated as observed evidence."
+}

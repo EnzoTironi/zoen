@@ -33,9 +33,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": ".github/workflows/release.yml.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -84,9 +84,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "CODEOWNERS.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -2568,9 +2568,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-000/supply-chain.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -20123,9 +20123,9 @@
         "ZN-0006"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-000/supply-chain.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-000/supply-chain.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -27455,9 +27455,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/component/spec-000/supply-chain.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/component/spec-000/supply-chain.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -31876,9 +31876,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-000/supply-chain.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -42269,9 +42269,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tooling/supply-chain.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tooling/supply-chain.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {

@@ -1,44 +1,169 @@
-// @zoen-plan tests/component/spec-000/supply-chain.test.ts
-// NON-EXECUTABLE PSEUDOCODE; not registered or compiled as product implementation.
-// # File plan — `tests/component/spec-000/supply-chain.test.ts`
-//
-// **Status:** planned; no product acceptance implied.
-//
-// Target: `tests/component/spec-000/supply-chain.test.ts`. Representation: **comment-only-source**. Allocation: **required**.
-//
-// Specs: [SPEC-000](../../../docs/specs/spec-000.md).
-// Tickets: [ZN-0006](../../../docs/tickets/zn-0006.md).
-//
-// ## Responsibility and reuse
-//
-// ```text
-// SUITE ZN-0006 [required layer=component; currently NOT IMPLEMENTED]
-//   REQUIRE real admitted dependencies and disposable owned namespaces; missing dependency => BLOCKED.
-//   USE synthetic input records, not synthetic services, fake credentials or canned provider responses.
-//
-//   TEST ZN-0006-AC:
-//     ARRANGE A dependency changed without a lock update or an unsigned image is offered for promotion
-//     ACT CI builds and evaluates release eligibility
-//     ASSERT Promotion is denied; the evidence identifies the exact mismatch without printing credentials
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   TEST ZN-0006-NEG:
-//     ARRANGE the same ticket component with the stated invalid/denied input.
-//     ACT only through its real supported boundary; inspect denial and lack of side effects.
-//     ASSERT Remove a required tool, secret reference or test dependency. The harness fails as missing prerequisite and cannot pass by skipping. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   TEST ZN-0006-BOUNDARY:
-//     ARRANGE the same component at its named failure/replay/resource boundary.
-//     ACT with independently controlled real connection/process barriers when I/O is involved.
-//     ASSERT Repeat with duplicate/reordered input, revoked access and the profile limit at the task boundary. Preserve the declared oracle; report unsupported/incomplete state rather than silent truncation, disclosure or fabricated success.
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   ASSERT every required check executed, no required skips, nonzero count and exact semantic oracle.
-//   CLEANUP only this test namespace after checking receipts/pins/unknown external outcomes.
-//   NEVER expose clocks, barriers, fixture seeders or failure controls in production routes.
-// ```
-//
-// ## Acceptance boundary
-//
-// A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+
+import {
+  DISABLED_ROUTE,
+  evaluateLicensePolicy,
+  evaluatePromotion,
+  generateSbom,
+  resolveSigningIdentity,
+  scanForSecrets,
+} from '../../../tooling/supply-chain.ts';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(__dirname, '../../..');
+
+function registerZn0006Tests(): void {
+  test('ZN-0006-AC', () => {
+    assert.equal(existsSync(join(ROOT, 'contracts/spec-000/supply-chain.schema.json')), true);
+    assert.equal(existsSync(join(ROOT, '.github/workflows/release.yml')), true);
+    assert.equal(existsSync(join(ROOT, 'CODEOWNERS')), true);
+
+    const sbom = generateSbom(ROOT);
+    assert.ok(sbom.digest);
+    assert.ok(sbom.packages.length > 0);
+
+    // Dependency changed without lock update
+    const deniedLock = evaluatePromotion({
+      root: ROOT,
+      sourceCommit: 'abc123abc123abc123abc123abc123abc123abc1',
+      declaredDependencies: { hono: '0.0.0-not-locked' },
+      expectedLockDigest: sbom.lockDigest,
+    });
+    assert.equal(deniedLock.ok, false);
+    if (deniedLock.ok) return;
+    assert.equal(deniedLock.denied, true);
+    assert.equal(deniedLock.code, 'dependency-changed-without-lock-update');
+    assert.match(deniedLock.mismatch, /hono/);
+    assert.equal(deniedLock.disabledRoute, DISABLED_ROUTE);
+    assert.equal(deniedLock.redacted, true);
+    assert.ok(!deniedLock.evidence.join(' ').includes('password'));
+
+    // Unsigned image offered for promotion
+    const deniedUnsigned = evaluatePromotion({
+      root: ROOT,
+      sourceCommit: 'abc123abc123abc123abc123abc123abc123abc1',
+      declaredDependencies: {},
+      expectedLockDigest: sbom.lockDigest,
+      image: {
+        reference: 'zoen/edge',
+        digest: 'sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280',
+      },
+      signingEnv: { ZOEN_ADMITTED_SIGNING_IDENTITY: 'projects/zoen/signing/admission-ref' },
+    });
+    assert.equal(deniedUnsigned.ok, false);
+    if (deniedUnsigned.ok) return;
+    assert.equal(deniedUnsigned.code, 'unsigned-image');
+    assert.ok(deniedUnsigned.evidence.some((e) => e.includes('signature-absent')));
+    // Must not print credential material
+    assert.ok(!deniedUnsigned.evidence.join('\n').includes('BEGIN'));
+  });
+
+  test('ZN-0006-NEG', () => {
+    assert.equal(existsSync(join(ROOT, 'tests/fixtures/spec-000/supply-chain.json')), true);
+    const fixture = JSON.parse(readFileSync(join(ROOT, 'tests/fixtures/spec-000/supply-chain.json'), 'utf8')) as {
+      note?: string;
+    };
+    assert.ok(fixture.note?.includes('Synthetic'));
+
+    const missingSign = resolveSigningIdentity({});
+    assert.equal(missingSign.status, 'MissingPrerequisite');
+    assert.ok(missingSign.missing?.includes('ZOEN_ADMITTED_SIGNING_IDENTITY'));
+
+    const denied = evaluatePromotion({
+      root: ROOT,
+      sourceCommit: 'abc123abc123abc123abc123abc123abc123abc1',
+      declaredDependencies: {},
+      image: {
+        reference: 'zoen/edge',
+        digest: 'sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280',
+      },
+      signingEnv: {},
+    });
+    assert.equal(denied.ok, false);
+    if (denied.ok) return;
+    assert.equal(denied.code, 'signing-identity-missing');
+
+    // Secret scanning finds patterns without echoing secrets in full
+    const scan = scanForSecrets('password=supersecretvalue123\nsafe=1');
+    assert.ok(scan.findings.includes('password-assignment'));
+    assert.ok(scan.redactedPreview.includes('<redacted>'));
+    assert.ok(!scan.redactedPreview.includes('supersecretvalue123'));
+  });
+
+  test('ZN-0006-BOUNDARY', () => {
+    const sbom = generateSbom(ROOT);
+    const a = evaluatePromotion({
+      root: ROOT,
+      sourceCommit: 'abc123abc123abc123abc123abc123abc123abc1',
+      declaredDependencies: {},
+      expectedLockDigest: sbom.lockDigest,
+      image: {
+        reference: 'zoen/edge',
+        digest: 'sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280',
+        signatureRef: 'sigstore:rekor/entry/1',
+      },
+      signingEnv: { ZOEN_ADMITTED_SIGNING_IDENTITY: 'projects/zoen/signing/admission-ref' },
+    });
+    const b = evaluatePromotion({
+      root: ROOT,
+      sourceCommit: 'abc123abc123abc123abc123abc123abc123abc1',
+      declaredDependencies: {},
+      expectedLockDigest: sbom.lockDigest,
+      image: {
+        reference: 'zoen/edge',
+        digest: 'sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280',
+        signatureRef: 'sigstore:rekor/entry/1',
+      },
+      signingEnv: { ZOEN_ADMITTED_SIGNING_IDENTITY: 'projects/zoen/signing/admission-ref' },
+    });
+    assert.equal(a.ok, true);
+    assert.equal(b.ok, true);
+    if (!a.ok || !b.ok) return;
+    assert.equal(a.sbomDigest, b.sbomDigest);
+
+    // Revoked signing / profile limit
+    const revoked = evaluatePromotion({
+      root: ROOT,
+      sourceCommit: 'abc123abc123abc123abc123abc123abc123abc1',
+      declaredDependencies: {},
+      expectedLockDigest: sbom.lockDigest,
+      image: {
+        reference: 'zoen/edge',
+        digest: 'sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280',
+        signatureRef: 'sig',
+      },
+      signingEnv: { ZOEN_ADMITTED_SIGNING_IDENTITY: '-----BEGIN PRIVATE KEY-----\nMII\n' },
+    });
+    assert.equal(revoked.ok, false);
+
+    // Duplicate/reordered license evaluation is stable
+    const pkgs = [
+      { name: 'a', version: '1', license: 'MIT' },
+      { name: 'b', version: '1', license: 'GPL-3.0' },
+    ];
+    const l1 = evaluateLicensePolicy(pkgs);
+    const l2 = evaluateLicensePolicy([...pkgs].reverse());
+    assert.equal(l1.ok, false);
+    assert.equal(l2.ok, false);
+    assert.equal(l1.violations.length, l2.violations.length);
+
+    // CLI deny path
+    const cli = spawnSync(process.execPath, ['--experimental-strip-types', join(ROOT, 'tooling/supply-chain.ts')], {
+      encoding: 'utf8',
+      cwd: ROOT,
+    });
+    assert.notEqual(cli.status, 0);
+  });
+}
+
+const thisFile = fileURLToPath(import.meta.url);
+const entry = process.argv[1] ? resolve(process.argv[1]) : '';
+const underNodeTest = process.execArgv.some((a) => a === '--test' || a.startsWith('--test='));
+if (underNodeTest || entry === thisFile || process.env.ZN_0006_RUN_TESTS === '1') {
+  registerZn0006Tests();
+}

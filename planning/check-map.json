@@ -172,7 +172,7 @@
     "ticket_id": "ZN-0006",
     "spec_id": "SPEC-000",
     "test_file": "tests/component/spec-000/supply-chain.test.ts",
-    "plan_path": "tests/component/spec-000/supply-chain.test.ts",
+    "plan_path": "tests/component/spec-000/supply-chain.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -183,7 +183,7 @@
     "ticket_id": "ZN-0006",
     "spec_id": "SPEC-000",
     "test_file": "tests/component/spec-000/supply-chain.test.ts",
-    "plan_path": "tests/component/spec-000/supply-chain.test.ts",
+    "plan_path": "tests/component/spec-000/supply-chain.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -194,7 +194,7 @@
     "ticket_id": "ZN-0006",
     "spec_id": "SPEC-000",
     "test_file": "tests/component/spec-000/supply-chain.test.ts",
-    "plan_path": "tests/component/spec-000/supply-chain.test.ts",
+    "plan_path": "tests/component/spec-000/supply-chain.test.ts.plan.md",
     "status": "not-executed"
   },
   {

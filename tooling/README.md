@@ -10,7 +10,7 @@
 
 | Target | Role | Plan |
 |---|---|---|
-| `supply-chain.ts` | required | [read](supply-chain.ts) |
+| `supply-chain.ts` | required | [read](supply-chain.ts.plan.md) |
 | `test-harness.ts` | required | [read](test-harness.ts.plan.md) |
 | `verify-ticket.ts` | required | [read](verify-ticket.ts.plan.md) |
 | `workspace.ts` | required | [read](workspace.ts.plan.md) |

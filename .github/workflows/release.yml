@@ -1,0 +1,29 @@
+# ZN-0006 — release eligibility (fail closed). Pins actions by major; images must use digests at promote time.
+name: release-eligibility
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  supply-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Enable corepack pnpm
+        run: corepack enable && corepack prepare pnpm@11.25.0 --activate
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: SBOM from admitted lock
+        run: node --experimental-strip-types tooling/supply-chain.ts sbom
+      - name: Deny unsigned / mismatched promotion by default
+        run: node --experimental-strip-types tooling/supply-chain.ts
+        # Expected to fail closed unless promotion inputs are explicitly provided in a later qualified job.
+        continue-on-error: false

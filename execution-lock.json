@@ -68,6 +68,27 @@
     {
       "code": "ticket-unaccepted",
       "message": "ZN-0004 not accepted; verify:ticket still planned (ZN-0005)"
+    },
+    {
+      "code": "signing-identity-unadmitted",
+      "message": "Releasable image signing identity not admitted; promotion of unsigned images remains denied"
     }
-  ]
+  ],
+  "supplyChain": {
+    "ticket": "ZN-0006",
+    "sbom": "generated-from-pnpm-lock",
+    "signingIdentity": "MissingPrerequisite until ZOEN_ADMITTED_SIGNING_IDENTITY opaque ref is admitted",
+    "ciActions": [
+      {
+        "uses": "actions/checkout@v4",
+        "pinning": "major-tag",
+        "notes": "Immutable digest pinning of actions remains a follow-up when action digests are admitted"
+      },
+      {
+        "uses": "actions/setup-node@v4",
+        "pinning": "major-tag"
+      }
+    ],
+    "producedAt": "2026-09-05T01:31:18.748Z"
+  }
 }

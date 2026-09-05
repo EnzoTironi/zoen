@@ -1,0 +1,11 @@
+# ZN-0006 — mandatory architecture/security review surfaces.
+# These paths require review from the platform owners before merge.
+
+*       @EnzoTironi
+
+/docs/architecture/     @EnzoTironi
+/tooling/               @EnzoTironi
+/admissions/            @EnzoTironi
+/.github/workflows/     @EnzoTironi
+/contracts/             @EnzoTironi
+/CODEOWNERS             @EnzoTironi

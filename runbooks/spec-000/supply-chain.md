@@ -1,47 +1,26 @@
-# File plan — `runbooks/spec-000/supply-chain.md`
+# Runbook — secrets, artifacts and merge policy (ZN-0006)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not product-accepted.
 
-Target: `runbooks/spec-000/supply-chain.md`. Representation: **markdown-plan**. Allocation: **required**.
+## Scope
 
-Specs: [SPEC-000](../../docs/specs/spec-000.md).
-Tickets: [ZN-0006](../../docs/tickets/zn-0006.md).
+SBOM + provenance from admitted lock; deny promotion when dependencies drift without lock update or when images lack digest/signature; secret scanning with redaction; CODEOWNERS for architecture/security review.
 
-## Responsibility and reuse
+## Commands
 
-## ZN-0006 operational/repair procedure
-
-Scope: Protect secrets, artifacts and merge policy. This is a plan; deployments and commands not yet qualified remain blocked.
-
-```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-CI builds and evaluates release eligibility
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: ticket ID, repository commit, admitted profile, actual lock bytes, required check IDs.
-READ: current execution catalog and immutable evidence; never infer completion from file existence.
-VERIFY repository/data-preservation inventory before permitting destructive migration work.
-RESOLVE exact dependencies on the target using real registries; record actual integrity and compatibility, not guessed lock entries.
-COLLECT tests by required IDs; reject missing selection, duplicate ownership, zero executions and skipped required cases.
-RUN actual component/browser/provider dependencies; unavailable dependency => BLOCKED, not a substitute.
-BIND report to commit, lock, fixture seed, profile, commands and artifact digests.
-REQUIRE independent review and current external gate when applicable; keep all other routes disabled.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-Promotion is denied; the evidence identifies the exact mismatch without printing credentials
-RESUME only with current approval and intact unrelated tenant scopes.
+```sh
+source .toolchain-env.sh
+node --experimental-strip-types tooling/supply-chain.ts sbom
+node --experimental-strip-types --test tests/component/spec-000/supply-chain.test.ts
 ```
 
-## Owning state / operation contracts
+## Repair
 
-### SPEC-000
-AdmitExecutionProfile(profile, candidateVersions, integrityDigests, compatibilityReport) -> AdmittedLock | Blocked; VerifyTicket(ticketId, commit, profile) -> EvidenceReport | MissingPrerequisite.
+| Symptom | Repair |
+|---|---|
+| dependency-changed-without-lock-update | Refresh lock via package manager; never hand-edit digests |
+| unsigned-image | Sign with admitted identity reference; do not paste private keys into env |
+| signing-identity-missing | Set `ZOEN_ADMITTED_SIGNING_IDENTITY` to opaque ref |
+| secret finding | Rotate credential; remove from tree; keep redaction |
 
-No application tables. Track execution-lock.json, baseline-inventory.json and evidence-index.json as reviewed artifacts. Secret values never belong in these files.
-
-[algorithm SPEC-000](../../docs/algorithms/spec-000.md)
-
-## Acceptance boundary
-
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+Disabled route: `release-promotion-and-merge`.

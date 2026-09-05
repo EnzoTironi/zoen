@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-000/supply-chain.schema.json",
+  "title": "SPEC-000 supply-chain promotion decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ok", "denied", "evidence", "disabledRoute"],
+  "properties": {
+    "ok": { "type": "boolean" },
+    "denied": { "type": "boolean" },
+    "code": { "type": "string", "maxLength": 128 },
+    "mismatch": { "type": "string", "maxLength": 256 },
+    "sbomDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "provenanceDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "evidence": { "type": "array", "items": { "type": "string" }, "maxItems": 64 },
+    "disabledRoute": { "type": "string", "maxLength": 256 },
+    "redacted": { "type": "boolean" }
+  }
+}
