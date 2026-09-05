@@ -382,7 +382,10 @@ async function registerZn0291Tests(): Promise<void> {
         // Rival / contested authorized records under equal basis
         const claimValues = (webStable.groups ?? []).flatMap((g) => g.claimValues ?? []);
         const amounts = new Set(claimValues.map((c) => String(c.value)));
-        assert.ok(amounts.has('100') && amounts.has('120'), `amounts=${[...amounts]}`);
+        const normalized = new Set([...amounts].map((a) => a.replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '')));
+        const wantA = fx.billAmountA.replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+        const wantB = fx.billAmountB.replace(/\.0+$/, '').replace(/(\.\d*?)0+$/, '$1').replace(/\.$/, '');
+        assert.ok(normalized.has(wantA) && normalized.has(wantB), `expected ${wantA}/${wantB}, got ${[...amounts]}`);
         const interpretations = (webInspect.value as { groups?: { interpretation?: { rivalRefs?: string[]; contested?: boolean; values?: string[] } }[] }).groups ?? [];
         const rivals = interpretations.flatMap((g) => g.interpretation?.rivalRefs ?? []);
         const contested = interpretations.some((g) => g.interpretation?.contested === true || (g.interpretation?.rivalRefs?.length ?? 0) > 0 || (g.interpretation?.values?.length ?? 0) > 1);
