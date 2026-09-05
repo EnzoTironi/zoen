@@ -16,6 +16,7 @@ import type { S3EvidenceConfig } from "./adapters/object-storage/d01/config.ts";
 import { layer as s3EvidenceLayer } from "./adapters/object-storage/d01/s3.ts";
 import { checkD01AuthorityRole } from "./adapters/postgres/d01/authority-role.ts";
 import { makeD01PostgresLayer } from "./adapters/postgres/d01/postgres.ts";
+import { makeCorrectionHttpGroup } from "./http/corrections.ts";
 import { makeD01HttpGroup } from "./http/d01.ts";
 import { makeIdentityRoutes } from "./http/identity.ts";
 import { readinessRoutes } from "./http/readiness.ts";
@@ -64,6 +65,7 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
       );
       const api = HttpApiBuilder.layer(D01Api).pipe(
         Layer.provide(makeD01HttpGroup(identityConfig.baseUrl)),
+        Layer.provide(makeCorrectionHttpGroup(identityConfig.baseUrl)),
         Layer.provide(executor)
       );
       return Layer.mergeAll(
