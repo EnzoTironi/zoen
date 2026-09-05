@@ -38,9 +38,9 @@ it.live(
         ).pipe(Effect.provide(database.migration));
         const unavailable = yield* http(origin, "/ready");
         expect({
-          status: unavailable.status,
           body: yield* jsonBody(unavailable),
-        }).toStrictEqual({ status: 503, body: { status: "unavailable" } });
+          status: unavailable.status,
+        }).toStrictEqual({ body: { status: "unavailable" }, status: 503 });
       })
     )
 );
@@ -133,8 +133,7 @@ it.live(
       undefined,
       (database) =>
         applyD01Migrations(database.names).pipe(
-          Effect.provide(database.migration),
-          Effect.provide(NodeServices.layer)
+          Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
         )
     )
 );
@@ -146,8 +145,9 @@ it.live(
       (database) =>
         Effect.gen(function* migrationReplay() {
           const repeat = yield* applyD01Migrations(database.names).pipe(
-            Effect.provide(database.migration),
-            Effect.provide(NodeServices.layer)
+            Effect.provide(
+              Layer.mergeAll(database.migration, NodeServices.layer)
+            )
           );
           expect(repeat).toStrictEqual([]);
           const metadata = yield* SqlClient.SqlClient.use(
@@ -176,8 +176,7 @@ it.live(
       undefined,
       (database) =>
         applyD01Migrations(database.names).pipe(
-          Effect.provide(database.migration),
-          Effect.provide(NodeServices.layer)
+          Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
         )
     )
 );
