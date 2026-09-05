@@ -277,11 +277,7 @@ export const createWorkspaceController = (origin: string) => {
         Effect.flatMap((api) => api.execute(request)),
         Effect.result
       );
-      if (
-        started !== epoch ||
-        disposed ||
-        state.frame?.frameRef !== frame.frameRef
-      ) {
+      if (started !== epoch || disposed) {
         return;
       }
       if (Result.isFailure(revalidated)) {
