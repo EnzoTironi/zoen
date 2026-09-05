@@ -7,6 +7,7 @@ import { Config, Effect, FileSystem, Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { grantD01Roles } from "../../../../sql/proposals/d01/grants.ts";
+import { grantDisclosureRole } from "../../../../sql/proposals/disclosure/grants.ts";
 import { makeD01PostgresLayer } from "../../../../src/adapters/postgres/d01/postgres.ts";
 
 const profile = (url: Redacted.Redacted, name: string) => ({
@@ -140,7 +141,19 @@ export const withD01Database = <A, E, R, E2 = never, R2 = never>(
           yield* sql.withTransaction(sql.unsafe(schema));
           yield* sql.withTransaction(sql.unsafe(corrections));
           yield* sql.withTransaction(sql.unsafe(format));
+          const disclosure = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/006_durable_disclosure.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(disclosure));
           yield* grantD01Roles(names);
+          yield* grantDisclosureRole(names.authority);
           if (misconfiguration === "public-create") {
             yield* sql`GRANT CREATE ON SCHEMA public TO ${sql(names.authority)}`;
           }
