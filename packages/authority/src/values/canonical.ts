@@ -6,7 +6,8 @@ import type { SemanticRequest } from "@zoen/contracts/d01/operations";
 import { D01_LIMITS, Digest } from "@zoen/contracts/d01/values";
 import { Effect, Schema } from "effect";
 
-import { parseDocumentText, validUnicode } from "./json.js";
+import { parseImportDocument } from "./document.js";
+import { validUnicode } from "./json.js";
 
 const encoder = new TextEncoder();
 const invalid = (): never => {
@@ -167,7 +168,7 @@ export const intentDigest = (request: SemanticRequest) =>
       )
     );
     if (decoded.operation === "ImportEvidence") {
-      yield* parseDocumentText(decoded.input.document);
+      yield* parseImportDocument(decoded.input);
     }
     return yield* domainDigest("intent", decoded);
   });

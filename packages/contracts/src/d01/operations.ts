@@ -29,7 +29,13 @@ export const CreatePersonalWorld = Schema.Struct({
 }).annotate(exact);
 export const ImportEvidence = Schema.Struct({
   ...mutation,
-  input: Schema.Struct({ document: DocumentText }).annotate(exact),
+  input: Schema.Union([
+    Schema.Struct({ document: DocumentText }).annotate(exact),
+    Schema.Struct({
+      document: DocumentText,
+      format: Schema.Literal("d01.csv.v1"),
+    }).annotate(exact),
+  ]),
   operation: Schema.Literal("ImportEvidence"),
   worldRef: WorldRef,
 }).annotate(exact);
@@ -114,7 +120,7 @@ export const FrameInspected = Schema.TaggedStruct("FrameInspected", {
 export const EvidenceOpened = Schema.TaggedStruct("EvidenceOpened", {
   document: DocumentText,
   evidenceRef: EvidenceRef,
-  mediaType: Schema.Literal("application/json"),
+  mediaType: Schema.Literals(["application/json", "text/csv"]),
 }).annotate(exact);
 export const CorrectionProposed = Schema.TaggedStruct("CorrectionProposed", {
   caseRef: CaseRef,
