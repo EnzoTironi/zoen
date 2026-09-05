@@ -1,0 +1,12 @@
+{
+  "seed": "zn-0033-interpret-seed-v1",
+  "seedDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "purpose": "operations",
+  "queryDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "releaseDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "cutDigest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "perspective": "owner-ops",
+  "amountLow": "80",
+  "amountHigh": "100",
+  "ruleDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

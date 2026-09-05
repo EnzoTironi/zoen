@@ -34,3 +34,17 @@ export type {
   FamilySupportResult,
 } from './families.js';
 export type { FamilySupportPort } from './ports.js';
+export { Interpreter, INTERPRET_IMPL } from './interpret.js';
+export type {
+  InterpretCandidate,
+  PrecedenceRule,
+  InterpretBasis,
+  InterpretInput,
+  InterpretationStatus,
+  VerificationAxis,
+  InterpretationRecord,
+  InterpretOk,
+  InterpretDenied,
+  InterpretOutcome,
+} from './interpret.js';
+export type { InterpretPort } from './ports.js';

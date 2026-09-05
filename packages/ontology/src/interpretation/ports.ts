@@ -36,3 +36,11 @@ export interface FamilySupportPort {
   /** Pure boundary — no I/O. */
   computeFamilySupport(input: FamilySupportInput): FamilySupportResult;
 }
+
+import type { InterpretInput, InterpretOutcome } from './interpret.js';
+
+export type { InterpretInput, InterpretOutcome };
+
+export interface InterpretPort {
+  interpret(input: InterpretInput): Promise<InterpretOutcome>;
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-005/interpret.schema.json",
+  "title": "ZN-0033 interpret fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "queryDigest", "releaseDigest", "cutDigest", "perspective", "amountLow", "amountHigh", "ruleDigest"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0033-interpret-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "queryDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "releaseDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "cutDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "perspective": { "type": "string" },
+    "amountLow": { "type": "string" },
+    "amountHigh": { "type": "string" },
+    "ruleDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}
