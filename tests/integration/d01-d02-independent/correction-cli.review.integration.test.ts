@@ -279,3 +279,42 @@ it.live(
       }).pipe(Effect.provide(NodeServices.layer))
     )
 );
+
+it.live(
+  "independent EX14 explicit correction help remains discoverable without credentials",
+  () =>
+    Effect.scoped(
+      Effect.gen(function* correctionHelp() {
+        const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
+        for (const command of [
+          "propose-correction",
+          "answer-question",
+          "undo-correction",
+        ]) {
+          const child = yield* spawner.spawn(
+            ChildProcess.make(process.execPath, [
+              fileURLToPath(
+                new URL("../../../apps/cli/dist/main.js", import.meta.url)
+              ),
+              command,
+              "--help",
+            ])
+          );
+          const result = yield* Effect.all(
+            {
+              exitCode: child.exitCode,
+              stderr: text(child.stderr),
+              stdout: text(child.stdout),
+            },
+            { concurrency: "unbounded" }
+          );
+          expect({
+            exitCode: result.exitCode,
+            stderr: result.stderr,
+          }).toStrictEqual({ exitCode: 0, stderr: "" });
+          expect(result.stdout).toContain(`zoen ${command}`);
+          expect(result.stdout).toContain("EXAMPLES");
+        }
+      })
+    ).pipe(Effect.provide(NodeServices.layer))
+);
