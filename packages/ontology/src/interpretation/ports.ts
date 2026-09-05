@@ -27,3 +27,12 @@ export type {
 export interface CompareClaimsPort {
   compareClaims(input: CompareClaimsInput): Promise<CompareClaimsOutcome>;
 }
+
+import type { FamilySupportInput, FamilySupportResult } from './families.js';
+
+export type { FamilySupportInput, FamilySupportResult };
+
+export interface FamilySupportPort {
+  /** Pure boundary — no I/O. */
+  computeFamilySupport(input: FamilySupportInput): FamilySupportResult;
+}

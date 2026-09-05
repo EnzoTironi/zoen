@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-005/families.schema.json",
+  "title": "ZN-0032 families fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "statementId", "originalId", "copyCount", "independentConflictId"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0032-families-seed-v1" },
+    "statementId": { "type": "string" },
+    "originalId": { "type": "string" },
+    "copyCount": { "type": "integer", "minimum": 1, "maximum": 100 },
+    "independentConflictId": { "type": "string" }
+  }
+}

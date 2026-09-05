@@ -18,3 +18,19 @@ export type {
   CompareClaimsOutcome,
 } from './types.js';
 export type { CompareClaimsPort } from './ports.js';
+export {
+  computeFamilySupport,
+  resolveRoot,
+  evidenceSetDigest,
+  FAMILIES_IMPL,
+} from './families.js';
+export type {
+  EvidenceLink,
+  EvidenceLinkKind,
+  FamilySupportInput,
+  IndependentFamily,
+  FamilySupportOk,
+  FamilySupportError,
+  FamilySupportResult,
+} from './families.js';
+export type { FamilySupportPort } from './ports.js';
