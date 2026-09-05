@@ -24,7 +24,13 @@
     "declaration": true,
     "sourceMap": true,
     "skipLibCheck": false,
-    "noEmitOnError": true
+    "noEmitOnError": true,
+    "plugins": [
+      {
+        "name": "@effect/language-service",
+        "diagnostics": false
+      }
+    ]
   },
   "include": [
     "packages/adapters/src/config.ts",
@@ -54,5 +60,6 @@
   ],
   "exclude": [
     "packages/clients/src/cli.ts"
-  ]
+  ],
+  "$schema": "./node_modules/@effect/tsgo/schema.json"
 }

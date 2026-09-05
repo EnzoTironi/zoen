@@ -2,8 +2,19 @@ packages:
   - 'apps/*'
   - 'packages/*'
 
+allowBuilds:
+  msgpackr-extract: set this to true or false
+
 minimumReleaseAgeExclude:
   - hono@4.13.7
   - '@playwright/test@1.63.0'
   - playwright-core@1.63.0
   - playwright@1.63.0
+  - '@effect/tsgo-darwin-arm64@0.41.0'
+  - '@effect/tsgo-darwin-x64@0.41.0'
+  - '@effect/tsgo-linux-arm64@0.41.0'
+  - '@effect/tsgo-linux-arm@0.41.0'
+  - '@effect/tsgo-linux-x64@0.41.0'
+  - '@effect/tsgo-win32-arm64@0.41.0'
+  - '@effect/tsgo-win32-x64@0.41.0'
+  - '@effect/tsgo@0.41.0'

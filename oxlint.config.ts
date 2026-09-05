@@ -1,9 +1,10 @@
+import { recommended as effectRecommended } from "@effect/tsgo/oxlint-presets";
 import { defineConfig } from "oxlint";
 import core from "ultracite/oxlint/core";
 import vitest from "ultracite/oxlint/vitest";
 
 export default defineConfig({
-  extends: [core, vitest],
+  extends: [core, vitest, effectRecommended],
   ignorePatterns: [
     ...core.ignorePatterns,
     "archives/**",

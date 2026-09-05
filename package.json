@@ -17,9 +17,10 @@
     "oxlint": "1.81.0",
     "oxlint-tsgolint": "7.0.2001",
     "playwright": "1.63.0",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "ultracite": "7.10.7",
-    "vitest": "5.0.0"
+    "vitest": "5.0.0",
+    "@effect/tsgo": "0.41.0"
   },
   "name": "zoen-v4-implementation-candidate",
   "scripts": {
@@ -45,7 +46,8 @@
     "fix": "ultracite fix",
     "check:boundaries": "node --experimental-strip-types tooling/workspace.ts check",
     "lint": "ultracite check",
-    "format": "ultracite fix"
+    "format": "ultracite fix",
+    "prepare": "effect-tsgo patch --typescript --oxlint"
   },
   "type": "module",
   "version": "0.0.0",

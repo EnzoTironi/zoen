@@ -27,3 +27,17 @@ Não adicionar testes vazios, `skip`, `todo`, `only` ou asserts triviais para pr
 Toda alteração relevante exige a falha reproduzível, a correção, o teste da camada correta e a evidência independente. Compilação, análise estática, leis puras, integração, navegador, caos, carga e admissão têm significados distintos.
 
 Não aprovar o próprio trabalho nem editar resultados esperados para fazê-los passar. Não apagar dados existentes, histórico de decisão ou evidência de falha. Não fabricar lock, hash de imagem, certificado, licença, segredo ou resultado de benchmark.
+
+## Learning more about Effect
+
+This repository uses the Effect Typescript library.
+
+Before writing any Effect code, first read `node_modules/effect/AGENTS.md`
+**completely**, and follow the links in the file when required.
+
+If you need to learn more about particular Effect apis and concepts that the
+guide doesn't cover, search through the source code in `node_modules/effect/src`.
+
+Effect DevTools: `@effect/tsgo` patches TypeScript 7 + Oxlint (`prepare` script).
+Prefer Effect diagnostics from Oxlint; the language-service plugin has `diagnostics: false`.
+
