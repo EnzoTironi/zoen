@@ -13,7 +13,7 @@ export const envelope = {
   schemaVersion: "d01.v1",
 } as const;
 
-const newOperationId = Effect.try({
+export const newOperationId = Effect.try({
   catch: () => new InvalidInput({ code: "INVALID_INPUT" }),
   // oxlint-disable-next-line effecttsgo/crypto-random-uuid-in-effect -- Use the browser cryptographic UUID implementation; retry retains the result.
   try: () => crypto.randomUUID(),

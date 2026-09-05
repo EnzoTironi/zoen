@@ -1,13 +1,16 @@
 import type { VisibleFrame } from "@zoen/contracts/d01/evidence";
-import type { D01Success } from "@zoen/contracts/d01/operations";
+import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
 import type { WorldRef } from "@zoen/contracts/d01/values";
 
 import type { WorkspaceView } from "../../components/d01/presentation.ts";
+import { correctionPatch } from "../../integration/d02/model.ts";
+import type { CorrectionContext } from "../../integration/d02/model.ts";
 import type { BrowserSession } from "./client.ts";
 import { inspectionView } from "./presentation.ts";
 
-export interface WorkspaceState {
+export interface WorkspaceState extends CorrectionContext {
   readonly busy: boolean;
+  readonly canRetry: boolean;
   readonly checking: boolean;
   readonly feedback: string;
   readonly frame: VisibleFrame | null;
@@ -18,9 +21,11 @@ export interface WorkspaceState {
 
 export const initialState: WorkspaceState = {
   busy: false,
+  canRetry: false,
   checking: true,
   feedback: "",
   frame: null,
+  proposal: null,
   session: null,
   view: { kind: "empty" },
   world: null,
@@ -28,7 +33,7 @@ export const initialState: WorkspaceState = {
 
 export const successPatch = (
   state: WorkspaceState,
-  result: D01Success
+  result: SemanticSuccess
 ): Partial<WorkspaceState> => {
   switch (result._tag) {
     case "WorldCreated": {
@@ -55,6 +60,7 @@ export const successPatch = (
         busy: false,
         feedback: "",
         frame: result.frame,
+        proposal: null,
         view: {
           inspection: inspectionView(
             result.frame,
@@ -80,6 +86,11 @@ export const successPatch = (
           kind: "inspection",
         },
       };
+    }
+    case "CorrectionProposed":
+    case "CorrectionApplied":
+    case "CorrectionUndone": {
+      return correctionPatch(result);
     }
     default: {
       return {};

@@ -1,6 +1,6 @@
 import { D01Api } from "@zoen/contracts/d01/api";
 import { D01Error, Unavailable } from "@zoen/contracts/d01/errors";
-import type { D01Request } from "@zoen/contracts/d01/operations";
+import type { SemanticRequest } from "@zoen/contracts/d01/operations";
 import { Context, Effect, Layer, Option, Schema } from "effect";
 import {
   FetchHttpClient,
@@ -74,7 +74,7 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
     }
     return yield* Effect.void;
   }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
-  const execute = (payload: D01Request) =>
+  const execute = (payload: SemanticRequest) =>
     Effect.gen(function* executeRequest() {
       switch (payload.operation) {
         case "CreatePersonalWorld": {
@@ -88,6 +88,15 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
         }
         case "OpenEvidence": {
           return yield* api.d01.execute({ payload });
+        }
+        case "ProposeCorrection": {
+          return yield* api.corrections.execute({ payload });
+        }
+        case "AnswerQuestion": {
+          return yield* api.corrections.execute({ payload });
+        }
+        case "UndoCorrection": {
+          return yield* api.corrections.execute({ payload });
         }
         default: {
           return yield* new Unavailable({ code: "UNAVAILABLE" });

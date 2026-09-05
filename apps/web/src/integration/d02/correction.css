@@ -1,0 +1,25 @@
+.d02-corrections {
+  overflow-wrap: anywhere;
+  display: grid;
+  gap: 1rem;
+}
+.d02-corrections fieldset {
+  border: 1px solid #d9e0d7;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  min-width: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.d02-corrections select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid #8c9c91;
+  border-radius: 0.5rem;
+  color: #203e35;
+  background: white;
+}
+.d02-corrections button {
+  margin: 0.25rem;
+}

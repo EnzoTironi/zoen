@@ -1,10 +1,19 @@
 import { InvalidInput, Unavailable } from "@zoen/contracts/d01/errors";
 import type { D01Error } from "@zoen/contracts/d01/errors";
 import { Inspect, OpenEvidence } from "@zoen/contracts/d01/operations";
-import type { D01Request, D01Success } from "@zoen/contracts/d01/operations";
+import type {
+  CorrectionRequest,
+  SemanticRequest,
+  SemanticSuccess,
+} from "@zoen/contracts/d01/operations";
 import { WorldRef } from "@zoen/contracts/d01/values";
 import { Effect, Exit, ManagedRuntime, Result, Schema } from "effect";
 
+import {
+  answerRequest,
+  proposeRequest,
+  undoRequest,
+} from "../../integration/d02/requests.ts";
 import { BrowserApi, browserApiLayer } from "./client.ts";
 import { initialState, successPatch } from "./model.ts";
 import type { WorkspaceState } from "./model.ts";
@@ -20,7 +29,7 @@ export const createWorkspaceController = (origin: string) => {
   let state = initialState;
   let epoch = 0;
   let active = new AbortController();
-  let retry: D01Request | null = null;
+  let retry: SemanticRequest | null = null;
   let disposed = false;
   let refreshPaused = false;
   const listeners = new Set<() => void>();
@@ -40,13 +49,21 @@ export const createWorkspaceController = (origin: string) => {
     retry = null;
     publish({
       busy: false,
+      canRetry: false,
       feedback: "",
       frame: null,
+      proposal: null,
       view: { kind: "empty" },
       ...patch,
     });
   };
   const failed = (error: D01Error) => {
+    if (
+      error._tag !== "Unavailable" &&
+      error._tag !== "RetryableInfrastructureFailure"
+    ) {
+      retry = null;
+    }
     if (error._tag === "Unauthenticated") {
       invalidate({
         checking: false,
@@ -57,8 +74,10 @@ export const createWorkspaceController = (origin: string) => {
     } else {
       publish({
         busy: false,
+        canRetry: retry !== null,
         feedback: errorMessage(error),
         frame: null,
+        proposal: null,
         view: errorView(error),
       });
     }
@@ -78,16 +97,16 @@ export const createWorkspaceController = (origin: string) => {
       signal: active.signal,
     });
   };
-  const consume = (result: D01Success) => {
+  const consume = (result: SemanticSuccess) => {
     const patch = successPatch(state, result);
     if (result._tag === "WorldCreated") {
       invalidate(patch);
     } else {
-      publish(patch);
+      publish({ ...patch, canRetry: false });
     }
   };
   const execute = Effect.fn("web.execute")(function* executeRequest(
-    request: D01Request
+    request: SemanticRequest
   ) {
     if (state.session === null || state.busy) {
       return;
@@ -164,7 +183,25 @@ export const createWorkspaceController = (origin: string) => {
       failed(revalidated.failure);
     }
   });
+  const correct = (request: Effect.Effect<CorrectionRequest, InvalidInput>) => {
+    if (state.busy || state.session === null) {
+      return;
+    }
+    launch(
+      request.pipe(
+        Effect.flatMap(execute),
+        Effect.catchTag("InvalidInput", (failure) =>
+          Effect.sync(() => {
+            failed(failure);
+          })
+        )
+      )
+    );
+  };
   return {
+    answerQuestion: (answer: "confirm" | "unknown") => {
+      correct(answerRequest(state, answer));
+    },
     authenticate: (
       mode: "sign-in" | "sign-up",
       email: string,
@@ -231,6 +268,7 @@ export const createWorkspaceController = (origin: string) => {
         busy: true,
         feedback: "",
         frame: null,
+        proposal: null,
         view: { kind: "uploading", message: "Lendo e enviando as fontes…" },
       });
       launch(
@@ -327,6 +365,9 @@ export const createWorkspaceController = (origin: string) => {
         )
       );
     },
+    proposeCorrection: (from: string, to: string, choice: string) => {
+      correct(proposeRequest(state, from, to, choice));
+    },
     refresh: () => {
       launch(refresh());
     },
@@ -354,6 +395,9 @@ export const createWorkspaceController = (origin: string) => {
       return () => {
         listeners.delete(listener);
       };
+    },
+    undoCorrection: (correctionRef: string) => {
+      correct(undoRequest(state, correctionRef));
     },
   };
 };

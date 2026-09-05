@@ -1,9 +1,9 @@
 import { useEffect, useId, useMemo, useSyncExternalStore } from "react";
 
 import { D01Workspace } from "../../components/d01/d01-workspace.tsx";
+import { CorrectionPanel } from "../../integration/d02/correction-panel.tsx";
 import { AuthForm } from "./auth-form.tsx";
 import { field } from "./form.ts";
-import { intervalLabel } from "./presentation.ts";
 import { watchSessionChanges } from "./session-events.ts";
 import { createWorkspaceController } from "./state.ts";
 import type { WorkspaceController } from "./state.ts";
@@ -87,7 +87,11 @@ const Connected = ({
                     new FormData(event.currentTarget),
                     "subject"
                   );
-                  controller.inspect(subject);
+                  const atFrame = field(
+                    new FormData(event.currentTarget),
+                    "atFrame"
+                  );
+                  controller.inspect(subject, atFrame === "" ? null : atFrame);
                 }}
               >
                 <label htmlFor={`${id}-subject`}>
@@ -110,6 +114,19 @@ const Connected = ({
                     Consultar fontes
                   </button>
                 </div>
+                <label htmlFor={`${id}-at-frame`}>
+                  Referência de leitura anterior (opcional)
+                </label>
+                <input
+                  disabled={state.busy}
+                  id={`${id}-at-frame`}
+                  name="atFrame"
+                  type="text"
+                />
+                <p>
+                  Deixe em branco para consultar o estado atual. Uma leitura
+                  anterior conserva seu contexto histórico.
+                </p>
               </form>
             </>
           )}
@@ -131,6 +148,7 @@ const Connected = ({
       ) : (
         <>
           <D01Workspace
+            {...(state.canRetry ? { onRetry: controller.retry } : {})}
             acceptedFileTypes="application/json,.json"
             actionPending={state.busy}
             feedback={state.feedback}
@@ -144,34 +162,9 @@ const Connected = ({
             onLogout={() => {
               controller.logout();
             }}
-            onRetry={() => {
-              controller.retry();
-            }}
             view={state.view}
           />
-          {state.frame !== null && state.frame.scopedCorrections.length > 0 ? (
-            <section
-              aria-label="Decisões por período"
-              className="d01-workspace d01-context"
-            >
-              <h2>Suas decisões por período</h2>
-              <ul>
-                {state.frame.scopedCorrections.map((correction) => (
-                  <li key={correction.correctionRef}>
-                    <strong>{correction.subjectKey}</strong> ·{" "}
-                    {intervalLabel(correction.validTime)} ·{" "}
-                    {correction.choice._tag === "unknown"
-                      ? "Não sei responder"
-                      : `Referência escolhida: ${correction.choice.claimRef}`}
-                    <p>
-                      Recibo {correction.receiptRef}. Esta anotação não
-                      substitui os registros das fontes.
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ) : null}
+          <CorrectionPanel controller={controller} state={state} />
         </>
       )}
     </>
