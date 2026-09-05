@@ -1,6 +1,6 @@
 # File plan — `packages/door/src/door.ts`
 
-**Status:** candidate-unaccepted; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `packages/door/src/door.ts`. Representation: **existing-with-sidecar**. Allocation: **required**.
 

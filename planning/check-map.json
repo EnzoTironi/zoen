@@ -403,7 +403,7 @@
     "ticket_id": "ZN-0013",
     "spec_id": "SPEC-002",
     "test_file": "tests/component/spec-002/presence.test.ts",
-    "plan_path": "tests/component/spec-002/presence.test.ts",
+    "plan_path": "tests/component/spec-002/presence.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -414,7 +414,7 @@
     "ticket_id": "ZN-0013",
     "spec_id": "SPEC-002",
     "test_file": "tests/component/spec-002/presence.test.ts",
-    "plan_path": "tests/component/spec-002/presence.test.ts",
+    "plan_path": "tests/component/spec-002/presence.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -425,7 +425,7 @@
     "ticket_id": "ZN-0013",
     "spec_id": "SPEC-002",
     "test_file": "tests/component/spec-002/presence.test.ts",
-    "plan_path": "tests/component/spec-002/presence.test.ts",
+    "plan_path": "tests/component/spec-002/presence.test.ts.plan.md",
     "status": "not-executed"
   },
   {

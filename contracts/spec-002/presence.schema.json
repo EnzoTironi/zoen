@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-002/presence.schema.json",
+  "title": "SPEC-002 Door presence proof",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tag", "subjectId", "principalId", "sessionId", "audience", "worldGrant", "membership"],
+  "properties": {
+    "tag": { "const": "PresenceProof" },
+    "subjectId": { "type": "string", "minLength": 8, "maxLength": 128 },
+    "principalId": { "type": "string", "format": "uuid" },
+    "sessionId": { "type": "string", "minLength": 1 },
+    "sessionToken": { "type": "string" },
+    "audience": { "type": "string", "minLength": 8 },
+    "authenticatedAt": { "type": "string" },
+    "expiresAt": { "type": "string" },
+    "worldGrant": { "type": "null" },
+    "membership": { "type": "null" }
+  }
+}

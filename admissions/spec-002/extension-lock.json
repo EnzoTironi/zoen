@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "spec-002.extension-lock.v1",
+  "ticket": "ZN-0013",
+  "spec": "SPEC-002",
+  "admissionStatus": "ObservedDependencyPin",
+  "profile": "door-better-auth-presence",
+  "producedAt": "2026-09-05T01:55:00.000Z",
+  "note": "Pins recorded from pnpm-lock.yaml resolutions. Presence-only; no World grant. Not ticket acceptance.",
+  "disabledRoute": "world-grant-from-presence",
+  "extendsCoreAdmission": "admissions/spec-000/execution-lock.json",
+  "dependencies": {
+    "better-auth": {
+      "name": "better-auth",
+      "version": "1.7.2",
+      "integrity": "sha512-gKapKBEvYIGcMxi74RjQ7EbFLiqyQt58vdoJmL1qAlWSkY1Bc2Vqshl524/3u1NxauiOU03M/Ebh762Brmac9A==",
+      "source": "https://registry.npmjs.org",
+      "role": "presence-adapter"
+    },
+    "pg": {
+      "name": "pg",
+      "version": "8.23.0",
+      "integrity": "sha512-Ip2EQCngowJLGOfCwkFhPXU7/ljlhn6Rxlmy4XYfL2Y+vyRM59+8uR2xqRWKdYmbXmxCFOAmKxBuSUCdF34qLg==",
+      "source": "https://registry.npmjs.org",
+      "role": "door-database-driver"
+    }
+  },
+  "invariants": [
+    "DoorPort.verify returns PresenceProof with worldGrant=null",
+    "Email and display name are never primary identity keys",
+    "Revoked sessions fail verify even after prior success"
+  ]
+}
