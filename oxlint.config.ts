@@ -48,6 +48,17 @@ export default defineConfig({
   },
   overrides: [
     {
+      files: ["**/*.integration.test.{ts,tsx}"],
+      rules: { "vitest/max-expects": "off" },
+    },
+    {
+      files: ["**/adapters/posix.ts"],
+      rules: {
+        "effecttsgo/node-builtin-import": "off",
+        "no-bitwise": "off",
+      },
+    },
+    {
       files: ["**/*.{ts,tsx,mts,cts}"],
       rules: {
         "no-redeclare": "off",

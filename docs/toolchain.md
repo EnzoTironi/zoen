@@ -52,3 +52,9 @@ O patch versionado em `patches/@better-fetch__fetch@1.3.1.patch`, aplicado pelo 
 Importar `Command` de `effect/unstable/cli` reproduziu TS2339 em `internal/command.d.ts`: `ReturnType<typeof Param.getParamMetadata>` referencia uma função marcada `@internal`, removida da declaração pública de Param. A função existe tanto na [fonte da versão rc.112](https://github.com/Effect-TS/effect/blob/effect%404.0.0-rc.112/packages/effect/src/unstable/cli/Param.ts) como no JavaScript publicado.
 
 O patch pnpm `patches/effect@4.0.0-rc.112.patch` substitui apenas essa referência inválida pelo tipo estrutural exato declarado pela função: dois booleanos e dois `Option<number>`. Não expõe função interna como API, não altera runtime e não desativa checagem de declarações. A contraprova independente numa cópia isolada da dependência e o mesmo import no typecheck completo passaram com o patch; a versão original falhou com TS2339.
+
+## Integrações e fronteira POSIX
+
+`vitest/max-expects` não se aplica a `*.integration.test.*`: o ciclo real de captura, pin, remoção e abertura exige verificar vários estados do mesmo recurso, e o maior teste atual possui 16 asserções. A regra de contagem não substitui revisão da testemunha. Os testes continuam executados, sem supressão inline ou alteração de resultados esperados.
+
+Somente a categoria de adapters folha `**/adapters/posix.ts` permite imports Node de arquivos e operações bitwise nativas. `FileSystem.open` da versão instalada aceita flags textuais, sem `O_NOFOLLOW`; o adapter Node de `FileSystem.stat` segue links e não oferece `lstat`. O adapter POSIX usa esses recursos concretos para proteger arquivos de credenciais, envolvidos em Effects com aquisição/liberação. A aplicação usa FileSystem/Path/streams Effect, e o adapter continua sujeito a todos os outros checks e às fronteiras de imports.
