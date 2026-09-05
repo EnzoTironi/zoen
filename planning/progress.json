@@ -5,7 +5,7 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "EX05",
+      "task": "EX08",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex02",
@@ -13,7 +13,7 @@
     },
     {
       "agent": "roadmap_redesign",
-      "task": "EX06",
+      "task": "EX09",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
@@ -21,7 +21,7 @@
     },
     {
       "agent": "tickets_redesign",
-      "task": "EX04",
+      "task": "EX11",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
@@ -35,6 +35,48 @@
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em suíte transversal, sem import de servidor nas fontes authority."
+    },
+    {
+      "task": "EX08",
+      "path": "packages/authority/src/semantic/executor.ts",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Registrar operações reais e prazo comum no dispatcher existente."
+    },
+    {
+      "task": "EX08",
+      "path": "tests/integration/d01/evidence/**",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Provar publicação, leitura e GC com PostgreSQL e S3 reais."
+    },
+    {
+      "task": "EX08",
+      "path": "packages/authority/src/commit/**",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Refinar changedDomains e validação de prazo mantendo a primitiva única."
+    },
+    {
+      "task": "EX09",
+      "path": "apps/server/src/adapters/postgres/d01/postgres.ts",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "Compartilhar admissão com a conexão real de identidade e corrigir escalada por roles."
+    },
+    {
+      "task": "EX10",
+      "path": "apps/server/test/adapters/postgres/d01/database.ts",
+      "owner": "root",
+      "integration_owner": "root",
+      "reason": "Permitir instalação numerada em banco vazio reutilizando provisionamento isolado."
+    },
+    {
+      "task": "EX05-EX06-review",
+      "path": "tests/integration/d01/independent/**",
+      "owner": "worker-3",
+      "integration_owner": "root",
+      "reason": "Preservar contraprovas independentes de prazo e escalada de role."
     }
   ],
   "checkpoints": [
@@ -53,6 +95,27 @@
       "infrastructure_tests": 4,
       "browser_component_tests": 7,
       "scope": "Bootstrap, contratos e componentes puros; não conclui D01 ou D02."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "40e0e7e",
+      "packages": ["EX04", "EX05", "EX06", "EX07"],
+      "state": "combined_checks_passed_with_review_followups",
+      "unit_tests": 152,
+      "integration_tests": 36,
+      "browser_component_tests": 7,
+      "scope": "Componentes de domínio e adapters reais; EX05/EX06 receberam correções posteriores com contraprovas independentes. EX07 ainda requer revisão cruzada; EX08/EX09/EX10 em composição."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "6b7f6c6",
+      "packages": ["EX05", "EX06"],
+      "state": "independently_reviewed_and_verified_locally",
+      "reviewer": "worker-3",
+      "witness_commits": ["0dd65c8", "70d0cbd", "a0955d0"],
+      "scope": "Prazo interrompe lock SQL sem persistência; runtime não escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem alteração de UI posterior.",
+      "unit_tests": 152,
+      "integration_tests": 41
     }
   ],
   "verified_deliveries": [],
