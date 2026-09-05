@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-004/capture.schema.json",
+  "title": "ZN-0025 capture fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "sourceNamespace", "maxBytes", "csvMediaType"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0025-capture-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "sourceNamespace": { "type": "string" },
+    "maxBytes": { "type": "integer", "minimum": 1 },
+    "csvMediaType": { "type": "string", "const": "text/csv" }
+  }
+}

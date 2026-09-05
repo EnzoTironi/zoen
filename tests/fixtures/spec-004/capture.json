@@ -1,0 +1,8 @@
+{
+  "seed": "zn-0025-capture-seed-v1",
+  "seedDigest": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "purpose": "operations",
+  "sourceNamespace": "uploads.csv",
+  "maxBytes": 1024,
+  "csvMediaType": "text/csv"
+}
