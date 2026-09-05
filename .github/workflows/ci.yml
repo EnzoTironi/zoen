@@ -1,0 +1,76 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  doctor-boundaries:
+    name: ultracite doctor + boundaries
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Enable corepack pnpm
+        run: corepack enable && corepack prepare pnpm@11.25.0 --activate
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Ultracite doctor
+        run: pnpm exec ultracite doctor
+      - name: Zoen dependency boundaries
+        run: pnpm run check:boundaries
+
+  lint:
+    name: ultracite check (changed files on PR)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Enable corepack pnpm
+        run: corepack enable && corepack prepare pnpm@11.25.0 --activate
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Lint changed TS/JS (or full on main)
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE="${{ github.event.pull_request.base.sha }}"
+            mapfile -t FILES < <(git diff --name-only --diff-filter=ACMR "$BASE"...HEAD | grep -E '\.(ts|tsx|js|jsx|mjs|cjs)$' || true)
+            if [ "${#FILES[@]}" -eq 0 ]; then
+              echo "No JS/TS files changed; skipping ultracite check."
+              exit 0
+            fi
+            echo "Checking ${#FILES[@]} changed files"
+            pnpm exec ultracite check -- "${FILES[@]}"
+          else
+            pnpm exec ultracite check
+          fi
+
+  verify-core:
+    name: verify-core (candidate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Enable corepack pnpm
+        run: corepack enable && corepack prepare pnpm@11.25.0 --activate
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Core verify
+        run: pnpm run verify:core

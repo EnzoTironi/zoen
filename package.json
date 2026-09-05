@@ -1,12 +1,26 @@
 {
-  "name": "zoen-v4-implementation-candidate",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
-  "engines": {
-    "node": ">=24 <25"
+  "dependencies": {
+    "@aws-sdk/client-s3": "3.1116.0",
+    "@cedar-policy/cedar-wasm": "4.12.0",
+    "@hono/node-server": "2.1.1",
+    "better-auth": "1.7.2",
+    "hono": "4.13.7",
+    "pg": "8.23.0"
   },
-  "packageManager": "pnpm@11.25.0",
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.0.0",
+    "@types/pg": "8.15.5",
+    "fast-check": "4.9.0",
+    "oxfmt": "0.66.0",
+    "oxlint": "1.81.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "playwright": "1.63.0",
+    "typescript": "6.0.3",
+    "ultracite": "7.10.7",
+    "vitest": "5.0.0"
+  },
+  "name": "zoen-v4-implementation-candidate",
   "scripts": {
     "build:core": "tsc -p tsconfig.core.json",
     "test:laws": "node --test tests/laws/*.test.mjs",
@@ -26,23 +40,17 @@
     "test:component": "node --experimental-strip-types --test tests/component/**/*.test.ts tests/static/**/*.test.ts",
     "test:journey": "node --experimental-strip-types tooling/workspace.ts journey-gate",
     "verify:ticket": "node --experimental-strip-types tooling/verify-ticket.ts",
-    "test:harness": "node --experimental-strip-types --test tests/component/spec-000/test-harness.test.ts"
+    "test:harness": "node --experimental-strip-types --test tests/component/spec-000/test-harness.test.ts",
+    "fix": "ultracite fix",
+    "check:boundaries": "node --experimental-strip-types tooling/workspace.ts check",
+    "lint": "ultracite check",
+    "format": "ultracite fix"
   },
-  "dependencies": {
-    "@aws-sdk/client-s3": "3.1116.0",
-    "@cedar-policy/cedar-wasm": "4.12.0",
-    "@hono/node-server": "2.1.1",
-    "better-auth": "1.7.2",
-    "hono": "4.13.7",
-    "pg": "8.23.0"
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=24 <25"
   },
-  "devDependencies": {
-    "@playwright/test": "1.63.0",
-    "@types/node": "24.0.0",
-    "@types/pg": "8.15.5",
-    "fast-check": "4.9.0",
-    "playwright": "1.63.0",
-    "typescript": "6.0.3",
-    "vitest": "5.0.0"
-  }
+  "packageManager": "pnpm@11.25.0"
 }

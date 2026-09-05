@@ -1,7 +1,8 @@
 /**
- * ZN-0003 ESLint flat config — dependency direction / credential isolation.
- * The eslint npm package is not in the ZN-0002 core lock; tooling/workspace.ts
- * enforces equivalent static rules. This file is the reviewed config source.
+ * ZN-0003 boundary rules (Eve/web/kernel import isolation).
+ * Style/format lint is Ultracite + Oxlint (`oxlint.config.ts`). This ESLint
+ * flat config remains because `tooling/workspace.ts check` requires it and
+ * encodes repository-contract edges; it is not the primary formatter.
  */
 const eveRestricted = [
   'pg',
