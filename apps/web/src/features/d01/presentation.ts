@@ -55,10 +55,15 @@ export const errorMessage = (error: D01Error) => {
   }
 };
 
-export const errorView = (error: D01Error): WorkspaceView =>
-  error._tag === "Unauthenticated" || error._tag === "NotFoundOrDenied"
-    ? { kind: "denied" }
-    : { kind: "unavailable" };
+export const errorView = (error: D01Error): WorkspaceView => {
+  if (error._tag === "InvalidInput" || error._tag === "QuotaExceeded") {
+    return { kind: "empty" };
+  }
+  if (error._tag === "Unauthenticated" || error._tag === "NotFoundOrDenied") {
+    return { kind: "denied" };
+  }
+  return { kind: "unavailable" };
+};
 
 export const inspectionView = (
   frame: VisibleFrame,

@@ -1,6 +1,12 @@
 import { randomUUID } from "node:crypto";
 
-import { NotFoundOrDenied, Unavailable } from "@zoen/contracts/d01/errors";
+import {
+  InvalidInput,
+  NotFoundOrDenied,
+  QuotaExceeded,
+  RetryableInfrastructureFailure,
+  Unavailable,
+} from "@zoen/contracts/d01/errors";
 import { VisibleFrame } from "@zoen/contracts/d01/evidence";
 import { EvidenceOpened } from "@zoen/contracts/d01/operations";
 import { Schema } from "effect";
@@ -115,5 +121,21 @@ describe("EX12 presentation", () => {
     expect(errorView(new Unavailable({ code: "UNAVAILABLE" }))).toStrictEqual({
       kind: "unavailable",
     });
+  });
+
+  it("EX19 definitive file errors expose a new import while ambiguous errors retain retry presentation", () => {
+    for (const error of [
+      new InvalidInput({ code: "INVALID_INPUT" }),
+      new QuotaExceeded({ code: "QUOTA_EXCEEDED" }),
+    ]) {
+      expect(errorView(error)).toStrictEqual({ kind: "empty" });
+    }
+    expect(
+      errorView(
+        new RetryableInfrastructureFailure({
+          code: "RETRYABLE_INFRASTRUCTURE_FAILURE",
+        })
+      )
+    ).toStrictEqual({ kind: "unavailable" });
   });
 });
