@@ -1,0 +1,5862 @@
+[
+  {
+    "adr": "040",
+    "audience": "All",
+    "capability": "Natural-language interaction",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0052-AC",
+      "ZN-0052-NEG",
+      "ZN-0052-BOUNDARY",
+      "ZN-0053-AC",
+      "ZN-0053-NEG",
+      "ZN-0053-BOUNDARY",
+      "ZN-0054-AC",
+      "ZN-0054-NEG",
+      "ZN-0054-BOUNDARY",
+      "ZN-0057-AC",
+      "ZN-0057-NEG",
+      "ZN-0057-BOUNDARY",
+      "ZN-0061-AC",
+      "ZN-0061-NEG",
+      "ZN-0061-BOUNDARY",
+      "ZN-0281-AC",
+      "ZN-0281-NEG",
+      "ZN-0281-BOUNDARY"
+    ],
+    "contract": "reference/release-policy-eve.md",
+    "id": "C001",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-009",
+      "SPEC-010",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0052",
+      "ZN-0053",
+      "ZN-0054",
+      "ZN-0057",
+      "ZN-0061",
+      "ZN-0281"
+    ]
+  },
+  {
+    "adr": "040",
+    "audience": "All",
+    "capability": "Cross-turn continuity",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0052-AC",
+      "ZN-0052-NEG",
+      "ZN-0052-BOUNDARY",
+      "ZN-0054-AC",
+      "ZN-0054-NEG",
+      "ZN-0054-BOUNDARY",
+      "ZN-0056-AC",
+      "ZN-0056-NEG",
+      "ZN-0056-BOUNDARY",
+      "ZN-0057-AC",
+      "ZN-0057-NEG",
+      "ZN-0057-BOUNDARY",
+      "ZN-0058-AC",
+      "ZN-0058-NEG",
+      "ZN-0058-BOUNDARY"
+    ],
+    "contract": "reference/release-policy-eve.md",
+    "id": "C002",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-009",
+      "SPEC-010"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0052",
+      "ZN-0054",
+      "ZN-0056",
+      "ZN-0057",
+      "ZN-0058"
+    ]
+  },
+  {
+    "adr": "040",
+    "audience": "All",
+    "capability": "Voice/transcription with provenance",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0062-AC",
+      "ZN-0062-NEG",
+      "ZN-0062-BOUNDARY",
+      "ZN-0063-AC",
+      "ZN-0063-NEG",
+      "ZN-0063-BOUNDARY",
+      "ZN-0071-AC",
+      "ZN-0071-NEG",
+      "ZN-0071-BOUNDARY",
+      "ZN-0281-AC",
+      "ZN-0281-NEG",
+      "ZN-0281-BOUNDARY"
+    ],
+    "contract": "reference/release-policy-eve.md",
+    "id": "C003",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-010",
+      "SPEC-012",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0062",
+      "ZN-0063",
+      "ZN-0071",
+      "ZN-0281"
+    ]
+  },
+  {
+    "adr": "040",
+    "audience": "All",
+    "capability": "Progressive source setup",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0070-AC",
+      "ZN-0070-NEG",
+      "ZN-0070-BOUNDARY",
+      "ZN-0074-AC",
+      "ZN-0074-NEG",
+      "ZN-0074-BOUNDARY"
+    ],
+    "contract": "reference/release-policy-eve.md",
+    "id": "C004",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-012"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0070",
+      "ZN-0074"
+    ]
+  },
+  {
+    "adr": "040",
+    "audience": "All",
+    "capability": "Honest empty/partial state",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0045-AC",
+      "ZN-0045-NEG",
+      "ZN-0045-BOUNDARY",
+      "ZN-0058-AC",
+      "ZN-0058-NEG",
+      "ZN-0058-BOUNDARY",
+      "ZN-0061-AC",
+      "ZN-0061-NEG",
+      "ZN-0061-BOUNDARY",
+      "ZN-0070-AC",
+      "ZN-0070-NEG",
+      "ZN-0070-BOUNDARY",
+      "ZN-0097-AC",
+      "ZN-0097-NEG",
+      "ZN-0097-BOUNDARY"
+    ],
+    "contract": "reference/release-policy-eve.md",
+    "id": "C005",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-010",
+      "SPEC-012",
+      "SPEC-016"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0045",
+      "ZN-0058",
+      "ZN-0061",
+      "ZN-0070",
+      "ZN-0097"
+    ]
+  },
+  {
+    "adr": "040",
+    "audience": "All",
+    "capability": "Context compaction without factual authority",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0059-AC",
+      "ZN-0059-NEG",
+      "ZN-0059-BOUNDARY"
+    ],
+    "contract": "reference/release-policy-eve.md",
+    "id": "C006",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-010"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0059"
+    ]
+  },
+  {
+    "adr": "040",
+    "audience": "All",
+    "capability": "Interrupted-stream recovery",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0053-AC",
+      "ZN-0053-NEG",
+      "ZN-0053-BOUNDARY",
+      "ZN-0055-AC",
+      "ZN-0055-NEG",
+      "ZN-0055-BOUNDARY",
+      "ZN-0057-AC",
+      "ZN-0057-NEG",
+      "ZN-0057-BOUNDARY"
+    ],
+    "contract": "reference/release-policy-eve.md",
+    "id": "C007",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-009"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0053",
+      "ZN-0055",
+      "ZN-0057"
+    ]
+  },
+  {
+    "adr": "040",
+    "audience": "All",
+    "capability": "Model-provider routing",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0060-AC",
+      "ZN-0060-NEG",
+      "ZN-0060-BOUNDARY",
+      "ZN-0063-AC",
+      "ZN-0063-NEG",
+      "ZN-0063-BOUNDARY"
+    ],
+    "contract": "reference/release-policy-eve.md",
+    "id": "C008",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-010"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0060",
+      "ZN-0063"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Consumer",
+    "capability": "Accessible large-text and keyboard flows",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0071-AC",
+      "ZN-0071-NEG",
+      "ZN-0071-BOUNDARY",
+      "ZN-0074-AC",
+      "ZN-0074-NEG",
+      "ZN-0074-BOUNDARY",
+      "ZN-0160-AC",
+      "ZN-0160-NEG",
+      "ZN-0160-BOUNDARY",
+      "ZN-0163-AC",
+      "ZN-0163-NEG",
+      "ZN-0163-BOUNDARY",
+      "ZN-0281-AC",
+      "ZN-0281-NEG",
+      "ZN-0281-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C009",
+    "owner": "Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-012",
+      "SPEC-027",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0071",
+      "ZN-0074",
+      "ZN-0160",
+      "ZN-0163",
+      "ZN-0281"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Consumer",
+    "capability": "Conversation-to-evidence deepening",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0045-AC",
+      "ZN-0045-NEG",
+      "ZN-0045-BOUNDARY",
+      "ZN-0046-AC",
+      "ZN-0046-NEG",
+      "ZN-0046-BOUNDARY",
+      "ZN-0072-AC",
+      "ZN-0072-NEG",
+      "ZN-0072-BOUNDARY",
+      "ZN-0161-AC",
+      "ZN-0161-NEG",
+      "ZN-0161-BOUNDARY",
+      "ZN-0163-AC",
+      "ZN-0163-NEG",
+      "ZN-0163-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C010",
+    "owner": "Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-012",
+      "SPEC-027"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0045",
+      "ZN-0046",
+      "ZN-0072",
+      "ZN-0161",
+      "ZN-0163"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Consumer",
+    "capability": "Shared-device safe views",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0073-AC",
+      "ZN-0073-NEG",
+      "ZN-0073-BOUNDARY",
+      "ZN-0162-AC",
+      "ZN-0162-NEG",
+      "ZN-0162-BOUNDARY",
+      "ZN-0163-AC",
+      "ZN-0163-NEG",
+      "ZN-0163-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C011",
+    "owner": "Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-012",
+      "SPEC-027"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0073",
+      "ZN-0162",
+      "ZN-0163"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Consumer",
+    "capability": "Charts/tables/text alternatives",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0159-AC",
+      "ZN-0159-NEG",
+      "ZN-0159-BOUNDARY",
+      "ZN-0160-AC",
+      "ZN-0160-NEG",
+      "ZN-0160-BOUNDARY",
+      "ZN-0163-AC",
+      "ZN-0163-NEG",
+      "ZN-0163-BOUNDARY",
+      "ZN-0208-AC",
+      "ZN-0208-NEG",
+      "ZN-0208-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C012",
+    "owner": "Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-027",
+      "SPEC-036"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0159",
+      "ZN-0160",
+      "ZN-0163",
+      "ZN-0208"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Consumer",
+    "capability": "Authority-free Focus bookmarks",
+    "category": "Experience",
+    "check_ids": [
+      "ZN-0046-AC",
+      "ZN-0046-NEG",
+      "ZN-0046-BOUNDARY",
+      "ZN-0068-AC",
+      "ZN-0068-NEG",
+      "ZN-0068-BOUNDARY",
+      "ZN-0073-AC",
+      "ZN-0073-NEG",
+      "ZN-0073-BOUNDARY",
+      "ZN-0161-AC",
+      "ZN-0161-NEG",
+      "ZN-0161-BOUNDARY",
+      "ZN-0163-AC",
+      "ZN-0163-NEG",
+      "ZN-0163-BOUNDARY",
+      "ZN-0291-AC",
+      "ZN-0291-NEG",
+      "ZN-0291-BOUNDARY",
+      "ZN-0296-AC",
+      "ZN-0296-NEG",
+      "ZN-0296-BOUNDARY",
+      "ZN-0297-AC",
+      "ZN-0297-NEG",
+      "ZN-0297-BOUNDARY",
+      "ZN-0298-AC",
+      "ZN-0298-NEG",
+      "ZN-0298-BOUNDARY",
+      "ZN-0305-AC",
+      "ZN-0305-NEG",
+      "ZN-0305-BOUNDARY",
+      "ZN-0320-AC",
+      "ZN-0320-NEG",
+      "ZN-0320-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C013",
+    "owner": "Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-011",
+      "SPEC-012",
+      "SPEC-027",
+      "SPEC-050",
+      "SPEC-051",
+      "SPEC-052",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0046",
+      "ZN-0068",
+      "ZN-0073",
+      "ZN-0161",
+      "ZN-0163",
+      "ZN-0291",
+      "ZN-0296",
+      "ZN-0297",
+      "ZN-0298",
+      "ZN-0305",
+      "ZN-0320"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Immutable retained evidence",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0025-AC",
+      "ZN-0025-NEG",
+      "ZN-0025-BOUNDARY",
+      "ZN-0026-AC",
+      "ZN-0026-NEG",
+      "ZN-0026-BOUNDARY",
+      "ZN-0029-AC",
+      "ZN-0029-NEG",
+      "ZN-0029-BOUNDARY",
+      "ZN-0030-AC",
+      "ZN-0030-NEG",
+      "ZN-0030-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C014",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-004"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0025",
+      "ZN-0026",
+      "ZN-0029",
+      "ZN-0030"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Attributed competing claims",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0026-AC",
+      "ZN-0026-NEG",
+      "ZN-0026-BOUNDARY",
+      "ZN-0030-AC",
+      "ZN-0030-NEG",
+      "ZN-0030-BOUNDARY",
+      "ZN-0031-AC",
+      "ZN-0031-NEG",
+      "ZN-0031-BOUNDARY",
+      "ZN-0244-AC",
+      "ZN-0244-NEG",
+      "ZN-0244-BOUNDARY",
+      "ZN-0257-AC",
+      "ZN-0257-NEG",
+      "ZN-0257-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C015",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-005",
+      "SPEC-041",
+      "SPEC-044"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0026",
+      "ZN-0030",
+      "ZN-0031",
+      "ZN-0244",
+      "ZN-0257"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Scoped interpretation rules",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0031-AC",
+      "ZN-0031-NEG",
+      "ZN-0031-BOUNDARY",
+      "ZN-0033-AC",
+      "ZN-0033-NEG",
+      "ZN-0033-BOUNDARY",
+      "ZN-0244-AC",
+      "ZN-0244-NEG",
+      "ZN-0244-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C016",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0031",
+      "ZN-0033",
+      "ZN-0244"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Unknown/disputed/provisional states",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0011-AC",
+      "ZN-0011-NEG",
+      "ZN-0011-BOUNDARY",
+      "ZN-0030-AC",
+      "ZN-0030-NEG",
+      "ZN-0030-BOUNDARY",
+      "ZN-0033-AC",
+      "ZN-0033-NEG",
+      "ZN-0033-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C017",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-001",
+      "SPEC-004",
+      "SPEC-005"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0011",
+      "ZN-0030",
+      "ZN-0033"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Dependent-source family deduplication",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0032-AC",
+      "ZN-0032-NEG",
+      "ZN-0032-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C018",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-005"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0032"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Question impact prioritization",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0072-AC",
+      "ZN-0072-NEG",
+      "ZN-0072-BOUNDARY",
+      "ZN-0101-AC",
+      "ZN-0101-NEG",
+      "ZN-0101-BOUNDARY",
+      "ZN-0102-AC",
+      "ZN-0102-NEG",
+      "ZN-0102-BOUNDARY",
+      "ZN-0104-AC",
+      "ZN-0104-NEG",
+      "ZN-0104-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C019",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-012",
+      "SPEC-017"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0072",
+      "ZN-0101",
+      "ZN-0102",
+      "ZN-0104"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Human answer attribution",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0034-AC",
+      "ZN-0034-NEG",
+      "ZN-0034-BOUNDARY",
+      "ZN-0062-AC",
+      "ZN-0062-NEG",
+      "ZN-0062-BOUNDARY",
+      "ZN-0072-AC",
+      "ZN-0072-NEG",
+      "ZN-0072-BOUNDARY",
+      "ZN-0103-AC",
+      "ZN-0103-NEG",
+      "ZN-0103-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C020",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-010",
+      "SPEC-012",
+      "SPEC-017"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0034",
+      "ZN-0062",
+      "ZN-0072",
+      "ZN-0103"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Correction reversal and impact propagation",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0034-AC",
+      "ZN-0034-NEG",
+      "ZN-0034-BOUNDARY",
+      "ZN-0035-AC",
+      "ZN-0035-NEG",
+      "ZN-0035-BOUNDARY",
+      "ZN-0040-AC",
+      "ZN-0040-NEG",
+      "ZN-0040-BOUNDARY",
+      "ZN-0104-AC",
+      "ZN-0104-NEG",
+      "ZN-0104-BOUNDARY",
+      "ZN-0117-AC",
+      "ZN-0117-NEG",
+      "ZN-0117-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C021",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-006",
+      "SPEC-017",
+      "SPEC-019"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0034",
+      "ZN-0035",
+      "ZN-0040",
+      "ZN-0104",
+      "ZN-0117"
+    ]
+  },
+  {
+    "adr": "031",
+    "audience": "All",
+    "capability": "Coverage/freshness/quality vector",
+    "category": "Knowledge",
+    "check_ids": [
+      "ZN-0035-AC",
+      "ZN-0035-NEG",
+      "ZN-0035-BOUNDARY",
+      "ZN-0089-AC",
+      "ZN-0089-NEG",
+      "ZN-0089-BOUNDARY",
+      "ZN-0101-AC",
+      "ZN-0101-NEG",
+      "ZN-0101-BOUNDARY",
+      "ZN-0105-AC",
+      "ZN-0105-NEG",
+      "ZN-0105-BOUNDARY",
+      "ZN-0244-AC",
+      "ZN-0244-NEG",
+      "ZN-0244-BOUNDARY"
+    ],
+    "contract": "reference/truth-reconciliation-and-learning.md",
+    "id": "C022",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-015",
+      "SPEC-017",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0035",
+      "ZN-0089",
+      "ZN-0101",
+      "ZN-0105",
+      "ZN-0244"
+    ]
+  },
+  {
+    "adr": "032",
+    "audience": "All",
+    "capability": "Source namespace identity",
+    "category": "Identity/time",
+    "check_ids": [
+      "ZN-0007-AC",
+      "ZN-0007-NEG",
+      "ZN-0007-BOUNDARY",
+      "ZN-0037-AC",
+      "ZN-0037-NEG",
+      "ZN-0037-BOUNDARY"
+    ],
+    "contract": "reference/identity-and-time.md",
+    "id": "C023",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-001",
+      "SPEC-006"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0007",
+      "ZN-0037"
+    ]
+  },
+  {
+    "adr": "032",
+    "audience": "All",
+    "capability": "Reversible subject merge/split",
+    "category": "Identity/time",
+    "check_ids": [
+      "ZN-0039-AC",
+      "ZN-0039-NEG",
+      "ZN-0039-BOUNDARY",
+      "ZN-0040-AC",
+      "ZN-0040-NEG",
+      "ZN-0040-BOUNDARY"
+    ],
+    "contract": "reference/identity-and-time.md",
+    "id": "C024",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-006"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0039",
+      "ZN-0040"
+    ]
+  },
+  {
+    "adr": "032",
+    "audience": "All",
+    "capability": "Ambiguous identity resolution",
+    "category": "Identity/time",
+    "check_ids": [
+      "ZN-0038-AC",
+      "ZN-0038-NEG",
+      "ZN-0038-BOUNDARY"
+    ],
+    "contract": "reference/identity-and-time.md",
+    "id": "C025",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-006"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0038"
+    ]
+  },
+  {
+    "adr": "032",
+    "audience": "All",
+    "capability": "Valid time and knowledge cut",
+    "category": "Identity/time",
+    "check_ids": [
+      "ZN-0009-AC",
+      "ZN-0009-NEG",
+      "ZN-0009-BOUNDARY",
+      "ZN-0041-AC",
+      "ZN-0041-NEG",
+      "ZN-0041-BOUNDARY",
+      "ZN-0042-AC",
+      "ZN-0042-NEG",
+      "ZN-0042-BOUNDARY",
+      "ZN-0189-AC",
+      "ZN-0189-NEG",
+      "ZN-0189-BOUNDARY",
+      "ZN-0240-AC",
+      "ZN-0240-NEG",
+      "ZN-0240-BOUNDARY"
+    ],
+    "contract": "reference/identity-and-time.md",
+    "id": "C026",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-001",
+      "SPEC-006",
+      "SPEC-007",
+      "SPEC-032",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0009",
+      "ZN-0041",
+      "ZN-0042",
+      "ZN-0189",
+      "ZN-0240"
+    ]
+  },
+  {
+    "adr": "032",
+    "audience": "All",
+    "capability": "Units/currency/decimal semantics",
+    "category": "Identity/time",
+    "check_ids": [
+      "ZN-0008-AC",
+      "ZN-0008-NEG",
+      "ZN-0008-BOUNDARY",
+      "ZN-0028-AC",
+      "ZN-0028-NEG",
+      "ZN-0028-BOUNDARY",
+      "ZN-0031-AC",
+      "ZN-0031-NEG",
+      "ZN-0031-BOUNDARY",
+      "ZN-0098-AC",
+      "ZN-0098-NEG",
+      "ZN-0098-BOUNDARY"
+    ],
+    "contract": "reference/identity-and-time.md",
+    "id": "C027",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-001",
+      "SPEC-004",
+      "SPEC-005",
+      "SPEC-016"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0008",
+      "ZN-0028",
+      "ZN-0031",
+      "ZN-0098"
+    ]
+  },
+  {
+    "adr": "032",
+    "audience": "All",
+    "capability": "Point-in-time explanations",
+    "category": "Identity/time",
+    "check_ids": [
+      "ZN-0035-AC",
+      "ZN-0035-NEG",
+      "ZN-0035-BOUNDARY",
+      "ZN-0036-AC",
+      "ZN-0036-NEG",
+      "ZN-0036-BOUNDARY",
+      "ZN-0039-AC",
+      "ZN-0039-NEG",
+      "ZN-0039-BOUNDARY",
+      "ZN-0041-AC",
+      "ZN-0041-NEG",
+      "ZN-0041-BOUNDARY",
+      "ZN-0042-AC",
+      "ZN-0042-NEG",
+      "ZN-0042-BOUNDARY",
+      "ZN-0046-AC",
+      "ZN-0046-NEG",
+      "ZN-0046-BOUNDARY",
+      "ZN-0184-AC",
+      "ZN-0184-NEG",
+      "ZN-0184-BOUNDARY",
+      "ZN-0212-AC",
+      "ZN-0212-NEG",
+      "ZN-0212-BOUNDARY",
+      "ZN-0263-AC",
+      "ZN-0263-NEG",
+      "ZN-0263-BOUNDARY"
+    ],
+    "contract": "reference/identity-and-time.md",
+    "id": "C028",
+    "owner": "Ontology",
+    "proof": "J02",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-006",
+      "SPEC-007",
+      "SPEC-031",
+      "SPEC-036",
+      "SPEC-045"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0035",
+      "ZN-0036",
+      "ZN-0039",
+      "ZN-0041",
+      "ZN-0042",
+      "ZN-0046",
+      "ZN-0184",
+      "ZN-0212",
+      "ZN-0263"
+    ]
+  },
+  {
+    "adr": "033",
+    "audience": "All",
+    "capability": "Instance changes without deploy",
+    "category": "Runtime",
+    "check_ids": [
+      "ZN-0082-AC",
+      "ZN-0082-NEG",
+      "ZN-0082-BOUNDARY",
+      "ZN-0088-AC",
+      "ZN-0088-NEG",
+      "ZN-0088-BOUNDARY",
+      "ZN-0100-AC",
+      "ZN-0100-NEG",
+      "ZN-0100-BOUNDARY",
+      "ZN-0103-AC",
+      "ZN-0103-NEG",
+      "ZN-0103-BOUNDARY",
+      "ZN-0282-AC",
+      "ZN-0282-NEG",
+      "ZN-0282-BOUNDARY"
+    ],
+    "contract": "reference/runtime-variation-and-releases.md",
+    "id": "C029",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-014",
+      "SPEC-016",
+      "SPEC-017",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0082",
+      "ZN-0088",
+      "ZN-0100",
+      "ZN-0103",
+      "ZN-0282"
+    ]
+  },
+  {
+    "adr": "033",
+    "audience": "All",
+    "capability": "Runtime object/link/interface definitions",
+    "category": "Runtime",
+    "check_ids": [
+      "ZN-0075-AC",
+      "ZN-0075-NEG",
+      "ZN-0075-BOUNDARY",
+      "ZN-0080-AC",
+      "ZN-0080-NEG",
+      "ZN-0080-BOUNDARY",
+      "ZN-0096-AC",
+      "ZN-0096-NEG",
+      "ZN-0096-BOUNDARY",
+      "ZN-0302-AC",
+      "ZN-0302-NEG",
+      "ZN-0302-BOUNDARY"
+    ],
+    "contract": "reference/runtime-variation-and-releases.md",
+    "id": "C030",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-013",
+      "SPEC-016",
+      "SPEC-052"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0075",
+      "ZN-0080",
+      "ZN-0096",
+      "ZN-0302"
+    ]
+  },
+  {
+    "adr": "033",
+    "audience": "All",
+    "capability": "Runtime metrics and resolution rules",
+    "category": "Runtime",
+    "check_ids": [
+      "ZN-0076-AC",
+      "ZN-0076-NEG",
+      "ZN-0076-BOUNDARY"
+    ],
+    "contract": "reference/runtime-variation-and-releases.md",
+    "id": "C031",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-013"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0076"
+    ]
+  },
+  {
+    "adr": "033",
+    "audience": "All",
+    "capability": "Runtime source mappings",
+    "category": "Runtime",
+    "check_ids": [
+      "ZN-0077-AC",
+      "ZN-0077-NEG",
+      "ZN-0077-BOUNDARY"
+    ],
+    "contract": "reference/runtime-variation-and-releases.md",
+    "id": "C032",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-013"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0077"
+    ]
+  },
+  {
+    "adr": "033",
+    "audience": "All",
+    "capability": "Runtime skill/workflow configuration",
+    "category": "Runtime",
+    "check_ids": [
+      "ZN-0076-AC",
+      "ZN-0076-NEG",
+      "ZN-0076-BOUNDARY",
+      "ZN-0077-AC",
+      "ZN-0077-NEG",
+      "ZN-0077-BOUNDARY"
+    ],
+    "contract": "reference/runtime-variation-and-releases.md",
+    "id": "C033",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-013"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0076",
+      "ZN-0077"
+    ]
+  },
+  {
+    "adr": "033",
+    "audience": "All",
+    "capability": "Current-policy change approval",
+    "category": "Runtime",
+    "check_ids": [
+      "ZN-0082-AC",
+      "ZN-0082-NEG",
+      "ZN-0082-BOUNDARY",
+      "ZN-0088-AC",
+      "ZN-0088-NEG",
+      "ZN-0088-BOUNDARY",
+      "ZN-0284-AC",
+      "ZN-0284-NEG",
+      "ZN-0284-BOUNDARY",
+      "ZN-0304-AC",
+      "ZN-0304-NEG",
+      "ZN-0304-BOUNDARY",
+      "ZN-0315-AC",
+      "ZN-0315-NEG",
+      "ZN-0315-BOUNDARY",
+      "ZN-0316-AC",
+      "ZN-0316-NEG",
+      "ZN-0316-BOUNDARY"
+    ],
+    "contract": "reference/runtime-variation-and-releases.md",
+    "id": "C034",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-014",
+      "SPEC-048",
+      "SPEC-052",
+      "SPEC-054"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0082",
+      "ZN-0088",
+      "ZN-0284",
+      "ZN-0304",
+      "ZN-0315",
+      "ZN-0316"
+    ]
+  },
+  {
+    "adr": "033",
+    "audience": "All",
+    "capability": "Semantic diff and blast radius",
+    "category": "Runtime",
+    "check_ids": [
+      "ZN-0079-AC",
+      "ZN-0079-NEG",
+      "ZN-0079-BOUNDARY"
+    ],
+    "contract": "reference/runtime-variation-and-releases.md",
+    "id": "C035",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-013"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0079"
+    ]
+  },
+  {
+    "adr": "033",
+    "audience": "All",
+    "capability": "Scoped stewardship and explicit rule learning",
+    "category": "Runtime",
+    "check_ids": [
+      "ZN-0082-AC",
+      "ZN-0082-NEG",
+      "ZN-0082-BOUNDARY",
+      "ZN-0100-AC",
+      "ZN-0100-NEG",
+      "ZN-0100-BOUNDARY",
+      "ZN-0102-AC",
+      "ZN-0102-NEG",
+      "ZN-0102-BOUNDARY",
+      "ZN-0103-AC",
+      "ZN-0103-NEG",
+      "ZN-0103-BOUNDARY",
+      "ZN-0105-AC",
+      "ZN-0105-NEG",
+      "ZN-0105-BOUNDARY",
+      "ZN-0244-AC",
+      "ZN-0244-NEG",
+      "ZN-0244-BOUNDARY",
+      "ZN-0282-AC",
+      "ZN-0282-NEG",
+      "ZN-0282-BOUNDARY"
+    ],
+    "contract": "reference/runtime-variation-and-releases.md",
+    "id": "C036",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-014",
+      "SPEC-016",
+      "SPEC-017",
+      "SPEC-041",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0082",
+      "ZN-0100",
+      "ZN-0102",
+      "ZN-0103",
+      "ZN-0105",
+      "ZN-0244",
+      "ZN-0282"
+    ]
+  },
+  {
+    "adr": "048",
+    "audience": "All",
+    "capability": "Immutable release graph",
+    "category": "Releases",
+    "check_ids": [
+      "ZN-0078-AC",
+      "ZN-0078-NEG",
+      "ZN-0078-BOUNDARY",
+      "ZN-0081-AC",
+      "ZN-0081-NEG",
+      "ZN-0081-BOUNDARY",
+      "ZN-0084-AC",
+      "ZN-0084-NEG",
+      "ZN-0084-BOUNDARY"
+    ],
+    "contract": "reference/release-engine-and-compiler.md",
+    "id": "C037",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-013",
+      "SPEC-014"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0078",
+      "ZN-0081",
+      "ZN-0084"
+    ]
+  },
+  {
+    "adr": "048",
+    "audience": "All",
+    "capability": "Isolated EvaluationWorld",
+    "category": "Releases",
+    "check_ids": [
+      "ZN-0083-AC",
+      "ZN-0083-NEG",
+      "ZN-0083-BOUNDARY",
+      "ZN-0084-AC",
+      "ZN-0084-NEG",
+      "ZN-0084-BOUNDARY"
+    ],
+    "contract": "reference/release-engine-and-compiler.md",
+    "id": "C038",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-014"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0083",
+      "ZN-0084"
+    ]
+  },
+  {
+    "adr": "048",
+    "audience": "All",
+    "capability": "Prepared generation catch-up",
+    "category": "Releases",
+    "check_ids": [
+      "ZN-0085-AC",
+      "ZN-0085-NEG",
+      "ZN-0085-BOUNDARY"
+    ],
+    "contract": "reference/release-engine-and-compiler.md",
+    "id": "C039",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-014"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0085"
+    ]
+  },
+  {
+    "adr": "048",
+    "audience": "All",
+    "capability": "Atomic release activation",
+    "category": "Releases",
+    "check_ids": [
+      "ZN-0086-AC",
+      "ZN-0086-NEG",
+      "ZN-0086-BOUNDARY",
+      "ZN-0088-AC",
+      "ZN-0088-NEG",
+      "ZN-0088-BOUNDARY"
+    ],
+    "contract": "reference/release-engine-and-compiler.md",
+    "id": "C040",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-014"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0086",
+      "ZN-0088"
+    ]
+  },
+  {
+    "adr": "048",
+    "audience": "All",
+    "capability": "Concurrent edit/rebase",
+    "category": "Releases",
+    "check_ids": [
+      "ZN-0087-AC",
+      "ZN-0087-NEG",
+      "ZN-0087-BOUNDARY",
+      "ZN-0202-AC",
+      "ZN-0202-NEG",
+      "ZN-0202-BOUNDARY"
+    ],
+    "contract": "reference/release-engine-and-compiler.md",
+    "id": "C041",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-014",
+      "SPEC-035"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0087",
+      "ZN-0202"
+    ]
+  },
+  {
+    "adr": "048",
+    "audience": "All",
+    "capability": "Forward rollback/repair",
+    "category": "Releases",
+    "check_ids": [
+      "ZN-0087-AC",
+      "ZN-0087-NEG",
+      "ZN-0087-BOUNDARY"
+    ],
+    "contract": "reference/release-engine-and-compiler.md",
+    "id": "C042",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-014"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0087"
+    ]
+  },
+  {
+    "adr": "048",
+    "audience": "All",
+    "capability": "Open Case and Watch compatibility",
+    "category": "Releases",
+    "check_ids": [
+      "ZN-0079-AC",
+      "ZN-0079-NEG",
+      "ZN-0079-BOUNDARY",
+      "ZN-0085-AC",
+      "ZN-0085-NEG",
+      "ZN-0085-BOUNDARY",
+      "ZN-0088-AC",
+      "ZN-0088-NEG",
+      "ZN-0088-BOUNDARY"
+    ],
+    "contract": "reference/release-engine-and-compiler.md",
+    "id": "C043",
+    "owner": "Ontology",
+    "proof": "J05",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-013",
+      "SPEC-014"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0079",
+      "ZN-0085",
+      "ZN-0088"
+    ]
+  },
+  {
+    "adr": "037",
+    "audience": "All",
+    "capability": "Source inventory and honest coverage",
+    "category": "Sources",
+    "check_ids": [
+      "ZN-0089-AC",
+      "ZN-0089-NEG",
+      "ZN-0089-BOUNDARY",
+      "ZN-0095-AC",
+      "ZN-0095-NEG",
+      "ZN-0095-BOUNDARY",
+      "ZN-0237-AC",
+      "ZN-0237-NEG",
+      "ZN-0237-BOUNDARY",
+      "ZN-0238-AC",
+      "ZN-0238-NEG",
+      "ZN-0238-BOUNDARY",
+      "ZN-0239-AC",
+      "ZN-0239-NEG",
+      "ZN-0239-BOUNDARY",
+      "ZN-0240-AC",
+      "ZN-0240-NEG",
+      "ZN-0240-BOUNDARY",
+      "ZN-0242-AC",
+      "ZN-0242-NEG",
+      "ZN-0242-BOUNDARY",
+      "ZN-0243-AC",
+      "ZN-0243-NEG",
+      "ZN-0243-BOUNDARY",
+      "ZN-0244-AC",
+      "ZN-0244-NEG",
+      "ZN-0244-BOUNDARY"
+    ],
+    "contract": "reference/connectors-and-ingestion.md",
+    "id": "C044",
+    "owner": "Ontology",
+    "proof": "J04",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0089",
+      "ZN-0095",
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0239",
+      "ZN-0240",
+      "ZN-0242",
+      "ZN-0243",
+      "ZN-0244"
+    ]
+  },
+  {
+    "adr": "037",
+    "audience": "All",
+    "capability": "OAuth/secret source bindings",
+    "category": "Sources",
+    "check_ids": [
+      "ZN-0090-AC",
+      "ZN-0090-NEG",
+      "ZN-0090-BOUNDARY",
+      "ZN-0095-AC",
+      "ZN-0095-NEG",
+      "ZN-0095-BOUNDARY",
+      "ZN-0243-AC",
+      "ZN-0243-NEG",
+      "ZN-0243-BOUNDARY"
+    ],
+    "contract": "reference/connectors-and-ingestion.md",
+    "id": "C045",
+    "owner": "Ontology",
+    "proof": "J04",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0090",
+      "ZN-0095",
+      "ZN-0243"
+    ]
+  },
+  {
+    "adr": "037",
+    "audience": "All",
+    "capability": "Structured/unstructured file admission",
+    "category": "Sources",
+    "check_ids": [
+      "ZN-0025-AC",
+      "ZN-0025-NEG",
+      "ZN-0025-BOUNDARY",
+      "ZN-0028-AC",
+      "ZN-0028-NEG",
+      "ZN-0028-BOUNDARY"
+    ],
+    "contract": "reference/connectors-and-ingestion.md",
+    "id": "C046",
+    "owner": "Ontology",
+    "proof": "J04",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-004"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0025",
+      "ZN-0028"
+    ]
+  },
+  {
+    "adr": "037",
+    "audience": "All",
+    "capability": "Declarative HTTP integration",
+    "category": "Sources",
+    "check_ids": [
+      "ZN-0091-AC",
+      "ZN-0091-NEG",
+      "ZN-0091-BOUNDARY",
+      "ZN-0095-AC",
+      "ZN-0095-NEG",
+      "ZN-0095-BOUNDARY"
+    ],
+    "contract": "reference/connectors-and-ingestion.md",
+    "id": "C047",
+    "owner": "Ontology",
+    "proof": "J04",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-015"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0091",
+      "ZN-0095"
+    ]
+  },
+  {
+    "adr": "037",
+    "audience": "All",
+    "capability": "Source ACL and identity mapping",
+    "category": "Sources",
+    "check_ids": [
+      "ZN-0093-AC",
+      "ZN-0093-NEG",
+      "ZN-0093-BOUNDARY",
+      "ZN-0110-AC",
+      "ZN-0110-NEG",
+      "ZN-0110-BOUNDARY",
+      "ZN-0237-AC",
+      "ZN-0237-NEG",
+      "ZN-0237-BOUNDARY",
+      "ZN-0238-AC",
+      "ZN-0238-NEG",
+      "ZN-0238-BOUNDARY",
+      "ZN-0241-AC",
+      "ZN-0241-NEG",
+      "ZN-0241-BOUNDARY",
+      "ZN-0243-AC",
+      "ZN-0243-NEG",
+      "ZN-0243-BOUNDARY"
+    ],
+    "contract": "reference/connectors-and-ingestion.md",
+    "id": "C048",
+    "owner": "Ontology",
+    "proof": "J04",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-018",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0093",
+      "ZN-0110",
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0241",
+      "ZN-0243"
+    ]
+  },
+  {
+    "adr": "037",
+    "audience": "All",
+    "capability": "Incremental pagination and checkpoints",
+    "category": "Sources",
+    "check_ids": [
+      "ZN-0026-AC",
+      "ZN-0026-NEG",
+      "ZN-0026-BOUNDARY",
+      "ZN-0092-AC",
+      "ZN-0092-NEG",
+      "ZN-0092-BOUNDARY",
+      "ZN-0095-AC",
+      "ZN-0095-NEG",
+      "ZN-0095-BOUNDARY",
+      "ZN-0237-AC",
+      "ZN-0237-NEG",
+      "ZN-0237-BOUNDARY",
+      "ZN-0238-AC",
+      "ZN-0238-NEG",
+      "ZN-0238-BOUNDARY",
+      "ZN-0239-AC",
+      "ZN-0239-NEG",
+      "ZN-0239-BOUNDARY",
+      "ZN-0243-AC",
+      "ZN-0243-NEG",
+      "ZN-0243-BOUNDARY"
+    ],
+    "contract": "reference/connectors-and-ingestion.md",
+    "id": "C049",
+    "owner": "Ontology",
+    "proof": "J04",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0026",
+      "ZN-0092",
+      "ZN-0095",
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0239",
+      "ZN-0243"
+    ]
+  },
+  {
+    "adr": "037",
+    "audience": "All",
+    "capability": "Source schema drift quarantine",
+    "category": "Sources",
+    "check_ids": [
+      "ZN-0028-AC",
+      "ZN-0028-NEG",
+      "ZN-0028-BOUNDARY",
+      "ZN-0093-AC",
+      "ZN-0093-NEG",
+      "ZN-0093-BOUNDARY",
+      "ZN-0239-AC",
+      "ZN-0239-NEG",
+      "ZN-0239-BOUNDARY",
+      "ZN-0240-AC",
+      "ZN-0240-NEG",
+      "ZN-0240-BOUNDARY",
+      "ZN-0243-AC",
+      "ZN-0243-NEG",
+      "ZN-0243-BOUNDARY"
+    ],
+    "contract": "reference/connectors-and-ingestion.md",
+    "id": "C050",
+    "owner": "Ontology",
+    "proof": "J04",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0028",
+      "ZN-0093",
+      "ZN-0239",
+      "ZN-0240",
+      "ZN-0243"
+    ]
+  },
+  {
+    "adr": "037",
+    "audience": "All",
+    "capability": "Deletion/tombstone propagation",
+    "category": "Sources",
+    "check_ids": [
+      "ZN-0094-AC",
+      "ZN-0094-NEG",
+      "ZN-0094-BOUNDARY",
+      "ZN-0237-AC",
+      "ZN-0237-NEG",
+      "ZN-0237-BOUNDARY",
+      "ZN-0238-AC",
+      "ZN-0238-NEG",
+      "ZN-0238-BOUNDARY",
+      "ZN-0243-AC",
+      "ZN-0243-NEG",
+      "ZN-0243-BOUNDARY"
+    ],
+    "contract": "reference/connectors-and-ingestion.md",
+    "id": "C051",
+    "owner": "Ontology",
+    "proof": "J04",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0094",
+      "ZN-0237",
+      "ZN-0238",
+      "ZN-0243"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Passkey/OIDC identity and step-up",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0013-AC",
+      "ZN-0013-NEG",
+      "ZN-0013-BOUNDARY",
+      "ZN-0107-AC",
+      "ZN-0107-NEG",
+      "ZN-0107-BOUNDARY",
+      "ZN-0219-AC",
+      "ZN-0219-NEG",
+      "ZN-0219-BOUNDARY",
+      "ZN-0296-AC",
+      "ZN-0296-NEG",
+      "ZN-0296-BOUNDARY",
+      "ZN-0297-AC",
+      "ZN-0297-NEG",
+      "ZN-0297-BOUNDARY",
+      "ZN-0301-AC",
+      "ZN-0301-NEG",
+      "ZN-0301-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C052",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-002",
+      "SPEC-018",
+      "SPEC-038",
+      "SPEC-051"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0013",
+      "ZN-0107",
+      "ZN-0219",
+      "ZN-0296",
+      "ZN-0297",
+      "ZN-0301"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Membership/invitations",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0014-AC",
+      "ZN-0014-NEG",
+      "ZN-0014-BOUNDARY",
+      "ZN-0016-AC",
+      "ZN-0016-NEG",
+      "ZN-0016-BOUNDARY",
+      "ZN-0221-AC",
+      "ZN-0221-NEG",
+      "ZN-0221-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C053",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-002",
+      "SPEC-038"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0014",
+      "ZN-0016",
+      "ZN-0221"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Narrow delegation and revocation",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0017-AC",
+      "ZN-0017-NEG",
+      "ZN-0017-BOUNDARY",
+      "ZN-0107-AC",
+      "ZN-0107-NEG",
+      "ZN-0107-BOUNDARY",
+      "ZN-0110-AC",
+      "ZN-0110-NEG",
+      "ZN-0110-BOUNDARY",
+      "ZN-0220-AC",
+      "ZN-0220-NEG",
+      "ZN-0220-BOUNDARY",
+      "ZN-0223-AC",
+      "ZN-0223-NEG",
+      "ZN-0223-BOUNDARY",
+      "ZN-0293-AC",
+      "ZN-0293-NEG",
+      "ZN-0293-BOUNDARY",
+      "ZN-0299-AC",
+      "ZN-0299-NEG",
+      "ZN-0299-BOUNDARY",
+      "ZN-0300-AC",
+      "ZN-0300-NEG",
+      "ZN-0300-BOUNDARY",
+      "ZN-0311-AC",
+      "ZN-0311-NEG",
+      "ZN-0311-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C054",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-002",
+      "SPEC-018",
+      "SPEC-038",
+      "SPEC-050",
+      "SPEC-051",
+      "SPEC-053"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0017",
+      "ZN-0107",
+      "ZN-0110",
+      "ZN-0220",
+      "ZN-0223",
+      "ZN-0293",
+      "ZN-0299",
+      "ZN-0300",
+      "ZN-0311"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Field/object/evidence restrictions",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0027-AC",
+      "ZN-0027-NEG",
+      "ZN-0027-BOUNDARY",
+      "ZN-0044-AC",
+      "ZN-0044-NEG",
+      "ZN-0044-BOUNDARY",
+      "ZN-0106-AC",
+      "ZN-0106-NEG",
+      "ZN-0106-BOUNDARY",
+      "ZN-0110-AC",
+      "ZN-0110-NEG",
+      "ZN-0110-BOUNDARY",
+      "ZN-0111-AC",
+      "ZN-0111-NEG",
+      "ZN-0111-BOUNDARY",
+      "ZN-0124-AC",
+      "ZN-0124-NEG",
+      "ZN-0124-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C055",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-007",
+      "SPEC-018",
+      "SPEC-021"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0027",
+      "ZN-0044",
+      "ZN-0106",
+      "ZN-0110",
+      "ZN-0111",
+      "ZN-0124"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Purpose and destination limits",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0015-AC",
+      "ZN-0015-NEG",
+      "ZN-0015-BOUNDARY",
+      "ZN-0106-AC",
+      "ZN-0106-NEG",
+      "ZN-0106-BOUNDARY",
+      "ZN-0222-AC",
+      "ZN-0222-NEG",
+      "ZN-0222-BOUNDARY",
+      "ZN-0250-AC",
+      "ZN-0250-NEG",
+      "ZN-0250-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C056",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-002",
+      "SPEC-018",
+      "SPEC-038",
+      "SPEC-043"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0015",
+      "ZN-0106",
+      "ZN-0222",
+      "ZN-0250"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Derived rights/lineage propagation",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0108-AC",
+      "ZN-0108-NEG",
+      "ZN-0108-BOUNDARY",
+      "ZN-0111-AC",
+      "ZN-0111-NEG",
+      "ZN-0111-BOUNDARY",
+      "ZN-0162-AC",
+      "ZN-0162-NEG",
+      "ZN-0162-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C057",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-018",
+      "SPEC-027"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0108",
+      "ZN-0111",
+      "ZN-0162"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Hidden-rival perspective protection",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0036-AC",
+      "ZN-0036-NEG",
+      "ZN-0036-BOUNDARY",
+      "ZN-0109-AC",
+      "ZN-0109-NEG",
+      "ZN-0109-BOUNDARY",
+      "ZN-0111-AC",
+      "ZN-0111-NEG",
+      "ZN-0111-BOUNDARY",
+      "ZN-0127-AC",
+      "ZN-0127-NEG",
+      "ZN-0127-BOUNDARY",
+      "ZN-0148-AC",
+      "ZN-0148-NEG",
+      "ZN-0148-BOUNDARY",
+      "ZN-0284-AC",
+      "ZN-0284-NEG",
+      "ZN-0284-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C058",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-005",
+      "SPEC-018",
+      "SPEC-021",
+      "SPEC-025",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0036",
+      "ZN-0109",
+      "ZN-0111",
+      "ZN-0127",
+      "ZN-0148",
+      "ZN-0284"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Group audience intersection",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0109-AC",
+      "ZN-0109-NEG",
+      "ZN-0109-BOUNDARY",
+      "ZN-0111-AC",
+      "ZN-0111-NEG",
+      "ZN-0111-BOUNDARY",
+      "ZN-0127-AC",
+      "ZN-0127-NEG",
+      "ZN-0127-BOUNDARY",
+      "ZN-0166-AC",
+      "ZN-0166-NEG",
+      "ZN-0166-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C059",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-018",
+      "SPEC-021",
+      "SPEC-028"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0109",
+      "ZN-0111",
+      "ZN-0127",
+      "ZN-0166"
+    ]
+  },
+  {
+    "adr": "034",
+    "audience": "All",
+    "capability": "Caregiver access without presumed authority",
+    "category": "Rights",
+    "check_ids": [
+      "ZN-0107-AC",
+      "ZN-0107-NEG",
+      "ZN-0107-BOUNDARY",
+      "ZN-0281-AC",
+      "ZN-0281-NEG",
+      "ZN-0281-BOUNDARY",
+      "ZN-0298-AC",
+      "ZN-0298-NEG",
+      "ZN-0298-BOUNDARY",
+      "ZN-0300-AC",
+      "ZN-0300-NEG",
+      "ZN-0300-BOUNDARY"
+    ],
+    "contract": "reference/rights-and-access-control.md",
+    "id": "C060",
+    "owner": "Door/Ontology",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-018",
+      "SPEC-048",
+      "SPEC-051"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0107",
+      "ZN-0281",
+      "ZN-0298",
+      "ZN-0300"
+    ]
+  },
+  {
+    "adr": "050",
+    "audience": "All",
+    "capability": "Retention/license expiry",
+    "category": "Privacy",
+    "check_ids": [
+      "ZN-0027-AC",
+      "ZN-0027-NEG",
+      "ZN-0027-BOUNDARY",
+      "ZN-0112-AC",
+      "ZN-0112-NEG",
+      "ZN-0112-BOUNDARY",
+      "ZN-0117-AC",
+      "ZN-0117-NEG",
+      "ZN-0117-BOUNDARY"
+    ],
+    "contract": "reference/lifecycle-privacy-and-retention.md",
+    "id": "C061",
+    "owner": "Ontology",
+    "proof": "J12",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-004",
+      "SPEC-019"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0027",
+      "ZN-0112",
+      "ZN-0117"
+    ]
+  },
+  {
+    "adr": "050",
+    "audience": "All",
+    "capability": "Deletion across derived artifacts",
+    "category": "Privacy",
+    "check_ids": [
+      "ZN-0113-AC",
+      "ZN-0113-NEG",
+      "ZN-0113-BOUNDARY",
+      "ZN-0114-AC",
+      "ZN-0114-NEG",
+      "ZN-0114-BOUNDARY",
+      "ZN-0117-AC",
+      "ZN-0117-NEG",
+      "ZN-0117-BOUNDARY",
+      "ZN-0185-AC",
+      "ZN-0185-NEG",
+      "ZN-0185-BOUNDARY"
+    ],
+    "contract": "reference/lifecycle-privacy-and-retention.md",
+    "id": "C062",
+    "owner": "Ontology",
+    "proof": "J12",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-019",
+      "SPEC-031"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0113",
+      "ZN-0114",
+      "ZN-0117",
+      "ZN-0185"
+    ]
+  },
+  {
+    "adr": "050",
+    "audience": "All",
+    "capability": "Legal hold conflict review",
+    "category": "Privacy",
+    "check_ids": [
+      "ZN-0115-AC",
+      "ZN-0115-NEG",
+      "ZN-0115-BOUNDARY",
+      "ZN-0117-AC",
+      "ZN-0117-NEG",
+      "ZN-0117-BOUNDARY"
+    ],
+    "contract": "reference/lifecycle-privacy-and-retention.md",
+    "id": "C063",
+    "owner": "Ontology",
+    "proof": "J12",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-019"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0115",
+      "ZN-0117"
+    ]
+  },
+  {
+    "adr": "050",
+    "audience": "All",
+    "capability": "Post-restore deletion suppression",
+    "category": "Privacy",
+    "check_ids": [
+      "ZN-0049-AC",
+      "ZN-0049-NEG",
+      "ZN-0049-BOUNDARY",
+      "ZN-0116-AC",
+      "ZN-0116-NEG",
+      "ZN-0116-BOUNDARY",
+      "ZN-0117-AC",
+      "ZN-0117-NEG",
+      "ZN-0117-BOUNDARY",
+      "ZN-0229-AC",
+      "ZN-0229-NEG",
+      "ZN-0229-BOUNDARY",
+      "ZN-0284-AC",
+      "ZN-0284-NEG",
+      "ZN-0284-BOUNDARY"
+    ],
+    "contract": "reference/lifecycle-privacy-and-retention.md",
+    "id": "C064",
+    "owner": "Ontology",
+    "proof": "J12",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-008",
+      "SPEC-019",
+      "SPEC-039",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0049",
+      "ZN-0116",
+      "ZN-0117",
+      "ZN-0229",
+      "ZN-0284"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Guarded ActionCases",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0129-AC",
+      "ZN-0129-NEG",
+      "ZN-0129-BOUNDARY",
+      "ZN-0130-AC",
+      "ZN-0130-NEG",
+      "ZN-0130-BOUNDARY",
+      "ZN-0133-AC",
+      "ZN-0133-NEG",
+      "ZN-0133-BOUNDARY",
+      "ZN-0134-AC",
+      "ZN-0134-NEG",
+      "ZN-0134-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C065",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-022"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0129",
+      "ZN-0130",
+      "ZN-0133",
+      "ZN-0134"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Scoped/quorum approval",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0131-AC",
+      "ZN-0131-NEG",
+      "ZN-0131-BOUNDARY",
+      "ZN-0133-AC",
+      "ZN-0133-NEG",
+      "ZN-0133-BOUNDARY",
+      "ZN-0306-AC",
+      "ZN-0306-NEG",
+      "ZN-0306-BOUNDARY",
+      "ZN-0311-AC",
+      "ZN-0311-NEG",
+      "ZN-0311-BOUNDARY",
+      "ZN-0321-AC",
+      "ZN-0321-NEG",
+      "ZN-0321-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C066",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-022",
+      "SPEC-052",
+      "SPEC-053",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0131",
+      "ZN-0133",
+      "ZN-0306",
+      "ZN-0311",
+      "ZN-0321"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Idempotent local decisions",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0020-AC",
+      "ZN-0020-NEG",
+      "ZN-0020-BOUNDARY",
+      "ZN-0021-AC",
+      "ZN-0021-NEG",
+      "ZN-0021-BOUNDARY",
+      "ZN-0132-AC",
+      "ZN-0132-NEG",
+      "ZN-0132-BOUNDARY",
+      "ZN-0134-AC",
+      "ZN-0134-NEG",
+      "ZN-0134-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C067",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-003",
+      "SPEC-022"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0020",
+      "ZN-0021",
+      "ZN-0132",
+      "ZN-0134"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Predicate/clock/source guards",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0022-AC",
+      "ZN-0022-NEG",
+      "ZN-0022-BOUNDARY",
+      "ZN-0126-AC",
+      "ZN-0126-NEG",
+      "ZN-0126-BOUNDARY",
+      "ZN-0129-AC",
+      "ZN-0129-NEG",
+      "ZN-0129-BOUNDARY",
+      "ZN-0134-AC",
+      "ZN-0134-NEG",
+      "ZN-0134-BOUNDARY",
+      "ZN-0270-AC",
+      "ZN-0270-NEG",
+      "ZN-0270-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C068",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-003",
+      "SPEC-021",
+      "SPEC-022",
+      "SPEC-046"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0022",
+      "ZN-0126",
+      "ZN-0129",
+      "ZN-0134",
+      "ZN-0270"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Effect intent and durable attempts",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0023-AC",
+      "ZN-0023-NEG",
+      "ZN-0023-BOUNDARY",
+      "ZN-0132-AC",
+      "ZN-0132-NEG",
+      "ZN-0132-BOUNDARY",
+      "ZN-0135-AC",
+      "ZN-0135-NEG",
+      "ZN-0135-BOUNDARY",
+      "ZN-0136-AC",
+      "ZN-0136-NEG",
+      "ZN-0136-BOUNDARY",
+      "ZN-0140-AC",
+      "ZN-0140-NEG",
+      "ZN-0140-BOUNDARY",
+      "ZN-0227-AC",
+      "ZN-0227-NEG",
+      "ZN-0227-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C069",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-003",
+      "SPEC-022",
+      "SPEC-023",
+      "SPEC-039"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0023",
+      "ZN-0132",
+      "ZN-0135",
+      "ZN-0136",
+      "ZN-0140",
+      "ZN-0227"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Provider Unknown reconciliation",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0135-AC",
+      "ZN-0135-NEG",
+      "ZN-0135-BOUNDARY",
+      "ZN-0137-AC",
+      "ZN-0137-NEG",
+      "ZN-0137-BOUNDARY",
+      "ZN-0138-AC",
+      "ZN-0138-NEG",
+      "ZN-0138-BOUNDARY",
+      "ZN-0140-AC",
+      "ZN-0140-NEG",
+      "ZN-0140-BOUNDARY",
+      "ZN-0227-AC",
+      "ZN-0227-NEG",
+      "ZN-0227-BOUNDARY",
+      "ZN-0249-AC",
+      "ZN-0249-NEG",
+      "ZN-0249-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C070",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-023",
+      "SPEC-039",
+      "SPEC-042"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0135",
+      "ZN-0137",
+      "ZN-0138",
+      "ZN-0140",
+      "ZN-0227",
+      "ZN-0249"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Partial external outcomes",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0137-AC",
+      "ZN-0137-NEG",
+      "ZN-0137-BOUNDARY",
+      "ZN-0138-AC",
+      "ZN-0138-NEG",
+      "ZN-0138-BOUNDARY",
+      "ZN-0140-AC",
+      "ZN-0140-NEG",
+      "ZN-0140-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C071",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-023"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0137",
+      "ZN-0138",
+      "ZN-0140"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Cancellation and compensation",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0130-AC",
+      "ZN-0130-NEG",
+      "ZN-0130-BOUNDARY",
+      "ZN-0136-AC",
+      "ZN-0136-NEG",
+      "ZN-0136-BOUNDARY",
+      "ZN-0139-AC",
+      "ZN-0139-NEG",
+      "ZN-0139-BOUNDARY",
+      "ZN-0140-AC",
+      "ZN-0140-NEG",
+      "ZN-0140-BOUNDARY",
+      "ZN-0144-AC",
+      "ZN-0144-NEG",
+      "ZN-0144-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C072",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-022",
+      "SPEC-023",
+      "SPEC-024"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0130",
+      "ZN-0136",
+      "ZN-0139",
+      "ZN-0140",
+      "ZN-0144"
+    ]
+  },
+  {
+    "adr": "042",
+    "audience": "All",
+    "capability": "Transactional budget reservation",
+    "category": "Agency",
+    "check_ids": [
+      "ZN-0141-AC",
+      "ZN-0141-NEG",
+      "ZN-0141-BOUNDARY",
+      "ZN-0146-AC",
+      "ZN-0146-NEG",
+      "ZN-0146-BOUNDARY",
+      "ZN-0232-AC",
+      "ZN-0232-NEG",
+      "ZN-0232-BOUNDARY"
+    ],
+    "contract": "reference/actions-effects-and-settlement.md",
+    "id": "C073",
+    "owner": "Ontology",
+    "proof": "J08",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-024",
+      "SPEC-040"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0141",
+      "ZN-0146",
+      "ZN-0232"
+    ]
+  },
+  {
+    "adr": "043",
+    "audience": "All",
+    "capability": "Semantic Watches and checkpoints",
+    "category": "Attention",
+    "check_ids": [
+      "ZN-0118-AC",
+      "ZN-0118-NEG",
+      "ZN-0118-BOUNDARY",
+      "ZN-0119-AC",
+      "ZN-0119-NEG",
+      "ZN-0119-BOUNDARY",
+      "ZN-0122-AC",
+      "ZN-0122-NEG",
+      "ZN-0122-BOUNDARY"
+    ],
+    "contract": "reference/watches-mandates-and-outcomes.md",
+    "id": "C074",
+    "owner": "Ontology/Eve",
+    "proof": "J14",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-020"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0118",
+      "ZN-0119",
+      "ZN-0122"
+    ]
+  },
+  {
+    "adr": "043",
+    "audience": "All",
+    "capability": "Materiality and stale-data alerts",
+    "category": "Attention",
+    "check_ids": [
+      "ZN-0119-AC",
+      "ZN-0119-NEG",
+      "ZN-0119-BOUNDARY",
+      "ZN-0123-AC",
+      "ZN-0123-NEG",
+      "ZN-0123-BOUNDARY"
+    ],
+    "contract": "reference/watches-mandates-and-outcomes.md",
+    "id": "C075",
+    "owner": "Ontology/Eve",
+    "proof": "J14",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-020"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0119",
+      "ZN-0123"
+    ]
+  },
+  {
+    "adr": "043",
+    "audience": "All",
+    "capability": "Quiet/merged/deferred Notice delivery",
+    "category": "Attention",
+    "check_ids": [
+      "ZN-0120-AC",
+      "ZN-0120-NEG",
+      "ZN-0120-BOUNDARY",
+      "ZN-0121-AC",
+      "ZN-0121-NEG",
+      "ZN-0121-BOUNDARY",
+      "ZN-0122-AC",
+      "ZN-0122-NEG",
+      "ZN-0122-BOUNDARY",
+      "ZN-0123-AC",
+      "ZN-0123-NEG",
+      "ZN-0123-BOUNDARY"
+    ],
+    "contract": "reference/watches-mandates-and-outcomes.md",
+    "id": "C076",
+    "owner": "Ontology/Eve",
+    "proof": "J14",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-020"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0120",
+      "ZN-0121",
+      "ZN-0122",
+      "ZN-0123"
+    ]
+  },
+  {
+    "adr": "043",
+    "audience": "All",
+    "capability": "Bounded Mandates",
+    "category": "Attention",
+    "check_ids": [
+      "ZN-0142-AC",
+      "ZN-0142-NEG",
+      "ZN-0142-BOUNDARY",
+      "ZN-0145-AC",
+      "ZN-0145-NEG",
+      "ZN-0145-BOUNDARY",
+      "ZN-0146-AC",
+      "ZN-0146-NEG",
+      "ZN-0146-BOUNDARY"
+    ],
+    "contract": "reference/watches-mandates-and-outcomes.md",
+    "id": "C077",
+    "owner": "Ontology/Eve",
+    "proof": "J14",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-024"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0142",
+      "ZN-0145",
+      "ZN-0146"
+    ]
+  },
+  {
+    "adr": "043",
+    "audience": "All",
+    "capability": "Observable goal status",
+    "category": "Attention",
+    "check_ids": [
+      "ZN-0143-AC",
+      "ZN-0143-NEG",
+      "ZN-0143-BOUNDARY",
+      "ZN-0146-AC",
+      "ZN-0146-NEG",
+      "ZN-0146-BOUNDARY"
+    ],
+    "contract": "reference/watches-mandates-and-outcomes.md",
+    "id": "C078",
+    "owner": "Ontology/Eve",
+    "proof": "J14",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-024"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0143",
+      "ZN-0146"
+    ]
+  },
+  {
+    "adr": "043",
+    "audience": "All",
+    "capability": "Stop/escalation/deadline policy",
+    "category": "Attention",
+    "check_ids": [
+      "ZN-0142-AC",
+      "ZN-0142-NEG",
+      "ZN-0142-BOUNDARY",
+      "ZN-0144-AC",
+      "ZN-0144-NEG",
+      "ZN-0144-BOUNDARY",
+      "ZN-0146-AC",
+      "ZN-0146-NEG",
+      "ZN-0146-BOUNDARY"
+    ],
+    "contract": "reference/watches-mandates-and-outcomes.md",
+    "id": "C079",
+    "owner": "Ontology/Eve",
+    "proof": "J14",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-024"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0142",
+      "ZN-0144",
+      "ZN-0146"
+    ]
+  },
+  {
+    "adr": "043",
+    "audience": "All",
+    "capability": "Child-agent shared budgets",
+    "category": "Attention",
+    "check_ids": [
+      "ZN-0141-AC",
+      "ZN-0141-NEG",
+      "ZN-0141-BOUNDARY",
+      "ZN-0144-AC",
+      "ZN-0144-NEG",
+      "ZN-0144-BOUNDARY",
+      "ZN-0146-AC",
+      "ZN-0146-NEG",
+      "ZN-0146-BOUNDARY",
+      "ZN-0151-AC",
+      "ZN-0151-NEG",
+      "ZN-0151-BOUNDARY"
+    ],
+    "contract": "reference/watches-mandates-and-outcomes.md",
+    "id": "C080",
+    "owner": "Ontology/Eve",
+    "proof": "J14",
+    "slice": "S4",
+    "spec_ids": [
+      "SPEC-024",
+      "SPEC-025"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0141",
+      "ZN-0144",
+      "ZN-0146",
+      "ZN-0151"
+    ]
+  },
+  {
+    "adr": "045",
+    "audience": "All",
+    "capability": "Hybrid text/vector/structured retrieval",
+    "category": "Retrieval",
+    "check_ids": [
+      "ZN-0147-AC",
+      "ZN-0147-NEG",
+      "ZN-0147-BOUNDARY",
+      "ZN-0149-AC",
+      "ZN-0149-NEG",
+      "ZN-0149-BOUNDARY",
+      "ZN-0152-AC",
+      "ZN-0152-NEG",
+      "ZN-0152-BOUNDARY"
+    ],
+    "contract": "reference/models-retrieval-and-agents.md",
+    "id": "C081",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-025"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0147",
+      "ZN-0149",
+      "ZN-0152"
+    ]
+  },
+  {
+    "adr": "045",
+    "audience": "All",
+    "capability": "Authorization before ranking/aggregation",
+    "category": "Retrieval",
+    "check_ids": [
+      "ZN-0148-AC",
+      "ZN-0148-NEG",
+      "ZN-0148-BOUNDARY",
+      "ZN-0152-AC",
+      "ZN-0152-NEG",
+      "ZN-0152-BOUNDARY",
+      "ZN-0293-AC",
+      "ZN-0293-NEG",
+      "ZN-0293-BOUNDARY",
+      "ZN-0294-AC",
+      "ZN-0294-NEG",
+      "ZN-0294-BOUNDARY",
+      "ZN-0320-AC",
+      "ZN-0320-NEG",
+      "ZN-0320-BOUNDARY"
+    ],
+    "contract": "reference/models-retrieval-and-agents.md",
+    "id": "C082",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-025",
+      "SPEC-050",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0148",
+      "ZN-0152",
+      "ZN-0293",
+      "ZN-0294",
+      "ZN-0320"
+    ]
+  },
+  {
+    "adr": "045",
+    "audience": "All",
+    "capability": "Evidence-grounded responses",
+    "category": "Retrieval",
+    "check_ids": [
+      "ZN-0058-AC",
+      "ZN-0058-NEG",
+      "ZN-0058-BOUNDARY",
+      "ZN-0061-AC",
+      "ZN-0061-NEG",
+      "ZN-0061-BOUNDARY",
+      "ZN-0149-AC",
+      "ZN-0149-NEG",
+      "ZN-0149-BOUNDARY",
+      "ZN-0152-AC",
+      "ZN-0152-NEG",
+      "ZN-0152-BOUNDARY",
+      "ZN-0211-AC",
+      "ZN-0211-NEG",
+      "ZN-0211-BOUNDARY"
+    ],
+    "contract": "reference/models-retrieval-and-agents.md",
+    "id": "C083",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-010",
+      "SPEC-025",
+      "SPEC-036"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0058",
+      "ZN-0061",
+      "ZN-0149",
+      "ZN-0152",
+      "ZN-0211"
+    ]
+  },
+  {
+    "adr": "045",
+    "audience": "All",
+    "capability": "Prompt-injection containment",
+    "category": "Retrieval",
+    "check_ids": [
+      "ZN-0150-AC",
+      "ZN-0150-NEG",
+      "ZN-0150-BOUNDARY",
+      "ZN-0152-AC",
+      "ZN-0152-NEG",
+      "ZN-0152-BOUNDARY",
+      "ZN-0284-AC",
+      "ZN-0284-NEG",
+      "ZN-0284-BOUNDARY"
+    ],
+    "contract": "reference/models-retrieval-and-agents.md",
+    "id": "C084",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-025",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0150",
+      "ZN-0152",
+      "ZN-0284"
+    ]
+  },
+  {
+    "adr": "045",
+    "audience": "All",
+    "capability": "Model-use/residency restrictions",
+    "category": "Retrieval",
+    "check_ids": [
+      "ZN-0060-AC",
+      "ZN-0060-NEG",
+      "ZN-0060-BOUNDARY",
+      "ZN-0108-AC",
+      "ZN-0108-NEG",
+      "ZN-0108-BOUNDARY",
+      "ZN-0147-AC",
+      "ZN-0147-NEG",
+      "ZN-0147-BOUNDARY",
+      "ZN-0152-AC",
+      "ZN-0152-NEG",
+      "ZN-0152-BOUNDARY",
+      "ZN-0228-AC",
+      "ZN-0228-NEG",
+      "ZN-0228-BOUNDARY",
+      "ZN-0264-AC",
+      "ZN-0264-NEG",
+      "ZN-0264-BOUNDARY"
+    ],
+    "contract": "reference/models-retrieval-and-agents.md",
+    "id": "C085",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-010",
+      "SPEC-018",
+      "SPEC-025",
+      "SPEC-039",
+      "SPEC-045"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0060",
+      "ZN-0108",
+      "ZN-0147",
+      "ZN-0152",
+      "ZN-0228",
+      "ZN-0264"
+    ]
+  },
+  {
+    "adr": "045",
+    "audience": "All",
+    "capability": "Permitted specialized agents",
+    "category": "Retrieval",
+    "check_ids": [
+      "ZN-0151-AC",
+      "ZN-0151-NEG",
+      "ZN-0151-BOUNDARY",
+      "ZN-0152-AC",
+      "ZN-0152-NEG",
+      "ZN-0152-BOUNDARY"
+    ],
+    "contract": "reference/models-retrieval-and-agents.md",
+    "id": "C086",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-025"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0151",
+      "ZN-0152"
+    ]
+  },
+  {
+    "adr": "041",
+    "audience": "All",
+    "capability": "WhatsApp signed durable admission",
+    "category": "Channels",
+    "check_ids": [
+      "ZN-0064-AC",
+      "ZN-0064-NEG",
+      "ZN-0064-BOUNDARY",
+      "ZN-0069-AC",
+      "ZN-0069-NEG",
+      "ZN-0069-BOUNDARY",
+      "ZN-0288-AC",
+      "ZN-0288-NEG",
+      "ZN-0288-BOUNDARY"
+    ],
+    "contract": "reference/messaging-channels.md",
+    "id": "C087",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-011",
+      "SPEC-049"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0064",
+      "ZN-0069",
+      "ZN-0288"
+    ]
+  },
+  {
+    "adr": "041",
+    "audience": "All",
+    "capability": "Channel consent and window policy",
+    "category": "Channels",
+    "check_ids": [
+      "ZN-0066-AC",
+      "ZN-0066-NEG",
+      "ZN-0066-BOUNDARY",
+      "ZN-0069-AC",
+      "ZN-0069-NEG",
+      "ZN-0069-BOUNDARY",
+      "ZN-0121-AC",
+      "ZN-0121-NEG",
+      "ZN-0121-BOUNDARY"
+    ],
+    "contract": "reference/messaging-channels.md",
+    "id": "C088",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-011",
+      "SPEC-020"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0066",
+      "ZN-0069",
+      "ZN-0121"
+    ]
+  },
+  {
+    "adr": "041",
+    "audience": "All",
+    "capability": "Secure web continuation",
+    "category": "Channels",
+    "check_ids": [
+      "ZN-0065-AC",
+      "ZN-0065-NEG",
+      "ZN-0065-BOUNDARY",
+      "ZN-0068-AC",
+      "ZN-0068-NEG",
+      "ZN-0068-BOUNDARY"
+    ],
+    "contract": "reference/messaging-channels.md",
+    "id": "C089",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-011"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0065",
+      "ZN-0068"
+    ]
+  },
+  {
+    "adr": "041",
+    "audience": "All",
+    "capability": "Delivery ambiguity handling",
+    "category": "Channels",
+    "check_ids": [
+      "ZN-0067-AC",
+      "ZN-0067-NEG",
+      "ZN-0067-BOUNDARY",
+      "ZN-0069-AC",
+      "ZN-0069-NEG",
+      "ZN-0069-BOUNDARY",
+      "ZN-0167-AC",
+      "ZN-0167-NEG",
+      "ZN-0167-BOUNDARY"
+    ],
+    "contract": "reference/messaging-channels.md",
+    "id": "C090",
+    "owner": "Eve",
+    "proof": "J01",
+    "slice": "S1",
+    "spec_ids": [
+      "SPEC-011",
+      "SPEC-028"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0067",
+      "ZN-0069",
+      "ZN-0167"
+    ]
+  },
+  {
+    "adr": "041",
+    "audience": "All",
+    "capability": "Telegram adapter",
+    "category": "Channels",
+    "check_ids": [
+      "ZN-0164-AC",
+      "ZN-0164-NEG",
+      "ZN-0164-BOUNDARY",
+      "ZN-0167-AC",
+      "ZN-0167-NEG",
+      "ZN-0167-BOUNDARY",
+      "ZN-0168-AC",
+      "ZN-0168-NEG",
+      "ZN-0168-BOUNDARY"
+    ],
+    "contract": "reference/messaging-channels.md",
+    "id": "C091",
+    "owner": "Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-028"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0164",
+      "ZN-0167",
+      "ZN-0168"
+    ]
+  },
+  {
+    "adr": "041",
+    "audience": "All",
+    "capability": "Email adapter",
+    "category": "Channels",
+    "check_ids": [
+      "ZN-0165-AC",
+      "ZN-0165-NEG",
+      "ZN-0165-BOUNDARY",
+      "ZN-0167-AC",
+      "ZN-0167-NEG",
+      "ZN-0167-BOUNDARY",
+      "ZN-0168-AC",
+      "ZN-0168-NEG",
+      "ZN-0168-BOUNDARY"
+    ],
+    "contract": "reference/messaging-channels.md",
+    "id": "C092",
+    "owner": "Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-028"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0165",
+      "ZN-0167",
+      "ZN-0168"
+    ]
+  },
+  {
+    "adr": "041",
+    "audience": "All",
+    "capability": "Channel migration without context reset",
+    "category": "Channels",
+    "check_ids": [
+      "ZN-0157-AC",
+      "ZN-0157-NEG",
+      "ZN-0157-BOUNDARY",
+      "ZN-0166-AC",
+      "ZN-0166-NEG",
+      "ZN-0166-BOUNDARY",
+      "ZN-0167-AC",
+      "ZN-0167-NEG",
+      "ZN-0167-BOUNDARY",
+      "ZN-0168-AC",
+      "ZN-0168-NEG",
+      "ZN-0168-BOUNDARY"
+    ],
+    "contract": "reference/messaging-channels.md",
+    "id": "C093",
+    "owner": "Eve",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-026",
+      "SPEC-028"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0157",
+      "ZN-0166",
+      "ZN-0167",
+      "ZN-0168"
+    ]
+  },
+  {
+    "adr": "046",
+    "audience": "All",
+    "capability": "REST/OpenAPI semantic API",
+    "category": "Platform",
+    "check_ids": [
+      "ZN-0043-AC",
+      "ZN-0043-NEG",
+      "ZN-0043-BOUNDARY",
+      "ZN-0045-AC",
+      "ZN-0045-NEG",
+      "ZN-0045-BOUNDARY",
+      "ZN-0153-AC",
+      "ZN-0153-NEG",
+      "ZN-0153-BOUNDARY",
+      "ZN-0157-AC",
+      "ZN-0157-NEG",
+      "ZN-0157-BOUNDARY",
+      "ZN-0158-AC",
+      "ZN-0158-NEG",
+      "ZN-0158-BOUNDARY",
+      "ZN-0291-AC",
+      "ZN-0291-NEG",
+      "ZN-0291-BOUNDARY",
+      "ZN-0292-AC",
+      "ZN-0292-NEG",
+      "ZN-0292-BOUNDARY",
+      "ZN-0294-AC",
+      "ZN-0294-NEG",
+      "ZN-0294-BOUNDARY",
+      "ZN-0295-AC",
+      "ZN-0295-NEG",
+      "ZN-0295-BOUNDARY",
+      "ZN-0309-AC",
+      "ZN-0309-NEG",
+      "ZN-0309-BOUNDARY"
+    ],
+    "contract": "reference/interfaces-sdk-and-mcp.md",
+    "id": "C094",
+    "owner": "Ontology",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-026",
+      "SPEC-050",
+      "SPEC-053"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0043",
+      "ZN-0045",
+      "ZN-0153",
+      "ZN-0157",
+      "ZN-0158",
+      "ZN-0291",
+      "ZN-0292",
+      "ZN-0294",
+      "ZN-0295",
+      "ZN-0309"
+    ]
+  },
+  {
+    "adr": "046",
+    "audience": "All",
+    "capability": "Generated CLI",
+    "category": "Platform",
+    "check_ids": [
+      "ZN-0043-AC",
+      "ZN-0043-NEG",
+      "ZN-0043-BOUNDARY",
+      "ZN-0045-AC",
+      "ZN-0045-NEG",
+      "ZN-0045-BOUNDARY",
+      "ZN-0154-AC",
+      "ZN-0154-NEG",
+      "ZN-0154-BOUNDARY",
+      "ZN-0158-AC",
+      "ZN-0158-NEG",
+      "ZN-0158-BOUNDARY"
+    ],
+    "contract": "reference/interfaces-sdk-and-mcp.md",
+    "id": "C095",
+    "owner": "Ontology",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-026"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0043",
+      "ZN-0045",
+      "ZN-0154",
+      "ZN-0158"
+    ]
+  },
+  {
+    "adr": "046",
+    "audience": "All",
+    "capability": "MCP tools/resources",
+    "category": "Platform",
+    "check_ids": [
+      "ZN-0156-AC",
+      "ZN-0156-NEG",
+      "ZN-0156-BOUNDARY",
+      "ZN-0158-AC",
+      "ZN-0158-NEG",
+      "ZN-0158-BOUNDARY"
+    ],
+    "contract": "reference/interfaces-sdk-and-mcp.md",
+    "id": "C096",
+    "owner": "Ontology",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-026"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0156",
+      "ZN-0158"
+    ]
+  },
+  {
+    "adr": "046",
+    "audience": "All",
+    "capability": "Dynamic capability discovery",
+    "category": "Platform",
+    "check_ids": [
+      "ZN-0044-AC",
+      "ZN-0044-NEG",
+      "ZN-0044-BOUNDARY",
+      "ZN-0078-AC",
+      "ZN-0078-NEG",
+      "ZN-0078-BOUNDARY",
+      "ZN-0155-AC",
+      "ZN-0155-NEG",
+      "ZN-0155-BOUNDARY",
+      "ZN-0156-AC",
+      "ZN-0156-NEG",
+      "ZN-0156-BOUNDARY",
+      "ZN-0158-AC",
+      "ZN-0158-NEG",
+      "ZN-0158-BOUNDARY",
+      "ZN-0291-AC",
+      "ZN-0291-NEG",
+      "ZN-0291-BOUNDARY",
+      "ZN-0294-AC",
+      "ZN-0294-NEG",
+      "ZN-0294-BOUNDARY",
+      "ZN-0303-AC",
+      "ZN-0303-NEG",
+      "ZN-0303-BOUNDARY"
+    ],
+    "contract": "reference/interfaces-sdk-and-mcp.md",
+    "id": "C097",
+    "owner": "Ontology",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-013",
+      "SPEC-026",
+      "SPEC-050",
+      "SPEC-052"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0044",
+      "ZN-0078",
+      "ZN-0155",
+      "ZN-0156",
+      "ZN-0158",
+      "ZN-0291",
+      "ZN-0294",
+      "ZN-0303"
+    ]
+  },
+  {
+    "adr": "046",
+    "audience": "All",
+    "capability": "Static TypeScript SDK generation",
+    "category": "Platform",
+    "check_ids": [
+      "ZN-0155-AC",
+      "ZN-0155-NEG",
+      "ZN-0155-BOUNDARY",
+      "ZN-0158-AC",
+      "ZN-0158-NEG",
+      "ZN-0158-BOUNDARY"
+    ],
+    "contract": "reference/interfaces-sdk-and-mcp.md",
+    "id": "C098",
+    "owner": "Ontology",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-026"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0155",
+      "ZN-0158"
+    ]
+  },
+  {
+    "adr": "046",
+    "audience": "All",
+    "capability": "Cross-surface meaning parity",
+    "category": "Platform",
+    "check_ids": [
+      "ZN-0043-AC",
+      "ZN-0043-NEG",
+      "ZN-0043-BOUNDARY",
+      "ZN-0045-AC",
+      "ZN-0045-NEG",
+      "ZN-0045-BOUNDARY",
+      "ZN-0078-AC",
+      "ZN-0078-NEG",
+      "ZN-0078-BOUNDARY",
+      "ZN-0099-AC",
+      "ZN-0099-NEG",
+      "ZN-0099-BOUNDARY",
+      "ZN-0133-AC",
+      "ZN-0133-NEG",
+      "ZN-0133-BOUNDARY",
+      "ZN-0153-AC",
+      "ZN-0153-NEG",
+      "ZN-0153-BOUNDARY",
+      "ZN-0154-AC",
+      "ZN-0154-NEG",
+      "ZN-0154-BOUNDARY",
+      "ZN-0158-AC",
+      "ZN-0158-NEG",
+      "ZN-0158-BOUNDARY"
+    ],
+    "contract": "reference/interfaces-sdk-and-mcp.md",
+    "id": "C099",
+    "owner": "Ontology",
+    "proof": "J09",
+    "slice": "S5",
+    "spec_ids": [
+      "SPEC-007",
+      "SPEC-013",
+      "SPEC-016",
+      "SPEC-022",
+      "SPEC-026"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0043",
+      "ZN-0045",
+      "ZN-0078",
+      "ZN-0099",
+      "ZN-0133",
+      "ZN-0153",
+      "ZN-0154",
+      "ZN-0158"
+    ]
+  },
+  {
+    "adr": "044",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Signed custom connector artifacts",
+    "category": "Extensions",
+    "check_ids": [
+      "ZN-0169-AC",
+      "ZN-0169-NEG",
+      "ZN-0169-BOUNDARY",
+      "ZN-0170-AC",
+      "ZN-0170-NEG",
+      "ZN-0170-BOUNDARY",
+      "ZN-0173-AC",
+      "ZN-0173-NEG",
+      "ZN-0173-BOUNDARY",
+      "ZN-0179-AC",
+      "ZN-0179-NEG",
+      "ZN-0179-BOUNDARY"
+    ],
+    "contract": "reference/programmable-compute-and-skills.md",
+    "id": "C100",
+    "owner": "Ontology/Platform",
+    "proof": "J06",
+    "slice": "S6",
+    "spec_ids": [
+      "SPEC-029",
+      "SPEC-030"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0169",
+      "ZN-0170",
+      "ZN-0173",
+      "ZN-0179"
+    ]
+  },
+  {
+    "adr": "044",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Sandboxed Python/R/SQL analysis",
+    "category": "Extensions",
+    "check_ids": [
+      "ZN-0177-AC",
+      "ZN-0177-NEG",
+      "ZN-0177-BOUNDARY",
+      "ZN-0179-AC",
+      "ZN-0179-NEG",
+      "ZN-0179-BOUNDARY"
+    ],
+    "contract": "reference/programmable-compute-and-skills.md",
+    "id": "C101",
+    "owner": "Ontology/Platform",
+    "proof": "J06",
+    "slice": "S6",
+    "spec_ids": [
+      "SPEC-030"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0177",
+      "ZN-0179"
+    ]
+  },
+  {
+    "adr": "044",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Bounded tool/secret leases",
+    "category": "Extensions",
+    "check_ids": [
+      "ZN-0171-AC",
+      "ZN-0171-NEG",
+      "ZN-0171-BOUNDARY",
+      "ZN-0175-AC",
+      "ZN-0175-NEG",
+      "ZN-0175-BOUNDARY",
+      "ZN-0178-AC",
+      "ZN-0178-NEG",
+      "ZN-0178-BOUNDARY",
+      "ZN-0179-AC",
+      "ZN-0179-NEG",
+      "ZN-0179-BOUNDARY",
+      "ZN-0310-AC",
+      "ZN-0310-NEG",
+      "ZN-0310-BOUNDARY",
+      "ZN-0317-AC",
+      "ZN-0317-NEG",
+      "ZN-0317-BOUNDARY"
+    ],
+    "contract": "reference/programmable-compute-and-skills.md",
+    "id": "C102",
+    "owner": "Ontology/Platform",
+    "proof": "J06",
+    "slice": "S6",
+    "spec_ids": [
+      "SPEC-029",
+      "SPEC-030",
+      "SPEC-053",
+      "SPEC-054"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0171",
+      "ZN-0175",
+      "ZN-0178",
+      "ZN-0179",
+      "ZN-0310",
+      "ZN-0317"
+    ]
+  },
+  {
+    "adr": "044",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Egress/SSRF/resource control",
+    "category": "Extensions",
+    "check_ids": [
+      "ZN-0091-AC",
+      "ZN-0091-NEG",
+      "ZN-0091-BOUNDARY",
+      "ZN-0170-AC",
+      "ZN-0170-NEG",
+      "ZN-0170-BOUNDARY",
+      "ZN-0174-AC",
+      "ZN-0174-NEG",
+      "ZN-0174-BOUNDARY",
+      "ZN-0176-AC",
+      "ZN-0176-NEG",
+      "ZN-0176-BOUNDARY",
+      "ZN-0179-AC",
+      "ZN-0179-NEG",
+      "ZN-0179-BOUNDARY",
+      "ZN-0284-AC",
+      "ZN-0284-NEG",
+      "ZN-0284-BOUNDARY",
+      "ZN-0292-AC",
+      "ZN-0292-NEG",
+      "ZN-0292-BOUNDARY",
+      "ZN-0308-AC",
+      "ZN-0308-NEG",
+      "ZN-0308-BOUNDARY",
+      "ZN-0310-AC",
+      "ZN-0310-NEG",
+      "ZN-0310-BOUNDARY",
+      "ZN-0312-AC",
+      "ZN-0312-NEG",
+      "ZN-0312-BOUNDARY",
+      "ZN-0314-AC",
+      "ZN-0314-NEG",
+      "ZN-0314-BOUNDARY",
+      "ZN-0317-AC",
+      "ZN-0317-NEG",
+      "ZN-0317-BOUNDARY",
+      "ZN-0319-AC",
+      "ZN-0319-NEG",
+      "ZN-0319-BOUNDARY",
+      "ZN-0322-AC",
+      "ZN-0322-NEG",
+      "ZN-0322-BOUNDARY"
+    ],
+    "contract": "reference/programmable-compute-and-skills.md",
+    "id": "C103",
+    "owner": "Ontology/Platform",
+    "proof": "J06",
+    "slice": "S6",
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-029",
+      "SPEC-030",
+      "SPEC-048",
+      "SPEC-050",
+      "SPEC-053",
+      "SPEC-054",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0091",
+      "ZN-0170",
+      "ZN-0174",
+      "ZN-0176",
+      "ZN-0179",
+      "ZN-0284",
+      "ZN-0292",
+      "ZN-0308",
+      "ZN-0310",
+      "ZN-0312",
+      "ZN-0314",
+      "ZN-0317",
+      "ZN-0319",
+      "ZN-0322"
+    ]
+  },
+  {
+    "adr": "044",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Artifact recall and evaluation",
+    "category": "Extensions",
+    "check_ids": [
+      "ZN-0169-AC",
+      "ZN-0169-NEG",
+      "ZN-0169-BOUNDARY",
+      "ZN-0172-AC",
+      "ZN-0172-NEG",
+      "ZN-0172-BOUNDARY",
+      "ZN-0173-AC",
+      "ZN-0173-NEG",
+      "ZN-0173-BOUNDARY",
+      "ZN-0178-AC",
+      "ZN-0178-NEG",
+      "ZN-0178-BOUNDARY",
+      "ZN-0179-AC",
+      "ZN-0179-NEG",
+      "ZN-0179-BOUNDARY",
+      "ZN-0318-AC",
+      "ZN-0318-NEG",
+      "ZN-0318-BOUNDARY"
+    ],
+    "contract": "reference/programmable-compute-and-skills.md",
+    "id": "C104",
+    "owner": "Ontology/Platform",
+    "proof": "J06",
+    "slice": "S6",
+    "spec_ids": [
+      "SPEC-029",
+      "SPEC-030",
+      "SPEC-054"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0169",
+      "ZN-0172",
+      "ZN-0173",
+      "ZN-0178",
+      "ZN-0179",
+      "ZN-0318"
+    ]
+  },
+  {
+    "adr": "044",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Agent-proposed capability installation",
+    "category": "Extensions",
+    "check_ids": [
+      "ZN-0077-AC",
+      "ZN-0077-NEG",
+      "ZN-0077-BOUNDARY",
+      "ZN-0171-AC",
+      "ZN-0171-NEG",
+      "ZN-0171-BOUNDARY",
+      "ZN-0173-AC",
+      "ZN-0173-NEG",
+      "ZN-0173-BOUNDARY"
+    ],
+    "contract": "reference/programmable-compute-and-skills.md",
+    "id": "C105",
+    "owner": "Ontology/Platform",
+    "proof": "J06",
+    "slice": "S6",
+    "spec_ids": [
+      "SPEC-013",
+      "SPEC-029"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0077",
+      "ZN-0171",
+      "ZN-0173"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Batch/incremental/CDC flows",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0092-AC",
+      "ZN-0092-NEG",
+      "ZN-0092-BOUNDARY",
+      "ZN-0186-AC",
+      "ZN-0186-NEG",
+      "ZN-0186-BOUNDARY",
+      "ZN-0187-AC",
+      "ZN-0187-NEG",
+      "ZN-0187-BOUNDARY",
+      "ZN-0188-AC",
+      "ZN-0188-NEG",
+      "ZN-0188-BOUNDARY",
+      "ZN-0191-AC",
+      "ZN-0191-NEG",
+      "ZN-0191-BOUNDARY",
+      "ZN-0241-AC",
+      "ZN-0241-NEG",
+      "ZN-0241-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C106",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-015",
+      "SPEC-032",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0092",
+      "ZN-0186",
+      "ZN-0187",
+      "ZN-0188",
+      "ZN-0191",
+      "ZN-0241"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Streaming watermarks and gaps",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0188-AC",
+      "ZN-0188-NEG",
+      "ZN-0188-BOUNDARY",
+      "ZN-0189-AC",
+      "ZN-0189-NEG",
+      "ZN-0189-BOUNDARY",
+      "ZN-0191-AC",
+      "ZN-0191-NEG",
+      "ZN-0191-BOUNDARY",
+      "ZN-0192-AC",
+      "ZN-0192-NEG",
+      "ZN-0192-BOUNDARY",
+      "ZN-0241-AC",
+      "ZN-0241-NEG",
+      "ZN-0241-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C107",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-032",
+      "SPEC-033",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0188",
+      "ZN-0189",
+      "ZN-0191",
+      "ZN-0192",
+      "ZN-0241"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Virtual/federated sources",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0197-AC",
+      "ZN-0197-NEG",
+      "ZN-0197-BOUNDARY",
+      "ZN-0198-AC",
+      "ZN-0198-NEG",
+      "ZN-0198-BOUNDARY",
+      "ZN-0201-AC",
+      "ZN-0201-NEG",
+      "ZN-0201-BOUNDARY",
+      "ZN-0242-AC",
+      "ZN-0242-NEG",
+      "ZN-0242-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C108",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-034",
+      "SPEC-041"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0197",
+      "ZN-0198",
+      "ZN-0201",
+      "ZN-0242"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Field-level lineage",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0186-AC",
+      "ZN-0186-NEG",
+      "ZN-0186-BOUNDARY",
+      "ZN-0190-AC",
+      "ZN-0190-NEG",
+      "ZN-0190-BOUNDARY",
+      "ZN-0191-AC",
+      "ZN-0191-NEG",
+      "ZN-0191-BOUNDARY",
+      "ZN-0239-AC",
+      "ZN-0239-NEG",
+      "ZN-0239-BOUNDARY",
+      "ZN-0240-AC",
+      "ZN-0240-NEG",
+      "ZN-0240-BOUNDARY",
+      "ZN-0244-AC",
+      "ZN-0244-NEG",
+      "ZN-0244-BOUNDARY",
+      "ZN-0295-AC",
+      "ZN-0295-NEG",
+      "ZN-0295-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C109",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-032",
+      "SPEC-041",
+      "SPEC-050"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0186",
+      "ZN-0190",
+      "ZN-0191",
+      "ZN-0239",
+      "ZN-0240",
+      "ZN-0244",
+      "ZN-0295"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Tri-state/unknown quality gates",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0190-AC",
+      "ZN-0190-NEG",
+      "ZN-0190-BOUNDARY",
+      "ZN-0191-AC",
+      "ZN-0191-NEG",
+      "ZN-0191-BOUNDARY",
+      "ZN-0295-AC",
+      "ZN-0295-NEG",
+      "ZN-0295-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C110",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-032",
+      "SPEC-050"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0190",
+      "ZN-0191",
+      "ZN-0295"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Partitioned Parquet/Iceberg datasets",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0180-AC",
+      "ZN-0180-NEG",
+      "ZN-0180-BOUNDARY",
+      "ZN-0181-AC",
+      "ZN-0181-NEG",
+      "ZN-0181-BOUNDARY",
+      "ZN-0184-AC",
+      "ZN-0184-NEG",
+      "ZN-0184-BOUNDARY",
+      "ZN-0185-AC",
+      "ZN-0185-NEG",
+      "ZN-0185-BOUNDARY",
+      "ZN-0195-AC",
+      "ZN-0195-NEG",
+      "ZN-0195-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C111",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-031",
+      "SPEC-033"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0180",
+      "ZN-0181",
+      "ZN-0184",
+      "ZN-0185",
+      "ZN-0195"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Exact snapshot publication",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0181-AC",
+      "ZN-0181-NEG",
+      "ZN-0181-BOUNDARY",
+      "ZN-0182-AC",
+      "ZN-0182-NEG",
+      "ZN-0182-BOUNDARY",
+      "ZN-0183-AC",
+      "ZN-0183-NEG",
+      "ZN-0183-BOUNDARY",
+      "ZN-0184-AC",
+      "ZN-0184-NEG",
+      "ZN-0184-BOUNDARY",
+      "ZN-0185-AC",
+      "ZN-0185-NEG",
+      "ZN-0185-BOUNDARY",
+      "ZN-0191-AC",
+      "ZN-0191-NEG",
+      "ZN-0191-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C112",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-031",
+      "SPEC-032"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0181",
+      "ZN-0182",
+      "ZN-0183",
+      "ZN-0184",
+      "ZN-0185",
+      "ZN-0191"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Conflated and unconflated live feeds",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0192-AC",
+      "ZN-0192-NEG",
+      "ZN-0192-BOUNDARY",
+      "ZN-0193-AC",
+      "ZN-0193-NEG",
+      "ZN-0193-BOUNDARY",
+      "ZN-0195-AC",
+      "ZN-0195-NEG",
+      "ZN-0195-BOUNDARY",
+      "ZN-0196-AC",
+      "ZN-0196-NEG",
+      "ZN-0196-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C113",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-033"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0192",
+      "ZN-0193",
+      "ZN-0195",
+      "ZN-0196"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Entitled live subscriptions",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0193-AC",
+      "ZN-0193-NEG",
+      "ZN-0193-BOUNDARY",
+      "ZN-0196-AC",
+      "ZN-0196-NEG",
+      "ZN-0196-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C114",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-033"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0193",
+      "ZN-0196"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Exact capture before action",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0194-AC",
+      "ZN-0194-NEG",
+      "ZN-0194-BOUNDARY",
+      "ZN-0196-AC",
+      "ZN-0196-NEG",
+      "ZN-0196-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C115",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-033"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0194",
+      "ZN-0196"
+    ]
+  },
+  {
+    "adr": "059",
+    "audience": "Enterprise",
+    "capability": "Distributed/GPU compute adapter contract",
+    "category": "Data scale",
+    "check_ids": [
+      "ZN-0199-AC",
+      "ZN-0199-NEG",
+      "ZN-0199-BOUNDARY",
+      "ZN-0200-AC",
+      "ZN-0200-NEG",
+      "ZN-0200-BOUNDARY",
+      "ZN-0201-AC",
+      "ZN-0201-NEG",
+      "ZN-0201-BOUNDARY"
+    ],
+    "contract": "reference/data-flows-and-live-data.md",
+    "id": "C116",
+    "owner": "Ontology",
+    "proof": "J10",
+    "slice": "S7",
+    "spec_ids": [
+      "SPEC-034"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0199",
+      "ZN-0200",
+      "ZN-0201"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Domain pack installation",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0096-AC",
+      "ZN-0096-NEG",
+      "ZN-0096-BOUNDARY",
+      "ZN-0213-AC",
+      "ZN-0213-NEG",
+      "ZN-0213-BOUNDARY",
+      "ZN-0218-AC",
+      "ZN-0218-NEG",
+      "ZN-0218-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C117",
+    "owner": "Ontology/Eve",
+    "proof": "J05",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-016",
+      "SPEC-037"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0096",
+      "ZN-0213",
+      "ZN-0218"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Local overlays and dependencies",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0214-AC",
+      "ZN-0214-NEG",
+      "ZN-0214-BOUNDARY",
+      "ZN-0218-AC",
+      "ZN-0218-NEG",
+      "ZN-0218-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C118",
+    "owner": "Ontology/Eve",
+    "proof": "J05",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-037"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0214",
+      "ZN-0218"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Pack upgrade/rebase/removal",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0215-AC",
+      "ZN-0215-NEG",
+      "ZN-0215-BOUNDARY",
+      "ZN-0218-AC",
+      "ZN-0218-NEG",
+      "ZN-0218-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C119",
+    "owner": "Ontology/Eve",
+    "proof": "J05",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-037"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0215",
+      "ZN-0218"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Publisher signature/reputation contract",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0213-AC",
+      "ZN-0213-NEG",
+      "ZN-0213-BOUNDARY",
+      "ZN-0216-AC",
+      "ZN-0216-NEG",
+      "ZN-0216-BOUNDARY",
+      "ZN-0218-AC",
+      "ZN-0218-NEG",
+      "ZN-0218-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C120",
+    "owner": "Ontology/Eve",
+    "proof": "J05",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-037"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0213",
+      "ZN-0216",
+      "ZN-0218"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Commercial marketplace prerequisites",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0217-AC",
+      "ZN-0217-NEG",
+      "ZN-0217-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C121",
+    "owner": "Ontology/Eve",
+    "proof": "J05",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-037"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0217"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Prosumer/Enterprise",
+    "capability": "No automatic cross-customer training",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0210-AC",
+      "ZN-0210-NEG",
+      "ZN-0210-BOUNDARY",
+      "ZN-0216-AC",
+      "ZN-0216-NEG",
+      "ZN-0216-BOUNDARY",
+      "ZN-0218-AC",
+      "ZN-0218-NEG",
+      "ZN-0218-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C122",
+    "owner": "Ontology/Eve",
+    "proof": "J05",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-036",
+      "SPEC-037"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0210",
+      "ZN-0216",
+      "ZN-0218"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Runtime Studio/workbench",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0202-AC",
+      "ZN-0202-NEG",
+      "ZN-0202-BOUNDARY",
+      "ZN-0206-AC",
+      "ZN-0206-NEG",
+      "ZN-0206-BOUNDARY",
+      "ZN-0324-AC",
+      "ZN-0324-NEG",
+      "ZN-0324-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C123",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-035",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0202",
+      "ZN-0206",
+      "ZN-0324"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Consumer; Prosumer; Enterprise",
+    "baseline_audience": "Prosumer/Enterprise",
+    "baseline_slice": "S8",
+    "capability": "Declarative operational apps",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0203-AC",
+      "ZN-0203-NEG",
+      "ZN-0203-BOUNDARY",
+      "ZN-0206-AC",
+      "ZN-0206-NEG",
+      "ZN-0206-BOUNDARY",
+      "ZN-0293-AC",
+      "ZN-0293-NEG",
+      "ZN-0293-BOUNDARY",
+      "ZN-0299-AC",
+      "ZN-0299-NEG",
+      "ZN-0299-BOUNDARY",
+      "ZN-0300-AC",
+      "ZN-0300-NEG",
+      "ZN-0300-BOUNDARY",
+      "ZN-0301-AC",
+      "ZN-0301-NEG",
+      "ZN-0301-BOUNDARY",
+      "ZN-0302-AC",
+      "ZN-0302-NEG",
+      "ZN-0302-BOUNDARY",
+      "ZN-0303-AC",
+      "ZN-0303-NEG",
+      "ZN-0303-BOUNDARY",
+      "ZN-0304-AC",
+      "ZN-0304-NEG",
+      "ZN-0304-BOUNDARY",
+      "ZN-0305-AC",
+      "ZN-0305-NEG",
+      "ZN-0305-BOUNDARY",
+      "ZN-0306-AC",
+      "ZN-0306-NEG",
+      "ZN-0306-BOUNDARY",
+      "ZN-0307-AC",
+      "ZN-0307-NEG",
+      "ZN-0307-BOUNDARY",
+      "ZN-0320-AC",
+      "ZN-0320-NEG",
+      "ZN-0320-BOUNDARY",
+      "ZN-0321-AC",
+      "ZN-0321-NEG",
+      "ZN-0321-BOUNDARY",
+      "ZN-0322-AC",
+      "ZN-0322-NEG",
+      "ZN-0322-BOUNDARY",
+      "ZN-0323-AC",
+      "ZN-0323-NEG",
+      "ZN-0323-BOUNDARY",
+      "ZN-0324-AC",
+      "ZN-0324-NEG",
+      "ZN-0324-BOUNDARY",
+      "ZN-0325-AC",
+      "ZN-0325-NEG",
+      "ZN-0325-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "full_integration_slice": "S8",
+    "id": "C124",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-035",
+      "SPEC-050",
+      "SPEC-051",
+      "SPEC-052",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0203",
+      "ZN-0206",
+      "ZN-0293",
+      "ZN-0299",
+      "ZN-0300",
+      "ZN-0301",
+      "ZN-0302",
+      "ZN-0303",
+      "ZN-0304",
+      "ZN-0305",
+      "ZN-0306",
+      "ZN-0307",
+      "ZN-0320",
+      "ZN-0321",
+      "ZN-0322",
+      "ZN-0323",
+      "ZN-0324",
+      "ZN-0325"
+    ],
+    "v4_amendments": [
+      "062",
+      "063",
+      "064",
+      "065"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Consumer; Prosumer; Enterprise",
+    "baseline_audience": "Prosumer/Enterprise",
+    "baseline_slice": "S8",
+    "capability": "Signed isolated executable apps",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0204-AC",
+      "ZN-0204-NEG",
+      "ZN-0204-BOUNDARY",
+      "ZN-0206-AC",
+      "ZN-0206-NEG",
+      "ZN-0206-BOUNDARY",
+      "ZN-0307-AC",
+      "ZN-0307-NEG",
+      "ZN-0307-BOUNDARY",
+      "ZN-0308-AC",
+      "ZN-0308-NEG",
+      "ZN-0308-BOUNDARY",
+      "ZN-0309-AC",
+      "ZN-0309-NEG",
+      "ZN-0309-BOUNDARY",
+      "ZN-0310-AC",
+      "ZN-0310-NEG",
+      "ZN-0310-BOUNDARY",
+      "ZN-0311-AC",
+      "ZN-0311-NEG",
+      "ZN-0311-BOUNDARY",
+      "ZN-0312-AC",
+      "ZN-0312-NEG",
+      "ZN-0312-BOUNDARY",
+      "ZN-0314-AC",
+      "ZN-0314-NEG",
+      "ZN-0314-BOUNDARY",
+      "ZN-0315-AC",
+      "ZN-0315-NEG",
+      "ZN-0315-BOUNDARY",
+      "ZN-0316-AC",
+      "ZN-0316-NEG",
+      "ZN-0316-BOUNDARY",
+      "ZN-0317-AC",
+      "ZN-0317-NEG",
+      "ZN-0317-BOUNDARY",
+      "ZN-0318-AC",
+      "ZN-0318-NEG",
+      "ZN-0318-BOUNDARY",
+      "ZN-0319-AC",
+      "ZN-0319-NEG",
+      "ZN-0319-BOUNDARY",
+      "ZN-0322-AC",
+      "ZN-0322-NEG",
+      "ZN-0322-BOUNDARY",
+      "ZN-0323-AC",
+      "ZN-0323-NEG",
+      "ZN-0323-BOUNDARY",
+      "ZN-0324-AC",
+      "ZN-0324-NEG",
+      "ZN-0324-BOUNDARY",
+      "ZN-0325-AC",
+      "ZN-0325-NEG",
+      "ZN-0325-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "full_integration_slice": "S8",
+    "id": "C125",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S6",
+    "spec_ids": [
+      "SPEC-035",
+      "SPEC-052",
+      "SPEC-053",
+      "SPEC-054",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0204",
+      "ZN-0206",
+      "ZN-0307",
+      "ZN-0308",
+      "ZN-0309",
+      "ZN-0310",
+      "ZN-0311",
+      "ZN-0312",
+      "ZN-0314",
+      "ZN-0315",
+      "ZN-0316",
+      "ZN-0317",
+      "ZN-0318",
+      "ZN-0319",
+      "ZN-0322",
+      "ZN-0323",
+      "ZN-0324",
+      "ZN-0325"
+    ],
+    "v4_amendments": [
+      "062",
+      "063",
+      "064",
+      "065"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Consumer; Prosumer; Enterprise",
+    "baseline_audience": "Prosumer/Enterprise",
+    "baseline_slice": "S8",
+    "capability": "MCP Apps compatibility",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0205-AC",
+      "ZN-0205-NEG",
+      "ZN-0205-BOUNDARY",
+      "ZN-0206-AC",
+      "ZN-0206-NEG",
+      "ZN-0206-BOUNDARY",
+      "ZN-0313-AC",
+      "ZN-0313-NEG",
+      "ZN-0313-BOUNDARY",
+      "ZN-0324-AC",
+      "ZN-0324-NEG",
+      "ZN-0324-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "full_integration_slice": "S8",
+    "id": "C126",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S6",
+    "spec_ids": [
+      "SPEC-035",
+      "SPEC-053",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0205",
+      "ZN-0206",
+      "ZN-0313",
+      "ZN-0324"
+    ],
+    "v4_amendments": [
+      "062",
+      "063",
+      "064",
+      "065"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Read-only scenarios and compare",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0207-AC",
+      "ZN-0207-NEG",
+      "ZN-0207-BOUNDARY",
+      "ZN-0208-AC",
+      "ZN-0208-NEG",
+      "ZN-0208-BOUNDARY",
+      "ZN-0212-AC",
+      "ZN-0212-NEG",
+      "ZN-0212-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C127",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-036"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0207",
+      "ZN-0208",
+      "ZN-0212"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Fresh live Case from scenario",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0209-AC",
+      "ZN-0209-NEG",
+      "ZN-0209-BOUNDARY",
+      "ZN-0212-AC",
+      "ZN-0212-NEG",
+      "ZN-0212-BOUNDARY",
+      "ZN-0307-AC",
+      "ZN-0307-NEG",
+      "ZN-0307-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C128",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-036",
+      "SPEC-052"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0209",
+      "ZN-0212",
+      "ZN-0307"
+    ]
+  },
+  {
+    "adr": "047",
+    "audience": "Prosumer/Enterprise",
+    "capability": "Notebooks and evaluated model artifacts",
+    "category": "Builder",
+    "check_ids": [
+      "ZN-0200-AC",
+      "ZN-0200-NEG",
+      "ZN-0200-BOUNDARY",
+      "ZN-0210-AC",
+      "ZN-0210-NEG",
+      "ZN-0210-BOUNDARY",
+      "ZN-0211-AC",
+      "ZN-0211-NEG",
+      "ZN-0211-BOUNDARY",
+      "ZN-0212-AC",
+      "ZN-0212-NEG",
+      "ZN-0212-BOUNDARY",
+      "ZN-0271-AC",
+      "ZN-0271-NEG",
+      "ZN-0271-BOUNDARY"
+    ],
+    "contract": "reference/apps-charts-and-surfaces.md",
+    "id": "C129",
+    "owner": "Ontology/Eve",
+    "proof": "J09",
+    "slice": "S8",
+    "spec_ids": [
+      "SPEC-034",
+      "SPEC-036",
+      "SPEC-046"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0200",
+      "ZN-0210",
+      "ZN-0211",
+      "ZN-0212",
+      "ZN-0271"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Consumer",
+    "capability": "Personal/household pack",
+    "category": "Domain",
+    "check_ids": [
+      "ZN-0097-AC",
+      "ZN-0097-NEG",
+      "ZN-0097-BOUNDARY",
+      "ZN-0099-AC",
+      "ZN-0099-NEG",
+      "ZN-0099-BOUNDARY",
+      "ZN-0100-AC",
+      "ZN-0100-NEG",
+      "ZN-0100-BOUNDARY",
+      "ZN-0145-AC",
+      "ZN-0145-NEG",
+      "ZN-0145-BOUNDARY",
+      "ZN-0281-AC",
+      "ZN-0281-NEG",
+      "ZN-0281-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C130",
+    "owner": "Ontology/Eve",
+    "proof": "J01",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-016",
+      "SPEC-024",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0097",
+      "ZN-0099",
+      "ZN-0100",
+      "ZN-0145",
+      "ZN-0281"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Prosumer",
+    "capability": "Confectionery orders/inventory/capacity pack",
+    "category": "Domain",
+    "check_ids": [
+      "ZN-0098-AC",
+      "ZN-0098-NEG",
+      "ZN-0098-BOUNDARY",
+      "ZN-0099-AC",
+      "ZN-0099-NEG",
+      "ZN-0099-BOUNDARY",
+      "ZN-0100-AC",
+      "ZN-0100-NEG",
+      "ZN-0100-BOUNDARY",
+      "ZN-0145-AC",
+      "ZN-0145-NEG",
+      "ZN-0145-BOUNDARY",
+      "ZN-0282-AC",
+      "ZN-0282-NEG",
+      "ZN-0282-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C131",
+    "owner": "Ontology/Eve",
+    "proof": "J02",
+    "slice": "S2",
+    "spec_ids": [
+      "SPEC-016",
+      "SPEC-024",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0098",
+      "ZN-0099",
+      "ZN-0100",
+      "ZN-0145",
+      "ZN-0282"
+    ]
+  },
+  {
+    "adr": "051",
+    "audience": "Prosumer",
+    "capability": "Dental operations with restricted clinical scope",
+    "category": "Domain",
+    "check_ids": [
+      "ZN-0124-AC",
+      "ZN-0124-NEG",
+      "ZN-0124-BOUNDARY",
+      "ZN-0125-AC",
+      "ZN-0125-NEG",
+      "ZN-0125-BOUNDARY",
+      "ZN-0126-AC",
+      "ZN-0126-NEG",
+      "ZN-0126-BOUNDARY",
+      "ZN-0127-AC",
+      "ZN-0127-NEG",
+      "ZN-0127-BOUNDARY",
+      "ZN-0128-AC",
+      "ZN-0128-NEG",
+      "ZN-0128-BOUNDARY",
+      "ZN-0145-AC",
+      "ZN-0145-NEG",
+      "ZN-0145-BOUNDARY",
+      "ZN-0282-AC",
+      "ZN-0282-NEG",
+      "ZN-0282-BOUNDARY"
+    ],
+    "contract": "reference/domain-packs-and-marketplace.md",
+    "id": "C132",
+    "owner": "Ontology/Eve",
+    "proof": "J03",
+    "slice": "S3",
+    "spec_ids": [
+      "SPEC-021",
+      "SPEC-024",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0124",
+      "ZN-0125",
+      "ZN-0126",
+      "ZN-0127",
+      "ZN-0128",
+      "ZN-0145",
+      "ZN-0282"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Dedicated/regional cells",
+    "category": "Institutional",
+    "check_ids": [
+      "ZN-0225-AC",
+      "ZN-0225-NEG",
+      "ZN-0225-BOUNDARY",
+      "ZN-0230-AC",
+      "ZN-0230-NEG",
+      "ZN-0230-BOUNDARY",
+      "ZN-0283-AC",
+      "ZN-0283-NEG",
+      "ZN-0283-BOUNDARY",
+      "ZN-0287-AC",
+      "ZN-0287-NEG",
+      "ZN-0287-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C133",
+    "owner": "Door/Platform",
+    "proof": "J10",
+    "slice": "S9",
+    "spec_ids": [
+      "SPEC-039",
+      "SPEC-048",
+      "SPEC-049"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0225",
+      "ZN-0230",
+      "ZN-0283",
+      "ZN-0287"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "SSO/SCIM lifecycle",
+    "category": "Institutional",
+    "check_ids": [
+      "ZN-0219-AC",
+      "ZN-0219-NEG",
+      "ZN-0219-BOUNDARY",
+      "ZN-0220-AC",
+      "ZN-0220-NEG",
+      "ZN-0220-BOUNDARY",
+      "ZN-0221-AC",
+      "ZN-0221-NEG",
+      "ZN-0221-BOUNDARY",
+      "ZN-0223-AC",
+      "ZN-0223-NEG",
+      "ZN-0223-BOUNDARY",
+      "ZN-0224-AC",
+      "ZN-0224-NEG",
+      "ZN-0224-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C134",
+    "owner": "Door/Platform",
+    "proof": "J10",
+    "slice": "S9",
+    "spec_ids": [
+      "SPEC-038"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0219",
+      "ZN-0220",
+      "ZN-0221",
+      "ZN-0223",
+      "ZN-0224"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Private connectivity",
+    "category": "Institutional",
+    "check_ids": [
+      "ZN-0225-AC",
+      "ZN-0225-NEG",
+      "ZN-0225-BOUNDARY",
+      "ZN-0228-AC",
+      "ZN-0228-NEG",
+      "ZN-0228-BOUNDARY",
+      "ZN-0230-AC",
+      "ZN-0230-NEG",
+      "ZN-0230-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C135",
+    "owner": "Door/Platform",
+    "proof": "J10",
+    "slice": "S9",
+    "spec_ids": [
+      "SPEC-039"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0225",
+      "ZN-0228",
+      "ZN-0230"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "HA and disaster recovery",
+    "category": "Institutional",
+    "check_ids": [
+      "ZN-0226-AC",
+      "ZN-0226-NEG",
+      "ZN-0226-BOUNDARY",
+      "ZN-0227-AC",
+      "ZN-0227-NEG",
+      "ZN-0227-BOUNDARY",
+      "ZN-0229-AC",
+      "ZN-0229-NEG",
+      "ZN-0229-BOUNDARY",
+      "ZN-0230-AC",
+      "ZN-0230-NEG",
+      "ZN-0230-BOUNDARY",
+      "ZN-0234-AC",
+      "ZN-0234-NEG",
+      "ZN-0234-BOUNDARY",
+      "ZN-0289-AC",
+      "ZN-0289-NEG",
+      "ZN-0289-BOUNDARY",
+      "ZN-0290-AC",
+      "ZN-0290-NEG",
+      "ZN-0290-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C136",
+    "owner": "Door/Platform",
+    "proof": "J10",
+    "slice": "S9",
+    "spec_ids": [
+      "SPEC-039",
+      "SPEC-040",
+      "SPEC-049"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0226",
+      "ZN-0227",
+      "ZN-0229",
+      "ZN-0230",
+      "ZN-0234",
+      "ZN-0289",
+      "ZN-0290"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Residency and key isolation",
+    "category": "Institutional",
+    "check_ids": [
+      "ZN-0222-AC",
+      "ZN-0222-NEG",
+      "ZN-0222-BOUNDARY",
+      "ZN-0225-AC",
+      "ZN-0225-NEG",
+      "ZN-0225-BOUNDARY",
+      "ZN-0226-AC",
+      "ZN-0226-NEG",
+      "ZN-0226-BOUNDARY",
+      "ZN-0228-AC",
+      "ZN-0228-NEG",
+      "ZN-0228-BOUNDARY",
+      "ZN-0230-AC",
+      "ZN-0230-NEG",
+      "ZN-0230-BOUNDARY",
+      "ZN-0290-AC",
+      "ZN-0290-NEG",
+      "ZN-0290-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C137",
+    "owner": "Door/Platform",
+    "proof": "J10",
+    "slice": "S9",
+    "spec_ids": [
+      "SPEC-038",
+      "SPEC-039",
+      "SPEC-049"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0222",
+      "ZN-0225",
+      "ZN-0226",
+      "ZN-0228",
+      "ZN-0230",
+      "ZN-0290"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Audited support access",
+    "category": "Institutional",
+    "check_ids": [
+      "ZN-0223-AC",
+      "ZN-0223-NEG",
+      "ZN-0223-BOUNDARY",
+      "ZN-0233-AC",
+      "ZN-0233-NEG",
+      "ZN-0233-BOUNDARY",
+      "ZN-0234-AC",
+      "ZN-0234-NEG",
+      "ZN-0234-BOUNDARY",
+      "ZN-0284-AC",
+      "ZN-0284-NEG",
+      "ZN-0284-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C138",
+    "owner": "Door/Platform",
+    "proof": "J10",
+    "slice": "S9",
+    "spec_ids": [
+      "SPEC-038",
+      "SPEC-040",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0223",
+      "ZN-0233",
+      "ZN-0234",
+      "ZN-0284"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Measured workload admission",
+    "category": "Institutional",
+    "check_ids": [
+      "ZN-0235-AC",
+      "ZN-0235-NEG",
+      "ZN-0235-BOUNDARY",
+      "ZN-0236-AC",
+      "ZN-0236-NEG",
+      "ZN-0236-BOUNDARY",
+      "ZN-0283-AC",
+      "ZN-0283-NEG",
+      "ZN-0283-BOUNDARY",
+      "ZN-0286-AC",
+      "ZN-0286-NEG",
+      "ZN-0286-BOUNDARY",
+      "ZN-0290-AC",
+      "ZN-0290-NEG",
+      "ZN-0290-BOUNDARY",
+      "ZN-0323-AC",
+      "ZN-0323-NEG",
+      "ZN-0323-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C139",
+    "owner": "Door/Platform",
+    "proof": "J10",
+    "slice": "S9",
+    "spec_ids": [
+      "SPEC-040",
+      "SPEC-048",
+      "SPEC-049",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0235",
+      "ZN-0236",
+      "ZN-0283",
+      "ZN-0286",
+      "ZN-0290",
+      "ZN-0323"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Per-tenant quotas/fairness",
+    "category": "Institutional",
+    "check_ids": [
+      "ZN-0231-AC",
+      "ZN-0231-NEG",
+      "ZN-0231-BOUNDARY",
+      "ZN-0232-AC",
+      "ZN-0232-NEG",
+      "ZN-0232-BOUNDARY",
+      "ZN-0235-AC",
+      "ZN-0235-NEG",
+      "ZN-0235-BOUNDARY",
+      "ZN-0236-AC",
+      "ZN-0236-NEG",
+      "ZN-0236-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C140",
+    "owner": "Door/Platform",
+    "proof": "J10",
+    "slice": "S9",
+    "spec_ids": [
+      "SPEC-040"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0231",
+      "ZN-0232",
+      "ZN-0235",
+      "ZN-0236"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Fenced epoch cell migration",
+    "category": "Federation",
+    "check_ids": [
+      "ZN-0245-AC",
+      "ZN-0245-NEG",
+      "ZN-0245-BOUNDARY",
+      "ZN-0246-AC",
+      "ZN-0246-NEG",
+      "ZN-0246-BOUNDARY",
+      "ZN-0247-AC",
+      "ZN-0247-NEG",
+      "ZN-0247-BOUNDARY",
+      "ZN-0248-AC",
+      "ZN-0248-NEG",
+      "ZN-0248-BOUNDARY",
+      "ZN-0249-AC",
+      "ZN-0249-NEG",
+      "ZN-0249-BOUNDARY",
+      "ZN-0283-AC",
+      "ZN-0283-NEG",
+      "ZN-0283-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C141",
+    "owner": "Ontology/Platform",
+    "proof": "J11",
+    "slice": "S10",
+    "spec_ids": [
+      "SPEC-042",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0245",
+      "ZN-0246",
+      "ZN-0247",
+      "ZN-0248",
+      "ZN-0249",
+      "ZN-0283"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Independent-cut federated Frames",
+    "category": "Federation",
+    "check_ids": [
+      "ZN-0250-AC",
+      "ZN-0250-NEG",
+      "ZN-0250-BOUNDARY",
+      "ZN-0251-AC",
+      "ZN-0251-NEG",
+      "ZN-0251-BOUNDARY",
+      "ZN-0254-AC",
+      "ZN-0254-NEG",
+      "ZN-0254-BOUNDARY",
+      "ZN-0283-AC",
+      "ZN-0283-NEG",
+      "ZN-0283-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C142",
+    "owner": "Ontology/Platform",
+    "proof": "J11",
+    "slice": "S10",
+    "spec_ids": [
+      "SPEC-043",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0250",
+      "ZN-0251",
+      "ZN-0254",
+      "ZN-0283"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Cross-World coordinated Cases",
+    "category": "Federation",
+    "check_ids": [
+      "ZN-0252-AC",
+      "ZN-0252-NEG",
+      "ZN-0252-BOUNDARY",
+      "ZN-0253-AC",
+      "ZN-0253-NEG",
+      "ZN-0253-BOUNDARY",
+      "ZN-0254-AC",
+      "ZN-0254-NEG",
+      "ZN-0254-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C143",
+    "owner": "Ontology/Platform",
+    "proof": "J11",
+    "slice": "S10",
+    "spec_ids": [
+      "SPEC-043"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0252",
+      "ZN-0253",
+      "ZN-0254"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Partial global outcomes",
+    "category": "Federation",
+    "check_ids": [
+      "ZN-0252-AC",
+      "ZN-0252-NEG",
+      "ZN-0252-BOUNDARY",
+      "ZN-0253-AC",
+      "ZN-0253-NEG",
+      "ZN-0253-BOUNDARY",
+      "ZN-0254-AC",
+      "ZN-0254-NEG",
+      "ZN-0254-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C144",
+    "owner": "Ontology/Platform",
+    "proof": "J11",
+    "slice": "S10",
+    "spec_ids": [
+      "SPEC-043"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0252",
+      "ZN-0253",
+      "ZN-0254"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Offline leased child scope",
+    "category": "Federation",
+    "check_ids": [
+      "ZN-0255-AC",
+      "ZN-0255-NEG",
+      "ZN-0255-BOUNDARY",
+      "ZN-0256-AC",
+      "ZN-0256-NEG",
+      "ZN-0256-BOUNDARY",
+      "ZN-0257-AC",
+      "ZN-0257-NEG",
+      "ZN-0257-BOUNDARY",
+      "ZN-0260-AC",
+      "ZN-0260-NEG",
+      "ZN-0260-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C145",
+    "owner": "Ontology/Platform",
+    "proof": "J11",
+    "slice": "S10",
+    "spec_ids": [
+      "SPEC-044"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0255",
+      "ZN-0256",
+      "ZN-0257",
+      "ZN-0260"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Self-hosted equivalence contract",
+    "category": "Federation",
+    "check_ids": [
+      "ZN-0258-AC",
+      "ZN-0258-NEG",
+      "ZN-0258-BOUNDARY",
+      "ZN-0260-AC",
+      "ZN-0260-NEG",
+      "ZN-0260-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C146",
+    "owner": "Ontology/Platform",
+    "proof": "J11",
+    "slice": "S10",
+    "spec_ids": [
+      "SPEC-044"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0258",
+      "ZN-0260"
+    ]
+  },
+  {
+    "adr": "049",
+    "audience": "Enterprise",
+    "capability": "Fleet release and policy controls",
+    "category": "Federation",
+    "check_ids": [
+      "ZN-0259-AC",
+      "ZN-0259-NEG",
+      "ZN-0259-BOUNDARY",
+      "ZN-0260-AC",
+      "ZN-0260-NEG",
+      "ZN-0260-BOUNDARY"
+    ],
+    "contract": "reference/deployment-cells-and-federation.md",
+    "id": "C147",
+    "owner": "Ontology/Platform",
+    "proof": "J11",
+    "slice": "S10",
+    "spec_ids": [
+      "SPEC-044"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0259",
+      "ZN-0260"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Instrument/listing/issuer master",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0261-AC",
+      "ZN-0261-NEG",
+      "ZN-0261-BOUNDARY",
+      "ZN-0265-AC",
+      "ZN-0265-NEG",
+      "ZN-0265-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C148",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-045"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0261",
+      "ZN-0265"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Corporate actions/revisions",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0262-AC",
+      "ZN-0262-NEG",
+      "ZN-0262-BOUNDARY",
+      "ZN-0265-AC",
+      "ZN-0265-NEG",
+      "ZN-0265-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C149",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-045"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0262",
+      "ZN-0265"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Point-in-time licensed fundamentals/news",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0263-AC",
+      "ZN-0263-NEG",
+      "ZN-0263-BOUNDARY",
+      "ZN-0264-AC",
+      "ZN-0264-NEG",
+      "ZN-0264-BOUNDARY",
+      "ZN-0265-AC",
+      "ZN-0265-NEG",
+      "ZN-0265-BOUNDARY",
+      "ZN-0266-AC",
+      "ZN-0266-NEG",
+      "ZN-0266-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C150",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-045"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0263",
+      "ZN-0264",
+      "ZN-0265",
+      "ZN-0266"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Entitled quotes/trades/market depth",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0267-AC",
+      "ZN-0267-NEG",
+      "ZN-0267-BOUNDARY",
+      "ZN-0272-AC",
+      "ZN-0272-NEG",
+      "ZN-0272-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C151",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-046"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0267",
+      "ZN-0272"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Portfolio/position/risk analytics",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0268-AC",
+      "ZN-0268-NEG",
+      "ZN-0268-BOUNDARY",
+      "ZN-0269-AC",
+      "ZN-0269-NEG",
+      "ZN-0269-BOUNDARY",
+      "ZN-0270-AC",
+      "ZN-0270-NEG",
+      "ZN-0270-BOUNDARY",
+      "ZN-0271-AC",
+      "ZN-0271-NEG",
+      "ZN-0271-BOUNDARY",
+      "ZN-0272-AC",
+      "ZN-0272-NEG",
+      "ZN-0272-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C152",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-046"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0268",
+      "ZN-0269",
+      "ZN-0270",
+      "ZN-0271",
+      "ZN-0272"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Order/fill/allocation lifecycle",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0273-AC",
+      "ZN-0273-NEG",
+      "ZN-0273-BOUNDARY",
+      "ZN-0274-AC",
+      "ZN-0274-NEG",
+      "ZN-0274-BOUNDARY",
+      "ZN-0276-AC",
+      "ZN-0276-NEG",
+      "ZN-0276-BOUNDARY",
+      "ZN-0279-AC",
+      "ZN-0279-NEG",
+      "ZN-0279-BOUNDARY",
+      "ZN-0283-AC",
+      "ZN-0283-NEG",
+      "ZN-0283-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C153",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-047",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0273",
+      "ZN-0274",
+      "ZN-0276",
+      "ZN-0279",
+      "ZN-0283"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Bust/cancel/partial handling",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0273-AC",
+      "ZN-0273-NEG",
+      "ZN-0273-BOUNDARY",
+      "ZN-0274-AC",
+      "ZN-0274-NEG",
+      "ZN-0274-BOUNDARY",
+      "ZN-0275-AC",
+      "ZN-0275-NEG",
+      "ZN-0275-BOUNDARY",
+      "ZN-0279-AC",
+      "ZN-0279-NEG",
+      "ZN-0279-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C154",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-047"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0273",
+      "ZN-0274",
+      "ZN-0275",
+      "ZN-0279"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Clearing/custody/actual settlement",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0276-AC",
+      "ZN-0276-NEG",
+      "ZN-0276-BOUNDARY",
+      "ZN-0277-AC",
+      "ZN-0277-NEG",
+      "ZN-0277-BOUNDARY",
+      "ZN-0279-AC",
+      "ZN-0279-NEG",
+      "ZN-0279-BOUNDARY",
+      "ZN-0283-AC",
+      "ZN-0283-NEG",
+      "ZN-0283-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C155",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-047",
+      "SPEC-048"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0276",
+      "ZN-0277",
+      "ZN-0279",
+      "ZN-0283"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Supervised professional collaboration",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0278-AC",
+      "ZN-0278-NEG",
+      "ZN-0278-BOUNDARY",
+      "ZN-0279-AC",
+      "ZN-0279-NEG",
+      "ZN-0279-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C156",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-047"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0278",
+      "ZN-0279"
+    ]
+  },
+  {
+    "adr": "056",
+    "audience": "Enterprise",
+    "capability": "Provider/legal/commercial certification gates",
+    "category": "Finance",
+    "check_ids": [
+      "ZN-0266-AC",
+      "ZN-0266-NEG",
+      "ZN-0266-BOUNDARY",
+      "ZN-0272-AC",
+      "ZN-0272-NEG",
+      "ZN-0272-BOUNDARY",
+      "ZN-0280-AC",
+      "ZN-0280-NEG",
+      "ZN-0280-BOUNDARY",
+      "ZN-0283-AC",
+      "ZN-0283-NEG",
+      "ZN-0283-BOUNDARY",
+      "ZN-0285-AC",
+      "ZN-0285-NEG",
+      "ZN-0285-BOUNDARY",
+      "ZN-0286-AC",
+      "ZN-0286-NEG",
+      "ZN-0286-BOUNDARY",
+      "ZN-0288-AC",
+      "ZN-0288-NEG",
+      "ZN-0288-BOUNDARY",
+      "ZN-0325-AC",
+      "ZN-0325-NEG",
+      "ZN-0325-BOUNDARY"
+    ],
+    "contract": "reference/finance-domain.md",
+    "id": "C157",
+    "owner": "Ontology",
+    "proof": "J13",
+    "slice": "S11",
+    "spec_ids": [
+      "SPEC-045",
+      "SPEC-046",
+      "SPEC-047",
+      "SPEC-048",
+      "SPEC-049",
+      "SPEC-055"
+    ],
+    "status": "Specified / not implemented",
+    "ticket_ids": [
+      "ZN-0266",
+      "ZN-0272",
+      "ZN-0280",
+      "ZN-0283",
+      "ZN-0285",
+      "ZN-0286",
+      "ZN-0288",
+      "ZN-0325"
+    ]
+  }
+]

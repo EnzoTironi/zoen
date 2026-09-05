@@ -1,0 +1,16 @@
+flowchart TB
+    Human[Human web and CLI] --> Client[Shared SemanticClient]
+    Eve[Eve and permitted agents] --> Client
+    App[Declarative mini app] --> Client
+    Guest[Isolated executable mini app] --> Bridge[Transport-only host bridge]
+    Bridge --> Client
+    Job[Bounded background app workload] --> Client
+    Client --> Entry[Verified identity, actor and delegation context]
+    Entry --> Executor[One SemanticExecutor: SPEC-007]
+    Executor --> Guard[Current policy, app ceiling, purpose and source rights]
+    Guard --> Meaning[Released meaning, authorized Frames and Actions]
+    Meaning --> Stores[Internal stores and governed projections]
+    Meaning --> Effects[EffectIntent and qualified executor]
+    Effects --> Provider[External provider]
+    Provider --> Evidence[Observed Settlement, not inferred success]
+    Evidence --> Meaning

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0",
+  "sessionRef": "40000000-0000-4000-8000-000000000001",
+  "worldRef": {
+    "worldId": "10000000-0000-4000-8000-000000000001",
+    "realm": "evaluation"
+  },
+  "subject": "30000000-0000-4000-8000-000000000001",
+  "actor": "30000000-0000-4000-8000-000000000001",
+  "purpose": "production-review",
+  "scopeDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "manifestDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "securityRevision": "12",
+  "disclosureProfile": "trusted-renderer",
+  "expiresAt": "2026-09-04T16:00:00Z",
+  "state": "active"
+}

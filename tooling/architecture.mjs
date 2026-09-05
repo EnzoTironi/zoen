@@ -4,10 +4,12 @@ import { files } from './files.mjs';
 import { ts } from './typescript.mjs';
 /** Lightweight static guardrails, not a sandbox or proof against malicious source code. */
 export function checkArchitecture() {
+ let plannedFilesExcluded=0;
  const violations=[],source=[...files('packages'),...files('apps')].filter(p=>p.endsWith('.ts'));
  for(const path of source) {
   const text=readFileSync(path,'utf8');
   const ast=ts.createSourceFile(path,text,ts.ScriptTarget.Latest,true,ts.ScriptKind.TS);
+  if (text.startsWith('// @zoen-plan')) { plannedFilesExcluded++; if (ast.statements.length !== 0) violations.push(`${path}: executable statements hidden under plan marker`); continue; }
   const imports=[];
   function walk(node) {
     if((ts.isImportDeclaration(node)||ts.isExportDeclaration(node))&&node.moduleSpecifier&&ts.isStringLiteralLike(node.moduleSpecifier))imports.push(node.moduleSpecifier.text);
@@ -43,6 +45,6 @@ export function checkArchitecture() {
  const pkg=JSON.parse(readFileSync('package.json','utf8'));
  for(const [name,version] of Object.entries({...pkg.dependencies,...pkg.devDependencies})) if(!/^\d+\.\d+\.\d+$/.test(version))violations.push(`Unpinned direct dependency ${name}`);
  for(const name of ['tsconfig.core.json','tsconfig.json']) {const c=JSON.parse(readFileSync(name,'utf8')).compilerOptions;if(!c.strict||!c.noEmitOnError||c.skipLibCheck)violations.push(`${name}: strictness or emission weakened`);}
- return {status:violations.length?'failed':'passed',sourceFiles:source.length,violations,note:'Static checks are not runtime isolation, complete information-flow proof or independent review.'};
+ return {status:violations.length?'failed':'passed',sourceFiles:source.length-plannedFilesExcluded,plannedFilesExcluded,violations,note:'Static checks are not runtime isolation, complete information-flow proof or independent review.'};
 }
 if(process.argv[1]?.endsWith('/architecture.mjs')) {const r=checkArchitecture();console.log(JSON.stringify(r,null,2));if(r.violations.length)process.exitCode=1;}

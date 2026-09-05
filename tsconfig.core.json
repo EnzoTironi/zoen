@@ -27,14 +27,30 @@
     "noEmitOnError": true
   },
   "include": [
-    "packages/kernel/src/**/*.ts",
-    "packages/contracts/src/**/*.ts",
-    "packages/ontology/src/**/*.ts",
-    "packages/clients/src/**/*.ts",
+    "packages/adapters/src/config.ts",
     "packages/adapters/src/cryptography.ts",
     "packages/adapters/src/http-security.ts",
-    "packages/adapters/src/config.ts",
-    "packages/adapters/src/semantic-http.ts"
+    "packages/adapters/src/semantic-http.ts",
+    "packages/clients/src/semantic-client.ts",
+    "packages/contracts/src/ports.ts",
+    "packages/contracts/src/semantic.ts",
+    "packages/kernel/src/decimal.ts",
+    "packages/kernel/src/graph.ts",
+    "packages/kernel/src/ids.ts",
+    "packages/kernel/src/json.ts",
+    "packages/kernel/src/result.ts",
+    "packages/kernel/src/time.ts",
+    "packages/ontology/src/apps/manifest.ts",
+    "packages/ontology/src/apps/session-constraints.ts",
+    "packages/ontology/src/authority/guards.ts",
+    "packages/ontology/src/authority/outbox.ts",
+    "packages/ontology/src/authority/states.ts",
+    "packages/ontology/src/authority/transaction.ts",
+    "packages/ontology/src/definitions/expression.ts",
+    "packages/ontology/src/interpretation/claims.ts",
+    "packages/ontology/src/interpretation/reconcile.ts",
+    "packages/ontology/src/surfaces/dispatch.ts",
+    "packages/ontology/src/surfaces/registry.ts"
   ],
   "exclude": [
     "packages/clients/src/cli.ts"

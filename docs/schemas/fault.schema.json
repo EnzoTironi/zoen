@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.invalid/execution/fault.schema.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "boundary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "barrier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "injection": {
+      "type": "string",
+      "minLength": 1
+    },
+    "oracle": {
+      "type": "string",
+      "minLength": 1
+    },
+    "spec_id": {
+      "type": "string",
+      "pattern": "^SPEC-[0-9]{3}$"
+    }
+  },
+  "required": [
+    "id",
+    "boundary",
+    "barrier",
+    "injection",
+    "oracle",
+    "spec_id"
+  ],
+  "additionalProperties": false
+}

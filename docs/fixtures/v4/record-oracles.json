@@ -1,0 +1,61 @@
+{
+  "status": "synthetic design fixture; no real product test executed",
+  "bakery": {
+    "order": "ORD-001",
+    "quantity": "12",
+    "currency": "BRL",
+    "ownerOnlyPrice": "480.00",
+    "deadlineClaims": [
+      {
+        "sourceFamily": "ERP",
+        "value": "2026-09-10"
+      },
+      {
+        "sourceFamily": "signed-order",
+        "value": "2026-09-11"
+      }
+    ],
+    "rule": null,
+    "expectedInterpretation": "unresolved",
+    "workerForbidden": [
+      "ownerOnlyPrice",
+      "money-derived counts"
+    ]
+  },
+  "household": {
+    "bill": "BILL-001",
+    "claims": [
+      {
+        "family": "utility-issued",
+        "amount": "120.00",
+        "unit": "BRL"
+      },
+      {
+        "family": "family-note",
+        "amount": "125.00",
+        "unit": "BRL"
+      }
+    ],
+    "expectedInterpretation": "unresolved",
+    "caregiverGrantByDefault": false
+  },
+  "enterprise": {
+    "booked": "1000.00",
+    "invoiced": "800.00",
+    "received": "600.00",
+    "currency": "BRL",
+    "expectedComparability": "different-concepts",
+    "expectedConflict": false
+  },
+  "clinic": {
+    "appointment": "APT-001",
+    "schedulerAllowed": [
+      "appointment.time",
+      "appointment.status"
+    ],
+    "schedulerDenied": [
+      "clinical.notes"
+    ],
+    "expectedHiddenNarrativeDisclosure": false
+  }
+}

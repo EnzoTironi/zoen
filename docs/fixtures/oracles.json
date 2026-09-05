@@ -1,0 +1,291 @@
+[
+  {
+    "expected": {
+      "claim_count": 2,
+      "must_disclose": "No independent payment confirmation is connected",
+      "settlements_created": 0,
+      "verification": "unverified"
+    },
+    "id": "FX-001",
+    "inputs": {
+      "bank_observations": [],
+      "bill": {
+        "amount": "120.00",
+        "currency": "BRL",
+        "due": "2026-09-10"
+      },
+      "user_reply": {
+        "kind": "claim",
+        "value": "paid",
+        "verification": "unverified"
+      }
+    },
+    "title": "Grandmother bill is asserted paid, not externally verified"
+  },
+  {
+    "expected": {
+      "deposit_is_quantity": false,
+      "with_revision_policy": {
+        "contested": true,
+        "quantity": "100",
+        "status": "selected"
+      },
+      "without_revision_policy": "unresolved"
+    },
+    "id": "FX-002",
+    "inputs": {
+      "deposit": {
+        "amount": "60.00",
+        "currency": "BRL"
+      },
+      "order_original": {
+        "quantity": "80",
+        "unit": "cake"
+      },
+      "order_revision": {
+        "quantity": "100",
+        "unit": "cake"
+      }
+    },
+    "title": "Bakery order revision and received deposit"
+  },
+  {
+    "expected": {
+      "comparable_groups": 3,
+      "cross_metric_conflict": false
+    },
+    "id": "FX-003",
+    "inputs": {
+      "bookings": "1000.00",
+      "currency": "BRL",
+      "invoiced": "800.00",
+      "received": "600.00"
+    },
+    "title": "Corporate metrics are not false conflicts"
+  },
+  {
+    "expected": {
+      "artifacts_retained": 11,
+      "independent_families": 2,
+      "majority_winner": null
+    },
+    "id": "FX-004",
+    "inputs": {
+      "family_A": {
+        "copies": 10,
+        "value": "80"
+      },
+      "family_B": {
+        "copies": 1,
+        "value": "100"
+      }
+    },
+    "title": "Copied source families"
+  },
+  {
+    "expected": {
+      "commit": "Stale",
+      "new_effects": 0,
+      "new_receipts": 0
+    },
+    "id": "FX-005",
+    "inputs": {
+      "approved_domain_version": "7",
+      "approved_predicate": "invoices(customer=X,status=open)",
+      "current_domain_version": "8",
+      "new_matching_invoice": {
+        "customer": "X",
+        "status": "open"
+      }
+    },
+    "title": "Predicate phantom after consent"
+  },
+  {
+    "expected": {
+      "max_accepted_children": 1,
+      "max_reserved": "70.00",
+      "rejected_request": "QuotaExceeded"
+    },
+    "id": "FX-006",
+    "inputs": {
+      "child_requests": [
+        "70.00",
+        "70.00"
+      ],
+      "currency": "BRL",
+      "limit": "100.00"
+    },
+    "title": "Root budget conservation"
+  },
+  {
+    "expected": {
+      "local_observation_before_lookup": "Unknown",
+      "new_identity_resend_count": 0,
+      "reservation_released_before_lookup": false
+    },
+    "id": "FX-007",
+    "inputs": {
+      "operation_id": "order-001",
+      "provider_accepted": true,
+      "provider_supports_safe_lookup": true,
+      "reply_lost": true
+    },
+    "title": "Lost reply after provider acceptance"
+  },
+  {
+    "expected": {
+      "hidden_confidence_effect": false,
+      "visible_response_A_equals_B": true,
+      "visible_rival_count": 0
+    },
+    "id": "FX-008",
+    "inputs": {
+      "visible": [
+        {
+          "quantity": "80",
+          "subject": "order-X"
+        }
+      ],
+      "world_B_extra_hidden": [
+        {
+          "quantity": "100",
+          "subject": "order-X"
+        }
+      ]
+    },
+    "title": "Hidden rival noninterference"
+  },
+  {
+    "expected": {
+      "activation": "PreparationStale",
+      "head_switch_count": 0,
+      "requires_new_preparation": true
+    },
+    "id": "FX-009",
+    "inputs": {
+      "current_cut": "13",
+      "current_head": "H8",
+      "prepared_cut": "12",
+      "prepared_head": "H7"
+    },
+    "title": "Changed activation basis"
+  },
+  {
+    "expected": {
+      "gc_may_delete_published": false,
+      "json_type": "string",
+      "read_snapshot": "9223372036854775701"
+    },
+    "id": "FX-010",
+    "inputs": {
+      "catalog_latest": "9223372036854775702",
+      "pin_verified": true,
+      "published_snapshot": "9223372036854775701"
+    },
+    "title": "Iceberg exact snapshot and retention"
+  },
+  {
+    "expected": {
+      "old_worker_result": "LostLease",
+      "settled_turns": 1
+    },
+    "id": "FX-011",
+    "inputs": {
+      "current_fence": "9",
+      "current_worker_settled": true,
+      "stale_worker_fence": "8"
+    },
+    "title": "Old turn fence loses settlement race"
+  },
+  {
+    "expected": {
+      "cuts_remain_independent": true,
+      "global_atomic_success": false,
+      "result": "partial"
+    },
+    "id": "FX-012",
+    "inputs": {
+      "WorldA": {
+        "approval": "approved",
+        "cut": "7"
+      },
+      "WorldB": {
+        "approval": "rejected",
+        "cut": "11"
+      }
+    },
+    "title": "Federated local approval mismatch"
+  },
+  {
+    "expected": {
+      "active_filled": "30",
+      "original_events_retained": 2,
+      "remaining": "70",
+      "settled_quantity": "0"
+    },
+    "id": "FX-013",
+    "inputs": {
+      "busts": [
+        {
+          "execution": "E1",
+          "id": "B1",
+          "qty": "10"
+        }
+      ],
+      "custody_observations": [],
+      "fills": [
+        {
+          "id": "E1",
+          "qty": "40"
+        }
+      ],
+      "ordered": "100"
+    },
+    "title": "Order fill and bust conservation"
+  },
+  {
+    "expected": {
+      "auto_authority_refresh": false,
+      "live_writes": 0,
+      "pending_preserved": 1
+    },
+    "id": "FX-014",
+    "inputs": {
+      "clock": "2026-09-04T12:00:01Z",
+      "local_pending_corrections": 1,
+      "offline_lease_expires": "2026-09-04T12:00:00Z"
+    },
+    "title": "Expired offline scope"
+  },
+  {
+    "expected": {
+      "changed_subjects": [
+        "X"
+      ],
+      "new_rule_definitions": 0,
+      "other_order_modified": false
+    },
+    "id": "FX-015",
+    "inputs": {
+      "new_value": "100",
+      "other_order": "Y",
+      "question": "order-X quantity",
+      "reply_kind": "instance-correction"
+    },
+    "title": "Local correction is not a reusable rule"
+  },
+  {
+    "expected": {
+      "destination_writable": false,
+      "directory_is_fence": false,
+      "result": "Blocked"
+    },
+    "id": "FX-016",
+    "inputs": {
+      "directory_points_to_new": true,
+      "independent_fence_proof": false,
+      "old_primary_reachable": false
+    },
+    "title": "Fencing unavailable during cell partition"
+  }
+]

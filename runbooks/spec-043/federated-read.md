@@ -1,0 +1,47 @@
+# File plan — `runbooks/spec-043/federated-read.md`
+
+**Status:** planned; no product acceptance implied.
+
+Target: `runbooks/spec-043/federated-read.md`. Representation: **markdown-plan**. Allocation: **required**.
+
+Specs: [SPEC-043](../../docs/specs/spec-043.md).
+Tickets: [ZN-0251](../../docs/tickets/zn-0251.md).
+
+## Responsibility and reuse
+
+## ZN-0251 operational/repair procedure
+
+Scope: Build independent-cut federated Frames. This is a plan; deployments and commands not yet qualified remain blocked.
+
+```text
+PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
+STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
+OBSERVE actual durable state and raw error at this ticket boundary:
+An aggregate view is composed
+PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
+REPAIR under the owning module protocol:
+VERIFY remote service identity and principal-bound delegated purpose independently at each World.
+REQUEST each component Frame through its normal semantic surface and current source/license restrictions.
+BUILD federated Frame retaining separate cuts, time skew, gaps and inherited rights; no global grant.
+PROPOSE coordination as explicit participant plans with independent local approvals and guards.
+COMMIT each participant locally; record accepted/rejected/unknown separately and derive honest partial global outcome.
+CONSERVE global budget/inventory through designated ownership or pre-partitioned reservations, not messaging assumptions.
+RETRY/reconcile stable participant identities; compensation is a new local ActionCase.
+ON revocation or participant loss stop unauthorized future disclosure/work while preserving already observed receipts.
+VERIFY the original oracle plus negative and boundary cases on real admitted components:
+The output shows independent bases and incomplete coverage; it never claims a complete atomic global total
+RESUME only with current approval and intact unrelated tenant scopes.
+```
+
+## Owning state / operation contracts
+
+### SPEC-043
+OpenFederatedFrame(plan,localGrant,remoteDelegations) -> FederatedFrame; ProposeCoordination(plan) -> CoordinationCase; ObserveParticipant(receipt) -> PartialState; CompensateParticipant(action) -> NewLocalCase.
+
+ontology.federation_links(link_id PK,local_world,remote_world,trust_profile,permitted_ops,rights_contract,expiry); ontology.federated_frames(frame_id PK,component_refs,cuts,rights_basis,skew,gaps); ontology.coordinations(coordination_id PK,world_id,plan_digest,participants,state,outcome); ontology.coordination_parts(coordination_id,participant PK,local_case_ref,receipt_ref,external_state). No shared global grant/token.
+
+[algorithm SPEC-043](../../docs/algorithms/spec-043.md)
+
+## Acceptance boundary
+
+A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.

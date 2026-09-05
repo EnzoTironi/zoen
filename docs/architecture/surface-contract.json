@@ -1,0 +1,118 @@
+{
+  "status": "specified-not-implemented",
+  "executor": "packages/ontology/src/surfaces/dispatch.ts",
+  "no_llm_required_for_structured_calls": true,
+  "surfaces": [
+    {
+      "surface": "human-web",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "eve-tools",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "delegated-agent",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "cli",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "rest",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "typescript-sdk",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "mcp",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "declarative-app",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "executable-app",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "mcp-app",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    },
+    {
+      "surface": "app-background-job",
+      "executor": "packages/ontology/src/surfaces/dispatch.ts",
+      "authoritySource": "verified-server-context",
+      "separatePolicyEngine": false,
+      "directDataStoreAccess": false
+    }
+  ],
+  "operationFamilies": [
+    "discover",
+    "inspect",
+    "explain",
+    "search",
+    "propose",
+    "answer",
+    "commit",
+    "subscribe",
+    "resume",
+    "export",
+    "get-chunk",
+    "analyze",
+    "publish-output",
+    "configure",
+    "publish-app",
+    "share"
+  ],
+  "forbiddenGuestPowers": [
+    "sql",
+    "source-credentials",
+    "authority-db",
+    "general-fetch",
+    "app-local-permission-grant",
+    "guest-approved-flag"
+  ],
+  "gateIds": [
+    "G-APP-LINKS",
+    "G-APP-HOST",
+    "G-MCP-APPS",
+    "G-RIVET-DYNAMIC"
+  ],
+  "guestDisclosureDefault": "trusted-renderer",
+  "unmanagedBrowserClaimsUniversalDLP": false
+}

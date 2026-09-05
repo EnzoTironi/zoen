@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.invalid/execution/fixture.schema.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^FX-[0-9]{3}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "inputs": {
+      "type": "object"
+    },
+    "expected": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "inputs",
+    "expected"
+  ],
+  "additionalProperties": false
+}

@@ -6,7 +6,7 @@ The tests create users, Worlds, sources, claims, Frames, S3 objects and versions
 
 ## 1. Establish the target
 
-Admit Node 24, the exact pnpm/compiler/library versions and a real dependency lock per `docs/DEPENDENCY-ADMISSION.md`. Keep the Git worktree and tested commit identifiable. Run a complete `pnpm build` before any service test.
+Admit Node 24, the exact pnpm/compiler/library versions and a real dependency lock per `docs/implementation-status.md`. Keep the Git worktree and tested commit identifiable. Run a complete `pnpm build` before any service test.
 
 Install/run **real PostgreSQL 18** in a dedicated local or isolated test cluster. A real PostgreSQL container is acceptable after admitting its image digest; SQLite, in-memory Postgres emulation and protocol fakes are not. Create a fresh database named `zoen_test_<unique_suffix>`. Record the server minor/image identity. Use a dedicated test administrator for migration and intentional connection-termination tests.
 

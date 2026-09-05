@@ -1,0 +1,218 @@
+[
+  {
+    "approved_scope": null,
+    "id": "G-APP-HOST",
+    "owner_function": "Application platform security",
+    "provider_recheck_required": true,
+    "required_evidence": "Real isolated guest origin/bridge/asset bootstrap, browser profile, backend containment, no shared private state, credential scrubbing, stream/export revocation and explicit guest disclosure mode. No blanket browser DLP assertion.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-APP-LINKS",
+    "owner_function": "Identity/security and operations",
+    "provider_recheck_required": true,
+    "required_evidence": "Actual deployed host/TLS/DNS, private continuation login/session, recipient binding, preview/CSRF/open redirect/replay, shared-device logout and no third-party cookie dependence. Profile-bound browser traces and independent review.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-CHANNELS",
+    "owner_function": "Channel/security owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Real Telegram/email accounts; verified callback/signature/binding rules; delivery ambiguity; reply identity; consent/retention/abuse/cost controls per channel.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-CLINICAL",
+    "owner_function": "Clinical/privacy accountable owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Explicit permitted administrative versus clinical scope; lawful data use and contracts; access/retention/incidents; qualified review. No diagnostic/treatment authority implied by an administrative connector.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-CLOUD-ENTERPRISE",
+    "owner_function": "Platform/security/operations owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Named cloud region/account/profile; actual network/key/private-route tests; measured HA/restore/RPO/RTO; residency/erasure suppression; incident/on-call capacity and cost approvals.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-CLOUD-PILOT",
+    "owner_function": "Pilot operations/privacy owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Real shared pilot account/region; minimal isolation, backup/restore, erasure suppression and incident stop; owner/on-call; real-data permission; supported capacity and individually enabled providers.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-COMPUTE",
+    "owner_function": "Compute/data security owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Real remote/GPU execution account; private network/region/rights; bounded job/resource quota; cancellation/output admission/secret containment; measured workload cost.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-EDGE",
+    "owner_function": "Fleet/security/customer owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Supported hardware/OS/self-hosted profile; signed update/rollback; offline lease and clock failure; no duplicate World writer; erase/sync/recall/recovery; field support responsibility.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-EFFECT",
+    "owner_function": "Provider/integration and security owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Real provider sandbox or explicitly authorized safe test; idempotency/lookup/cancel callback behavior; observed unknown outcome recovery; narrow permit; allowed operation/risk/cost scope.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-ENTERPRISE-IDP",
+    "owner_function": "Enterprise identity/security owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Named SSO/SCIM provider and tenant; signed issuer/assertions; group mapping/revocation/replay/deprovision; workload identity isolation; break-glass policy with audit.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-ENTERPRISE-SOURCES",
+    "owner_function": "Enterprise source/data owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Named real Google/Microsoft/CRM/ERP/database/warehouse tenants; API/version/license; delta resets, pagination, rights/tombstone completeness, least privilege, lineage and operational resync evidence for each supported recipe.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-FINAL",
+    "owner_function": "Product, architecture, security and operating owners",
+    "provider_recheck_required": true,
+    "required_evidence": "All 157 capabilities evaluated against the candidate; all intended provider/region/domain profiles qualified; no missing evidence; three-audience capstones; recovery/security/cost/accessibility evidence; independent final support matrix approval.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-FINANCE-DATA",
+    "owner_function": "Market-data/license owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Named vendors, instruments/venues, licenses/redistribution/purpose; provenance, freshness, corporate-action and symbol mapping; entitlement revocation; historical as-reported/restated coverage.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-FINANCE-EXECUTION",
+    "owner_function": "Qualified financial/legal/provider owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Exact broker/custodian/venue/account/jurisdiction; provider certification; order/fill/bust/cancel/allocation/custody tests; supervision/retention; operating authorization and incident responsibility.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-FINANCE-RISK",
+    "owner_function": "Qualified risk/model owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Permitted decision scope; versioned models, validation/limitations; point-in-time data and entitlement; scenario stress/illiquidity/freshness checks; independent model approval.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-MARKETPLACE",
+    "owner_function": "Product/legal/security owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Publisher identity/provenance; license and permitted distribution/use; signing/recall; dependency upgrade/rights expansion; billing/refund/support scope before commercial activation.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-MCP-APPS",
+    "owner_function": "Client platform security",
+    "provider_recheck_required": true,
+    "required_evidence": "Exact real host and MCP Apps dialect, resource/tool session constraints, current permission checks, user confirmations, information-flow mode and tested safe text/protected-link fallback.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-MODEL",
+    "owner_function": "Model/security owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Named provider/API and approved data region/retention; exact model/tool contract; prompt injection and grounding evaluation; usage/cost limits; secret handling and incident stop.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-OPERATIONS",
+    "owner_function": "Operations/security/customer owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Measured workload/cost envelope; tenant fairness and quota; incident and recovery drills; support access controls; auditor evidence export; explicit SLO/support responsibility.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-RIVET-DYNAMIC",
+    "owner_function": "Runtime platform and security",
+    "provider_recheck_required": true,
+    "required_evidence": "Exact actual Dynamic Apps Core lock, observed deploy semantics, immutable nonpublic slot/public-binding separation, hosted isolation, configuration/credentials, state partition, recall/recovery and measured profile limits. Failure keeps adapter disabled; replacement needs reviewed ADR.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-RUNNER",
+    "owner_function": "Platform security owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Exact actual isolation profile; host/metadata/socket/egress probes; credential broker; CPU/memory/time/output limits; image provenance, artifact recall and guest cleanup.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-SOURCE",
+    "owner_function": "Data/source owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Authorized source account; OAuth/scope/refresh; complete pagination/tombstone/ACL/freshness contract; rights/license; quarantine/drift/deletion and resync evidence.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-USABILITY",
+    "owner_function": "Product/accessibility owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Consented usability sessions for target audiences; keyboard/screen-reader/200% zoom/shared-device checks; comprehension of uncertainty and approvals; recorded issues and disposition.",
+    "review_due": null,
+    "status": "unapproved"
+  },
+  {
+    "approved_scope": null,
+    "id": "G-WHATSAPP",
+    "owner_function": "Channel/business-policy owner",
+    "provider_recheck_required": true,
+    "required_evidence": "Actual authorized business number/account; current provider and WhatsApp terms/use permission; consent/templates/window handling; real ingress verification/delivery/replay; cost and data handling; approved operating scope.",
+    "review_due": null,
+    "status": "unapproved"
+  }
+]

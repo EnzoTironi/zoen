@@ -11,3 +11,10 @@ artifacts/current/
 .DS_Store
 
 specification/v4/
+
+# Generated context and verification outputs; not product state
+packets/
+__pycache__/
+*.pyc
+artifacts/
+.work/

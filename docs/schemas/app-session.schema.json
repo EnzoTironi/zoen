@@ -1,0 +1,99 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "sessionRef": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "worldRef": {
+      "type": "object",
+      "properties": {
+        "worldId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "realm": {
+          "enum": [
+            "live",
+            "evaluation"
+          ]
+        }
+      },
+      "required": [
+        "worldId",
+        "realm"
+      ],
+      "additionalProperties": false
+    },
+    "subject": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "actor": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "scopeDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "manifestDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "artifactDigest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "securityRevision": {
+      "type": "string",
+      "pattern": "^[0-9]+$"
+    },
+    "disclosureProfile": {
+      "enum": [
+        "trusted-renderer",
+        "reviewed-executable-disclosure",
+        "managed-egress"
+      ]
+    },
+    "expiresAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "state": {
+      "enum": [
+        "active",
+        "closed",
+        "revoked",
+        "expired",
+        "contract-changed"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "sessionRef",
+    "worldRef",
+    "subject",
+    "actor",
+    "purpose",
+    "scopeDigest",
+    "manifestDigest",
+    "securityRevision",
+    "disclosureProfile",
+    "expiresAt",
+    "state"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.invalid/execution/app-session.schema.json",
+  "description": "Internal verified-session record, never a caller-authored grant or guest data payload."
+}

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.invalid/execution/evidence.schema.json",
+  "type": "object",
+  "properties": {
+    "ticket_id": {
+      "type": "string",
+      "pattern": "^ZN-[0-9]{4}$"
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+    },
+    "lock_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "profile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "author": {
+      "type": "string",
+      "minLength": 1
+    },
+    "outcome": {
+      "enum": [
+        "passed",
+        "failed",
+        "blocked"
+      ]
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_commit": {
+          "type": "string",
+          "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+        },
+        "lock_digest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "decision": {
+          "enum": [
+            "approved",
+            "rejected"
+          ]
+        }
+      },
+      "required": [
+        "reviewer",
+        "source_commit",
+        "lock_digest",
+        "decision"
+      ],
+      "additionalProperties": false
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "passed",
+              "failed",
+              "skipped"
+            ]
+          },
+          "executed_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "skipped_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "layer": {
+            "enum": [
+              "law",
+              "static",
+              "component",
+              "protocol",
+              "journey",
+              "chaos",
+              "performance",
+              "admission"
+            ]
+          },
+          "source_commit": {
+            "type": "string",
+            "pattern": "^([0-9a-f]{40}|[0-9a-f]{64})$"
+          },
+          "lock_digest": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "artifact": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "executed_count",
+          "skipped_count",
+          "layer",
+          "source_commit",
+          "lock_digest",
+          "artifact",
+          "sha256"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "gate_scope": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "ticket_id",
+    "source_commit",
+    "lock_digest",
+    "profile",
+    "author",
+    "outcome",
+    "review",
+    "checks"
+  ],
+  "additionalProperties": false
+}

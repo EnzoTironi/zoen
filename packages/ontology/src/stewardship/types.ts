@@ -1,0 +1,34 @@
+// @zoen-plan packages/ontology/src/stewardship/types.ts
+// NON-EXECUTABLE PSEUDOCODE; not registered or compiled as product implementation.
+// # File plan — `packages/ontology/src/stewardship/types.ts`
+//
+// **Status:** planned; no product acceptance implied.
+//
+// Target: `packages/ontology/src/stewardship/types.ts`. Representation: **comment-only-source**. Allocation: **conditional-support**.
+//
+// Specs: [SPEC-017](../../../../docs/specs/spec-017.md).
+// Tickets: [ZN-0101](../../../../docs/tickets/zn-0101.md), [ZN-0102](../../../../docs/tickets/zn-0102.md), [ZN-0103](../../../../docs/tickets/zn-0103.md), [ZN-0104](../../../../docs/tickets/zn-0104.md).
+//
+// ## Responsibility and reuse
+//
+// ```text
+// CONTRACT SURFACE PLAN.
+// DEFINE only the owning module's input/output/error/state and dependency-port types.
+// REUSE branded kernel values, verified context, common semantic envelope and typed results.
+// DO NOT export repositories or broad credentials to clients; authority context is server verified.
+// SEPARATE versioned semantic meaning from transport metadata and immutable artifacts from mutable runtime state.
+// VERIFY consumers use the same contracts and exhaustive tagged outcomes; unsupported shapes fail closed.
+// ```
+//
+// ## Owning state / operation contracts
+//
+// ### SPEC-017
+// RankClarifications(scope,budget) -> QuestionQueue; AssignSteward(question,principal) -> Assignment; AnswerQuestion(question,digest,answerKind,payload,operationId) -> ScopedReceipt | RuleDraft | Stale.
+//
+// ontology.clarifications(question_id PK,world_id,subject,predicate,scope_digest,candidate_digest,basis_ref,impact,deadline,state,steward_ref); ontology.stewardships(stewardship_id PK,world_id,scope,principal_ref,authority_kind,valid_interval); eve.question_delivery(question_id,relationship_id PK,attention_state,last_presented_digest). Deduplicate by world/subject/predicate/scope/candidate version.
+//
+// [algorithm SPEC-017](../../../../docs/algorithms/spec-017.md)
+//
+// ## Acceptance boundary
+//
+// A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.

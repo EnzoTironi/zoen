@@ -1,6 +1,0 @@
-{
-  "status": "passed",
-  "sourceFiles": 31,
-  "violations": [],
-  "note": "Static checks are not runtime isolation, complete information-flow proof or independent review."
-}

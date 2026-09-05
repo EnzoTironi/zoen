@@ -1,0 +1,761 @@
+[
+  {
+    "initial": "proposed",
+    "name": "ActionCase",
+    "notes": "open = proposed, awaiting-approval, approved, blocked. Terminal Cases never reopen; changes produce new Cases. Cancelling a committed action is a new compensating action, not history rewrite.",
+    "owner": "Ontology",
+    "states": [
+      "proposed",
+      "awaiting-approval",
+      "approved",
+      "blocked",
+      "committed",
+      "rejected",
+      "expired",
+      "stale",
+      "cancelled"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Pin Case digest/expiry and approval requirements",
+        "event": "request-approval",
+        "from": "proposed",
+        "guard": "Released action, complete consequences and read guards",
+        "to": "awaiting-approval"
+      },
+      {
+        "atomic_effect": "Record response; return CaseProgress, no decision commit",
+        "event": "record-approval",
+        "from": "awaiting-approval",
+        "guard": "Fresh authorized responder; quorum incomplete",
+        "to": "awaiting-approval"
+      },
+      {
+        "atomic_effect": "Record final response and approval state",
+        "event": "satisfy-quorum",
+        "from": "awaiting-approval",
+        "guard": "Exact Case digest; current approval policy",
+        "to": "approved"
+      },
+      {
+        "atomic_effect": "One DecisionReceipt, semantic changes, reservations, EffectIntents and outbox",
+        "event": "commit",
+        "from": "approved",
+        "guard": "Current authority, head/complete read guards, budget and expiry valid",
+        "to": "committed"
+      },
+      {
+        "atomic_effect": "Record nonterminal cause; no effect dispatch",
+        "event": "resource-unavailable",
+        "from": "approved",
+        "guard": "No external effect escaped; required resource unavailable",
+        "to": "blocked"
+      },
+      {
+        "atomic_effect": "Clear temporary block; otherwise return stale",
+        "event": "resume",
+        "from": "blocked",
+        "guard": "Same consent and all dependencies remain valid",
+        "to": "approved"
+      },
+      {
+        "atomic_effect": "Terminalize consent; require a new Case",
+        "event": "dependency-change",
+        "from": "*open",
+        "guard": "Relevant guard no longer valid",
+        "to": "stale"
+      },
+      {
+        "atomic_effect": "Record rejection, release unescaped reservations",
+        "event": "reject",
+        "from": "*open",
+        "guard": "Authorized approver rejects under policy",
+        "to": "rejected"
+      },
+      {
+        "atomic_effect": "No commit; expire unescaped preparation",
+        "event": "expire",
+        "from": "*open",
+        "guard": "Bound clock exceeds expiry",
+        "to": "expired"
+      },
+      {
+        "atomic_effect": "Record cancellation; no escaped-effect claim",
+        "event": "cancel",
+        "from": "*open",
+        "guard": "Authorized cancellation before local commit",
+        "to": "cancelled"
+      }
+    ]
+  },
+  {
+    "initial": "admitted",
+    "name": "EveTurn",
+    "notes": "open excludes settled/aborted. Token inference may repeat after failure; exactly one settled turn is enforced, not exactly-once model inference. Do not store private chain-of-thought.",
+    "owner": "Eve",
+    "states": [
+      "admitted",
+      "running",
+      "waiting-tool",
+      "waiting-user",
+      "retryable",
+      "settled",
+      "aborted"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Record owner token, fence and attempt",
+        "event": "claim",
+        "from": "admitted",
+        "guard": "Owner lease/fence acquired",
+        "to": "running"
+      },
+      {
+        "atomic_effect": "Persist tool intent/operation ID before invocation",
+        "event": "tool-proposal",
+        "from": "running",
+        "guard": "Released inspect/propose tool; authority checked independently",
+        "to": "waiting-tool"
+      },
+      {
+        "atomic_effect": "Record authorized result reference once",
+        "event": "observe-result",
+        "from": "waiting-tool",
+        "guard": "Same tool operation; current turn fence",
+        "to": "running"
+      },
+      {
+        "atomic_effect": "Settle visible question fragment and wait binding",
+        "event": "ask",
+        "from": "running",
+        "guard": "Question bound to subject/scope; fresh disclosure",
+        "to": "waiting-user"
+      },
+      {
+        "atomic_effect": "Admit attributed reply; no implicit global correction",
+        "event": "reply",
+        "from": "waiting-user",
+        "guard": "Valid reply binding; new current fence",
+        "to": "running"
+      },
+      {
+        "atomic_effect": "Record recoverable attempt and checkpoint",
+        "event": "recoverable-failure",
+        "from": "running",
+        "guard": "No settled terminal response",
+        "to": "retryable"
+      },
+      {
+        "atomic_effect": "Resume from journal without duplicate committed tool operation",
+        "event": "claim",
+        "from": "retryable",
+        "guard": "New owner fence",
+        "to": "running"
+      },
+      {
+        "atomic_effect": "One settled visible response and delivery intent",
+        "event": "settle",
+        "from": "running",
+        "guard": "Fence current; final authorized content ready",
+        "to": "settled"
+      },
+      {
+        "atomic_effect": "Stop future composition/tools; retain lawful history",
+        "event": "abort",
+        "from": "*open",
+        "guard": "User cancellation/security deny",
+        "to": "aborted"
+      }
+    ]
+  },
+  {
+    "initial": "draft",
+    "name": "DefinitionChange",
+    "notes": "open excludes activated/rejected/stale. A live forward repair is another change; no blind head reversal. For supported lower-risk changes approval policy may pre-authorize, but current policy still controls it.",
+    "owner": "Ontology",
+    "states": [
+      "draft",
+      "validated",
+      "evaluated",
+      "prepared",
+      "approved",
+      "activated",
+      "rejected",
+      "stale"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Pin canonical candidate digest",
+        "event": "validate",
+        "from": "draft",
+        "guard": "Closed grammar, references, limits and current-policy risk classification pass",
+        "to": "validated"
+      },
+      {
+        "atomic_effect": "Record proof checks and missing attestations honestly",
+        "event": "evaluate",
+        "from": "validated",
+        "guard": "Exact candidate/image in isolated evaluation realm",
+        "to": "evaluated"
+      },
+      {
+        "atomic_effect": "Pin prepared generation and open-work disposition",
+        "event": "prepare",
+        "from": "evaluated",
+        "guard": "Target World generation ready through exact committed cut",
+        "to": "prepared"
+      },
+      {
+        "atomic_effect": "Record digest-bound approval",
+        "event": "approve",
+        "from": "prepared",
+        "guard": "Approvers authorized under currently active policy",
+        "to": "approved"
+      },
+      {
+        "atomic_effect": "Switch head/generation atomically; receipt and outbox",
+        "event": "activate",
+        "from": "approved",
+        "guard": "Exclusive head lock; exact expected head/cut; all proof/approval gates",
+        "to": "activated"
+      },
+      {
+        "atomic_effect": "Retain candidate/proof history; no activation",
+        "event": "reject",
+        "from": "*open",
+        "guard": "Authorized explicit rejection",
+        "to": "rejected"
+      },
+      {
+        "atomic_effect": "Block activation; new preparation/review required",
+        "event": "basis-changed",
+        "from": "*open",
+        "guard": "Digest/head/cut/proof no longer matches",
+        "to": "stale"
+      },
+      {
+        "atomic_effect": "Create successor candidate; old proof remains immutable",
+        "event": "rebase",
+        "from": "stale",
+        "guard": "New change revision, conflict review",
+        "to": "draft"
+      }
+    ]
+  },
+  {
+    "initial": "staging",
+    "name": "SourceCapture",
+    "notes": "Re-admission of identical source/mapping returns same authorized receipt. Missing rows after a failed fetch are not source deletions.",
+    "owner": "Ontology",
+    "states": [
+      "staging",
+      "staged",
+      "quarantined",
+      "admitted",
+      "expired",
+      "erased"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Record immutable capture identity",
+        "event": "verify-upload",
+        "from": "staging",
+        "guard": "Durable bytes, digest, declared limits and rights metadata",
+        "to": "staged"
+      },
+      {
+        "atomic_effect": "Record reason, no claims",
+        "event": "reject-upload",
+        "from": "staging",
+        "guard": "Incomplete/unsafe/unsupported bytes",
+        "to": "quarantined"
+      },
+      {
+        "atomic_effect": "Evidence, claims, receipt and outbox commit together",
+        "event": "admit",
+        "from": "staged",
+        "guard": "Current binding/mapping/rights and unique source revision",
+        "to": "admitted"
+      },
+      {
+        "atomic_effect": "Keep raw attribution; no guessed facts",
+        "event": "reject-mapping",
+        "from": "staged",
+        "guard": "Schema drift or incomparable source interpretation",
+        "to": "quarantined"
+      },
+      {
+        "atomic_effect": "Garbage collect with lock/recheck",
+        "event": "expire-orphan",
+        "from": "staged",
+        "guard": "No evidence/pin/pending admission and expired upload lease",
+        "to": "expired"
+      },
+      {
+        "atomic_effect": "Suppress content and derivatives; retain permitted non-content audit",
+        "event": "erase",
+        "from": "admitted",
+        "guard": "Current retention/hold/deletion policy and authorized receipt",
+        "to": "erased"
+      }
+    ]
+  },
+  {
+    "initial": "prepared",
+    "name": "EffectAttempt",
+    "notes": "An acceptance observation is not final financial settlement. Later corrections append evidence and derive a new view; do not overwrite observations. Any retry depends on the provider-qualified idempotency protocol and the same intent. There is deliberately no generic unknown→dispatch transition.",
+    "owner": "Ontology evidence; external system outcome",
+    "states": [
+      "prepared",
+      "dispatching",
+      "unknown",
+      "observed-accepted",
+      "observed-rejected",
+      "cancelled-before-dispatch"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Record dispatch-intent boundary before provider call",
+        "event": "dispatch",
+        "from": "prepared",
+        "guard": "Current narrow permit, stable provider identity, owner fence",
+        "to": "dispatching"
+      },
+      {
+        "atomic_effect": "Record safe local cancellation",
+        "event": "cancel",
+        "from": "prepared",
+        "guard": "No dispatch could have escaped",
+        "to": "cancelled-before-dispatch"
+      },
+      {
+        "atomic_effect": "Keep exposure/reservation; schedule safe observation, not blind unsafe resend",
+        "event": "lose-reply",
+        "from": "dispatching",
+        "guard": "Provider may have accepted",
+        "to": "unknown"
+      },
+      {
+        "atomic_effect": "Append external observation",
+        "event": "observe-acceptance",
+        "from": "dispatching",
+        "guard": "Verified provider evidence correlates exact intent",
+        "to": "observed-accepted"
+      },
+      {
+        "atomic_effect": "Append rejection; downstream reservation rules apply",
+        "event": "observe-rejection",
+        "from": "dispatching",
+        "guard": "Definitive verified nonacceptance",
+        "to": "observed-rejected"
+      },
+      {
+        "atomic_effect": "Append reconciliation observation",
+        "event": "reconcile-acceptance",
+        "from": "unknown",
+        "guard": "Independent exact correlated provider evidence",
+        "to": "observed-accepted"
+      },
+      {
+        "atomic_effect": "Append reconciliation observation",
+        "event": "reconcile-rejection",
+        "from": "unknown",
+        "guard": "Definitive exact correlated evidence",
+        "to": "observed-rejected"
+      }
+    ]
+  },
+  {
+    "initial": "active",
+    "name": "Mandate",
+    "notes": "open=active,paused,blocked. Separate outcome axis: pending|achieved|failed|unknown|stopped. A sent message cannot imply an achieved business goal.",
+    "owner": "Ontology",
+    "states": [
+      "active",
+      "paused",
+      "blocked",
+      "stopped",
+      "expired",
+      "complete"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Record cause; no unbounded action loop",
+        "event": "temporary-block",
+        "from": "active",
+        "guard": "Budget/source/policy/outcome observation missing",
+        "to": "blocked"
+      },
+      {
+        "atomic_effect": "New steps still require released actions",
+        "event": "resume",
+        "from": "blocked",
+        "guard": "Fresh scope/authority/budget/goal basis",
+        "to": "active"
+      },
+      {
+        "atomic_effect": "Stop new work; escaped effects remain tracked",
+        "event": "pause",
+        "from": "active",
+        "guard": "Authorized user/policy request",
+        "to": "paused"
+      },
+      {
+        "atomic_effect": "Resume bounded planning",
+        "event": "resume",
+        "from": "paused",
+        "guard": "Fresh mandate authority and nonexpired limits",
+        "to": "active"
+      },
+      {
+        "atomic_effect": "No new step; reconcile escaped effects",
+        "event": "stop",
+        "from": "*open",
+        "guard": "User/emergency deny",
+        "to": "stopped"
+      },
+      {
+        "atomic_effect": "Stop new steps; preserve observed outcome",
+        "event": "deadline",
+        "from": "*open",
+        "guard": "Bound clock past deadline",
+        "to": "expired"
+      },
+      {
+        "atomic_effect": "Record goal observation independently of task completion",
+        "event": "observe-goal",
+        "from": "active",
+        "guard": "Released outcome detector has permitted evidence",
+        "to": "complete"
+      }
+    ]
+  },
+  {
+    "initial": "staged",
+    "name": "DatasetPublication",
+    "notes": "unpublished=staged,validated,pinned. Physical write and PostgreSQL commit are not cross-system ACID. Published erasure/retention is a new governed lifecycle operation, not catalog-head substitution.",
+    "owner": "Ontology + physical data ports",
+    "states": [
+      "staged",
+      "validated",
+      "pinned",
+      "published",
+      "rejected",
+      "abandoned"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Record immutable quality report",
+        "event": "validate",
+        "from": "staged",
+        "guard": "Exact metadata/schema/rights/quality checks",
+        "to": "validated"
+      },
+      {
+        "atomic_effect": "Persist pin proof before authority publication",
+        "event": "pin",
+        "from": "validated",
+        "guard": "Verified physical snapshot/file retention supports required lifetime",
+        "to": "pinned"
+      },
+      {
+        "atomic_effect": "One authoritative snapshot-set receipt and outbox",
+        "event": "publish",
+        "from": "pinned",
+        "guard": "Authority transaction verifies exact version set/head/basis",
+        "to": "published"
+      },
+      {
+        "atomic_effect": "Never become authoritative",
+        "event": "reject",
+        "from": "*unpublished",
+        "guard": "Invalid data or unsupported reader/writer profile",
+        "to": "rejected"
+      },
+      {
+        "atomic_effect": "Collect only safely unreferenced staging",
+        "event": "abandon",
+        "from": "*unpublished",
+        "guard": "No authority/pending pin reference; cleanup policy",
+        "to": "abandoned"
+      }
+    ]
+  },
+  {
+    "initial": "planned",
+    "name": "CellMove",
+    "notes": "unpromoted=planned,copied,source-fenced,destination-verified,blocked. Directory changes alone do not fence old writers. Recovery after source fence requires another proved disposition; never simply toggle both writable.",
+    "owner": "Ontology platform",
+    "states": [
+      "planned",
+      "copied",
+      "source-fenced",
+      "destination-verified",
+      "promoted",
+      "aborted",
+      "blocked"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Record copy evidence; source stays sole writer",
+        "event": "copy",
+        "from": "planned",
+        "guard": "Destination read-only; stable source cut and catchup log",
+        "to": "copied"
+      },
+      {
+        "atomic_effect": "Stop source writes/effects for epoch; pin final cut",
+        "event": "fence-source",
+        "from": "copied",
+        "guard": "Actual source fence receipt or independently verified infrastructure fencing",
+        "to": "source-fenced"
+      },
+      {
+        "atomic_effect": "Record activation readiness at new epoch",
+        "event": "verify-destination",
+        "from": "source-fenced",
+        "guard": "Restore suppression, final cut and escaped effects reconciled",
+        "to": "destination-verified"
+      },
+      {
+        "atomic_effect": "Admit one destination writer with new epoch",
+        "event": "promote",
+        "from": "destination-verified",
+        "guard": "Directory CAS and destination authority admission tied to source fence",
+        "to": "promoted"
+      },
+      {
+        "atomic_effect": "No destination write admission",
+        "event": "unsafe-or-incomplete",
+        "from": "*unpromoted",
+        "guard": "Required source fencing or data proof absent",
+        "to": "blocked"
+      },
+      {
+        "atomic_effect": "No silent source reactivation after promotion",
+        "event": "abort",
+        "from": "*unpromoted",
+        "guard": "Explicit safe source/destination disposition",
+        "to": "aborted"
+      }
+    ]
+  },
+  {
+    "initial": "active",
+    "name": "ContinuationRef",
+    "notes": "Reference possession confers no authority. Sharing/invitation acceptance are separate governed operations. Terminal refs never auto-revive.",
+    "owner": "Ontology",
+    "states": [
+      "active",
+      "revoked",
+      "expired"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "No state mutation; generic landing only",
+        "event": "GET-or-HEAD",
+        "from": "active",
+        "guard": "No authenticated target disclosure",
+        "to": "active"
+      },
+      {
+        "atomic_effect": "Create scoped AppSession through same semantic operation",
+        "event": "authorized-open",
+        "from": "active",
+        "guard": "Verified current recipient/session/target rights",
+        "to": "active"
+      },
+      {
+        "atomic_effect": "Receipt and deny new opens; invalidate derived sessions",
+        "event": "revoke",
+        "from": "active",
+        "guard": "Current authorized revoker and operation identity",
+        "to": "revoked"
+      },
+      {
+        "atomic_effect": "Deny new opens/refresh; terminate derived sessions by policy",
+        "event": "expiry",
+        "from": "active",
+        "guard": "Current time reaches configured expiry",
+        "to": "expired"
+      }
+    ]
+  },
+  {
+    "initial": "pending",
+    "name": "BrowserContinuationChallenge",
+    "notes": "A forwarded URL/OTP by itself is not binding. Failed/expired challenges require a new challenge; active domain authority is never stored in the challenge.",
+    "owner": "Door",
+    "states": [
+      "pending",
+      "redeemed",
+      "expired",
+      "locked"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "No challenge consume or protected disclosure",
+        "event": "preview",
+        "from": "pending",
+        "guard": "Unauthenticated GET/HEAD",
+        "to": "pending"
+      },
+      {
+        "atomic_effect": "Consume once atomically, rotate session and issue target session",
+        "event": "exchange",
+        "from": "pending",
+        "guard": "POST; CSRF; exact Origin; bound browser; verified recipient; current target admission",
+        "to": "redeemed"
+      },
+      {
+        "atomic_effect": "Increment attempt count only",
+        "event": "bad-proof",
+        "from": "pending",
+        "guard": "Attempts below limit",
+        "to": "pending"
+      },
+      {
+        "atomic_effect": "Deny further redemption",
+        "event": "attempt-limit",
+        "from": "pending",
+        "guard": "Max attempts reached",
+        "to": "locked"
+      },
+      {
+        "atomic_effect": "Deny redemption",
+        "event": "expiry",
+        "from": "pending",
+        "guard": "Challenge deadline reached",
+        "to": "expired"
+      }
+    ]
+  },
+  {
+    "initial": "active",
+    "name": "AppSession",
+    "notes": "Terminal session cannot be refreshed into active. New session requires current authority. Already disclosed/network-in-flight bytes are not retractable.",
+    "owner": "Ontology",
+    "states": [
+      "active",
+      "closed",
+      "revoked",
+      "expired",
+      "contract-changed"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Invoke existing semantic executor; no session-local policy",
+        "event": "semantic-call",
+        "from": "active",
+        "guard": "Current rights, purpose, app ceiling, source rights, publication and recall valid",
+        "to": "active"
+      },
+      {
+        "atomic_effect": "Update view/session revision without inheriting old rights",
+        "event": "compatible-refresh",
+        "from": "active",
+        "guard": "New authorized Frame; unchanged action semantics; current authority",
+        "to": "active"
+      },
+      {
+        "atomic_effect": "Block pending operation; require new session/intent",
+        "event": "incompatible-publication",
+        "from": "active",
+        "guard": "Meaning/schema/action contract no longer compatible",
+        "to": "contract-changed"
+      },
+      {
+        "atomic_effect": "Cancel owned work and clear controlled cache",
+        "event": "logout",
+        "from": "active",
+        "guard": "Subject or authorized host logout",
+        "to": "closed"
+      },
+      {
+        "atomic_effect": "Block future disclosure/operations, close queues",
+        "event": "revoke",
+        "from": "active",
+        "guard": "Membership/link/installation/security deny",
+        "to": "revoked"
+      },
+      {
+        "atomic_effect": "Deny refresh/calls until new authenticated open",
+        "event": "expiry",
+        "from": "active",
+        "guard": "Idle/absolute session bound reached",
+        "to": "expired"
+      }
+    ]
+  },
+  {
+    "initial": "staging",
+    "name": "AppRuntimePreparation",
+    "notes": "No active/public state here. App publication is an existing DefinitionChange/head transition. Unknown cannot be blindly retried; a runtime internal deploy may already have activated its private slot.",
+    "owner": "Jobs; not domain authority",
+    "states": [
+      "staging",
+      "prepared",
+      "failed",
+      "unknown",
+      "retired"
+    ],
+    "transitions": [
+      {
+        "atomic_effect": "Record nonpublic runtime attestation",
+        "event": "probe-success",
+        "from": "staging",
+        "guard": "Exact immutable artifact/profile/realm/partition verified",
+        "to": "prepared"
+      },
+      {
+        "atomic_effect": "Record diagnostic; active Ontology binding unchanged",
+        "event": "build-fail",
+        "from": "staging",
+        "guard": "Observed bounded build failure",
+        "to": "failed"
+      },
+      {
+        "atomic_effect": "Record need for exact slot reconciliation",
+        "event": "lost-reply",
+        "from": "staging",
+        "guard": "Runtime may have accepted slot; outcome not observed",
+        "to": "unknown"
+      },
+      {
+        "atomic_effect": "Record attestation, still nonpublic",
+        "event": "probe-success",
+        "from": "unknown",
+        "guard": "Observed same slot/digest/profile",
+        "to": "prepared"
+      },
+      {
+        "atomic_effect": "Record failure, no invented rollback",
+        "event": "probe-rejection",
+        "from": "unknown",
+        "guard": "Explicit observed rejection/no successful stage",
+        "to": "failed"
+      },
+      {
+        "atomic_effect": "Retire only nonrequired slot; no change to domain receipts",
+        "event": "retire",
+        "from": "prepared",
+        "guard": "No active/evaluation/session retention pin and current cleanup fence",
+        "to": "retired"
+      },
+      {
+        "atomic_effect": "Clean staging bytes",
+        "event": "cleanup",
+        "from": "failed",
+        "guard": "No pins/leases and authorized cleanup",
+        "to": "retired"
+      },
+      {
+        "atomic_effect": "No local activation authority added",
+        "event": "retain-for-publication",
+        "from": "prepared",
+        "guard": "Existing release process separately approves binding",
+        "to": "prepared"
+      }
+    ]
+  }
+]

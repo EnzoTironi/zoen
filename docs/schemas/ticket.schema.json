@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.invalid/execution/ticket.schema.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^ZN-[0-9]{4}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "spec_id": {
+      "type": "string",
+      "pattern": "^SPEC-[0-9]{3}$"
+    },
+    "slice": {
+      "type": "string",
+      "pattern": "^S(0|[1-9]|1[01])$"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "law",
+        "static",
+        "component",
+        "protocol",
+        "journey",
+        "chaos",
+        "performance",
+        "admission"
+      ]
+    },
+    "risk": {
+      "enum": [
+        "standard",
+        "critical"
+      ]
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^C[0-9]{3}$"
+      },
+      "minItems": 0
+    },
+    "external_gate": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_task_index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "intent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "acceptance": {
+      "type": "object",
+      "properties": {
+        "given": {
+          "type": "string",
+          "minLength": 1
+        },
+        "when": {
+          "type": "string",
+          "minLength": 1
+        },
+        "then": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "given",
+        "when",
+        "then"
+      ],
+      "additionalProperties": false
+    },
+    "primary_artifact": {
+      "type": "string",
+      "minLength": 1
+    },
+    "test_file": {
+      "type": "string",
+      "minLength": 1
+    },
+    "runbook": {
+      "type": "string",
+      "minLength": 1
+    },
+    "allowed_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "resource_locks": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "required_read": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "purpose": {
+            "type": "string",
+            "minLength": 1
+          },
+          "oracle": {
+            "type": "string",
+            "minLength": 1
+          },
+          "layer": {
+            "enum": [
+              "law",
+              "static",
+              "component",
+              "protocol",
+              "journey",
+              "chaos",
+              "performance",
+              "admission"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "purpose",
+          "oracle",
+          "layer"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 3
+    },
+    "status": {
+      "const": "planned"
+    },
+    "review": {
+      "enum": [
+        "independent-required",
+        "peer-required"
+      ]
+    },
+    "product_test_command": {
+      "type": "string",
+      "minLength": 1
+    },
+    "depends_on": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^ZN-[0-9]{4}$"
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "spec_id",
+    "slice",
+    "owner",
+    "kind",
+    "risk",
+    "capabilities",
+    "external_gate",
+    "source_task_index",
+    "intent",
+    "steps",
+    "acceptance",
+    "primary_artifact",
+    "test_file",
+    "runbook",
+    "allowed_paths",
+    "resource_locks",
+    "required_read",
+    "checks",
+    "status",
+    "review",
+    "product_test_command",
+    "depends_on"
+  ],
+  "additionalProperties": false
+}
