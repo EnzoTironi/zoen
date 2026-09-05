@@ -1,44 +1,175 @@
-// @zoen-plan tests/component/spec-000/test-harness.test.ts
-// NON-EXECUTABLE PSEUDOCODE; not registered or compiled as product implementation.
-// # File plan — `tests/component/spec-000/test-harness.test.ts`
-//
-// **Status:** planned; no product acceptance implied.
-//
-// Target: `tests/component/spec-000/test-harness.test.ts`. Representation: **comment-only-source**. Allocation: **required**.
-//
-// Specs: [SPEC-000](../../../docs/specs/spec-000.md).
-// Tickets: [ZN-0004](../../../docs/tickets/zn-0004.md).
-//
-// ## Responsibility and reuse
-//
-// ```text
-// SUITE ZN-0004 [required layer=component; currently NOT IMPLEMENTED]
-//   REQUIRE real admitted dependencies and disposable owned namespaces; missing dependency => BLOCKED.
-//   USE synthetic input records, not synthetic services, fake credentials or canned provider responses.
-//
-//   TEST ZN-0004-AC:
-//     ARRANGE A test requests an unconfigured real PostgreSQL profile
-//     ACT verify:ticket resolves the profile and test selectors
-//     ASSERT The command fails as missing-prerequisite rather than skipping; an admitted profile runs nonzero tests and records seed, logs and dependency versions
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   TEST ZN-0004-NEG:
-//     ARRANGE the same ticket component with the stated invalid/denied input.
-//     ACT only through its real supported boundary; inspect denial and lack of side effects.
-//     ASSERT Remove a required tool, secret reference or test dependency. The harness fails as missing prerequisite and cannot pass by skipping. Exercise this against the component delivered by this ticket; do not require a later-stage feature to implement an early negative check.
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   TEST ZN-0004-BOUNDARY:
-//     ARRANGE the same component at its named failure/replay/resource boundary.
-//     ACT with independently controlled real connection/process barriers when I/O is involved.
-//     ASSERT Repeat with duplicate/reordered input, revoked access and the profile limit at the task boundary. Preserve the declared oracle; report unsupported/incomplete state rather than silent truncation, disclosure or fabricated success.
-//     CAPTURE commit, actual profile/lock, fixture seed, executed count and raw observations.
-//
-//   ASSERT every required check executed, no required skips, nonzero count and exact semantic oracle.
-//   CLEANUP only this test namespace after checking receipts/pins/unknown external outcomes.
-//   NEVER expose clocks, barriers, fixture seeders or failure controls in production routes.
-// ```
-//
-// ## Acceptance boundary
-//
-// A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { existsSync, readFileSync, mkdtempSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import {
+  DISABLED_ROUTE,
+  FIXTURE_SEED,
+  NamedBarrier,
+  REQUIRED_CHECK_IDS,
+  TestClock,
+  assertRequiredChecks,
+  digestReport,
+  resolveTestProfile,
+  runHarness,
+} from '../../../tooling/test-harness.ts';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(__dirname, '../../..');
+const SCHEMA = join(ROOT, 'contracts/spec-000/test-harness.schema.json');
+const FIXTURE = join(ROOT, 'tests/fixtures/spec-000/test-harness.json');
+
+function registerZn0004Tests(): void {
+  test('ZN-0004-AC', async () => {
+    assert.equal(existsSync(SCHEMA), true);
+    assert.equal(existsSync(join(ROOT, 'vitest.config.ts')), true);
+    assert.equal(existsSync(join(ROOT, 'playwright.config.ts')), true);
+    assert.equal(existsSync(join(ROOT, 'compose.test.yaml')), true);
+    assert.equal(existsSync(join(ROOT, 'execution-lock.json')), true);
+
+    // Unconfigured real PostgreSQL profile => MissingPrerequisite (never skip)
+    const unconfigured = resolveTestProfile('postgres-unconfigured');
+    assert.equal(unconfigured.ok, false);
+    if (unconfigured.ok) return;
+    assert.equal(unconfigured.kind, 'MissingPrerequisite');
+    assert.equal(unconfigured.skipped, false);
+    assert.ok(unconfigured.missing.length > 0);
+    assert.equal(unconfigured.disabledRoute, DISABLED_ROUTE);
+
+    const unconfiguredRun = await runHarness({ profileName: 'postgres-unconfigured' });
+    assert.equal(unconfiguredRun.ok, false);
+    if (unconfiguredRun.ok) return;
+    assert.equal(unconfiguredRun.skippedCount, 0);
+    assert.equal(unconfiguredRun.executedCount, 0);
+    assert.equal(unconfiguredRun.skipped, false);
+
+    // Admitted tools profile runs nonzero tests and records seed/logs/versions
+    const admitted = await runHarness({
+      profileName: 'component-harness',
+      seed: FIXTURE_SEED,
+      selectors: [...REQUIRED_CHECK_IDS],
+    });
+    assert.equal(admitted.ok, true, JSON.stringify(admitted));
+    if (!admitted.ok) return;
+    assert.ok(admitted.executedCount > 0);
+    assert.equal(admitted.skippedCount, 0);
+    assert.equal(admitted.seed, FIXTURE_SEED);
+    assert.ok(admitted.logs.length > 0);
+    assert.ok(admitted.dependencyVersions.vitest);
+    assert.ok(admitted.dependencyVersions['fast-check']);
+    assert.ok(admitted.dependencyVersions.playwright);
+
+    // verify:ticket-style profile resolution for postgres without URL fails closed
+    const withPg = resolveTestProfile('component-harness-with-postgres', {});
+    assert.equal(withPg.ok, false);
+    if (withPg.ok) return;
+    assert.equal(withPg.kind, 'MissingPrerequisite');
+    assert.ok(withPg.missing.includes('ZOEN_TEST_DATABASE_URL'));
+  });
+
+  test('ZN-0004-NEG', async () => {
+    assert.equal(existsSync(FIXTURE), true);
+    const incomplete = JSON.parse(readFileSync(FIXTURE, 'utf8')) as {
+      ok: boolean;
+      executedCount: number;
+      note?: string;
+    };
+    assert.equal(incomplete.ok, true);
+    assert.equal(incomplete.executedCount, 0);
+    assert.ok(incomplete.note?.includes('Synthetic'));
+
+    // Remove a required tool from a temp package.json view via resolve against incomplete root
+    const tmp = mkdtempSync(join(tmpdir(), 'zn-0004-neg-'));
+    try {
+      writeFileSync(
+        join(tmp, 'package.json'),
+        JSON.stringify({ name: 'neg', private: true, devDependencies: { vitest: '5.0.0' } }, null, 2),
+      );
+      // missing fast-check, playwright, configs
+      const missingTool = resolveTestProfile('component-harness', process.env, tmp);
+      assert.equal(missingTool.ok, false);
+      if (missingTool.ok) return;
+      assert.equal(missingTool.kind, 'MissingPrerequisite');
+      assert.equal(missingTool.skipped, false);
+      assert.ok(missingTool.missing.some((m) => m.includes('fast-check') || m.includes('playwright') || m.includes('vitest.config')));
+
+      // Secret reference missing
+      const missingSecret = resolveTestProfile('component-harness-full', {
+        ZOEN_TEST_DATABASE_URL: 'postgresql://zoen_test:x@127.0.0.1:1/db',
+      });
+      assert.equal(missingSecret.ok, false);
+      if (missingSecret.ok) return;
+      assert.ok(missingSecret.missing.includes('ZOEN_TEST_S3_ENDPOINT'));
+      assert.equal(missingSecret.skipped, false);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  test('ZN-0004-BOUNDARY', async () => {
+    // Duplicate / reordered selectors — same oracle
+    const a = await runHarness({
+      profileName: 'component-harness',
+      seed: FIXTURE_SEED,
+      selectors: ['ZN-0004-AC', 'ZN-0004-NEG', 'ZN-0004-BOUNDARY'],
+    });
+    const b = await runHarness({
+      profileName: 'component-harness',
+      seed: FIXTURE_SEED,
+      selectors: ['ZN-0004-BOUNDARY', 'ZN-0004-AC', 'ZN-0004-NEG'],
+    });
+    assert.equal(a.ok, true);
+    assert.equal(b.ok, true);
+    if (!a.ok || !b.ok) return;
+    assert.equal(a.executedCount, b.executedCount);
+    assert.equal(a.seed, b.seed);
+    assert.equal(a.dependencyVersions.vitest, b.dependencyVersions.vitest);
+
+    // Revoked / unknown profile
+    const revoked = resolveTestProfile('revoked-profile');
+    assert.equal(revoked.ok, false);
+    if (revoked.ok) return;
+    assert.match(revoked.missing.join(','), /unknown-profile/);
+
+    // Profile limit: full profile without storage reports incomplete, no fabricated success
+    const limited = await runHarness({
+      profileName: 'component-harness-full',
+      env: { ZOEN_TEST_DATABASE_URL: 'postgresql://zoen_test:x@127.0.0.1:1/db' },
+    });
+    assert.equal(limited.ok, false);
+    if (limited.ok) return;
+    assert.equal(limited.kind, 'MissingPrerequisite');
+    assert.equal(limited.skipped, false);
+
+    // Clocks and barriers are test-only and deterministic
+    const clock = new TestClock('2026-01-01T00:00:00.000Z');
+    clock.advanceMs(5000);
+    assert.equal(clock.now().toISOString(), '2026-01-01T00:00:05.000Z');
+    const barrier = new NamedBarrier('boundary');
+    assert.equal(barrier.isOpen(), false);
+    const p = barrier.wait(1000);
+    barrier.open();
+    await p;
+    assert.equal(barrier.isOpen(), true);
+
+    // Required checks / zero-test
+    assert.throws(() => assertRequiredChecks([]), /zero-test/);
+    assert.throws(() => assertRequiredChecks(['ZN-0004-AC']), /missing/);
+    assertRequiredChecks([...REQUIRED_CHECK_IDS]);
+
+    // Digest stability for equal payloads
+    const d1 = digestReport({ seed: FIXTURE_SEED, v: 1 });
+    const d2 = digestReport({ v: 1, seed: FIXTURE_SEED });
+    assert.equal(d1, d2);
+  });
+}
+
+const thisFile = fileURLToPath(import.meta.url);
+const entry = process.argv[1] ? resolve(process.argv[1]) : '';
+const underNodeTest = process.execArgv.some((a) => a === '--test' || a.startsWith('--test='));
+if (underNodeTest || entry === thisFile || process.env.ZN_0004_RUN_TESTS === '1') {
+  registerZn0004Tests();
+}

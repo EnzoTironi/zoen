@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "spec-000.test-harness.v1-incomplete",
+  "ticket": "ZN-0004",
+  "spec": "SPEC-000",
+  "profile": "component-harness",
+  "ok": true,
+  "executedCount": 0,
+  "skippedCount": 0,
+  "seed": "zn-0004-neg-incomplete",
+  "logs": [],
+  "dependencyVersions": {},
+  "note": "Synthetic incomplete harness report for ZN-0004-NEG. Zero-execution success must be rejected."
+}

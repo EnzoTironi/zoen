@@ -11,7 +11,7 @@
 | Target | Role | Plan |
 |---|---|---|
 | `supply-chain.ts` | required | [read](supply-chain.ts) |
-| `test-harness.ts` | required | [read](test-harness.ts) |
+| `test-harness.ts` | required | [read](test-harness.ts.plan.md) |
 | `verify-ticket.ts` | required | [read](verify-ticket.ts) |
 | `workspace.ts` | required | [read](workspace.ts.plan.md) |
 

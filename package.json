@@ -23,9 +23,10 @@
     "verify:syntax": "node tooling/syntax.mjs",
     "check": "node --experimental-strip-types tooling/workspace.ts check",
     "test:law": "node --test tests/laws/*.test.mjs",
-    "test:component": "node --experimental-strip-types --test tests/static/**/*.test.ts",
+    "test:component": "node --experimental-strip-types --test tests/component/**/*.test.ts tests/static/**/*.test.ts",
     "test:journey": "node --experimental-strip-types tooling/workspace.ts journey-gate",
-    "verify:ticket": "node --experimental-strip-types tooling/workspace.ts verify-ticket-gate"
+    "verify:ticket": "node --experimental-strip-types tooling/workspace.ts verify-ticket-gate",
+    "test:harness": "node --experimental-strip-types --test tests/component/spec-000/test-harness.test.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1116.0",
@@ -36,8 +37,12 @@
     "pg": "8.23.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.63.0",
     "@types/node": "24.0.0",
     "@types/pg": "8.15.5",
-    "typescript": "6.0.3"
+    "fast-check": "4.9.0",
+    "playwright": "1.63.0",
+    "typescript": "6.0.3",
+    "vitest": "5.0.0"
   }
 }

@@ -1,47 +1,36 @@
-# File plan — `runbooks/spec-000/test-harness.md`
+# Runbook — real dependency test harness (ZN-0004)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not product-accepted.
 
-Target: `runbooks/spec-000/test-harness.md`. Representation: **markdown-plan**. Allocation: **required**.
+## Scope
 
-Specs: [SPEC-000](../../docs/specs/spec-000.md).
-Tickets: [ZN-0004](../../docs/tickets/zn-0004.md).
+Vitest + fast-check + Playwright configs; disposable PostgreSQL/MinIO via `compose.test.yaml`; controllable clocks and named barriers in test-only composition. Missing prerequisites fail closed (never skip).
 
-## Responsibility and reuse
+## Commands
 
-## ZN-0004 operational/repair procedure
+```sh
+source .toolchain-env.sh
+# Unconfigured PG profile must fail (not skip):
+node --experimental-strip-types tooling/test-harness.ts postgres-unconfigured
 
-Scope: Create real dependency test harness with explicit clocks and barriers. This is a plan; deployments and commands not yet qualified remain blocked.
+# Tools-only admitted profile:
+node --experimental-strip-types -e 'import { runHarness } from "./tooling/test-harness.ts"; console.log(await runHarness({ profileName: "component-harness" }))'
 
-```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-verify:ticket resolves the profile and test selectors
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: ticket ID, repository commit, admitted profile, actual lock bytes, required check IDs.
-READ: current execution catalog and immutable evidence; never infer completion from file existence.
-VERIFY repository/data-preservation inventory before permitting destructive migration work.
-RESOLVE exact dependencies on the target using real registries; record actual integrity and compatibility, not guessed lock entries.
-COLLECT tests by required IDs; reject missing selection, duplicate ownership, zero executions and skipped required cases.
-RUN actual component/browser/provider dependencies; unavailable dependency => BLOCKED, not a substitute.
-BIND report to commit, lock, fixture seed, profile, commands and artifact digests.
-REQUIRE independent review and current external gate when applicable; keep all other routes disabled.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-The command fails as missing-prerequisite rather than skipping; an admitted profile runs nonzero tests and records seed, logs and dependency versions
-RESUME only with current approval and intact unrelated tenant scopes.
+# Optional full stack:
+docker compose -f compose.test.yaml up -d
+export ZOEN_TEST_DATABASE_URL=postgresql://zoen_test:zoen_test_disposable@127.0.0.1:55432/zoen_harness
+export ZOEN_TEST_S3_ENDPOINT=http://127.0.0.1:59000
 ```
 
-## Owning state / operation contracts
+## Repair
 
-### SPEC-000
-AdmitExecutionProfile(profile, candidateVersions, integrityDigests, compatibilityReport) -> AdmittedLock | Blocked; VerifyTicket(ticketId, commit, profile) -> EvidenceReport | MissingPrerequisite.
+| Symptom | Repair |
+|---|---|
+| MissingPrerequisite vitest/playwright | Restore pinned devDependencies + lock from registry |
+| MissingPrerequisite ZOEN_TEST_DATABASE_URL | Start compose or export URL; never mock PG |
+| Zero executedCount | Treat as failure; do not certify |
+| Barrier/clock imported in apps/* | Remove — test-only APIs |
 
-No application tables. Track execution-lock.json, baseline-inventory.json and evidence-index.json as reviewed artifacts. Secret values never belong in these files.
+## Preserve
 
-[algorithm SPEC-000](../../docs/algorithms/spec-000.md)
-
-## Acceptance boundary
-
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+Do not fabricate image digests. Ticket stays unaccepted until independent review + verify:ticket (ZN-0005).

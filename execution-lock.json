@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "spec-000.execution-lock.test-harness.v1",
+  "ticket": "ZN-0004",
+  "spec": "SPEC-000",
+  "admissionStatus": "AdmittedLock",
+  "profile": "component-test-harness-tools",
+  "producedAt": "2026-09-05T01:27:46.634Z",
+  "disabledRoute": "test-harness-implementation-and-merge",
+  "extendsCoreAdmission": "admissions/spec-000/execution-lock.json",
+  "toolchain": {
+    "vitest": {
+      "name": "vitest",
+      "version": "5.0.0",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-gpsMNoRhMjMktVxPtstOH4/PJuPyovVaMDr4oDilXaGH1EcqM2OE96SoHT2VIQ6fTGtTjqmHDrEu2X9RQiXf8Q==",
+      "shasum": "a85f075e65bc7c87cce4df2f9114214fbd92f245",
+      "tarball": "https://registry.npmjs.org/vitest/-/vitest-5.0.0.tgz"
+    },
+    "fastCheck": {
+      "name": "fast-check",
+      "version": "4.9.0",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-7ms6T7SybUev/PQITciI0yLM2pOSFy5zpG8Ty7tQofcVaQUvrMXp6CBwqF6fThLCLOrfBtuHAtwq6Yu4XPCllg==",
+      "shasum": "6337eb9861442b2534bb56a1406afd33dc018e78",
+      "tarball": "https://registry.npmjs.org/fast-check/-/fast-check-4.9.0.tgz"
+    },
+    "playwright": {
+      "name": "playwright",
+      "version": "1.63.0",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==",
+      "shasum": "99b56f9f69b1b70c44f00bf84b2fe52348ae2511",
+      "tarball": "https://registry.npmjs.org/playwright/-/playwright-1.63.0.tgz"
+    },
+    "playwrightTest": {
+      "name": "@playwright/test",
+      "version": "1.63.0",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-oxMK4vllB9RK5NQ2l1pq1IfOf2AvnEuj/vYGDj0H2nMtmtZpKtCwt/l00GEO6xjGfpBNAvjovvYdCm50dRQkpQ==",
+      "shasum": "808020c46e8b6b91f9d628cd0ebcbb32bdfd8b6c",
+      "tarball": "https://registry.npmjs.org/@playwright/test/-/test-1.63.0.tgz"
+    },
+    "postgresqlImage": {
+      "name": "postgres",
+      "tag": "18",
+      "indexDigest": "sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280",
+      "source": "https://hub.docker.com/v2/repositories/library/postgres/tags/18",
+      "status": "resolved"
+    },
+    "minioImage": {
+      "name": "minio/minio",
+      "tag": "RELEASE.2025-04-22T22-12-26Z",
+      "indexDigest": "sha256:a1ea29fa28355559ef137d71fc570e508a214ec84ff8083e39bc5428980b015e",
+      "source": "https://hub.docker.com/v2/repositories/minio/minio/tags/RELEASE.2025-04-22T22-12-26Z",
+      "status": "resolved"
+    }
+  },
+  "notes": [
+    "Extension lock for ZN-0004 harness tools; does not replace core ZN-0002 admission.",
+    "Core admission remains BLOCKED for schema-validator/canonicalizer/verify:ticket.",
+    "Ticket ZN-0004 remains unaccepted pending independent review."
+  ],
+  "blockers": [
+    {
+      "code": "ticket-unaccepted",
+      "message": "ZN-0004 not accepted; verify:ticket still planned (ZN-0005)"
+    }
+  ]
+}
