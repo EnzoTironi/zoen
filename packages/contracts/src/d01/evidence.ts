@@ -5,11 +5,13 @@ import {
   CorrectionRef,
   Currency,
   D01_LIMITS,
+  DateInterval,
   DecimalText,
   EvidenceRef,
   FrameRef,
   Label,
   RecordKey,
+  ReceiptRef,
   SourceRef,
   SourceRevision,
   SubjectKey,
@@ -83,14 +85,33 @@ export const Coverage = Schema.Union([
   Schema.TaggedStruct("Unknown", {}).annotate(exact),
   Schema.TaggedStruct("Partial", {}).annotate(exact),
 ]);
+export const CorrectionChoice = Schema.Union([
+  Schema.TaggedStruct("selectClaim", { claimRef: ClaimRef }).annotate(exact),
+  Schema.TaggedStruct("unknown", {}).annotate(exact),
+]);
+export const CorrectionConsequence = Schema.Struct({
+  choice: CorrectionChoice,
+  subjectKey: SubjectKey,
+  validTime: DateInterval,
+}).annotate(exact);
+export const ScopedCorrection = Schema.Struct({
+  ...CorrectionConsequence.fields,
+  authoredBy: Schema.Literal("current-principal"),
+  correctionRef: CorrectionRef,
+  receiptRef: ReceiptRef,
+}).annotate(exact);
+export type ScopedCorrection = typeof ScopedCorrection.Type;
+
 export const VisibleFrame = Schema.Struct({
   claims: Schema.Array(VisibleClaim).check(
     Schema.isMaxLength(D01_LIMITS.frameClaims)
   ),
   contested: Schema.Boolean,
-  correctionRef: Schema.NullOr(CorrectionRef),
   coverage: Coverage,
   frameRef: FrameRef,
+  scopedCorrections: Schema.Array(ScopedCorrection).check(
+    Schema.isMaxLength(D01_LIMITS.frameClaims)
+  ),
   selection: Selection,
   subjectKey: SubjectKey,
   verification: Schema.Literal("unverified"),

@@ -87,9 +87,9 @@ export const inspect = Effect.fn("authority.knowledge.inspect")(
           const visible = yield* Schema.decodeEffect(VisibleFrame)({
             claims,
             contested: selection.contested,
-            correctionRef: null,
             coverage: { _tag: claims.length === 0 ? "Unknown" : "Partial" },
             frameRef,
+            scopedCorrections: [],
             selection: selection.selection,
             subjectKey: request.input.subjectKey,
             verification: "unverified",

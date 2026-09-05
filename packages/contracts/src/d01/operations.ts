@@ -1,12 +1,10 @@
 import { Schema } from "effect";
 
 import { D01Error } from "./errors.js";
-import { VisibleFrame } from "./evidence.js";
+import { CorrectionConsequence, VisibleFrame } from "./evidence.js";
 import {
   CaseRef,
-  ClaimRef,
   CorrectionRef,
-  DateInterval,
   Digest,
   DocumentText,
   EvidenceRef,
@@ -51,15 +49,7 @@ export const OpenEvidence = Schema.Struct({
   worldRef: WorldRef,
 }).annotate(exact);
 
-export const CorrectionChoice = Schema.Union([
-  Schema.TaggedStruct("selectClaim", { claimRef: ClaimRef }).annotate(exact),
-  Schema.TaggedStruct("unknown", {}).annotate(exact),
-]);
-export const CorrectionConsequence = Schema.Struct({
-  choice: CorrectionChoice,
-  subjectKey: SubjectKey,
-  validTime: DateInterval,
-}).annotate(exact);
+export { CorrectionChoice, CorrectionConsequence } from "./evidence.js";
 export const ProposeCorrection = Schema.Struct({
   ...mutation,
   input: Schema.Struct({
