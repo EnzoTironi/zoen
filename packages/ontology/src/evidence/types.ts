@@ -39,3 +39,28 @@ export type QuarantinedCapture = Readonly<{
 }>;
 
 export type StageCaptureResult = CaptureRef | QuarantinedCapture;
+
+export type AdmissionReceipt = Readonly<{
+  receiptId: UUID;
+  evidenceId: UUID;
+  claimId: UUID;
+  sourceId: UUID;
+  captureId: UUID;
+  mappingDigest: string;
+  commitId: UUID;
+  firstAdmission: boolean;
+}>;
+
+export type AdmitCaptureInput = Readonly<{
+  world: WorldRef;
+  bindingId: UUID;
+  captureId: UUID;
+  mappingDigest: string;
+  operationId: UUID;
+  principalId: UUID;
+  rightsRef: string;
+  retentionRef: string;
+  domainId: string;
+  predicateId: string;
+  subjectLabel: string;
+}>;

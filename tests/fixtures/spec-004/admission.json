@@ -1,0 +1,10 @@
+{
+  "seed": "zn-0026-admission-seed-v1",
+  "seedDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "purpose": "operations",
+  "sourceNamespace": "uploads.csv",
+  "domain": "records",
+  "predicate": "imported_row",
+  "mappingDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "maxBytes": 4096
+}
