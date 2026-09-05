@@ -1,5 +1,6 @@
 import { PgClient } from "@effect/sql-pg";
-import { Effect, Layer, type Redacted, Schema } from "effect";
+import { Effect, Layer, Schema } from "effect";
+import type { Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 export interface D01PostgresConfig {
@@ -22,12 +23,13 @@ const runtimeRoleCheck = Layer.effectDiscard(
     const sql = yield* SqlClient.SqlClient;
     yield* sql`
     SELECT NOT (
-      rolsuper OR rolcreaterole OR rolcreatedb OR rolbypassrls
+      rolsuper OR rolcreaterole OR rolcreatedb OR rolbypassrls OR rolreplication
       OR has_database_privilege(current_user, current_database(), 'CREATE')
       OR has_database_privilege(current_user, current_database(), 'TEMPORARY')
       OR has_schema_privilege(current_user, 'authority', 'CREATE')
       OR has_schema_privilege(current_user, 'identity', 'CREATE')
       OR has_schema_privilege(current_user, 'jobs', 'CREATE')
+      OR has_schema_privilege(current_user, 'public', 'CREATE')
     ) AS allowed
     FROM pg_roles WHERE rolname = current_user
   `.pipe(

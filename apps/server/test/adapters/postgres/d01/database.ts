@@ -1,8 +1,9 @@
 import { randomBytes } from "node:crypto";
-import { readFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 
+import { NodeFileSystem } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
-import { Config, Effect, Redacted } from "effect";
+import { Config, Effect, FileSystem, Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { grantD01Roles } from "../../../../sql/proposals/d01/grants.ts";
@@ -21,7 +22,8 @@ export const withD01Database = <A, E, R>(
     readonly identity: ReturnType<typeof makeD01PostgresLayer>;
     readonly progress: ReturnType<typeof makeD01PostgresLayer>;
     readonly migration: ReturnType<typeof PgClient.layer>;
-  }) => Effect.Effect<A, E, R>
+  }) => Effect.Effect<A, E, R>,
+  misconfiguration?: "public-create" | "replication"
 ) =>
   Effect.gen(function* configureDatabase() {
     const adminUrl = yield* Config.redacted("ZOEN_TEST_DATABASE_URL");
@@ -49,12 +51,13 @@ export const withD01Database = <A, E, R>(
     const migration = PgClient.layer(
       profile(roleUrl("migration"), "migration")
     );
-    const schema = yield* Effect.tryPromise(() =>
-      readFile(
-        new URL("../../../../sql/proposals/d01/schema.sql", import.meta.url),
-        "utf-8"
+    const schema = yield* FileSystem.FileSystem.use((fs) =>
+      fs.readFileString(
+        fileURLToPath(
+          new URL("../../../../sql/proposals/d01/schema.sql", import.meta.url)
+        )
       )
-    );
+    ).pipe(Effect.provide(NodeFileSystem.layer));
     return yield* Effect.scoped(
       Effect.gen(function* ownDatabase() {
         const admin = yield* SqlClient.SqlClient;
@@ -69,7 +72,7 @@ export const withD01Database = <A, E, R>(
             // Utility PASSWORD cannot be a PostgreSQL bound parameter.
             admin
               .unsafe(
-                `CREATE ROLE "${names[role]}" LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS PASSWORD '${passwords[role]}'`
+                `CREATE ROLE "${names[role]}" LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS ${role === "authority" && misconfiguration === "replication" ? "REPLICATION" : "NOREPLICATION"} PASSWORD '${passwords[role]}'`
               )
               .pipe(
                 Effect.mapError(
@@ -91,6 +94,9 @@ export const withD01Database = <A, E, R>(
           const sql = yield* SqlClient.SqlClient;
           yield* sql.withTransaction(sql.unsafe(schema));
           yield* grantD01Roles(names);
+          if (misconfiguration === "public-create") {
+            yield* sql`GRANT CREATE ON SCHEMA public TO ${sql(names.authority)}`;
+          }
         }).pipe(Effect.provide(migration));
         return yield* run({
           authority: makeD01PostgresLayer(
