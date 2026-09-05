@@ -56,4 +56,31 @@ The test failed in 18.0 seconds. Artifacts remain under `/Users/enzotironi/zoen-
 
 An earlier attempt against 4315 stopped at a real signup HTTP 429 while root's acceptance suite authenticated concurrently. It never reached the Frame test and is not counted as product evidence. The provider guard was not changed; the completed baseline used the separate 4314 profile.
 
-Current review gate: WEB-01 fixed and independently verified; Stale/replay flow verified; WEB-02 awaits correction and independent treatment. Source-level session/World discard paths remain subject to that unresolved denial path. These findings do not alter the backend fence contract or establish D03 erasure/restore acceptance.
+Review checkpoint before the final treatment: WEB-01 fixed and independently verified; Stale/replay flow verified; WEB-02 awaited correction and independent treatment. Source-level session/World discard paths remain subject to that unresolved denial path. These findings do not alter the backend fence contract or establish D03 erasure/restore acceptance.
+
+
+## Final independent treatment — both findings resolved
+
+On 2026-09-05 around 17:57, root served complete treatment build `767f757` at `http://127.0.0.1:4316`, isolated `sharing-v2` profile. It includes W1's busy-denial correction (`4ace1e4`, integrated as `4198f01`), prior-Frame denial correction (`1485ea6`, integrated as `767f757`) and retained denial heading (`392178d`, integrated as `0447a4e`). The reviewer read the two state changes: session/World epoch and disposal guards remain; transient busy or Frame-reference changes cannot suppress a same-context failure. The historical-read branch does not publish successful responses, so no Frame-reference success guard is needed there.
+
+Command, using Node 24.18.1 and the unchanged assertions from the independently owned test file:
+
+```sh
+ZOEN_TEST_SHARING_WEB_URL=http://127.0.0.1:4316 pnpm exec playwright test --config playwright.acceptance.config.ts apps/web/test/integration/d03-sharing/independent/web-race.review.browser.spec.ts
+```
+
+All three passed, 42.8 seconds total:
+
+| Independent scenario | Result |
+| --- | --- |
+| Real denial while earlier evidence response is busy; deliver the unchanged earlier HTTP 200 | PASS, 15.7s. World and private evidence are discarded and do not reappear. |
+| Real Stale, new explicit confirmation, identical historical grant replay after revoke, fresh current inspection | PASS, 10.8s. New operation ID and exact revision are required; UI shows revoked revision 1, not historical active revision 0. |
+| Real denial of an earlier retained Frame after a different current Frame has rendered | PASS, 15.7s. World and private source controls are discarded. |
+
+The source and tests remain in the independent commit history (`09daaae`, `b4b74bf`); both failing baselines and screenshots above remain preserved. The reviewer did not modify W1's production source, substitute an executor/provider, relax expected outcomes, or disable provider guards. Targeted lint and the global TypeScript check for the independent test worktree passed.
+
+CLI equivalence was reviewed in `apps/cli/src/sharing/command.ts`: explicit recipient UUID, required operation ID and revision, literal `null` only for absent grant targets, and separate current inspection are the same semantic intent as the browser's confirmed request. The browser generates an ID only at explicit confirmation and retains the request for retry; the CLI requires the caller to retain all arguments. Both distinguish historical receipts from current access.
+
+Session/context source review confirms that principal **and session ID**, World switches, page hiding/restoration and same-origin broadcast invalidation discard ephemeral state and abort older effects. Owner management and private correction controls are not rendered for viewers; the server remains the authority for every operation. No additional runtime session-switch test was added because this review's distinct proof concerns the two newly found same-context denial races and revision/replay flow; root's broader session/browser regression suite remains separate evidence.
+
+Final disposition: no open findings in this reviewed Web EX23 scope after independent treatment. This is not a backend fence certificate, deployment approval, full D03 acceptance, or proof of erasure/restore. Root retains the broader integration and activation gates.
