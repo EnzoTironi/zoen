@@ -348,6 +348,24 @@
       "browser_component_tests": 7,
       "container_acceptance_tests": 12,
       "scope": "Logout confirmado corrigiu a testemunha; todas as provas comportamentais passaram. Qualidade reprovou somente tabela não formatada no relatório; correção preserva os bytes da fonte diagnóstica. Agregador não foi verde."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "aaa30db2aeac2e4b6abf96569f6efca236147c69",
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "state": "verified_for_profile",
+      "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
+      "evidence": "docs/verification/sharing-local.md",
+      "remote_ci": {
+        "commit": "aaa30db2aeac2e4b6abf96569f6efca236147c69",
+        "result": "success",
+        "url": "https://github.com/EnzoTironi/zoen/actions/runs/33993895643"
+      },
+      "unit_tests": 198,
+      "integration_tests": 168,
+      "browser_component_tests": 7,
+      "container_acceptance_tests": 12,
+      "scope": "Qualidade, build, unidade, integração real, componentes e imagem nova passaram no CI com revisão independente. As duas falhas remotas anteriores e sua contraprova estão preservadas. Não conclui D03 integral, erasure, restore, upgrade, cloud ou as22entregas."
     }
   ],
   "verified_deliveries": [],

@@ -1,10 +1,6 @@
 # Viabilidade local S3 para o candidato de erasure
 
-Resultado de 2026-09-05: **suporte observado nos três grupos exercitados** no
-RustFS local: versões/paginação, delete markers/versão literal `null`, e
-multipart/listagem/abort. Nenhuma operação exercitada retornou Unsupported ou
-NotImplemented. Isso é experimento de provider, não implementação, admissão de
-perfil, prova de grants do runtime ou conclusão de erasure/restore.
+Resultado de 2026-09-05: **suporte observado nos três grupos exercitados** no RustFS local: versões/paginação, delete markers/versão literal `null`, e multipart/listagem/abort. Nenhuma operação exercitada retornou Unsupported ou NotImplemented. Isso é experimento de provider, não implementação, admissão de perfil, prova de grants do runtime ou conclusão de erasure/restore.
 
 ## Ambiente e escopo realmente usados
 
@@ -19,21 +15,14 @@ perfil, prova de grants do runtime ou conclusão de erasure/restore.
 | Credencial | Bootstrap de infraestrutura que o compose fornece como credencial RustFS. Valores não impressos. Não é prova de least privilege do runtime. |
 | Dados | Strings sintéticas e três partes de 1 MiB; nenhum World, perfil, objeto ou bucket preexistente foi usado |
 
-A primeira execução usou o `node` que o shell resolveu como **v22.22.3**. Passou
-os três grupos e limpou seu próprio bucket. A prova foi repetida com o binário
-Node24 explícito para corresponder à versão major exigida pelo repositório;
-nenhum resultado anterior foi descartado nem o esperado foi alterado.
+A primeira execução usou o `node` que o shell resolveu como **v22.22.3**. Passou os três grupos e limpou seu próprio bucket. A prova foi repetida com o binário Node24 explícito para corresponder à versão major exigida pelo repositório; nenhum resultado anterior foi descartado nem o esperado foi alterado.
 
 | Execução | Bucket exclusivo criado | Período UTC e término |
 | --- | --- | --- |
 | Node22 inicial | `zoen-erasure-probe-a48d8c30-016b-40f0-8b17-d2ceb371f1df` | 21:23:57.092–21:23:57.387; três grupos PASS, exit 0 |
 | Node24 principal | `zoen-erasure-probe-b734dd02-f246-4efc-a021-02f04a4265c2` | 21:24:38.091–21:24:38.411; três grupos PASS, exit 0 |
 
-Os tempos são carimbos do experimento, **não benchmark**. Em ambas as execuções,
-limpeza final observou lista de uploads vazia, removeu a versão restante de seu
-caso `null`, observou inventário de versões vazio, recebeu DELETE Bucket 204 e
-HEAD Bucket 404. A exclusão só foi habilitada após o próprio CreateBucket ter
-sido confirmado para o UUID gerado. Nenhum ListBuckets foi usado.
+Os tempos são carimbos do experimento, **não benchmark**. Em ambas as execuções, limpeza final observou lista de uploads vazia, removeu a versão restante de seu caso `null`, observou inventário de versões vazio, recebeu DELETE Bucket 204 e HEAD Bucket 404. A exclusão só foi habilitada após o próprio CreateBucket ter sido confirmado para o UUID gerado. Nenhum ListBuckets foi usado.
 
 ## Resultados observados
 
@@ -49,11 +38,7 @@ sido confirmado para o UUID gerado. Nenhum ListBuckets foi usado.
 
 ### Particularidade observada dos cursores
 
-Em **8 das 13 páginas** do manifesto principal, NextKeyMarker tinha um sufixo
-`[rustfs_cache:v2,…]`, em vez de ser apenas a chave de objeto. O cliente preservou
-o valor inteiro como token opaco; não reconstruiu, truncou ou normalizou esse
-cursor. A paginação funcionou também quando o servidor passou a devolver chave
-simples nas páginas seguintes. Exemplo real da primeira página Node24:
+Em **8 das 13 páginas** do manifesto principal, NextKeyMarker tinha um sufixo `[rustfs_cache:v2,…]`, em vez de ser apenas a chave de objeto. O cliente preservou o valor inteiro como token opaco; não reconstruiu, truncou ou normalizou esse cursor. A paginação funcionou também quando o servidor passou a devolver chave simples nas páginas seguintes. Exemplo real da primeira página Node24:
 
 ```json
 {
@@ -67,102 +52,51 @@ simples nas páginas seguintes. Exemplo real da primeira página Node24:
 }
 ```
 
-Esse comportamento não prova portabilidade ou estabilidade do token através de
-restart, expiração de cache ou mutação concorrente. Esses cenários não foram
-executados. Também não se presume ordem intercalada entre os arrays separados
-Versions e DeleteMarkers; o oráculo compara o conjunto exato de identidades.
+Esse comportamento não prova portabilidade ou estabilidade do token através de restart, expiração de cache ou mutação concorrente. Esses cenários não foram executados. Também não se presume ordem intercalada entre os arrays separados Versions e DeleteMarkers; o oráculo compara o conjunto exato de identidades.
 
 ## Fontes e interpretação
 
-O SDK instalado expõe os comandos usados e seus campos em
-`node_modules/@aws-sdk/client-s3/dist-types/commands/` e `models/models_0.d.ts`.
-A execução acima, e não a existência desses tipos, demonstra o suporte observado.
+O SDK instalado expõe os comandos usados e seus campos em `node_modules/@aws-sdk/client-s3/dist-types/commands/` e `models/models_0.d.ts`. A execução acima, e não a existência desses tipos, demonstra o suporte observado.
 
-A documentação S3 especifica as duas marcas de continuação para versões e
-separa Versions de DeleteMarkers. Ela também explica que delimiter agrupa chaves,
-por isso o manifesto do experimento o omite.
-[ListObjectVersions — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectVersions.html).
-DELETE sem versão pode criar marker, enquanto VersionId identifica a versão a
-remover; os resultados locais acima verificam precisamente essa diferença.
-[DeleteObject — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObject.html).
-GET com versionId seleciona uma versão específica e tem autorização própria no
-modelo AWS; usar bootstrap aqui não valida essa separação no runtime RustFS.
-[GetObject — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html).
+A documentação S3 especifica as duas marcas de continuação para versões e separa Versions de DeleteMarkers. Ela também explica que delimiter agrupa chaves, por isso o manifesto do experimento o omite. [ListObjectVersions — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectVersions.html). DELETE sem versão pode criar marker, enquanto VersionId identifica a versão a remover; os resultados locais acima verificam precisamente essa diferença. [DeleteObject — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_DeleteObject.html). GET com versionId seleciona uma versão específica e tem autorização própria no modelo AWS; usar bootstrap aqui não valida essa separação no runtime RustFS. [GetObject — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_GetObject.html).
 
-CreateMultipartUpload devolve o UploadId que vincula as partes e o abort.
-[CreateMultipartUpload — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateMultipartUpload.html),
-[UploadPart — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html),
-[ListParts — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListParts.html).
-ListMultipartUploads exige conservar ambos os cursores para continuar dentro
-da mesma chave.
-[ListMultipartUploads — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListMultipartUploads.html).
-Abort durante envio de parte em voo pode exigir novas tentativas/reconciliação;
-neste experimento todas as partes já tinham resposta conhecida antes do abort.
-[AbortMultipartUpload — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_AbortMultipartUpload.html).
+CreateMultipartUpload devolve o UploadId que vincula as partes e o abort. [CreateMultipartUpload — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_CreateMultipartUpload.html), [UploadPart — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_UploadPart.html), [ListParts — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListParts.html). ListMultipartUploads exige conservar ambos os cursores para continuar dentro da mesma chave. [ListMultipartUploads — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListMultipartUploads.html). Abort durante envio de parte em voo pode exigir novas tentativas/reconciliação; neste experimento todas as partes já tinham resposta conhecida antes do abort. [AbortMultipartUpload — AWS](https://docs.aws.amazon.com/AmazonS3/latest/API/API_AbortMultipartUpload.html).
 
-A matriz oficial RustFS declara cobertura parcial e deixa edge cases de listagem
-multipart/consulta de partes fora de seu gate padrão. Sua referência publicada
-é outro commit, de agosto; não foi tratada como certificado deste rc.5.
-[Matriz de compatibilidade RustFS](https://docs.rustfs.com/en/reference/s3-compatibility).
-Uma URL inicialmente tentada para versioning não estava disponível; não foi usada
-como suporte factual. Não se inferiu o suporte local de uma release mais recente.
+A matriz oficial RustFS declara cobertura parcial e deixa edge cases de listagem multipart/consulta de partes fora de seu gate padrão. Sua referência publicada é outro commit, de agosto; não foi tratada como certificado deste rc.5. [Matriz de compatibilidade RustFS](https://docs.rustfs.com/en/reference/s3-compatibility). Uma URL inicialmente tentada para versioning não estava disponível; não foi usada como suporte factual. Não se inferiu o suporte local de uma release mais recente.
 
 ## Limites e consequências para o candidato
 
-- Somente operação quiescente, pequena, em nó local com bootstrap. Sem concorrência
-  de PUT, perda de processo, restart de RustFS, falha de disco, partição ou resultado
-  externo ambíguo. DELETE+GET404 não demonstra fencing de um PUT ainda em voo.
-- Sem Object Lock, legal hold, retention, MFA, bypass, política IAM ou credencial
-  restrita configurados/modificados. Não houve AccessDenied nesta amostra; isso
-  não prova isolamento, nem suporte seguro a holds, nem permissões do runtime.
-- Sem batch DeleteObjects, replicação, lifecycle, versioning suspenso, multipart
-  completo, copy, criptografia, backups, rollback ou destruição física da mídia.
-  Não se conclui ausência de cópias fora das APIs inventariadas.
-- A versão literal `"null"` existe e precisa ser representada distintamente de
-  ausência de VersionId. A porta atual que normaliza esses casos não serve como
-  porta exaustiva de purge; nenhum código dessa porta foi alterado aqui.
-- Compatibilidade pontual ajuda a desenhar um futuro ticket; não satisfaz os
-  gates de erasure, controlador externo, restore ou perfil novo. Nenhum deles
-  foi ativado, e estes três grupos não contam como checks de produto entregues.
+- Somente operação quiescente, pequena, em nó local com bootstrap. Sem concorrência de PUT, perda de processo, restart de RustFS, falha de disco, partição ou resultado externo ambíguo. DELETE+GET404 não demonstra fencing de um PUT ainda em voo.
+- Sem Object Lock, legal hold, retention, MFA, bypass, política IAM ou credencial restrita configurados/modificados. Não houve AccessDenied nesta amostra; isso não prova isolamento, nem suporte seguro a holds, nem permissões do runtime.
+- Sem batch DeleteObjects, replicação, lifecycle, versioning suspenso, multipart completo, copy, criptografia, backups, rollback ou destruição física da mídia. Não se conclui ausência de cópias fora das APIs inventariadas.
+- A versão literal `"null"` existe e precisa ser representada distintamente de ausência de VersionId. A porta atual que normaliza esses casos não serve como porta exaustiva de purge; nenhum código dessa porta foi alterado aqui.
+- Compatibilidade pontual ajuda a desenhar um futuro ticket; não satisfaz os gates de erasure, controlador externo, restore ou perfil novo. Nenhum deles foi ativado, e estes três grupos não contam como checks de produto entregues.
 
 ## Reprodução e evidência
 
-O probe manual fica em `.local/erasure-s3-feasibility/probe.mjs`, ignorado pelo Git,
-na worktree do autor `/Users/enzotironi/zoen-ex01-proof`. Sua fonte exata está no
-apêndice abaixo para reprodução sem depender desse arquivo não rastreado.
-Extrair apenas o bloco marcado para `.local`; não registrá-lo como runtime,
-CLI default ou teste de produto. Cada execução gera novo bucket e novo JSONL
-modo 0600. O código não recebe nome de bucket externo e só limpa o que criou.
+O probe manual fica em `.local/erasure-s3-feasibility/probe.mjs`, ignorado pelo Git, na worktree do autor `/Users/enzotironi/zoen-ex01-proof`. Sua fonte exata está no apêndice abaixo para reprodução sem depender desse arquivo não rastreado. Extrair apenas o bloco marcado para `.local`; não registrá-lo como runtime, CLI default ou teste de produto. Cada execução gera novo bucket e novo JSONL modo 0600. O código não recebe nome de bucket externo e só limpa o que criou.
 
-```sh
+````sh
 python3 - <<'PY'
 from pathlib import Path
 report = Path('docs/verification/erasure-s3-feasibility.md').read_text()
-source = report.rsplit('<!-- probe-source -->', 1)[1].split('```javascript\n', 1)[1].split('\n```', 1)[0]
+source = report.rsplit('<!-- probe-source -->', 1)[1].split('```text\n', 1)[1].split('\n```', 1)[0]
 target = Path('.local/erasure-s3-feasibility/probe.mjs')
 target.parent.mkdir(parents=True, exist_ok=True)
 target.write_text(source + '\n')
 PY
 /Users/enzotironi/.local/share/mise/installs/node/24.18.1/bin/node --env-file=.env.infra .local/erasure-s3-feasibility/probe.mjs
-```
+````
 
-O caminho do binário acima foi o realmente usado; em outra máquina selecionar
-Node24 disponível. Não imprimir `.env.infra` nem payload de erro completo do SDK.
-O probe registra apenas nome/status de erro, referências sintéticas e resultados.
+O caminho do binário acima foi o realmente usado; em outra máquina selecionar Node24 disponível. Não imprimir `.env.infra` nem payload de erro completo do SDK. O probe registra apenas nome/status de erro, referências sintéticas e resultados.
 
-SHA-256 da fonte final executada:
-`b91003a28a2f509e62941fe90033af16911d53748025791476d174b368203061`.
-SHA-256 de `.local/erasure-s3-feasibility/node24-console.jsonl`:
-`dfb441f62362c76fe63e822e7cd380c28b173604dcfeca9943cb2774501c1497`.
-Os hashes identificam arquivos observados; não são certificados de provider.
-A execução Node22 permanece em `result.jsonl`; a Node24 também gerou JSONL com
-nome próprio. Resumo Node24: três PASS, cleanup-complete e exit 0. Todos os
-status e inventários descritos neste relatório vieram dessas respostas reais.
+SHA-256 da fonte final executada: `b91003a28a2f509e62941fe90033af16911d53748025791476d174b368203061`. SHA-256 de `.local/erasure-s3-feasibility/node24-console.jsonl`: `dfb441f62362c76fe63e822e7cd380c28b173604dcfeca9943cb2774501c1497`. Os hashes identificam arquivos observados; não são certificados de provider. A execução Node22 permanece em `result.jsonl`; a Node24 também gerou JSONL com nome próprio. Resumo Node24: três PASS, cleanup-complete e exit 0. Todos os status e inventários descritos neste relatório vieram dessas respostas reais.
 
 ## Apêndice — probe manual executado
 
 <!-- probe-source -->
-```javascript
+
+```text
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { appendFileSync, writeFileSync } from 'node:fs';
