@@ -21,7 +21,7 @@
     },
     {
       "agent": "tickets_redesign",
-      "task": "EX20-independent-migration-review",
+      "task": "EX23-independent-disclosure-review",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
@@ -126,6 +126,20 @@
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "Compor a cerca real do banco de autoridade nos fixtures standalone de identidade; sem adapter opcional ou falso."
+    },
+    {
+      "task": "EX22-durable",
+      "path": "packages/authority/src/ports/disclosure/fence.ts",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "Aplicar somente DisclosurePermit/retorno shared congelados por root junto ao adapter compilável; não ampliar o port."
+    },
+    {
+      "task": "EX23-cli",
+      "path": "apps/cli/src/sharing/**",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "CLI compartilhamento implementada e revisada por worker-3; integração HTTP viva depende do profile novo."
     }
   ],
   "checkpoints": [
@@ -236,6 +250,41 @@
       "browser_acceptance_tests": 7,
       "browser_component_tests": 7,
       "scope": "CSV explícito, bytes/intent/replay, retenção e SIGKILL com revisão independente; migração histórica SQL/S3 parcial. A CI da imagem nova ainda está pendente. Compartilhamento segue em implementação sem ativação."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "92c26a73549a9bb3f92b48b82d23a66ac1d4f864",
+      "packages": ["EX16", "EX17", "EX18", "EX19"],
+      "state": "verified_for_profile",
+      "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
+      "evidence": "docs/verification/csv-local.md",
+      "remote_ci": {
+        "commit": "92c26a73549a9bb3f92b48b82d23a66ac1d4f864",
+        "result": "success",
+        "url": "https://github.com/EnzoTironi/zoen/actions/runs/33987618009"
+      },
+      "unit_tests": 189,
+      "integration_tests": 110,
+      "browser_component_tests": 7,
+      "browser_acceptance_tests": 7,
+      "scope": "Imagem nova construída e provisionada no CI; sete cenários de aceitação passaram. Não prova upgrade de instalação antiga, cerca de emissão, D03 ou as entregas integrais."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "d7941bb",
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "state": "candidate_with_reproduced_disclosure_failure",
+      "witness_commits": [
+        "420fc38",
+        "0fc5390",
+        "732d120",
+        "baba10c",
+        "8ca4a8d",
+        "a3c8b0f",
+        "2487c65"
+      ],
+      "evidence": "docs/contracts/disclosure-durable.md",
+      "scope": "Membership, audience privada, guards de replay, SIGKILL e migrações possuem provas reais por recorte. CLI revisada sem HTTP vivo. Perda do coordenador reproduziu emissão tardia; snapshot antigo também foi refutado. Contrato durável revisado, SQL006 e tratamento do snapshot provados; adapter, executor, writer e ordenações HTTP seguem em integração sem ativação."
     }
   ],
   "verified_deliveries": [],

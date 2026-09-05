@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "planned",
-  "scope": "Pacotes D01/D02 e expansão CSV; estados planejados são requisitos, progresso executado fica em planning/progress.json",
+  "scope": "Pacotes D01/D02, CSV e compartilhamento local; estados planejados são requisitos, progresso executado fica em planning/progress.json",
   "workers": {
     "worker-1": {
       "model": "gpt-6-astra",
@@ -1320,10 +1320,12 @@
         "docs/quality.md",
         "docs/contracts/d03-sharing.md",
         "docs/contracts/disclosure-fence.md",
-        "docs/contracts/disclosure-handoff-review.md"
+        "docs/contracts/disclosure-handoff-review.md",
+        "docs/contracts/disclosure-durable.md"
       ],
       "contracts_consumed": [
-        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado."
+        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado.",
+        "Revisão durável congelada em 4357917: pending sem TTL, subjects contra snapshot antigo, fechamento terminal de sessão e callback HTTP síncrono com ACK explícito."
       ],
       "id": "EX20",
       "title": "Congelar compartilhamento, cerca e migração aditiva de memberships",
@@ -1343,7 +1345,8 @@
         "packages/authority/src/ports/disclosure/**",
         "packages/authority/src/ports/sharing/**",
         "ops/migrations/**",
-        "apps/server/test/adapters/postgres/d01/database.ts"
+        "apps/server/test/adapters/postgres/d01/database.ts",
+        "apps/server/sql/proposals/disclosure/**"
       ]
     },
     {
@@ -1382,10 +1385,12 @@
         "docs/quality.md",
         "docs/contracts/d03-sharing.md",
         "docs/contracts/disclosure-fence.md",
-        "docs/contracts/disclosure-handoff-review.md"
+        "docs/contracts/disclosure-handoff-review.md",
+        "docs/contracts/disclosure-durable.md"
       ],
       "contracts_consumed": [
-        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado."
+        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado.",
+        "Revisão durável congelada em 4357917: pending sem TTL, subjects contra snapshot antigo, fechamento terminal de sessão e callback HTTP síncrono com ACK explícito."
       ],
       "id": "EX21",
       "title": "Executar grant, revoke e leitura viewer no núcleo comum",
@@ -1455,19 +1460,22 @@
         "docs/quality.md",
         "docs/contracts/d03-sharing.md",
         "docs/contracts/disclosure-fence.md",
-        "docs/contracts/disclosure-handoff-review.md"
+        "docs/contracts/disclosure-handoff-review.md",
+        "docs/contracts/disclosure-durable.md"
       ],
       "contracts_consumed": [
-        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado."
+        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado.",
+        "Revisão durável congelada em 4357917: pending sem TTL, subjects contra snapshot antigo, fechamento terminal de sessão e callback HTTP síncrono com ACK explícito."
       ],
       "id": "EX22",
       "title": "Implementar cerca PostgreSQL e elegibilidade no adapter real",
       "owner": "worker-2",
-      "scope": "Pool de cerca separado e limitado no mesmo banco de autoridade, chaves compartilhadas, cleanup/descarte; logout real coordenado e lookup exato no pool identity.",
+      "scope": "Pool limitado no PostgreSQL de autoridade; permits duráveis, subjects, fechamento terminal de sessão, ACK explícito e cleanup físico. Logout real e elegibilidade exata pelo pool identity.",
       "acceptance": [
         "Sessão física nunca retorna ao pool com aquisição/unlock ambíguo; prazo original limita novas aquisições.",
         "Logout adquire exclusivo antes de invalidar e conserva até pós-verificação; 503 não confirma revogação.",
-        "PrincipalDirectory lê somente existência do UUID exato; credencial identity não muda."
+        "PrincipalDirectory lê somente existência do UUID exato; credencial identity não muda.",
+        "Perda física do coordenador não permite confirmar revogação/logout atravessando pending; Scope, timeout e cancelamento não equivalem a ACK."
       ],
       "planned_direct_checks": [
         "Dois clientes PostgreSQL reais provam compartilhados/exclusivo/ordem/cleanup; matar conexão não polui pool.",
@@ -1516,17 +1524,19 @@
         "docs/quality.md",
         "docs/contracts/d03-sharing.md",
         "docs/contracts/disclosure-fence.md",
-        "docs/contracts/disclosure-handoff-review.md"
+        "docs/contracts/disclosure-handoff-review.md",
+        "docs/contracts/disclosure-durable.md"
       ],
       "contracts_consumed": [
-        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado."
+        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado.",
+        "Revisão durável congelada em 4357917: pending sem TTL, subjects contra snapshot antigo, fechamento terminal de sessão e callback HTTP síncrono com ACK explícito."
       ],
       "id": "EX23",
       "title": "Compor compartilhamento e emissão e verificar web/CLI",
       "owner": "root",
-      "scope": "Mesmo executor compõe família sharing e buffers sob Scope real HTTP; superfícies enviam intenções explícitas e provam revogação em voo.",
+      "scope": "Mesmo executor compõe sharing e writer JSON síncrono com ACK durável no Scope real; superfícies enviam intenções explícitas e provam revogação em voo.",
       "acceptance": [
-        "Bytes só chegam ao emitter depois de codificação, gate e revalidação; Scope dura até writer Node concluir.",
+        "Codificação, gate, revalidação e último check temporal precedem callback síncrono do writer; ACK ocorre somente após end retornado ou ausência comprovada de futura emissão.",
         "Duas ordens reais de grant/revoke/logout e emissão observadas em processos distintos.",
         "Web e CLI exibem audiência/estado atual, conservam operationId/revisão no retry e negam viewer sem controles privilegiados."
       ],
