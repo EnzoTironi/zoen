@@ -5,6 +5,7 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
+import { withD01Database as withCorrectionsDatabase } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { importEvidence } from "../../../../packages/authority/src/evidence/d01/import.js";
 import { answerQuestion } from "../../../../packages/authority/src/knowledge/corrections/answer.js";
@@ -18,7 +19,6 @@ import {
   ProposeCorrection,
 } from "../../../../packages/contracts/src/d01/operations.js";
 import { configuration, makeInput } from "../commit/fixture.js";
-import { withCorrectionsDatabase } from "./fixture.js";
 
 it.live(
   "EX13 changed released meaning conflicts, a real relevant import makes the retained question Stale, and another principal cannot answer it",
