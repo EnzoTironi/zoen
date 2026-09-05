@@ -1,14 +1,17 @@
 import { Stale, Unavailable } from "@zoen/contracts/d01/errors";
 import { Instant, Revision, exact } from "@zoen/contracts/d01/values";
+import { PrincipalRef } from "@zoen/contracts/sharing/operations";
 import { DateTime, Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
+import type { CurrentInternalBasis } from "../ports/d01/basis.js";
 import {
   DomainCut,
   DomainKey,
   InternalBasis,
   SourceDependency,
 } from "../ports/d01/basis.js";
+import type { VerifiedRequestContext } from "../ports/d01/context.js";
 import { structuredDigest } from "../values/canonical.js";
 
 const DomainRow = Schema.Struct({
@@ -50,39 +53,63 @@ export const temporalGuardsHold = (
   );
 };
 
-export const validateBasis = Effect.fn("authority.commit.validateBasis")(
-  function* validateBasis(
-    basis: InternalBasis,
-    current: {
-      readonly worldRef: InternalBasis["worldRef"];
-      readonly head: InternalBasis["head"];
-      readonly cut: DomainCut;
-      readonly membershipRevision: typeof Revision.Type;
-    }
+export interface BasisSnapshot {
+  readonly worldRef: CurrentInternalBasis["worldRef"];
+  readonly head: CurrentInternalBasis["head"];
+  readonly cut: DomainCut;
+  readonly membershipRevision: typeof Revision.Type;
+  readonly principalId: VerifiedRequestContext["presence"]["principalId"];
+  readonly purpose: VerifiedRequestContext["purpose"];
+}
+
+/** Validate retained meaning before querying individual sources or the commit clock. */
+export const validateBasisSnapshot = Effect.fn(
+  "authority.commit.validateBasisSnapshot"
+)(function* validateBasisSnapshot(
+  basis: InternalBasis,
+  current: BasisSnapshot
+) {
+  const retained = yield* Schema.decodeEffect(InternalBasis)(basis).pipe(
+    Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+  );
+  if (!("schemaVersion" in retained)) {
+    return yield* new Stale({ code: "STALE" });
+  }
+  const saved = retained;
+  const principalRef = yield* Schema.decodeEffect(PrincipalRef)(
+    current.principalId
+  ).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
+  const digest = yield* structuredDigest("read-set", saved.readSet);
+  if (
+    digest !== saved.readSetDigest ||
+    saved.worldRef.worldId !== current.worldRef.worldId ||
+    saved.worldRef.realm !== current.worldRef.realm ||
+    saved.head.cellEpoch !== current.head.cellEpoch ||
+    saved.head.releaseDigest !== current.head.releaseDigest ||
+    saved.head.generationId !== current.head.generationId ||
+    saved.head.securityRevision !== current.head.securityRevision ||
+    saved.readSet.membershipRevision !== current.membershipRevision ||
+    saved.readSet.identities.some(
+      (dependency) =>
+        dependency.principalRef !== principalRef ||
+        dependency.purpose !== current.purpose ||
+        dependency.revision !== current.cut.identity
+    ) ||
+    DomainKey.literals.some(
+      (domain) => saved.cut[domain] !== current.cut[domain]
+    ) ||
+    saved.readSet.predicates.some(
+      (predicate) => predicate.version !== current.cut.claims
+    )
   ) {
-    const saved = yield* Schema.decodeEffect(InternalBasis)(basis).pipe(
-      Effect.mapError(() => new Stale({ code: "STALE" }))
-    );
-    const digest = yield* structuredDigest("read-set", saved.readSet);
-    if (
-      digest !== saved.readSetDigest ||
-      saved.worldRef.worldId !== current.worldRef.worldId ||
-      saved.worldRef.realm !== current.worldRef.realm ||
-      saved.head.cellEpoch !== current.head.cellEpoch ||
-      saved.head.releaseDigest !== current.head.releaseDigest ||
-      saved.head.generationId !== current.head.generationId ||
-      saved.head.securityRevision !== current.head.securityRevision ||
-      saved.readSet.membershipRevision !== current.membershipRevision ||
-      saved.readSet.identities.length !== 0 ||
-      DomainKey.literals.some(
-        (domain) => saved.cut[domain] !== current.cut[domain]
-      ) ||
-      saved.readSet.predicates.some(
-        (predicate) => predicate.version !== current.cut.claims
-      )
-    ) {
-      return yield* new Stale({ code: "STALE" });
-    }
+    return yield* new Stale({ code: "STALE" });
+  }
+  return saved;
+});
+
+export const validateBasis = Effect.fn("authority.commit.validateBasis")(
+  function* validateBasis(basis: InternalBasis, current: BasisSnapshot) {
+    const saved = yield* validateBasisSnapshot(basis, current);
     const sql = yield* SqlClient.SqlClient;
     for (const source of saved.readSet.sources) {
       const [row] = yield* sql`

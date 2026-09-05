@@ -11,6 +11,7 @@ const readSet = Schema.decodeSync(ReadSet)({
   identities: [],
   membershipRevision: "0",
   predicates: [],
+  schemaVersion: "authority.read-set.v2",
   sources: [],
   temporalGuards: [
     {

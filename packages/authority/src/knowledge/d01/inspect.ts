@@ -23,7 +23,7 @@ import {
   restoreSqlDefect,
   sanitizeSqlFailure,
 } from "../../commit/transaction.js";
-import { InternalBasis, ReadSet } from "../../ports/d01/basis.js";
+import { CurrentInternalBasis, ReadSet } from "../../ports/d01/basis.js";
 import type { VerifiedRequestContext } from "../../ports/d01/context.js";
 import { canonicalJson, structuredDigest } from "../../values/canonical.js";
 import { readScopedCorrections } from "../corrections/projection.js";
@@ -132,10 +132,11 @@ export const inspect = Effect.fn("authority.knowledge.inspect")(
                 version: cut.claims,
               },
             ],
+            schemaVersion: "authority.read-set.v2",
             sources,
             temporalGuards: [],
           });
-          const basis = yield* Schema.decodeEffect(InternalBasis)({
+          const basis = yield* Schema.decodeEffect(CurrentInternalBasis)({
             cut,
             head: {
               cellEpoch: access.cell_epoch,
@@ -145,6 +146,7 @@ export const inspect = Effect.fn("authority.knowledge.inspect")(
             },
             readSet,
             readSetDigest: yield* structuredDigest("read-set", readSet),
+            schemaVersion: "authority.basis.v2",
             worldRef: request.worldRef,
           });
           const basisJson = yield* canonicalJson(basis);

@@ -39,6 +39,7 @@ const initialCut = Schema.decodeSync(DomainCut)({
   cases: "0",
   claims: "0",
   evidence: "0",
+  identity: "0",
   membership: "0",
   sources: "0",
 });

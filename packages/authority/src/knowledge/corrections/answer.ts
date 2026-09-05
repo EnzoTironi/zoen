@@ -15,7 +15,7 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { authorizeWorld } from "../../access/world.js";
 import { bindWorldIntent } from "../../commit/intent.js";
-import { commitMutation } from "../../commit/mutation.js";
+import { commitMutation, readMutationReplay } from "../../commit/mutation.js";
 import { DomainKey } from "../../ports/d01/basis.js";
 import type { VerifiedRequestContext } from "../../ports/d01/context.js";
 import { CorrectionAnswer } from "../../ports/d01/persistence.js";
@@ -32,13 +32,17 @@ export const answerQuestion = Effect.fn("authority.corrections.answer")(
     const request = yield* Schema.decodeEffect(AnswerQuestion)(input).pipe(
       Effect.mapError(() => new InvalidInput({ code: "INVALID_INPUT" }))
     );
+    const bound = yield* bindWorldIntent(request);
+    const replay = yield* readMutationReplay(context, bound);
+    if (replay !== null) {
+      return yield* Schema.decodeUnknownEffect(CorrectionApplied)(replay);
+    }
     yield* authorizeWorld(context, request.worldRef);
     const saved = yield* readCorrectionCase(
       context,
       request.worldRef,
       request.input.questionRef
     );
-    const bound = yield* bindWorldIntent(request);
     const correctionRef =
       yield* Schema.decodeEffect(CorrectionRef)(randomUUID());
     const sql = yield* SqlClient.SqlClient;

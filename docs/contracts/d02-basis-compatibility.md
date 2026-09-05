@@ -144,3 +144,18 @@ Duas precisões são necessárias:
 Hoje Inspect serializa visible antes do INSERT, mas FrameInspected é embrulhado depois; persistReceipt serializa result dentro do commit; a emissão serializa/limita novamente depois que o handler concluiu. Essa ordem não prova ausência de Frame/Case persistido para uma resposta final que exceda limite. O pacote futuro deve verificar o resultado completo antes de persistir os novos objetos/efeitos; o check final do executor continua uma defesa adicional, não a prova transacional.
 
 Oráculo adicional: grafo com chaves/linhagem e múltiplas células perto dos limites, ainda abaixo das quotas numéricas, que caiba como Frame mas ultrapasse bytes ou entries na Question. A proposta inteira deve falhar sem Case parcial; os writers não podem admitir estado que viole a garantia de recuperação escolhida. Depois, imports reais que alteram somente claims devem conservar exatamente o orçamento estrutural e permitir a recuperação contratada. Nenhum benchmark, teste de bytes ou teste de migração foi executado nesta auditoria documental.
+
+## Implementação candidata EX25 — 2026-09-05
+
+A worktree isolada `codex/ex25-basis-v2`, iniciada em `aaa30db2aeac2e4b6abf96569f6efca236147c69`, implementa os schemas privados ratificados, o cut atual com identity, emissão v2 em Inspect/genesis, dependência estrutural privada canônica e validação contra principal/purpose/revisão. O prefixo de structuredDigest não foi alterado. Loaders históricos continuam usando a união retida; não houve reescrita de persistência histórica.
+
+Os três handlers de correção agora verificam replay reautorizado antes de carregar Frame/Case e mantêm a verificação transacional. Scope da proposta e visibilidade do alvo de undo foram deslocados para apply, depois de replay/validateBasis: isso evita um erro de escopo de um novo ato prevalecer sobre Stale de uma base legada válida. O cálculo usa o mesmo Frame e request imutáveis; não reinspeciona fontes nem renova consentimento durante retry.
+
+Evidência executada nesta etapa:
+
+- Antes da alteração de schemas, a testemunha sintética `basis.EX25.test.ts` produziu 3 falhas/1 passagem: nova versão recusada, sexto domínio recusado e read set legado indevidamente aceito como escrita atual. Falhas preservadas nesta descrição; essa testemunha não substitui o histórico real BC-01.
+- Depois: 17 testes focados passaram (10 EX25, 2 temporais EX05 e 5 contratos privados EX02). O digest legado foi conferido contra SHA-256 calculado independentemente do JSON canônico e prefixo antigos.
+- Suite unitária completa deste checkout: 28 arquivos, 208 testes passaram. Build de contratos/autoridade passou. Lint das fontes/testes alterados passou após correções de estilo/tipos, sem supressões.
+- Typecheck global inicialmente apontou, além de erros locais já corrigidos, os fixtures fora da allowlist `apps/server/test/adapters/postgres/d01/seed.ts` e `tests/integration/d01/commit/guards.EX05.integration.test.ts`. Root coordena seus ajustes; o seed histórico deve usar LegacyDomainCut, sem inventar identidade no histórico.
+
+Não foram executadas migração, integração de banco novo, BC-01–09 ou journey de identidade nesta etapa. O baseline real anterior está sendo preparado independentemente por W3; DDL007, fixtures, perfil e composição são do integrador. Estes testes puros e build não aceitam EX25 nem D02 completos.

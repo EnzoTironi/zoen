@@ -10,8 +10,8 @@ import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { bindWorldIntent } from "../../commit/intent.js";
-import { commitMutation } from "../../commit/mutation.js";
-import { DomainKey, InternalBasis } from "../../ports/d01/basis.js";
+import { commitMutation, readMutationReplay } from "../../commit/mutation.js";
+import { CurrentInternalBasis, DomainKey } from "../../ports/d01/basis.js";
 import type { VerifiedRequestContext } from "../../ports/d01/context.js";
 import { StoredQuestion } from "../../ports/d01/persistence.js";
 import { canonicalJson, structuredDigest } from "../../values/canonical.js";
@@ -26,41 +26,47 @@ export const proposeCorrection = Effect.fn("authority.corrections.propose")(
     const request = yield* Schema.decodeEffect(ProposeCorrection)(input).pipe(
       Effect.mapError(() => new InvalidInput({ code: "INVALID_INPUT" }))
     );
+    const bound = yield* bindWorldIntent(request);
+    const replay = yield* readMutationReplay(context, bound);
+    if (replay !== null) {
+      return yield* Schema.decodeUnknownEffect(CorrectionProposed)(replay);
+    }
     const saved = yield* loadCorrectionFrame(
       context,
       request.worldRef,
       request.input.frameRef
     );
-    const consequence = yield* validateCorrectionScope(
-      saved.visible_frame,
-      request.input.consequence
-    );
-    const consequenceDigest = yield* structuredDigest(
-      "correction-consequence",
-      { consequence, frameRef: request.input.frameRef }
-    );
     const caseRef = yield* Schema.decodeEffect(CaseRef)(randomUUID());
     const questionRef = yield* Schema.decodeEffect(QuestionRef)(randomUUID());
-    const question = yield* Schema.decodeEffect(StoredQuestion)({
-      allowedAnswers: ["confirm", "unknown"],
-      consequenceDigest,
-      questionRef,
-      version: "d01.v1",
-    });
-    const bound = yield* bindWorldIntent(request);
     const sql = yield* SqlClient.SqlClient;
     const result = yield* commitMutation(context, bound, {
       apply: (receiptRef, cut) =>
         Effect.gen(function* saveProposal() {
+          const consequence = yield* validateCorrectionScope(
+            saved.visible_frame,
+            request.input.consequence
+          );
+          const consequenceDigest = yield* structuredDigest(
+            "correction-consequence",
+            { consequence, frameRef: request.input.frameRef }
+          );
+          const question = yield* Schema.decodeEffect(StoredQuestion)({
+            allowedAnswers: ["confirm", "unknown"],
+            consequenceDigest,
+            questionRef,
+            version: "d01.v1",
+          });
           const revision = yield* Schema.decodeEffect(Revision)(
             (BigInt(cut.cases) + 1n).toString()
           );
           // Only this proposal's known cases increment changes the retained base.
           // Its read set, meaning and every external dependency remain byte-for-byte bound.
-          const basis = yield* Schema.decodeEffect(InternalBasis)({
-            ...saved.internal_basis,
-            cut: { ...saved.internal_basis.cut, cases: revision },
-          });
+          const basis = yield* Schema.decodeUnknownEffect(CurrentInternalBasis)(
+            {
+              ...saved.internal_basis,
+              cut: { ...saved.internal_basis.cut, cases: revision },
+            }
+          );
           const basisJson = yield* canonicalJson(basis);
           const questionJson = yield* canonicalJson(question);
           const consequenceJson = yield* canonicalJson(consequence);

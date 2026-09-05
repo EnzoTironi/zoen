@@ -1,7 +1,9 @@
 import {
+  DateInterval,
   Digest,
   EvidenceRef,
   Instant,
+  Purpose,
   RecordKey,
   Revision,
   SourceRef,
@@ -10,14 +12,23 @@ import {
   WorldRef,
   exact,
 } from "@zoen/contracts/d01/values";
+import { PrincipalRef } from "@zoen/contracts/sharing/operations";
 import { Schema } from "effect";
 
-export const DomainKey = Schema.Literals([
+export const LegacyDomainKey = Schema.Literals([
   "membership",
   "sources",
   "evidence",
   "claims",
   "cases",
+]);
+export const LegacyDomainCut = Schema.Record(
+  LegacyDomainKey,
+  Revision
+).annotate(exact);
+export const DomainKey = Schema.Literals([
+  ...LegacyDomainKey.literals,
+  "identity",
 ]);
 export const DomainCut = Schema.Record(DomainKey, Revision).annotate(exact);
 export type DomainCut = typeof DomainCut.Type;
@@ -39,7 +50,7 @@ export const PredicateDependency = Schema.Struct({
   subjectKey: SubjectKey,
   version: Revision,
 }).annotate(exact);
-export const IdentityDependency = Schema.Struct({
+export const LegacyIdentityDependency = Schema.Struct({
   namespace: RecordKey,
   revision: Revision,
   subjectKey: SubjectKey,
@@ -61,19 +72,77 @@ export const TemporalGuard = Schema.Struct({
     )
   )
   .annotate(exact);
-export const ReadSet = Schema.Struct({
+const readSetFields = {
   clockSample: ClockSample,
-  identities: Schema.Array(IdentityDependency),
   membershipRevision: Revision,
   predicates: Schema.Array(PredicateDependency),
   sources: Schema.Array(SourceDependency),
   temporalGuards: Schema.Array(TemporalGuard),
+};
+export const LegacyReadSet = Schema.Struct({
+  ...readSetFields,
+  identities: Schema.Array(LegacyIdentityDependency),
 }).annotate(exact);
-export const InternalBasis = Schema.Struct({
-  cut: DomainCut,
+export type LegacyReadSet = typeof LegacyReadSet.Type;
+
+const graphAnchors = Schema.Array(SubjectKey).check(
+  Schema.isMinLength(1),
+  Schema.isMaxLength(32),
+  Schema.makeFilter((anchors) =>
+    anchors.every((anchor, index) => {
+      const previous = anchors[index - 1];
+      return previous === undefined || previous < anchor;
+    })
+  )
+);
+export const SubjectIdentityGraph = Schema.TaggedStruct(
+  "SubjectIdentityGraph",
+  {
+    anchors: graphAnchors,
+    closureAnchors: graphAnchors,
+    interval: DateInterval,
+    principalRef: PrincipalRef,
+    purpose: Purpose,
+    revision: Revision,
+  }
+)
+  .check(
+    Schema.makeFilter((dependency) =>
+      dependency.anchors.every((anchor) =>
+        dependency.closureAnchors.includes(anchor)
+      )
+    )
+  )
+  .annotate(exact);
+export const IdentityDependency = SubjectIdentityGraph;
+export const CurrentReadSet = Schema.Struct({
+  ...readSetFields,
+  identities: Schema.Array(IdentityDependency),
+  schemaVersion: Schema.Literal("authority.read-set.v2"),
+}).annotate(exact);
+export type CurrentReadSet = typeof CurrentReadSet.Type;
+export const ReadSet = CurrentReadSet;
+
+const basisFields = {
   head: Head,
-  readSet: ReadSet,
   readSetDigest: Digest,
   worldRef: WorldRef,
+};
+export const LegacyInternalBasis = Schema.Struct({
+  ...basisFields,
+  cut: LegacyDomainCut,
+  readSet: LegacyReadSet,
 }).annotate(exact);
+export type LegacyInternalBasis = typeof LegacyInternalBasis.Type;
+export const CurrentInternalBasis = Schema.Struct({
+  ...basisFields,
+  cut: DomainCut,
+  readSet: CurrentReadSet,
+  schemaVersion: Schema.Literal("authority.basis.v2"),
+}).annotate(exact);
+export type CurrentInternalBasis = typeof CurrentInternalBasis.Type;
+export const InternalBasis = Schema.Union([
+  LegacyInternalBasis,
+  CurrentInternalBasis,
+]);
 export type InternalBasis = typeof InternalBasis.Type;

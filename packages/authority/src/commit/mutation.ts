@@ -167,6 +167,8 @@ export const commitMutation = Effect.fn("authority.commit.commitMutation")(
               securityRevision: access.security_revision,
             },
             membershipRevision: access.membership_revision,
+            principalId: context.presence.principalId,
+            purpose: context.purpose,
             worldRef,
           });
         }

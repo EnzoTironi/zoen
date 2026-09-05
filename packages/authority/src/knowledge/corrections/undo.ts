@@ -15,7 +15,7 @@ import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { bindWorldIntent } from "../../commit/intent.js";
-import { commitMutation } from "../../commit/mutation.js";
+import { commitMutation, readMutationReplay } from "../../commit/mutation.js";
 import { DomainKey } from "../../ports/d01/basis.js";
 import type { VerifiedRequestContext } from "../../ports/d01/context.js";
 import { CorrectionAnswer } from "../../ports/d01/persistence.js";
@@ -31,25 +31,30 @@ export const undoCorrection = Effect.fn("authority.corrections.undo")(
     const request = yield* Schema.decodeEffect(UndoCorrection)(input).pipe(
       Effect.mapError(() => new InvalidInput({ code: "INVALID_INPUT" }))
     );
+    const bound = yield* bindWorldIntent(request);
+    const replay = yield* readMutationReplay(context, bound);
+    if (replay !== null) {
+      return yield* Schema.decodeUnknownEffect(CorrectionUndone)(replay);
+    }
     const saved = yield* loadCorrectionFrame(
       context,
       request.worldRef,
       request.input.frameRef
     );
-    if (
-      !saved.visible_frame.scopedCorrections.some(
-        (decision) => decision.correctionRef === request.input.correctionRef
-      )
-    ) {
-      return yield* new NotFoundOrDenied({ code: "NOT_FOUND_OR_DENIED" });
-    }
-    const bound = yield* bindWorldIntent(request);
     const correctionRef =
       yield* Schema.decodeEffect(CorrectionRef)(randomUUID());
     const sql = yield* SqlClient.SqlClient;
     const result = yield* commitMutation(context, bound, {
       apply: (receiptRef, cut) =>
         Effect.gen(function* appendRetraction() {
+          if (
+            !saved.visible_frame.scopedCorrections.some(
+              (decision) =>
+                decision.correctionRef === request.input.correctionRef
+            )
+          ) {
+            return yield* new NotFoundOrDenied({ code: "NOT_FOUND_OR_DENIED" });
+          }
           const active = yield* readScopedCorrections(
             context,
             request.worldRef,
