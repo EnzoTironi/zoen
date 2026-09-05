@@ -30,3 +30,9 @@ O usuário `zoen_infra` instala namespaces de teste; `zoen_runtime` não possui 
 Subir: `docker compose --env-file .env.infra -f ops/compose.yaml up -d --wait`. Integrações: `pnpm test:integration`. Não remover volumes locais para corrigir uma falha. O teardown com volumes da CI atua somente na execução efêmera daquele runner.
 
 Testes unitários usam `*.test.ts(x)`; integrações usam `*.integration.test.ts(x)`; navegador usa `*.spec.ts`. Seleção vazia é erro. `pnpm test:components` verifica a fixture explícita da interface; não conta como jornada do produto conectado. A jornada real será acrescentada com a composição HTTP/identidade correspondente.
+
+## Build dos módulos
+
+`pnpm build:core` compila os módulos reais de contracts e authority com TS7 e referências de projeto. Cada workspace publica seus próprios arquivos `dist/*.js` e declarações; o Node carrega o HttpApi e o executor compilados sem loader de teste. Imports relativos `.js` das fontes são resolvidos pelo compilador, e imports `.ts` são reescritos no artefato.
+
+A análise global continua cobrindo fontes e testes pelo tsconfig raiz. Vitest usa aliases explícitos para as fontes e herança do config nos dois projetos; as provas de unidade e integração não dependem de um `dist` antigo. A CI compila o core e carrega os módulos emitidos separadamente. Esse build não conclui o servidor, o cliente web ou a CLI, cujos entrypoints ainda estão em composição.

@@ -9,6 +9,7 @@
     "format:check": "oxfmt --check",
     "lint": "oxlint",
     "typecheck": "tsc --noEmit",
+    "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/authority/tsconfig.build.json",
     "test:unit": "vitest run --project unit",
     "test:integration": "node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration",
     "test:components": "playwright test"

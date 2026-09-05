@@ -1,3 +1,5 @@
+import { fileURLToPath } from "node:url";
+
 import { defineConfig } from "vitest/config";
 
 const generated = [
@@ -8,10 +10,21 @@ const generated = [
 ];
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@zoen/authority": fileURLToPath(
+        new URL("packages/authority/src", import.meta.url)
+      ),
+      "@zoen/contracts": fileURLToPath(
+        new URL("packages/contracts/src", import.meta.url)
+      ),
+    },
+  },
   test: {
     passWithNoTests: false,
     projects: [
       {
+        extends: true,
         test: {
           environment: "node",
           exclude: [...generated, "**/*.integration.test.{ts,tsx}"],
@@ -20,6 +33,7 @@ export default defineConfig({
         },
       },
       {
+        extends: true,
         test: {
           environment: "node",
           exclude: generated,

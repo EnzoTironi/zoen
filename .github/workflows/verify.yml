@@ -26,6 +26,11 @@ jobs:
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
+      - run: pnpm build:core
+      - name: Load compiled core with Node
+        run: |
+          node packages/contracts/dist/d01/api.js
+          node packages/authority/dist/semantic/executor.js
       - run: python3 tooling/verify_plan.py
 
   unit:
