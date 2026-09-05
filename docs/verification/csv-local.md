@@ -12,7 +12,9 @@ Estado em 2026-09-05: CSV explícito executa na composição local de JSON/corre
 - Navegador/CLI: três cenários CSV passaram no profile `csvv2` em 36,7 s. A execução reunida local passou nos **sete cenários**, em aproximadamente 1,5 minuto: JSON anterior, CSV, fontes mistas, correção/unknown/undo, Stale, histórico, logout/segunda identidade e retry. CLI por stdin e arquivo conserva CRLF, aspas e newline final, reproduz o mesmo receipt da web; JSON sem `--format` conserva o envelope legado.
 - Componentes: sete cenários Chromium passaram. Build, TS7, lint e formato passaram no escopo integrado antes da publicação da CI. As camadas têm significados distintos.
 
-A CLI `55917d9` foi revisada pelo worker 2: ajuda real com escolhas/exemplos, formato inválido termina com exit 2/erro JSON antes de consumir um stdin mantido aberto, sem achado no recorte. O worker 3 revisou parser/core/representação e migração; root reviu os diffs web e os oráculos. A imagem nova ainda precisa da CI após este checkpoint; a imagem JSON anterior não a comprova.
+A CLI `55917d9` foi revisada pelo worker 2: ajuda real com escolhas/exemplos, formato inválido termina com exit 2/erro JSON antes de consumir um stdin mantido aberto, sem achado no recorte. O worker 3 revisou parser/core/representação e migração; root reviu os diffs web e os oráculos.
+
+A [CI de `92c26a7`](https://github.com/EnzoTironi/zoen/actions/runs/33987618009), concluída em 2026-09-05 às 19:41 UTC, passou nos cinco jobs: quality, unit, integration, components e required. Executou 189 testes unitários/24 arquivos, 110 integrações/57 arquivos e sete cenários de componentes; construiu e provisionou uma imagem nova e executou os sete cenários de aceitação em 1,6 minuto. Os testes de falha de infraestrutura esperada também estão incluídos no resultado da suite. Esse commit contém candidatos de contratos/core de compartilhamento, mas ainda não compõe sua API nem sua cerca: a CI comprova o incremento CSV e os recortes exercidos, não aceitação de D03.
 
 ## Falhas e limites preservados
 
