@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-007/discovery.schema.json",
+  "title": "ZN-0044 discovery fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "subjectLabel", "clinicalFieldId", "sharedFieldId"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0044-discovery-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "subjectLabel": { "type": "string" },
+    "clinicalFieldId": { "type": "string", "const": "record.clinical_note" },
+    "sharedFieldId": { "type": "string", "const": "record.amount" }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "seed": "zn-0044-discovery-seed-v1",
+  "seedDigest": "ef5db15d76e69c6b8979715b05e91c956e9651c199bf34171bf5db7f03288086",
+  "purpose": "operations",
+  "subjectLabel": "discovery-subject-1",
+  "clinicalFieldId": "record.clinical_note",
+  "sharedFieldId": "record.amount"
+}

@@ -6,6 +6,7 @@ import { canonicalJson, exactKeys, list, object, parseJsonText, text, type JsonV
 import { KernelError, requireThat, ok, toPublicFailure } from '../../../kernel/src/result.js';
 import { createHash } from 'node:crypto';
 import { OPERATIONS, FOUNDATION, operation } from './registry.js';
+import { DiscoveryService, buildOpaqueEvidenceRef } from './discovery.js';
 import { comparableGroups, parseClaim, parseValidTime } from '../interpretation/claims.js';
 import { interpretVisible } from '../interpretation/reconcile.js';
 import { operationScope } from '../authority/guards.js';
@@ -145,14 +146,78 @@ export class SemanticExecutor {
     });
   }
   private async discover(request: SemanticEnvelope, context: VerifiedContext, descriptor: OperationDescriptor): Promise<JsonValue> {
-    exactKeys(request.input, []); const world = request.worldRef!;
+    exactKeys(request.input, [], ['explainOpaqueRef']); const world = request.worldRef!;
+    const explainRef = request.input['explainOpaqueRef'] === undefined ? null : text(request.input['explainOpaqueRef'], 200);
     const result = await this.authority.transaction(context, world, true, async sql => {
       const tx = await this.authority.enter(sql, context, world, descriptor, request.purpose, false);
-      const operations: JsonValue[] = [];
-      for (const candidate of OPERATIONS) if (candidate.scope === 'world' && await this.authority.authorizer.authorize(context, candidate, { world, sourceId: null, sensitivity: 'shared' }, tx.membership, request.purpose)) operations.push(asJson(candidate));
-      return { value: { worldRef: { ...world }, releaseDigest: tx.head.releaseDigest, operations, foundation: asJson(FOUNDATION) }, securityRevision: tx.head.securityRevision };
+      const discovery = new DiscoveryService();
+      if (explainRef !== null) {
+        // Opaque explanation reopen — authorized map only; missing/denied identical.
+        const evidenceRows = await sql.query<{ evidence_id: string; source_id: string }>(
+          'SELECT evidence_id,source_id FROM ontology.evidence WHERE world_id=$1 AND realm=$2 ORDER BY evidence_id LIMIT 501',
+          [world.worldId, world.realm],
+        );
+        const authorizedByRef = new Map<string, { evidenceId: ReturnType<typeof uuid>; fieldId: string; text: string }>();
+        for (const row of evidenceRows) {
+          const sourceId = uuid(row.source_id);
+          if (!(await this.authority.sourceAllowed(tx, context, descriptor, sourceId, request.purpose))) continue;
+          const evidenceId = uuid(row.evidence_id);
+          const ref = buildOpaqueEvidenceRef(world.worldId, evidenceId);
+          authorizedByRef.set(ref, {
+            evidenceId,
+            fieldId: 'record.label',
+            text: 'Authorized evidence explanation reference',
+          });
+        }
+        const explained = await discovery.explainOpaqueRef({
+          world,
+          context,
+          membership: tx.membership,
+          purpose: request.purpose,
+          opaqueRef: explainRef,
+          authorizedByRef,
+        });
+        if (explained.tag !== 'Ok') deny();
+        const explainedOk = explained as Extract<typeof explained, { tag: 'Ok' }>;
+        return {
+          value: { explanation: asJson(explainedOk.value) },
+          securityRevision: tx.head.securityRevision,
+          sources: [] as ReturnType<typeof uuid>[],
+        };
+      }
+      const sources = await sql.query<{ source_id: string }>('SELECT source_id FROM ontology.sources WHERE world_id=$1 AND realm=$2 ORDER BY source_id', [world.worldId, world.realm]);
+      const authorizedEvidence: { evidenceId: ReturnType<typeof uuid>; sourceId: ReturnType<typeof uuid> }[] = [];
+      const evidenceRows = await sql.query<{ evidence_id: string; source_id: string }>(
+        'SELECT evidence_id,source_id FROM ontology.evidence WHERE world_id=$1 AND realm=$2 ORDER BY evidence_id LIMIT 501',
+        [world.worldId, world.realm],
+      );
+      if (evidenceRows.length > 500) throw new KernelError('QuotaExceeded', 'DISCOVERY_EVIDENCE_LIMIT');
+      for (const row of evidenceRows) {
+        const sourceId = uuid(row.source_id);
+        if (!(await this.authority.sourceAllowed(tx, context, descriptor, sourceId, request.purpose))) continue;
+        authorizedEvidence.push({ evidenceId: uuid(row.evidence_id), sourceId });
+      }
+      void sources;
+      const outcome = await discovery.discover({
+        world,
+        context,
+        membership: tx.membership,
+        purpose: request.purpose,
+        releaseDigest: tx.head.releaseDigest,
+        securityRevision: tx.head.securityRevision,
+        sourceAclFreshness: tx.head.securityRevision,
+        authorizedEvidence,
+        authorizer: this.authority.authorizer,
+      });
+      if (outcome.tag !== 'Ok') deny();
+      const outcomeOk = outcome as Extract<typeof outcome, { tag: 'Ok' }>;
+      return {
+        value: asJson(outcomeOk.value),
+        securityRevision: tx.head.securityRevision,
+        sources: authorizedEvidence.map((e) => e.sourceId),
+      };
     });
-    await this.authority.reauthorize(context, world, descriptor, request.purpose, result.securityRevision);
+    await this.authority.reauthorize(context, world, descriptor, request.purpose, result.securityRevision, result.sources ?? []);
     return result.value;
   }
   private async registerSource(request: SemanticEnvelope, context: VerifiedContext, descriptor: OperationDescriptor): Promise<JsonValue> {

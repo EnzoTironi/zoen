@@ -36,3 +36,6 @@ export type FrameBasis = Readonly<{
   resultDigest: string;
   firstRun: boolean;
 }>;
+
+/** Discovery manifest shape (ZN-0044) — see discovery.ts for construction. */
+export type DiscoverySensitivity = 'shared' | 'owner-only';
