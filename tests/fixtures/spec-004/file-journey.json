@@ -1,0 +1,11 @@
+{
+  "seed": "zn-0030-file-journey-seed-v1",
+  "seedDigest": "4444444444444444444444444444444444444444444444444444444444444444",
+  "purpose": "operations",
+  "billAmount": "120.00",
+  "billCurrency": "BRL",
+  "mappingDigest": "5555555555555555555555555555555555555555555555555555555555555555",
+  "extractorVersion": "extract-csv-json-v1",
+  "mappingVersion": "mapping-bill-v1",
+  "maxBytes": 8192
+}

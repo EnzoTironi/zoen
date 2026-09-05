@@ -964,7 +964,7 @@
     "ticket_id": "ZN-0030",
     "spec_id": "SPEC-004",
     "test_file": "tests/journey/spec-004/file-journey.test.ts",
-    "plan_path": "tests/journey/spec-004/file-journey.test.ts",
+    "plan_path": "tests/journey/spec-004/file-journey.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -975,7 +975,7 @@
     "ticket_id": "ZN-0030",
     "spec_id": "SPEC-004",
     "test_file": "tests/journey/spec-004/file-journey.test.ts",
-    "plan_path": "tests/journey/spec-004/file-journey.test.ts",
+    "plan_path": "tests/journey/spec-004/file-journey.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -986,7 +986,7 @@
     "ticket_id": "ZN-0030",
     "spec_id": "SPEC-004",
     "test_file": "tests/journey/spec-004/file-journey.test.ts",
-    "plan_path": "tests/journey/spec-004/file-journey.test.ts",
+    "plan_path": "tests/journey/spec-004/file-journey.test.ts.plan.md",
     "status": "not-executed"
   },
   {

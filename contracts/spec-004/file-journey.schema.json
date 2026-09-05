@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-004/file-journey.schema.json",
+  "title": "ZN-0030 file-journey fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "billAmount", "billCurrency", "mappingDigest", "extractorVersion", "mappingVersion", "maxBytes"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0030-file-journey-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "billAmount": { "type": "string" },
+    "billCurrency": { "type": "string", "const": "BRL" },
+    "mappingDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "extractorVersion": { "type": "string" },
+    "mappingVersion": { "type": "string" },
+    "maxBytes": { "type": "integer", "minimum": 1 }
+  }
+}
