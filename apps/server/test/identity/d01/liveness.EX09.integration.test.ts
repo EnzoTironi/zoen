@@ -4,8 +4,7 @@ import { Presence } from "@zoen/authority/ports/d01/context";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { makeD01IdentityLayer } from "../../../src/identity/d01/identity.ts";
-import { withD01IdentityDatabase } from "./database.ts";
+import { makeTestIdentityLayer, withD01IdentityDatabase } from "./database.ts";
 import { createAccount } from "./http.ts";
 
 it.live(
@@ -85,7 +84,10 @@ it.live(
           }
           const failure = yield* Effect.void.pipe(
             Effect.provide(
-              makeD01IdentityLayer({ ...fixture.config, databaseUrl: url })
+              makeTestIdentityLayer(
+                { ...fixture.config, databaseUrl: url },
+                fixture.database
+              )
             ),
             Effect.flip
           );

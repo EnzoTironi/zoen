@@ -3,14 +3,30 @@ import { fileURLToPath } from "node:url";
 
 import { NodeFileSystem } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
-import { Effect, FileSystem, Redacted, Schema } from "effect";
+import { Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
+import { makeDisclosureFenceLayer } from "../../../src/adapters/postgres/disclosure/fence.ts";
+import type { D01IdentityConfig } from "../../../src/identity/d01/configuration.ts";
 import { grantD01IdentityRole } from "../../../src/identity/d01/grants.ts";
 import { makeD01IdentityLayer } from "../../../src/identity/d01/identity.ts";
 import { withD01Database } from "../../adapters/postgres/d01/database.ts";
 
 type Database = Parameters<Parameters<typeof withD01Database>[0]>[0];
+export const makeTestIdentityLayer = (
+  config: D01IdentityConfig,
+  database: Database
+) =>
+  makeD01IdentityLayer(config).pipe(
+    Layer.provideMerge(
+      makeDisclosureFenceLayer({
+        applicationName: "zoen-ex22-identity-fence",
+        maxConnections: 4,
+        url: database.urls.authority,
+      })
+    )
+  );
+
 interface Options {
   readonly sessionSeconds?: number;
   readonly secure?: boolean;
@@ -25,7 +41,7 @@ export const withD01IdentityDatabase = <A, E, R>(
       readonly secret: Redacted.Redacted;
       readonly sessionSeconds: number;
     };
-    readonly runtime: ReturnType<typeof makeD01IdentityLayer>;
+    readonly runtime: ReturnType<typeof makeTestIdentityLayer>;
   }) => Effect.Effect<A, E, R>,
   options: Options = {}
 ) =>
@@ -69,7 +85,7 @@ export const withD01IdentityDatabase = <A, E, R>(
       return yield* run({
         config,
         database,
-        runtime: makeD01IdentityLayer(config),
+        runtime: makeTestIdentityLayer(config, database),
       });
     })
   );

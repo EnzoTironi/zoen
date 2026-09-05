@@ -4,8 +4,10 @@ import {
   SessionId,
   VerifiedPresence,
 } from "@zoen/authority/ports/d01/context";
+import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import { PrincipalDirectory } from "@zoen/authority/ports/sharing/directory";
 import { Unauthenticated, Unavailable } from "@zoen/contracts/d01/errors";
+import { Instant } from "@zoen/contracts/d01/values";
 import { betterAuth } from "better-auth";
 import {
   Context,
@@ -56,6 +58,14 @@ const authPaths = new Map([
   ["/api/auth/get-session", "GET"],
 ]);
 
+const toPresence = (current: typeof ProviderSession.Type) =>
+  Schema.decodeEffect(VerifiedPresence)({
+    authenticatedAt: DateTime.formatIso(current.session.createdAt),
+    expiresAt: DateTime.formatIso(current.session.expiresAt),
+    principalId: current.user.id,
+    realm: "live",
+    sessionId: current.session.id,
+  }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
 /** Provides real auth transport and the shared executor's Presence port. */
 export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
   Layer.effectContext(
@@ -68,6 +78,7 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
             })
         )
       );
+      const fence = yield* DisclosureFence;
       const pool = yield* acquireD01IdentityPool(config.databaseUrl);
       yield* checkD01IdentityPool(pool);
       const auth = betterAuth(d01AuthOptions(config, pool));
@@ -114,15 +125,7 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
         if (current === null) {
           return yield* new Unauthenticated({ code: "PRESENCE_REQUIRED" });
         }
-        const presence = yield* Schema.decodeEffect(VerifiedPresence)({
-          authenticatedAt: DateTime.formatIso(current.session.createdAt),
-          expiresAt: DateTime.formatIso(current.session.expiresAt),
-          principalId: current.user.id,
-          realm: "live",
-          sessionId: current.session.id,
-        }).pipe(
-          Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
-        );
+        const presence = yield* toPresence(current);
         const now = yield* DateTime.now;
         if (presence.expiresAt <= DateTime.formatIso(now)) {
           return yield* new Unauthenticated({ code: "PRESENCE_REQUIRED" });
@@ -132,6 +135,10 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
       const handle = Effect.fn("identity.handleAuth")(function* handle(
         request: Request
       ) {
+        const startedAt = yield* DateTime.now;
+        const deadline = yield* Schema.decodeEffect(Instant)(
+          DateTime.formatIso(DateTime.add(startedAt, { seconds: 30 }))
+        ).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
         const url = new URL(request.url);
         if (url.origin !== config.baseUrl.origin) {
           return new Response(null, { status: 403 });
@@ -149,6 +156,22 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
               Redacted.make(request.headers.get("cookie") ?? "")
             ).pipe(Effect.result)
           : null;
+        if (before !== null) {
+          if (Result.isFailure(before)) {
+            return Response.json({ code: "UNAVAILABLE" }, { status: 503 });
+          }
+          if (before.success !== null) {
+            const acquired = yield* toPresence(before.success).pipe(
+              Effect.flatMap((verified) =>
+                fence.exclusiveSession(verified, deadline)
+              ),
+              Effect.result
+            );
+            if (Result.isFailure(acquired)) {
+              return Response.json({ code: "UNAVAILABLE" }, { status: 503 });
+            }
+          }
+        }
         const response = yield* Effect.tryPromise({
           catch: () => new Unavailable({ code: "UNAVAILABLE" }),
           try: () => auth.handler(request),
@@ -184,8 +207,10 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
         Context.add(
           D01Auth,
           D01Auth.of({
-            checkHealth: checkD01IdentityPool(pool),
-            handle,
+            checkHealth: checkD01IdentityPool(pool).pipe(
+              Effect.andThen(fence.checkHealth)
+            ),
+            handle: (request) => Effect.scoped(handle(request)),
           })
         )
       );

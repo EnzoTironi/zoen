@@ -84,6 +84,7 @@ class Reservation {
           lock.shared ? "pg_advisory_unlock_shared" : "pg_advisory_unlock",
           lock.key
         ).pipe(
+          Effect.interruptible,
           Effect.timeout("3 seconds"),
           Effect.catch(() =>
             Effect.sync(() => {

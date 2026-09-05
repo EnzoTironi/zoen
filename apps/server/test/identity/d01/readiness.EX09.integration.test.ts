@@ -2,11 +2,8 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import {
-  D01Auth,
-  makeD01IdentityLayer,
-} from "../../../src/identity/d01/identity.ts";
-import { withD01IdentityDatabase } from "./database.ts";
+import { D01Auth } from "../../../src/identity/d01/identity.ts";
+import { makeTestIdentityLayer, withD01IdentityDatabase } from "./database.ts";
 
 const roleName = SqlClient.SqlClient.pipe(
   Effect.flatMap((sql) => sql`SELECT current_user AS name`),
@@ -34,7 +31,9 @@ it.live(
           Effect.provide(fixture.database.migration)
         );
         const startup = yield* Effect.void.pipe(
-          Effect.provide(makeD01IdentityLayer(fixture.config)),
+          Effect.provide(
+            makeTestIdentityLayer(fixture.config, fixture.database)
+          ),
           Effect.result
         );
         expect(startup).toMatchObject({
