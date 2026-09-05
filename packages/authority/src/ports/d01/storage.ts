@@ -38,6 +38,17 @@ export class StorageFailure extends Schema.TaggedError<StorageFailure>()(
     ]),
   }
 ) {}
+export interface DocumentCaptureInput {
+  readonly worldRef: WorldRef;
+  readonly captureId: CaptureId;
+  readonly expectedDigest: typeof Digest.Type;
+  readonly expectedBytes: number;
+  readonly documentFormat: DocumentFormat;
+}
+export interface DocumentStageInput extends DocumentCaptureInput {
+  readonly content: Stream.Stream<Uint8Array, StorageFailure>;
+}
+
 export class EvidenceObjectStore extends Context.Service<
   EvidenceObjectStore,
   {
@@ -54,6 +65,12 @@ export class EvidenceObjectStore extends Context.Service<
       readonly expectedDigest: typeof Digest.Type;
       readonly expectedBytes: number;
     }) => Effect.Effect<ObjectLocation, StorageFailure>;
+    readonly stageDocument: (
+      input: DocumentStageInput
+    ) => Effect.Effect<ObjectLocation, StorageFailure>;
+    readonly locateDocument: (
+      input: DocumentCaptureInput
+    ) => Effect.Effect<ObjectLocation, StorageFailure>;
     readonly read: (
       location: ObjectLocation
     ) => Effect.Effect<Uint8Array, StorageFailure>;

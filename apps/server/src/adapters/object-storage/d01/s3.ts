@@ -13,10 +13,12 @@ import {
   ObjectLocation,
   StorageFailure,
 } from "@zoen/authority/ports/d01/storage";
+import type { DocumentStageInput } from "@zoen/authority/ports/d01/storage";
 import { digestBytes } from "@zoen/authority/values/canonical";
 import {
   D01_LIMITS,
   Digest,
+  DocumentFormat,
   WorldRef,
   exact,
 } from "@zoen/contracts/d01/values";
@@ -55,6 +57,13 @@ const CaptureExpectation = Schema.Struct({
   expectedDigest: Digest,
   worldRef: WorldRef,
 }).annotate(exact);
+
+const DocumentExpectation = Schema.Struct({
+  ...CaptureExpectation.fields,
+  documentFormat: DocumentFormat,
+}).annotate(exact);
+const mediaType = (format: DocumentFormat | undefined) =>
+  format === "d01.csv.v1" ? "text/csv" : "application/json";
 
 const keyFor = (world: WorldRef, capture: CaptureId) =>
   `d01/${world.realm}/${world.worldId.toLowerCase()}/captures/${capture.toLowerCase()}`;
@@ -136,7 +145,7 @@ export const layer = (
               Effect.gen(function* readBoundedObject() {
                 if (
                   response.ContentLength !== location.byteLength ||
-                  response.ContentType !== "application/json" ||
+                  response.ContentType !== mediaType(location.documentFormat) ||
                   (location.versionId !== null &&
                     response.VersionId !== location.versionId)
                 ) {
@@ -186,27 +195,101 @@ export const layer = (
         );
 
       const targetFor = (
-        metadata: typeof CaptureExpectation.Type
+        metadata: typeof CaptureExpectation.Type,
+        documentFormat?: DocumentFormat
       ): ObjectLocation => ({
         byteLength: metadata.expectedBytes,
         captureId: metadata.captureId,
         digest: metadata.expectedDigest,
+        ...(documentFormat === undefined ? {} : { documentFormat }),
         key: keyFor(metadata.worldRef, metadata.captureId),
         versionId: null,
         worldRef: metadata.worldRef,
       });
 
+      const stage = (
+        input: Omit<DocumentStageInput, "documentFormat">,
+        documentFormat?: DocumentFormat
+      ) =>
+        Effect.gen(function* stageExactObject() {
+          const metadata = yield* validateExpectation({
+            captureId: input.captureId,
+            expectedBytes: input.expectedBytes,
+            expectedDigest: input.expectedDigest,
+            worldRef: input.worldRef,
+          });
+          const content = yield* collectExactBytes(
+            input.content,
+            metadata.expectedBytes,
+            "InvalidInput"
+          );
+          if (digestBytes(content) !== metadata.expectedDigest) {
+            return yield* mismatch();
+          }
+          const location = targetFor(metadata, documentFormat);
+          const storedVersion = yield* Effect.tryPromise({
+            catch: putError,
+            try: (signal) =>
+              client.send(
+                new PutObjectCommand({
+                  Body: content,
+                  Bucket: config.bucket,
+                  ChecksumSHA256: Buffer.from(
+                    metadata.expectedDigest,
+                    "hex"
+                  ).toString("base64"),
+                  ContentLength: content.byteLength,
+                  ContentType: mediaType(documentFormat),
+                  IfNoneMatch: "*",
+                  Key: location.key,
+                }),
+                { abortSignal: signal }
+              ),
+          }).pipe(
+            Effect.map((response) => version(response.VersionId)),
+            Effect.catchTag("ObjectExists", () => Effect.succeed(null))
+          );
+          // Includes 412 recovery: success requires complete current/versioned bytes, never metadata alone.
+          const observed = yield* retrieve({
+            ...location,
+            versionId: storedVersion,
+          });
+          return yield* Schema.decodeEffect(ObjectLocation)({
+            ...location,
+            versionId: observed.versionId,
+          }).pipe(Effect.mapError(unavailable));
+        });
+      const locate = (
+        metadata: typeof CaptureExpectation.Type,
+        documentFormat?: DocumentFormat
+      ) =>
+        Effect.gen(function* locateUnconfirmedCapture() {
+          const target = targetFor(metadata, documentFormat);
+          const observed = yield* retrieve(target);
+          return yield* Schema.decodeEffect(ObjectLocation)({
+            ...target,
+            versionId: observed.versionId,
+          }).pipe(Effect.mapError(unavailable));
+        });
+      const validateDocument = (input: typeof DocumentExpectation.Type) =>
+        Schema.decodeEffect(DocumentExpectation)(input).pipe(
+          Effect.mapError(invalid),
+          Effect.filterOrFail(
+            (metadata) => metadata.worldRef.realm === config.realm,
+            invalid
+          )
+        );
       const store = EvidenceObjectStore.of({
         locate: (input) =>
-          Effect.gen(function* locateUnconfirmedCapture() {
-            const metadata = yield* validateExpectation(input);
-            const target = targetFor(metadata);
-            const observed = yield* retrieve(target);
-            return yield* Schema.decodeEffect(ObjectLocation)({
-              ...target,
-              versionId: observed.versionId,
-            }).pipe(Effect.mapError(unavailable));
-          }),
+          validateExpectation(input).pipe(
+            Effect.flatMap((metadata) => locate(metadata))
+          ),
+        locateDocument: (input) =>
+          validateDocument(input).pipe(
+            Effect.flatMap((metadata) =>
+              locate(metadata, metadata.documentFormat)
+            )
+          ),
         read: (location) =>
           validateLocation(location).pipe(
             Effect.flatMap(retrieve),
@@ -230,55 +313,13 @@ export const layer = (
             ),
             Effect.asVoid
           ),
-        stage: (input) =>
-          Effect.gen(function* stageExactObject() {
-            const metadata = yield* validateExpectation({
-              captureId: input.captureId,
-              expectedBytes: input.expectedBytes,
-              expectedDigest: input.expectedDigest,
-              worldRef: input.worldRef,
-            });
-            const content = yield* collectExactBytes(
-              input.content,
-              metadata.expectedBytes,
-              "InvalidInput"
-            );
-            if (digestBytes(content) !== metadata.expectedDigest) {
-              return yield* mismatch();
-            }
-            const location = targetFor(metadata);
-            const storedVersion = yield* Effect.tryPromise({
-              catch: putError,
-              try: (signal) =>
-                client.send(
-                  new PutObjectCommand({
-                    Body: content,
-                    Bucket: config.bucket,
-                    ChecksumSHA256: Buffer.from(
-                      metadata.expectedDigest,
-                      "hex"
-                    ).toString("base64"),
-                    ContentLength: content.byteLength,
-                    ContentType: "application/json",
-                    IfNoneMatch: "*",
-                    Key: location.key,
-                  }),
-                  { abortSignal: signal }
-                ),
-            }).pipe(
-              Effect.map((response) => version(response.VersionId)),
-              Effect.catchTag("ObjectExists", () => Effect.succeed(null))
-            );
-            // Includes 412 recovery: success requires complete current/versioned bytes, never metadata alone.
-            const observed = yield* retrieve({
-              ...location,
-              versionId: storedVersion,
-            });
-            return yield* Schema.decodeEffect(ObjectLocation)({
-              ...location,
-              versionId: observed.versionId,
-            }).pipe(Effect.mapError(unavailable));
-          }),
+        stage: (input) => stage(input),
+        stageDocument: ({ content, ...input }) =>
+          validateDocument(input).pipe(
+            Effect.flatMap((metadata) =>
+              stage({ ...metadata, content }, metadata.documentFormat)
+            )
+          ),
       });
       const check = Effect.gen(function* checkVersionedBucket() {
         yield* Effect.tryPromise({
