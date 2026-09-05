@@ -1,0 +1,9 @@
+{
+  "seed": "zn-0016-invitations-seed-v1",
+  "note": "Synthetic single-use invitation fixtures for ZN-0016. Real PostgreSQL required.",
+  "seedDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "worldName": "Invitation World",
+  "inviteRole": "viewer",
+  "claimPredicate": "note.title",
+  "claimLabel": "Seed claim before invite accept"
+}

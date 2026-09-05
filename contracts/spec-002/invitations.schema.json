@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-002/invitations.schema.json",
+  "title": "SPEC-002 MembershipReceipt",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["tag", "worldId", "realm", "principalId", "role", "invitationHash", "operationId", "receiptId", "commitId", "replay"],
+  "properties": {
+    "tag": { "const": "MembershipReceipt" },
+    "worldId": { "type": "string", "format": "uuid" },
+    "realm": { "enum": ["live", "evaluation"] },
+    "principalId": { "type": "string", "format": "uuid" },
+    "role": { "enum": ["editor", "viewer"] },
+    "invitationHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "operationId": { "type": "string", "format": "uuid" },
+    "receiptId": { "type": "string", "format": "uuid" },
+    "commitId": { "type": "string", "format": "uuid" },
+    "replay": { "type": "boolean" }
+  }
+}
