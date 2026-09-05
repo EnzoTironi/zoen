@@ -33,7 +33,7 @@ def wait_ready(origin):
             with urlopen(f"{origin}/ready", timeout=2) as response:
                 if response.status == 200 and json.load(response) == {"status": "ready"}:
                     return
-        except (URLError, TimeoutError):
+        except (URLError, TimeoutError, ConnectionError):
             pass
         time.sleep(0.5)
     raise RuntimeError("The application container did not become ready within 60 seconds")
