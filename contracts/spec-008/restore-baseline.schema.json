@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-008/restore-baseline.schema.json",
+  "title": "ZN-0049 restore-baseline fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "receiptId",
+    "survivingArtifactId",
+    "deletedArtifactId",
+    "pendingEffectId",
+    "deletedObjectKey",
+    "survivingObjectKey",
+    "deletedContent",
+    "survivingContent",
+    "cellId"
+  ],
+  "properties": {
+    "seed": {
+      "type": "string",
+      "const": "zn-0049-restore-baseline-seed-v1"
+    },
+    "seedDigest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "receiptId": {
+      "type": "string"
+    },
+    "survivingArtifactId": {
+      "type": "string"
+    },
+    "deletedArtifactId": {
+      "type": "string"
+    },
+    "pendingEffectId": {
+      "type": "string"
+    },
+    "deletedObjectKey": {
+      "type": "string"
+    },
+    "survivingObjectKey": {
+      "type": "string"
+    },
+    "deletedContent": {
+      "type": "string"
+    },
+    "survivingContent": {
+      "type": "string"
+    },
+    "cellId": {
+      "type": "string"
+    }
+  }
+}

@@ -1,47 +1,16 @@
-# File plan — `runbooks/spec-008/restore-baseline.md`
+# Repair runbook — backup/restore disposable baseline (ZN-0049)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not accepted.
 
-Target: `runbooks/spec-008/restore-baseline.md`. Representation: **markdown-plan**. Allocation: **required**.
-
-Specs: [SPEC-008](../../docs/specs/spec-008.md).
-Tickets: [ZN-0049](../../docs/tickets/zn-0049.md).
-
-## Responsibility and reuse
-
-## ZN-0049 operational/repair procedure
-
-Scope: Prove backup and restore in a disposable environment. This is a plan; deployments and commands not yet qualified remain blocked.
+Scope: Back up authority + retained evidence; restore into a separate namespace with deny-all outbound dispatch; replay deletion suppression before reads.
 
 ```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-The environment is restored
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-EMIT correlation identifiers and bounded operational events; exclude credentials, documents, prompts and hidden reasoning.
-DISTINGUISH liveness from readiness for actual admitted dependencies and enabled capabilities.
-CAPTURE backup manifests covering authority cuts, object pins, deletion ledger references and escaped effects.
-RESTORE into isolated read-only/dispatch-disabled infrastructure, never over a live unknown tenant.
-REPLAY current deletion suppression before any user read; verify missing objects and role separation.
-RECONCILE escaped external attempts using original identities; Unknown stays Unknown.
-MEASURE recovery against the actual fixture/profile and publish commands plus observations, not assumed service guarantees.
-ADMIT writes/dispatch only after current operator approval and failed checks are resolved.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-The deleted artifact stays undisclosed, pending effects do not send and all surviving references are checked or marked unavailable
-RESUME only with current approval and intact unrelated tenant scopes.
+PRECHECK disposable source and restore namespaces; never restore over a live unknown tenant.
+BACKUP receipts, object pins, deletion ledger and pending effects.
+RESTORE with dispatch_enabled=false and new workload credentials/namespace.
+REPLAY deletion suppression before any user read.
+ASSERT deleted artifacts stay undisclosed; pending effects do not send; missing refs marked unavailable.
+RESTORE admission requires deletionCut + effectLedger via ReadinessService.
 ```
 
-## Owning state / operation contracts
-
-### SPEC-008
-Health() -> Liveness; Readiness() -> AdmittedDependencies; ExportOperationalEvidence(scope) -> RedactedReport; RestoreAdmission(backupRef,deletionCut,effectLedger) -> ReadOnlyReady | Blocked.
-
-audit.operational_events(event_id PK,world_ref_nullable,actor_ref,kind,redacted_payload,occurred_at,retention_class); jobs.recovery_fences(cell_id PK,epoch,dispatch_enabled,deletion_ledger_cut); infra migration manifest contains legacy source commit, row counts, rights mapping and unmatched records.
-
-[algorithm SPEC-008](../../docs/algorithms/spec-008.md)
-
-## Acceptance boundary
-
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+SPEC-008 · chaos restore baseline.

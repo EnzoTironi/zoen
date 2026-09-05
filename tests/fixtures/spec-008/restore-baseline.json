@@ -1,0 +1,13 @@
+{
+  "seed": "zn-0049-restore-baseline-seed-v1",
+  "seedDigest": "54a2de3654bbdbbfbf8f2d8e8635398c05fb7bdd42f74cc58c1cbb6733126f6f",
+  "receiptId": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  "survivingArtifactId": "bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb",
+  "deletedArtifactId": "cccccccc-cccc-4ccc-8ccc-cccccccccccc",
+  "pendingEffectId": "dddddddd-dddd-4ddd-8ddd-dddddddddddd",
+  "deletedObjectKey": "evidence/deleted-secret-note.txt",
+  "survivingObjectKey": "evidence/surviving-invoice.txt",
+  "deletedContent": "Clinical note: erased subject must stay undisclosed",
+  "survivingContent": "Invoice #42 amount 100.00",
+  "cellId": "cell-s0-restore-chaos"
+}
