@@ -56,3 +56,21 @@ export const applyApplicationMigrations = Effect.fn(
   });
   return [...base, ...extension];
 });
+
+/** Sharing is an explicit extension; retained JSON/CSV migration baselines remain reproducible. */
+export const applySharingMigrations = Effect.fn("migrations.applySharing")(
+  function* applySharingMigrations(roles: D01DatabaseRoles) {
+    const base = yield* applyApplicationMigrations(roles);
+    const fs = yield* FileSystem.FileSystem;
+    const sql = yield* SqlClient.SqlClient;
+    const sharing = yield* fs.readFileString(
+      fileURLToPath(new URL("005_world_read_membership.sql", import.meta.url))
+    );
+    const extension = yield* PgMigrator.run({
+      loader: PgMigrator.fromRecord({
+        "5_world_read_membership": sql.unsafe(sharing).pipe(Effect.asVoid),
+      }),
+    });
+    return [...base, ...extension];
+  }
+);
