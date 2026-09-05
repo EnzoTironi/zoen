@@ -2,7 +2,7 @@
 
 Este branch contém o redesenho solicitado em 5 de setembro de 2026. O objetivo continua sendo um sistema em que pessoas, Eve, apps e integrações trabalham sobre a mesma verdade, com evidência, direitos e consequências explícitas. A execução passa a começar por uma jornada útil e crescer por entregas verificáveis.
 
-**Estado: implementação em andamento.** A base Effect 4/TS7, os contratos do primeiro incremento e os componentes web têm provas locais. Executor, persistência de domínio e autenticação ainda estão em construção; D01 não está concluído. A [evidência do bootstrap](docs/verification/bootstrap.md) separa testes de componentes, integração e CI. O [progresso atual](planning/progress.json) é distinto do plano original.
+**Estado: implementação em andamento.** A primeira jornada já executa autenticação real, criação de World, importação JSON, inspeção com evidência e correção/unknown/undo em web e CLI sobre PostgreSQL e S3. As [provas do incremento D01/D02](docs/verification/d01-d02-local.md) registram revisão independente, integração, navegador e interrupção de processo. D01 e D02 completos ainda exigem expansões. O [progresso atual](planning/progress.json) é distinto do plano original.
 
 Foram analisadas as 325 entradas do catálogo, as 56 specs nele contidas, as 157 capacidades e os 2.341 alvos do registro de arquivos. Isso cobre os registros integralmente; não equivale a revisar semanticamente cada arquivo de pseudocódigo ou a aceitar a implementação anterior.
 
@@ -18,3 +18,22 @@ Os detalhes executáveis das primeiras tarefas estão em [planning/execution.jso
 Os PRs da pilha anterior foram fechados. O histórico foi preservado em Git e em bundle externo; o trabalho novo está isolado em `codex/rebuild`. `archives/` permanece histórico imutável. Os registros em `reference/2026-09-05/` são entradas históricas da análise, com hashes; não são instruções ativas.
 
 O branch de implementação é publicado para executar a CI real, sem deploy ou alteração de dados de produção. Integrações externas continuam exigindo contas, APIs e evidências reais para ativação.
+
+## Executar o incremento local
+
+Com Node da versão em `.node-version`, pnpm de `package.json`, Python 3 e Docker disponíveis, em um checkout novo:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm build
+python3 tooling/prepare_infra.py
+docker compose --env-file .env.infra -f ops/compose.yaml up -d --wait
+pnpm provision:local
+pnpm start:server
+```
+
+Abra `http://127.0.0.1:4310` e crie uma conta normal. Em outro terminal, `pnpm test:acceptance` exercita o servidor aberto, e `pnpm cli --help` apresenta os comandos. O JSON admitido está especificado em [D01](docs/contracts/d01.md). O perfil aceita somente dados cuja retenção sem apagamento possa cumprir; não habilita dados sensíveis, hold ou prazo legal.
+
+Os dois provisionadores recusam sobrescrever arquivos existentes. Para reiniciar o mesmo build, basta subir os serviços e executar `pnpm start:server`. Uma versão nova usa `ZOEN_LOCAL_PROFILE=<nome>` em `provision:local`, `start:server` e `test:acceptance`, criando banco, papéis e bucket próprios. Isso não migra Worlds anteriores. Cada instalação verifica os bytes do build admitido antes de abrir conexões; preserve seu artefato e seus dados até existir um upgrade qualificado.
+
+`pnpm test:container` constrói a imagem real, provisiona uma instalação pelo manifesto extraído dela e executa a mesma aceitação contra seu servidor/web, com a CLI compilada do host. A imagem usa porta 4313 durante o teste. Logs ficam em `.local/*-proof/`; configurações, banco e bucket são preservados localmente. A CI usa volumes descartáveis próprios. A prova em contêiner não é deploy Fly nem recuperação de dados apagados.

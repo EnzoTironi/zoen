@@ -5,15 +5,15 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "EX08",
+      "task": "EX15-composition-review",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex02",
-      "state": "in_progress"
+      "state": "review_completed"
     },
     {
       "agent": "roadmap_redesign",
-      "task": "EX09",
+      "task": "D01-CSV-contract",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
@@ -21,11 +21,11 @@
     },
     {
       "agent": "tickets_redesign",
-      "task": "EX11",
+      "task": "D03-sharing-contract",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
-      "state": "in_progress"
+      "state": "contract_proposed"
     }
   ],
   "temporary_ownership": [
@@ -77,6 +77,34 @@
       "owner": "worker-3",
       "integration_owner": "root",
       "reason": "Preservar contraprovas independentes de prazo e escalada de role."
+    },
+    {
+      "task": "EX15-build-review",
+      "path": "tooling/test_clean_build.py",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Contraprova independente de symlinks e limpeza parcial do build."
+    },
+    {
+      "task": "EX15-bootstrap-review",
+      "path": "tooling/test_prepare_infra.py",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Contraprova independente de criação exclusiva, modo0600 e recusa de symlinks."
+    },
+    {
+      "task": "D03-sharing-contract",
+      "path": "docs/contracts/d03-sharing.md",
+      "owner": "worker-3",
+      "integration_owner": "root",
+      "reason": "Contrato candidato do próximo incremento; implementação depende de congelamento e revisão."
+    },
+    {
+      "task": "D01-CSV-contract",
+      "path": "docs/contracts/d01-csv.md",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "Contrato candidato de importação CSV pelo mesmo executor; não autoriza parser heurístico."
     }
   ],
   "checkpoints": [
@@ -116,6 +144,32 @@
       "scope": "Prazo interrompe lock SQL sem persistência; runtime não escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem alteração de UI posterior.",
       "unit_tests": 152,
       "integration_tests": 41
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "44091d9",
+      "packages": [
+        "EX04",
+        "EX05",
+        "EX06",
+        "EX07",
+        "EX08",
+        "EX09",
+        "EX10",
+        "EX11",
+        "EX12",
+        "EX13",
+        "EX14",
+        "EX15"
+      ],
+      "state": "local_journey_verified_container_pending",
+      "evidence": "docs/verification/d01-d02-local.md",
+      "unit_tests": 173,
+      "integration_tests": 86,
+      "browser_component_tests": 7,
+      "browser_acceptance_tests": 4,
+      "tooling_tests": 6,
+      "scope": "Jornada JSON, identidade real, PostgreSQL/S3, correção/unknown/undo, replay e revogação com revisão cruzada. Build, typecheck e lint passaram. Aceitação combinada atual51.9s; contêiner/CI nova ainda não executados. Não conclui D01/D02 completos nem 22 entregas."
     }
   ],
   "verified_deliveries": [],
