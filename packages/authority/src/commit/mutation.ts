@@ -46,6 +46,29 @@ export interface MutationPlan {
   >;
 }
 
+const authorizeMutation = Effect.fn("authority.commit.authorizeMutation")(
+  function* authorizeMutation(
+    context: VerifiedRequestContext,
+    request: BoundWorldIntent["request"]
+  ) {
+    const access = yield* authorizeWorld(
+      context,
+      request.worldRef,
+      operationCapability(request.operation)
+    );
+    const installation = yield* AuthorityInstallation;
+    if (
+      access.cell_id !== installation.cellId ||
+      access.cell_epoch !== installation.cellEpoch ||
+      access.release_digest !== installation.releaseDigest ||
+      access.generation_id !== installation.generationId
+    ) {
+      return yield* new Stale({ code: "STALE" });
+    }
+    return access;
+  }
+);
+
 /** Current authority precedes replay; callers may use absence to prepare external input. */
 export const readMutationReplay = Effect.fn(
   "authority.commit.readMutationReplay"
@@ -55,8 +78,7 @@ export const readMutationReplay = Effect.fn(
 ) {
   const { request } = bound;
   const { worldRef } = request;
-  const capability = operationCapability(request.operation);
-  yield* authorizeWorld(context, worldRef, capability);
+  yield* authorizeMutation(context, request);
   if ((yield* intentDigest(request)) !== bound.digest) {
     return yield* new Conflict({ code: "CONFLICT" });
   }
@@ -82,7 +104,7 @@ export const readMutationReplay = Effect.fn(
     row.receipt_id,
     request.operation
   );
-  yield* authorizeWorld(context, worldRef, capability);
+  yield* authorizeMutation(context, request);
   return result;
 });
 
@@ -104,26 +126,13 @@ export const commitMutation = Effect.fn("authority.commit.commitMutation")(
     const lockedDomains = [...new Set(domains)].toSorted();
     const receiptRef = yield* newReceiptRef();
     const sql = yield* SqlClient.SqlClient;
-    const installation = yield* AuthorityInstallation;
     const result = yield* serializable(
       Effect.gen(function* applyMutation() {
         yield* sql`
         SELECT world_id FROM authority.worlds
         WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm} FOR SHARE
       `;
-        const access = yield* authorizeWorld(
-          context,
-          worldRef,
-          operationCapability(request.operation)
-        );
-        if (
-          access.cell_id !== installation.cellId ||
-          access.cell_epoch !== installation.cellEpoch ||
-          access.release_digest !== installation.releaseDigest ||
-          access.generation_id !== installation.generationId
-        ) {
-          return yield* new Stale({ code: "STALE" });
-        }
+        const access = yield* authorizeMutation(context, request);
         const key = `operation:${worldRef.realm}:${worldRef.worldId}:${context.presence.principalId}:${request.operation}:${request.operationId}`;
         yield* sql`SELECT pg_advisory_xact_lock(hashtextextended(${key}, 0))`;
         for (const domain of lockedDomains) {
