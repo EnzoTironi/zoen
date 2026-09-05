@@ -138,7 +138,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `contracts/spec-001/laws.schema.json` | [sidecar-only](../contracts/spec-001/laws.schema.json.plan.md) | planned | SPEC-001 |
 | `contracts/spec-001/outcomes.schema.json` | [sidecar-only](../contracts/spec-001/outcomes.schema.json.plan.md) | planned | SPEC-001 |
 | `contracts/spec-001/scalars.schema.json` | [existing-with-sidecar](../contracts/spec-001/scalars.schema.json.plan.md) | implementation-in-progress | SPEC-001 |
-| `contracts/spec-001/temporal.schema.json` | [sidecar-only](../contracts/spec-001/temporal.schema.json.plan.md) | planned | SPEC-001 |
+| `contracts/spec-001/temporal.schema.json` | [existing-with-sidecar](../contracts/spec-001/temporal.schema.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `contracts/spec-002/entry-isolation.schema.json` | [sidecar-only](../contracts/spec-002/entry-isolation.schema.json.plan.md) | planned | SPEC-002 |
 | `contracts/spec-002/genesis.schema.json` | [sidecar-only](../contracts/spec-002/genesis.schema.json.plan.md) | planned | SPEC-002 |
 | `contracts/spec-002/invitations.schema.json` | [sidecar-only](../contracts/spec-002/invitations.schema.json.plan.md) | planned | SPEC-002 |
@@ -800,7 +800,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/kernel/src/laws.ts` | [comment-only-source](../packages/kernel/src/laws.ts) | planned | SPEC-001 |
 | `packages/kernel/src/ports.ts` | [comment-only-source](../packages/kernel/src/ports.ts) | planned | SPEC-001 |
 | `packages/kernel/src/result.ts` | [existing-with-sidecar](../packages/kernel/src/result.ts.plan.md) | candidate-unaccepted | SPEC-001 |
-| `packages/kernel/src/time.ts` | [existing-with-sidecar](../packages/kernel/src/time.ts.plan.md) | candidate-unaccepted | SPEC-001 |
+| `packages/kernel/src/time.ts` | [existing-with-sidecar](../packages/kernel/src/time.ts.plan.md) | implementation-in-progress | SPEC-001 |
 | `packages/kernel/src/types.ts` | [comment-only-source](../packages/kernel/src/types.ts) | planned | SPEC-001 |
 | `packages/kernel/tsconfig.json` | [existing-with-sidecar](../packages/kernel/tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `packages/ontology/package.json` | [existing-with-sidecar](../packages/ontology/package.json.plan.md) | implementation-in-progress | SPEC-000, SPEC-004, SPEC-013, SPEC-023, SPEC-031 |
@@ -1109,7 +1109,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `runbooks/spec-001/laws.md` | [markdown-plan](../runbooks/spec-001/laws.md) | planned | SPEC-001 |
 | `runbooks/spec-001/outcomes.md` | [markdown-plan](../runbooks/spec-001/outcomes.md) | planned | SPEC-001 |
 | `runbooks/spec-001/scalars.md` | [existing-with-sidecar](../runbooks/spec-001/scalars.md.plan.md) | implementation-in-progress | SPEC-001 |
-| `runbooks/spec-001/temporal.md` | [markdown-plan](../runbooks/spec-001/temporal.md) | planned | SPEC-001 |
+| `runbooks/spec-001/temporal.md` | [existing-with-sidecar](../runbooks/spec-001/temporal.md.plan.md) | implementation-in-progress | SPEC-001 |
 | `runbooks/spec-002/entry-isolation.md` | [markdown-plan](../runbooks/spec-002/entry-isolation.md) | planned | SPEC-002 |
 | `runbooks/spec-002/genesis.md` | [markdown-plan](../runbooks/spec-002/genesis.md) | planned | SPEC-002 |
 | `runbooks/spec-002/invitations.md` | [markdown-plan](../runbooks/spec-002/invitations.md) | planned | SPEC-002 |
@@ -1726,7 +1726,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/fixtures/spec-001/laws.json` | [sidecar-only](../tests/fixtures/spec-001/laws.json.plan.md) | planned | SPEC-001 |
 | `tests/fixtures/spec-001/outcomes.json` | [sidecar-only](../tests/fixtures/spec-001/outcomes.json.plan.md) | planned | SPEC-001 |
 | `tests/fixtures/spec-001/scalars.json` | [existing-with-sidecar](../tests/fixtures/spec-001/scalars.json.plan.md) | implementation-in-progress | SPEC-001 |
-| `tests/fixtures/spec-001/temporal.json` | [sidecar-only](../tests/fixtures/spec-001/temporal.json.plan.md) | planned | SPEC-001 |
+| `tests/fixtures/spec-001/temporal.json` | [existing-with-sidecar](../tests/fixtures/spec-001/temporal.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `tests/fixtures/spec-002/entry-isolation.json` | [sidecar-only](../tests/fixtures/spec-002/entry-isolation.json.plan.md) | planned | SPEC-002 |
 | `tests/fixtures/spec-002/genesis.json` | [sidecar-only](../tests/fixtures/spec-002/genesis.json.plan.md) | planned | SPEC-002 |
 | `tests/fixtures/spec-002/invitations.json` | [sidecar-only](../tests/fixtures/spec-002/invitations.json.plan.md) | planned | SPEC-002 |
@@ -2083,7 +2083,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/law/spec-001/laws.test.ts` | [comment-only-source](../tests/law/spec-001/laws.test.ts) | planned | SPEC-001 |
 | `tests/law/spec-001/outcomes.test.ts` | [comment-only-source](../tests/law/spec-001/outcomes.test.ts) | planned | SPEC-001 |
 | `tests/law/spec-001/scalars.test.ts` | [existing-with-sidecar](../tests/law/spec-001/scalars.test.ts.plan.md) | implementation-in-progress | SPEC-001 |
-| `tests/law/spec-001/temporal.test.ts` | [comment-only-source](../tests/law/spec-001/temporal.test.ts) | planned | SPEC-001 |
+| `tests/law/spec-001/temporal.test.ts` | [existing-with-sidecar](../tests/law/spec-001/temporal.test.ts.plan.md) | implementation-in-progress | SPEC-001 |
 | `tests/law/spec-005/families.test.ts` | [comment-only-source](../tests/law/spec-005/families.test.ts) | planned | SPEC-005 |
 | `tests/law/spec-006/identity-laws.test.ts` | [comment-only-source](../tests/law/spec-006/identity-laws.test.ts) | planned | SPEC-006 |
 | `tests/law/spec-013/compiler-laws.test.ts` | [comment-only-source](../tests/law/spec-013/compiler-laws.test.ts) | planned | SPEC-013 |

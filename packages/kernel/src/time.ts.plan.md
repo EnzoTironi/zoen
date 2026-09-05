@@ -1,6 +1,6 @@
 # File plan — `packages/kernel/src/time.ts`
 
-**Status:** candidate-unaccepted; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `packages/kernel/src/time.ts`. Representation: **existing-with-sidecar**. Allocation: **required**.
 
