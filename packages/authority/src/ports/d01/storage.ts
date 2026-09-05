@@ -46,6 +46,12 @@ export class EvidenceObjectStore extends Context.Service<
       readonly expectedDigest: typeof Digest.Type;
       readonly expectedBytes: number;
     }) => Effect.Effect<ObjectLocation, StorageFailure>;
+    readonly locate: (input: {
+      readonly worldRef: WorldRef;
+      readonly captureId: CaptureId;
+      readonly expectedDigest: typeof Digest.Type;
+      readonly expectedBytes: number;
+    }) => Effect.Effect<ObjectLocation, StorageFailure>;
     readonly read: (
       location: ObjectLocation
     ) => Effect.Effect<Uint8Array, StorageFailure>;
