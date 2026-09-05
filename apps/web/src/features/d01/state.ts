@@ -249,11 +249,14 @@ export const createWorkspaceController = (origin: string) => {
           Effect.flatMap((api) => api.execute(own)),
           Effect.result
         );
-        if (started !== epoch || disposed || state.busy) {
+        if (started !== epoch || disposed) {
           return;
         }
         if (Result.isFailure(access)) {
           failed(access.failure);
+          return;
+        }
+        if (state.busy) {
           return;
         }
         if (access.success._tag === "WorldAccessInspected") {
