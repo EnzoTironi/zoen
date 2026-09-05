@@ -8,6 +8,7 @@ import { SqlClient } from "effect/unstable/sql";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
 import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
+import { sweepExpiredCaptures } from "../../../../packages/authority/src/evidence/d01/cleanup.js";
 import { importEvidence } from "../../../../packages/authority/src/evidence/d01/import.js";
 import { openEvidence } from "../../../../packages/authority/src/evidence/d01/open.js";
 import { inspect } from "../../../../packages/authority/src/knowledge/d01/inspect.js";
@@ -115,6 +116,17 @@ it.live(
           const rows =
             yield* sql`SELECT internal_basis->'cut'->>'claims' AS claims, (SELECT count(*)::int FROM authority.pins WHERE owner_kind = 'frame' AND owner_id = ${saved.frame.frameRef}) AS pins FROM authority.frames WHERE frame_id = ${saved.frame.frameRef}`;
           expect(rows).toStrictEqual([{ claims: "1", pins: 1 }]);
+          yield* Effect.gen(function* ageAdmittedCaptures() {
+            const setup = yield* SqlClient.SqlClient;
+            yield* setup`UPDATE jobs.captures SET expires_at = clock_timestamp() - interval '1 second' WHERE world_id = ${worldRef.worldId}`;
+          }).pipe(Effect.provide(database.migration));
+          expect(yield* sweepExpiredCaptures(worldRef, null)).toStrictEqual({
+            nextCursor: null,
+            visited: 0,
+          });
+          expect((yield* openEvidence(context, openRequest)).document).toBe(
+            first.document
+          );
           const [capture] =
             yield* sql`SELECT object_location FROM jobs.captures JOIN authority.evidence USING (world_id, realm, capture_id) WHERE evidence_id = ${first.result.evidenceRef}`;
           const original = yield* Schema.decodeUnknownEffect(
