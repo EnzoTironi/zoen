@@ -1,10 +1,32 @@
 import { PgClient } from "@effect/sql-pg";
+import type { SessionId } from "@zoen/authority/ports/d01/context";
 import { Unavailable } from "@zoen/contracts/d01/errors";
 import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import { Pool } from "pg";
 
 import { checkD01RuntimeRole } from "../../adapters/postgres/d01/postgres.ts";
+
+/** Check only the authenticated provider session, using its own identity pool. */
+export const identitySessionExists = (
+  pool: Pool,
+  sessionId: typeof SessionId.Type
+) =>
+  SqlClient.SqlClient.use(
+    (sql) =>
+      sql`SELECT EXISTS (SELECT 1 FROM identity.session WHERE id = ${sessionId}) AS present`
+  ).pipe(
+    Effect.flatMap(
+      Schema.decodeUnknownEffect(
+        Schema.Tuple([Schema.Struct({ present: Schema.Boolean })])
+      )
+    ),
+    Effect.map(([row]) => row.present),
+    Effect.provide(
+      PgClient.layerFrom(PgClient.fromPool({ acquire: Effect.succeed(pool) }))
+    ),
+    Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+  );
 
 export const acquireD01IdentityPool = Effect.fn("identity.acquirePool")(
   function* acquirePool(url: Redacted.Redacted) {

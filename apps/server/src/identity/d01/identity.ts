@@ -6,14 +6,26 @@ import {
 } from "@zoen/authority/ports/d01/context";
 import { Unauthenticated, Unavailable } from "@zoen/contracts/d01/errors";
 import { betterAuth } from "better-auth";
-import { Context, DateTime, Effect, Layer, Redacted, Schema } from "effect";
+import {
+  Context,
+  DateTime,
+  Effect,
+  Layer,
+  Redacted,
+  Result,
+  Schema,
+} from "effect";
 
 import {
   D01IdentityConfig,
   IdentityConfigurationError,
   d01AuthOptions,
 } from "./configuration.ts";
-import { acquireD01IdentityPool, checkD01IdentityPool } from "./database.ts";
+import {
+  acquireD01IdentityPool,
+  checkD01IdentityPool,
+  identitySessionExists,
+} from "./database.ts";
 
 export class D01Auth extends Context.Service<
   D01Auth,
@@ -62,31 +74,42 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
         try: () => auth.$context,
       });
 
+      const readSession = Effect.fn("identity.readSession")(
+        function* readSession(credential: Redacted.Redacted) {
+          const cookie = yield* Schema.decodeEffect(CookieCredential)(
+            credential
+          ).pipe(
+            Effect.mapError(
+              () => new Unauthenticated({ code: "PRESENCE_REQUIRED" })
+            )
+          );
+          const session = yield* Effect.tryPromise({
+            catch: () => new Unavailable({ code: "UNAVAILABLE" }),
+            try: () =>
+              auth.api.getSession({
+                headers: new Headers({ cookie: Redacted.value(cookie) }),
+                query: { disableCookieCache: true, disableRefresh: true },
+              }),
+          });
+          if (session === null) {
+            return null;
+          }
+          const current = yield* Schema.decodeEffect(ProviderSession)(
+            session
+          ).pipe(
+            Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+          );
+          if (current.session.userId !== current.user.id) {
+            return yield* new Unauthenticated({ code: "PRESENCE_REQUIRED" });
+          }
+          return current;
+        }
+      );
       const verify = Effect.fn("identity.verifyPresence")(function* verify(
         credential: Redacted.Redacted
       ) {
-        const cookie = yield* Schema.decodeEffect(CookieCredential)(
-          credential
-        ).pipe(
-          Effect.mapError(
-            () => new Unauthenticated({ code: "PRESENCE_REQUIRED" })
-          )
-        );
-        const session = yield* Effect.tryPromise({
-          catch: () => new Unavailable({ code: "UNAVAILABLE" }),
-          try: () =>
-            auth.api.getSession({
-              headers: new Headers({ cookie: Redacted.value(cookie) }),
-              query: { disableCookieCache: true, disableRefresh: true },
-            }),
-        });
-        if (session === null) {
-          return yield* new Unauthenticated({ code: "PRESENCE_REQUIRED" });
-        }
-        const current = yield* Schema.decodeEffect(ProviderSession)(
-          session
-        ).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
-        if (current.session.userId !== current.user.id) {
+        const current = yield* readSession(credential);
+        if (current === null) {
           return yield* new Unauthenticated({ code: "PRESENCE_REQUIRED" });
         }
         const presence = yield* Schema.decodeEffect(VerifiedPresence)({
@@ -118,12 +141,34 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
         if (origin !== null && origin !== config.baseUrl.origin) {
           return new Response(null, { status: 403 });
         }
+        const signingOut = url.pathname === "/api/auth/sign-out";
+        const before = signingOut
+          ? yield* readSession(
+              Redacted.make(request.headers.get("cookie") ?? "")
+            ).pipe(Effect.result)
+          : null;
         const response = yield* Effect.tryPromise({
           catch: () => new Unavailable({ code: "UNAVAILABLE" }),
           try: () => auth.handler(request),
         });
         if (response.status >= 500) {
           return Response.json({ code: "UNAVAILABLE" }, { status: 503 });
+        }
+        // Provider validation/CSRF errors retain their own status and headers.
+        if (response.status === 200 && before !== null) {
+          if (Result.isFailure(before)) {
+            return Response.json({ code: "UNAVAILABLE" }, { status: 503 });
+          }
+          if (before.success !== null) {
+            const after = yield* identitySessionExists(
+              pool,
+              before.success.session.id
+            ).pipe(Effect.result);
+            if (Result.isFailure(after) || after.success) {
+              // Do not forward cookie deletion when server revocation is unconfirmed.
+              return Response.json({ code: "UNAVAILABLE" }, { status: 503 });
+            }
+          }
         }
         return response;
       });

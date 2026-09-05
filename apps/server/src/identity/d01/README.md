@@ -19,3 +19,14 @@ Dez testes de integração exercitam cadastro/login/logout, ausência de grant, 
 Durante a escrita do teste de composição, duas execuções falharam por referências incorretas do próprio teste (`status` em vez de `state`, `NotFound` em vez do contrato `NotFoundOrDenied`); a correção seguiu o schema SQL e o erro público existentes, sem mudança de implementação ou de regra. As dez integrações passaram em 2026-09-05 13:49 local. A revisão de readiness reproduziu depois dois falsos positivos: startup somente com USAGE e SELECT 1 após remoção de grants. Ambos falharam em 14:25:07 antes da correção. Em 14:25:52, doze integrações passaram, incluindo startup sem CRUD recusado e as vinte remoções individuais de privilégio em cinco tabelas, cada uma seguida por Unavailable e recuperação após GRANT.
 
 Fontes oficiais consultadas: [PostgreSQL/database](https://better-auth.com/docs/concepts/database), [sessões](https://better-auth.com/docs/concepts/session-management), [opções](https://better-auth.com/docs/reference/options) e [segurança](https://better-auth.com/docs/reference/security). APIs e detalhes de versão foram conferidos também no código e declarações instalados, incluindo a migração com issuer em account de 1.7.2.
+
+## Logout revocation proof
+
+Better Auth 1.7.2 can return 200 after swallowing a session deletion error. The sign-out bridge resolves the signed cookie with the provider before handling the request, then checks absence of that exact authenticated session ID through the same identity pool before forwarding a successful response. A failed lookup, failed post-check, or surviving row returns `503 { code: "UNAVAILABLE" }` without forwarding cookie deletion, so the client can retry. Provider validation and CSRF statuses remain intact; an already absent session remains idempotent. No authority query, new grant, or parallel session policy is introduced.
+
+`logout.EX09.integration.test.ts` uses real PostgreSQL and Better Auth. The DELETE-denial regression first failed with actual 200 while the same session remained usable, then passed with 503. Further cases exercise a real trigger that silently retains the session, SELECT privilege loss, provider callback rejection, an untrusted body session ID, successful retry and already absent logout.
+
+Validation on 2026-09-05: all nine identity integration files passed (15 tests)
+with one worker against real PostgreSQL; TypeScript and focused oxlint passed.
+A prior concurrent suite run hit host ENOSPC while importing the new suite;
+the sequential rerun above completed after that transient host failure.
