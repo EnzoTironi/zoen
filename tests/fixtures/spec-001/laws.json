@@ -1,0 +1,9 @@
+{
+  "seed": "zn-0012-laws-seed-v1",
+  "casesPerLaw": 10000,
+  "note": "Synthetic law-suite fixture for ZN-0012. Digests computed at runtime from seeded runners. Not provider evidence.",
+  "locales": ["en-US", "pt-BR"],
+  "timezones": ["UTC", "America/Sao_Paulo"],
+  "invalidScalar": "not-a-decimal",
+  "oversizedProbeLimit": 16
+}
