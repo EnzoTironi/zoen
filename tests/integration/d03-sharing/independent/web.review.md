@@ -58,7 +58,6 @@ An earlier attempt against 4315 stopped at a real signup HTTP 429 while root's a
 
 Review checkpoint before the final treatment: WEB-01 fixed and independently verified; Stale/replay flow verified; WEB-02 awaited correction and independent treatment. Source-level session/World discard paths remain subject to that unresolved denial path. These findings do not alter the backend fence contract or establish D03 erasure/restore acceptance.
 
-
 ## Final independent treatment — both findings resolved
 
 On 2026-09-05 around 17:57, root served complete treatment build `767f757` at `http://127.0.0.1:4316`, isolated `sharing-v2` profile. It includes W1's busy-denial correction (`4ace1e4`, integrated as `4198f01`), prior-Frame denial correction (`1485ea6`, integrated as `767f757`) and retained denial heading (`392178d`, integrated as `0447a4e`). The reviewer read the two state changes: session/World epoch and disposal guards remain; transient busy or Frame-reference changes cannot suppress a same-context failure. The historical-read branch does not publish successful responses, so no Frame-reference success guard is needed there.

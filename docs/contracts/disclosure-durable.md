@@ -1,6 +1,6 @@
 # EX22 — fechamento durável da emissão
 
-Contrato de implementação congelado por root em 2026-09-05 após [revisão independente](../../tests/integration/d03-sharing/independent/durable-permit-snapshot.review.md) e provas SQL reais. Substitui a duração/ACK do handoff anterior; não autoriza ativação. Advisory locks desaparecem com a conexão, mas o processo HTTP pode continuar e emitir uma resposta já preparada. A reprodução preservada em `apps/server/test/adapters/postgres/disclosure/writer-loss.integration.test.ts` observou essa ordem com o servidor Node Effect real. Interromper a fibra não fecha a janela dentro da região não interrompível do writer.
+Contrato de implementação congelado por root em 2026-09-05 após [revisão independente](../../tests/integration/d03-sharing/independent/durable-permit-snapshot.review.md) e provas SQL reais. Substitui a duração/ACK do handoff anterior; não autoriza ativação. Advisory locks desaparecem com a conexão, mas o processo HTTP pode continuar e emitir uma resposta já preparada. O [experimento original preservado](../../apps/server/test/adapters/postgres/disclosure/writer-loss.baseline.md) observou o exclusivo físico adquirível enquanto o writer estava pausado; não era prova de logout público confirmado. As provas posteriores usam operações públicas e o protocolo durável. Interromper a fibra não fecha a janela dentro da região não interrompível do writer. A evidência executada está em [sharing-local.md](../verification/sharing-local.md).
 
 ## Estado operacional e ordem
 

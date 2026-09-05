@@ -5,27 +5,27 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "EX23-web",
+      "task": "D02-subject-identity-contract",
       "model": "gpt-6-astra",
       "effort": "low",
-      "worktree": "/Users/enzotironi/zoen-ex23-web",
-      "state": "independent_review"
+      "worktree": "/Users/enzotironi/zoen-subject-identity-contract",
+      "state": "in_progress"
     },
     {
       "agent": "roadmap_redesign",
-      "task": "EX23-independent-web-review",
+      "task": "D03-erasure-contract-review",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
-      "state": "in_progress"
+      "state": "review_complete_with_blockers"
     },
     {
       "agent": "tickets_redesign",
-      "task": "EX23-independent-disclosure-review",
+      "task": "SH05-independent-process-proof",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
-      "state": "in_progress"
+      "state": "integrated"
     }
   ],
   "temporary_ownership": [
@@ -299,6 +299,21 @@
       ],
       "evidence": "docs/contracts/disclosure-durable.md",
       "scope": "Membership, audience privada, guards de replay, SIGKILL e migrações possuem provas reais por recorte. CLI revisada sem HTTP vivo. Perda do coordenador reproduziu emissão tardia; snapshot antigo também foi refutado. Contrato durável revisado, SQL006 e tratamento do snapshot provados; adapter, executor, writer e ordenações HTTP seguem em integração sem ativação."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "dd4f781",
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "state": "independently_reviewed_and_verified_locally_ci_pending",
+      "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
+      "evidence": "docs/verification/sharing-local.md",
+      "unit_tests": 198,
+      "integration_tests_last_full_run": 166,
+      "additional_integration_tests": 2,
+      "browser_component_tests": 7,
+      "browser_acceptance_tests": 12,
+      "container_acceptance_tests": 12,
+      "scope": "Migrações005/006, core, emissão nativa durável, 12 ordenações de leitura/revoke/logout e 2 concorrências de grant em processos reais, Web/CLI e imagem nova com revisão independente. CI remota pendente; não conclui D03 integral, apagamento, restore, cloud ou 22entregas."
     }
   ],
   "verified_deliveries": [],
