@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "spec-000.execution-lock.v1-incomplete",
+  "ticket": "ZN-0002",
+  "spec": "SPEC-000",
+  "admissionStatus": "AdmittedLock",
+  "profile": "admission-core-toolchain",
+  "toolchain": {},
+  "compatibilityProbes": {},
+  "cleanInstalls": {
+    "method": "none",
+    "runs": [],
+    "identicalIntegrity": false
+  },
+  "environment": {
+    "localNodeVersion": "unknown",
+    "requiredNodeRange": ">=24 <25",
+    "nodeRangeSatisfied": false,
+    "pnpmAvailable": false,
+    "platform": "unknown",
+    "arch": "unknown"
+  },
+  "observations": {
+    "commands": ["synthetic-incomplete-fixture"],
+    "fixtureSeed": "zn-0002-neg-incomplete",
+    "profile": "admission-core-toolchain"
+  },
+  "blockers": [],
+  "note": "Synthetic incomplete qualification artifact for ZN-0002-NEG. Not observed evidence."
+}

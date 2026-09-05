@@ -1,47 +1,73 @@
-# File plan — `runbooks/spec-000/execution-lock.md`
+# Runbook — SPEC-000 execution lock / core toolchain (ZN-0002)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not product acceptance.  
+**Primary artifact:** `admissions/spec-000/execution-lock.json`  
+**Schema:** `contracts/spec-000/execution-lock.schema.json`
 
-Target: `runbooks/spec-000/execution-lock.md`. Representation: **markdown-plan**. Allocation: **required**.
+## Purpose
 
-Specs: [SPEC-000](../../docs/specs/spec-000.md).
-Tickets: [ZN-0002](../../docs/tickets/zn-0002.md).
+Admit the exact core toolchain (Node, pnpm, TypeScript, Hono, pg, PostgreSQL, Cedar binding, schema validator, canonicalizer, test tools, image digests) with **real** integrity from primary registries. Never invent lock hashes. Missing binaries or failing probes **block** core admission.
 
-## Responsibility and reuse
+## Preconditions
 
-## ZN-0002 operational/repair procedure
+- Node satisfying `package.json` engines (`>=24 <25`), preferably via `.toolchain-env.sh` / nvm.
+- `pnpm` matching `packageManager` when generating workspace locks.
+- Docker available for PostgreSQL 18 probe image.
+- Read-only access to `registry.npmjs.org`, `nodejs.org`, Docker Hub.
+- No fabricated integrity, image digest, or probe success.
 
-Scope: Admit the exact core toolchain. This is a plan; deployments and commands not yet qualified remain blocked.
+## Admission command
 
-```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-Two clean installs consume the candidate frozen lock
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: ticket ID, repository commit, admitted profile, actual lock bytes, required check IDs.
-READ: current execution catalog and immutable evidence; never infer completion from file existence.
-VERIFY repository/data-preservation inventory before permitting destructive migration work.
-RESOLVE exact dependencies on the target using real registries; record actual integrity and compatibility, not guessed lock entries.
-COLLECT tests by required IDs; reject missing selection, duplicate ownership, zero executions and skipped required cases.
-RUN actual component/browser/provider dependencies; unavailable dependency => BLOCKED, not a substitute.
-BIND report to commit, lock, fixture seed, profile, commands and artifact digests.
-REQUIRE independent review and current external gate when applicable; keep all other routes disabled.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-Both resolve identical integrity digests and pass the four compatibility probes; any missing binary or failing probe blocks core admission
-RESUME only with current approval and intact unrelated tenant scopes.
+```sh
+source .toolchain-env.sh
+node --experimental-strip-types --input-type=module <<'JS'
+import { writeFileSync } from 'node:fs';
+import { runExecutionLockAdmission } from './tests/admission/spec-000/execution-lock.test.ts';
+const lock = await runExecutionLockAdmission();
+writeFileSync(
+  'admissions/spec-000/execution-lock.json',
+  JSON.stringify(lock, null, 2) + '\n',
+);
+console.log({
+  admissionStatus: lock.admissionStatus,
+  identical: lock.cleanInstalls.identicalIntegrity,
+  blockers: lock.blockers.map((b) => b.code),
+  probes: Object.fromEntries(
+    Object.entries(lock.compatibilityProbes).map(([k, v]) => [k, v.status]),
+  ),
+});
+JS
 ```
 
-## Owning state / operation contracts
+Observations performed:
 
-### SPEC-000
-AdmitExecutionProfile(profile, candidateVersions, integrityDigests, compatibilityReport) -> AdmittedLock | Blocked; VerifyTicket(ticketId, commit, profile) -> EvidenceReport | MissingPrerequisite.
+1. Two independent npm registry resolutions of the candidate package set; require identical integrity digests.
+2. Node `v24.20.0` SHASUMS256 artifacts from nodejs.org (not invented).
+3. Docker Hub digests for `postgres:18` and `node:24`.
+4. Compatibility probes: Hono streaming, pg transaction, Cedar deny, schema/canonicalizer.
+5. Record local Node/pnpm honestly; do not fake Node 24.
+6. Leave unresolved families (schema validator, RFC8785 canonicalizer npm pins, vitest/playwright) as **BLOCKED**.
 
-No application tables. Track execution-lock.json, baseline-inventory.json and evidence-index.json as reviewed artifacts. Secret values never belong in these files.
+## Required checks
 
-[algorithm SPEC-000](../../docs/algorithms/spec-000.md)
+```sh
+source .toolchain-env.sh
+node --experimental-strip-types --test tests/admission/spec-000/execution-lock.test.ts
+```
 
-## Acceptance boundary
+Exact IDs: `ZN-0002-AC`, `ZN-0002-NEG`, `ZN-0002-BOUNDARY`.
 
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+`pnpm verify:ticket --ticket ZN-0002` is delivered by later SPEC-000 tickets. Until that target exists, report **BLOCKED** for verify tooling and attach the node test output above.
+
+## Failure / repair
+
+1. **PRECHECK** profile `admission-core-toolchain`, operator authority, ticket evidence.
+2. **STOP** core implementation merges that depend on an AdmittedLock while status is BLOCKED.
+3. **OBSERVE** raw registry/probe errors; preserve digests and blocker codes.
+4. **REPAIR** by re-running the admission command against real registries; never invent integrity or image digests. Select exact schema-validator/canonicalizer packages only via reviewed package.json change.
+5. **VERIFY** AC + NEG + BOUNDARY on the real command boundary.
+6. **RESUME** only after independent review. Incomplete, expired, or digest-mismatched qualification artifacts remain blocked; previous evidence does not transfer silently when versions/digests change.
+
+## Integrity rule
+
+If a digest cannot be obtained honestly, leave an explicit `BLOCKED`/`unresolved` field. Do not rename this runbook or a plan into a passing lock.

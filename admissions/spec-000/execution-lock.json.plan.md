@@ -1,13 +1,15 @@
 # File plan — `admissions/spec-000/execution-lock.json`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
-Target: `admissions/spec-000/execution-lock.json`. Representation: **sidecar-only**. Allocation: **required**.
+Target: `admissions/spec-000/execution-lock.json`. Representation: **existing-with-sidecar**. Allocation: **required**.
 
 Specs: [SPEC-000](../../docs/specs/spec-000.md).
 Tickets: [ZN-0002](../../docs/tickets/zn-0002.md).
 
 ## Responsibility and reuse
+
+The adjacent implementation is preserved. Read it first, extend it in place, and prove behavior at the ticket's required layer. Do not replace it with this plan or create a duplicate primitive.
 
 ```text
 PROCEDURE ZN_0002 /* planning label, not a public API */

@@ -1,13 +1,15 @@
 # File plan — `pnpm-lock.yaml`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
-Target: `pnpm-lock.yaml`. Representation: **sidecar-only**. Allocation: **conditional-support**.
+Target: `pnpm-lock.yaml`. Representation: **existing-with-sidecar**. Allocation: **conditional-support**.
 
 Specs: [SPEC-000](docs/specs/spec-000.md), [SPEC-002](docs/specs/spec-002.md), [SPEC-004](docs/specs/spec-004.md), [SPEC-011](docs/specs/spec-011.md), [SPEC-013](docs/specs/spec-013.md), [SPEC-023](docs/specs/spec-023.md), [SPEC-030](docs/specs/spec-030.md), [SPEC-031](docs/specs/spec-031.md), [SPEC-038](docs/specs/spec-038.md), [SPEC-039](docs/specs/spec-039.md), [SPEC-046](docs/specs/spec-046.md), [SPEC-054](docs/specs/spec-054.md).
 Tickets: [ZN-0002](docs/tickets/zn-0002.md), [ZN-0004](docs/tickets/zn-0004.md), [ZN-0006](docs/tickets/zn-0006.md), [ZN-0013](docs/tickets/zn-0013.md), [ZN-0028](docs/tickets/zn-0028.md), [ZN-0064](docs/tickets/zn-0064.md), [ZN-0080](docs/tickets/zn-0080.md), [ZN-0135](docs/tickets/zn-0135.md), [ZN-0174](docs/tickets/zn-0174.md), [ZN-0177](docs/tickets/zn-0177.md), [ZN-0180](docs/tickets/zn-0180.md), [ZN-0219](docs/tickets/zn-0219.md), [ZN-0227](docs/tickets/zn-0227.md), [ZN-0271](docs/tickets/zn-0271.md), [ZN-0314](docs/tickets/zn-0314.md), [ZN-0316](docs/tickets/zn-0316.md).
 
 ## Responsibility and reuse
+
+The adjacent implementation is preserved. Read it first, extend it in place, and prove behavior at the ticket's required layer. Do not replace it with this plan or create a duplicate primitive.
 
 ```text
 EVIDENCE-REQUIRES-EXECUTION — deliberately no fabricated target artifact.

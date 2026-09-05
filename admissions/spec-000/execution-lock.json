@@ -1,0 +1,280 @@
+{
+  "schemaVersion": "spec-000.execution-lock.v1",
+  "ticket": "ZN-0002",
+  "spec": "SPEC-000",
+  "admissionStatus": "BLOCKED",
+  "profile": "admission-core-toolchain",
+  "producedAt": "2026-09-05T01:18:48.457Z",
+  "disabledRoute": "core-toolchain-implementation-and-merge",
+  "toolchain": {
+    "node": {
+      "family": "Node.js 24 LTS",
+      "version": "v24.20.0",
+      "status": "resolved",
+      "source": "https://nodejs.org/dist/index.json + SHASUMS256.txt",
+      "ltsCodename": "Krypton",
+      "artifacts": [
+        {
+          "file": "node-v24.20.0-darwin-arm64.tar.gz",
+          "sha256": "40e5607e5ecb3db9192723776da2d75d966260fc74a7a9e731c1bd67dda96bc8"
+        },
+        {
+          "file": "node-v24.20.0-darwin-x64.tar.gz",
+          "sha256": "9e5b2644cf107befb6aefca676b96d3296bc10138096f022ed378d6233ed81f4"
+        },
+        {
+          "file": "node-v24.20.0-linux-arm64.tar.xz",
+          "sha256": "5f4ddab610c1ab2016b3c227cebdbf6d9495161487e4739c7b90090595f465f7"
+        },
+        {
+          "file": "node-v24.20.0-linux-x64.tar.xz",
+          "sha256": "2f2c0da162318f0de47665410c7c8c2ed3d36c8f3105de4bbc61176c70a7cbf2"
+        }
+      ],
+      "notes": "package.json engines=>=24 <25; local process.version=v24.20.0; nodeRangeSatisfied=true"
+    },
+    "pnpm": {
+      "name": "pnpm",
+      "version": "11.25.0",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-XN6SW08HX3Jetx+64YpC/+eEUkeJ8ZthxzHLhyHsKKruFg4BqNWvT+2ypCzb8wDv4j2zVrDUoXtNY+EfirfJVg==",
+      "shasum": "154acef3dae2922147e76249ae8cae7c3183c211",
+      "tarball": "https://registry.npmjs.org/pnpm/-/pnpm-11.25.0.tgz",
+      "license": "MIT",
+      "family": "pnpm 11",
+      "notes": "packageManager field pnpm@11.25.0; pnpmAvailable=true"
+    },
+    "typescript": {
+      "name": "typescript",
+      "version": "6.0.3",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==",
+      "shasum": "90251dc007916e972786cb94d74d15b185577d21",
+      "tarball": "https://registry.npmjs.org/typescript/-/typescript-6.0.3.tgz",
+      "license": "Apache-2.0",
+      "family": "TypeScript 6 compatibility baseline"
+    },
+    "hono": {
+      "name": "hono",
+      "version": "4.13.7",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-c8/gF9ac8Y78/agExVocyLevgR+JlpNB444Py0FSX8pJoPdYUfUzRcXtYEYGwt6l19qIlVZPN5Mfsw9jFShmQQ==",
+      "shasum": "80fdab8326f03d02f049117fd968101933493600",
+      "tarball": "https://registry.npmjs.org/hono/-/hono-4.13.7.tgz",
+      "license": "MIT",
+      "family": "Hono 4"
+    },
+    "honoNodeServer": {
+      "name": "@hono/node-server",
+      "version": "2.1.1",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-ELuehkj5VCBdgEw9zs+ivkKwyzzUCSQuE96YmiPvn1ECBoZCczbFXJLeEGMTYjphP6gydh4pHMqEYPVMYUVgQg==",
+      "shasum": "9cfa8649e9ecbcd48edf505b103002402ea51e70",
+      "tarball": "https://registry.npmjs.org/@hono/node-server/-/node-server-2.1.1.tgz",
+      "license": "MIT",
+      "family": "Hono official Node adapter"
+    },
+    "pg": {
+      "name": "pg",
+      "version": "8.23.0",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-Ip2EQCngowJLGOfCwkFhPXU7/ljlhn6Rxlmy4XYfL2Y+vyRM59+8uR2xqRWKdYmbXmxCFOAmKxBuSUCdF34qLg==",
+      "shasum": "5c2026d32bd0cb4fbd9196bac1ecf5ae66607180",
+      "tarball": "https://registry.npmjs.org/pg/-/pg-8.23.0.tgz",
+      "license": "MIT",
+      "family": "node-postgres (pg)"
+    },
+    "postgresql": {
+      "name": "postgres",
+      "tag": "18",
+      "status": "resolved",
+      "source": "https://hub.docker.com/v2/repositories/library/postgres/tags/18",
+      "indexDigest": "sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280",
+      "platformDigests": {
+        "amd64": "sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7",
+        "arm64": "sha256:6fd9e18b6fedda0a34e4d53ad6fdbd4289a217300af573c31ec7084e6d9cf329"
+      },
+      "localRepoDigest": "postgres@sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280",
+      "family": "PostgreSQL 18",
+      "notes": "Image digests from Docker Hub; localRepoDigest recorded when image present"
+    },
+    "cedarBinding": {
+      "name": "@cedar-policy/cedar-wasm",
+      "version": "4.12.0",
+      "status": "resolved",
+      "source": "https://registry.npmjs.org",
+      "integrity": "sha512-tCSj92hh4fnmas4ojO4tjx8wAAW3mKVgQ7M388NsSpXp64FVeYY6xwhKtJRaaYGK0qLiN2jnq8/SNIU2r5fdPw==",
+      "shasum": "bfcb72df711ffc8d096c5a5fda49cbdcff1350b5",
+      "tarball": "https://registry.npmjs.org/@cedar-policy/cedar-wasm/-/cedar-wasm-4.12.0.tgz",
+      "license": "Apache-2.0",
+      "family": "Cedar evaluator behind PolicyPort"
+    },
+    "schemaValidator": {
+      "id": "schema-validator",
+      "family": "JSON Schema 2020-12",
+      "status": "BLOCKED",
+      "source": "technology-stack.md family selection; package.json has no exact validator pin",
+      "name": null,
+      "version": null,
+      "integrity": null,
+      "notes": "Exact npm package within family not selected; do not invent ajv/other pin"
+    },
+    "canonicalizer": {
+      "id": "canonicalizer",
+      "family": "canonical JSON (RFC 8785 profile)",
+      "status": "BLOCKED",
+      "source": "technology-stack.md family selection; package.json has no exact canonicalizer pin",
+      "name": null,
+      "version": null,
+      "integrity": null,
+      "notes": "Kernel candidate canonicalJson is not an admitted lock entry"
+    },
+    "testTools": {
+      "entries": [
+        {
+          "id": "node-test",
+          "family": "node:test (bundled with Node runtime)",
+          "status": "resolved",
+          "source": "Node.js runtime",
+          "name": "node:test",
+          "version": "v24.20.0",
+          "integrity": null,
+          "notes": "Built-in test runner used for this admission suite"
+        },
+        {
+          "id": "vitest",
+          "family": "Vitest (law/property layer; ZN-0004)",
+          "status": "BLOCKED",
+          "source": "docs/testing/strategy.md; not pinned in package.json",
+          "name": null,
+          "version": null,
+          "integrity": null,
+          "notes": "Exact vitest pin deferred; do not invent version"
+        },
+        {
+          "id": "playwright",
+          "family": "Playwright (journey/browser; ZN-0004)",
+          "status": "BLOCKED",
+          "source": "docs/testing/strategy.md; not pinned in package.json",
+          "name": null,
+          "version": null,
+          "integrity": null,
+          "notes": "Exact playwright pin deferred; do not invent version"
+        }
+      ]
+    },
+    "images": [
+      {
+        "name": "postgres",
+        "tag": "18",
+        "status": "resolved",
+        "source": "https://hub.docker.com/v2/repositories/library/postgres/tags/18",
+        "indexDigest": "sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280",
+        "platformDigests": {
+          "amd64": "sha256:7341002d2b8c7c5bdd7542a671a95b36196c0b5b888daf454ae4fc33ba5346d7",
+          "arm64": "sha256:6fd9e18b6fedda0a34e4d53ad6fdbd4289a217300af573c31ec7084e6d9cf329"
+        },
+        "localRepoDigest": "postgres@sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280",
+        "family": "PostgreSQL 18"
+      },
+      {
+        "name": "node",
+        "tag": "24",
+        "status": "resolved",
+        "source": "https://hub.docker.com/v2/repositories/library/node/tags/24",
+        "indexDigest": "sha256:be23f54a88d34e8824c741b19b91064094f92c1c97b194144bfc8b50d67258e2",
+        "platformDigests": {
+          "amd64": "sha256:9137a20e25879e0b557227b57e3ee4e9af4bde29eb3db66134cd1723e84f830b",
+          "arm64": "sha256:78b162211207872503ea9245188122b815150b9b4380e47a7c4a447332c01660"
+        },
+        "localRepoDigest": null,
+        "family": "Node.js 24 OCI"
+      }
+    ]
+  },
+  "compatibilityProbes": {
+    "honoStreaming": {
+      "status": "PASS",
+      "observed": "chunk-a;chunk-b",
+      "reason": null,
+      "error": null
+    },
+    "pgTransaction": {
+      "status": "PASS",
+      "observed": "ok",
+      "reason": null,
+      "error": null
+    },
+    "cedarDeny": {
+      "status": "PASS",
+      "observed": "deny",
+      "reason": null,
+      "error": null
+    },
+    "schemaCanonicalizer": {
+      "status": "BLOCKED",
+      "observed": null,
+      "reason": "Exact schema-validator and RFC8785 canonicalizer packages are not selected in package.json; family standards recorded only. Kernel candidate canonicalJson is not an admitted lock entry.",
+      "error": null
+    }
+  },
+  "cleanInstalls": {
+    "method": "two independent npm registry resolutions of candidate package set (integrity maps)",
+    "runs": [
+      {
+        "id": "A",
+        "resolvedCount": 6,
+        "integrityDigest": "4e91c05ef176cdd164a76939a4cb41201c2220ea8881834dbe47a7bcdd4e8ab0"
+      },
+      {
+        "id": "B",
+        "resolvedCount": 6,
+        "integrityDigest": "4e91c05ef176cdd164a76939a4cb41201c2220ea8881834dbe47a7bcdd4e8ab0"
+      }
+    ],
+    "identicalIntegrity": true
+  },
+  "environment": {
+    "localNodeVersion": "v24.20.0",
+    "requiredNodeRange": ">=24 <25",
+    "nodeRangeSatisfied": true,
+    "pnpmAvailable": true,
+    "platform": "linux",
+    "arch": "x64",
+    "notes": "Recorded honestly from process/runtime. Node may be provided via nvm (.toolchain-env.sh). Do not fake Node 24 when process reports otherwise."
+  },
+  "observations": {
+    "commands": [
+      "npm registry resolve (run A) for candidate core packages",
+      "npm registry resolve (run B) for candidate core packages",
+      "curl https://nodejs.org/dist/v24.20.0/SHASUMS256.txt",
+      "curl Docker Hub library/postgres:18 digests",
+      "curl Docker Hub library/node:24 digests",
+      "docker image inspect postgres:18 -> postgres@sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280",
+      "npm install probe packages in /tmp/zn-0002-probes",
+      "probe honoStreaming -> PASS",
+      "probe pgTransaction -> PASS",
+      "probe cedarDeny -> PASS",
+      "probe schemaCanonicalizer -> BLOCKED"
+    ],
+    "fixtureSeed": "zn-0002-admission-seed-v1",
+    "profile": "admission-core-toolchain"
+  },
+  "blockers": [
+    {
+      "code": "schema-canonicalizer-unresolved",
+      "message": "Exact schema-validator and RFC8785 canonicalizer packages are not selected in package.json; family standards recorded only. Kernel candidate canonicalJson is not an admitted lock entry.",
+      "component": "schemaCanonicalizer"
+    },
+    {
+      "code": "verify-ticket-planned",
+      "message": "pnpm verify:ticket is still planned / not wired in package.json scripts",
+      "component": "verify:ticket"
+    }
+  ]
+}

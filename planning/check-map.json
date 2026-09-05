@@ -40,7 +40,7 @@
     "ticket_id": "ZN-0002",
     "spec_id": "SPEC-000",
     "test_file": "tests/admission/spec-000/execution-lock.test.ts",
-    "plan_path": "tests/admission/spec-000/execution-lock.test.ts",
+    "plan_path": "tests/admission/spec-000/execution-lock.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -51,7 +51,7 @@
     "ticket_id": "ZN-0002",
     "spec_id": "SPEC-000",
     "test_file": "tests/admission/spec-000/execution-lock.test.ts",
-    "plan_path": "tests/admission/spec-000/execution-lock.test.ts",
+    "plan_path": "tests/admission/spec-000/execution-lock.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -62,7 +62,7 @@
     "ticket_id": "ZN-0002",
     "spec_id": "SPEC-000",
     "test_file": "tests/admission/spec-000/execution-lock.test.ts",
-    "plan_path": "tests/admission/spec-000/execution-lock.test.ts",
+    "plan_path": "tests/admission/spec-000/execution-lock.test.ts.plan.md",
     "status": "not-executed"
   },
   {

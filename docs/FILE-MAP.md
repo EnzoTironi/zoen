@@ -11,7 +11,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `CODEOWNERS` | [sidecar-only](../CODEOWNERS.plan.md) | planned | SPEC-000 |
 | `admissions/baseline-inventory.json` | [sidecar-only](../admissions/baseline-inventory.json.plan.md) | planned | SPEC-000 |
 | `admissions/spec-000/baseline-inventory.json` | [existing-with-sidecar](../admissions/spec-000/baseline-inventory.json.plan.md) | implementation-in-progress | SPEC-000 |
-| `admissions/spec-000/execution-lock.json` | [sidecar-only](../admissions/spec-000/execution-lock.json.plan.md) | planned | SPEC-000 |
+| `admissions/spec-000/execution-lock.json` | [existing-with-sidecar](../admissions/spec-000/execution-lock.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `admissions/spec-002/extension-lock.json` | [sidecar-only](../admissions/spec-002/extension-lock.json.plan.md) | planned | SPEC-002 |
 | `admissions/spec-004/extension-lock.json` | [sidecar-only](../admissions/spec-004/extension-lock.json.plan.md) | planned | SPEC-004 |
 | `admissions/spec-010/provider-qualification.json` | [sidecar-only](../admissions/spec-010/provider-qualification.json.plan.md) | planned | SPEC-010 |
@@ -128,7 +128,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `compose.test.yaml` | [sidecar-only](../compose.test.yaml.plan.md) | planned | SPEC-000 |
 | `contracts/mini-app-definition.schema.json` | [sidecar-only](../contracts/mini-app-definition.schema.json.plan.md) | planned | SPEC-052 |
 | `contracts/spec-000/baseline-inventory.schema.json` | [existing-with-sidecar](../contracts/spec-000/baseline-inventory.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
-| `contracts/spec-000/execution-lock.schema.json` | [sidecar-only](../contracts/spec-000/execution-lock.schema.json.plan.md) | planned | SPEC-000 |
+| `contracts/spec-000/execution-lock.schema.json` | [existing-with-sidecar](../contracts/spec-000/execution-lock.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `contracts/spec-000/supply-chain.schema.json` | [sidecar-only](../contracts/spec-000/supply-chain.schema.json.plan.md) | planned | SPEC-000 |
 | `contracts/spec-000/test-harness.schema.json` | [sidecar-only](../contracts/spec-000/test-harness.schema.json.plan.md) | planned | SPEC-000 |
 | `contracts/spec-000/verify-ticket.schema.json` | [sidecar-only](../contracts/spec-000/verify-ticket.schema.json.plan.md) | planned | SPEC-000 |
@@ -1096,10 +1096,10 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packs/spec-016/pack-surfaces.json` | [sidecar-only](../packs/spec-016/pack-surfaces.json.plan.md) | planned | SPEC-016 |
 | `packs/spec-016/pack.json` | [sidecar-only](../packs/spec-016/pack.json.plan.md) | planned | SPEC-016 |
 | `playwright.config.ts` | [sidecar-only](../playwright.config.ts.plan.md) | planned | SPEC-000 |
-| `pnpm-lock.yaml` | [sidecar-only](../pnpm-lock.yaml.plan.md) | planned | SPEC-000, SPEC-002, SPEC-004, SPEC-011, SPEC-013, SPEC-023, SPEC-030, SPEC-031, SPEC-038, SPEC-039, SPEC-046, SPEC-054 |
+| `pnpm-lock.yaml` | [existing-with-sidecar](../pnpm-lock.yaml.plan.md) | implementation-in-progress | SPEC-000, SPEC-002, SPEC-004, SPEC-011, SPEC-013, SPEC-023, SPEC-030, SPEC-031, SPEC-038, SPEC-039, SPEC-046, SPEC-054 |
 | `pnpm-workspace.yaml` | [sidecar-only](../pnpm-workspace.yaml.plan.md) | planned | SPEC-000 |
 | `runbooks/spec-000/baseline-inventory.md` | [existing-with-sidecar](../runbooks/spec-000/baseline-inventory.md.plan.md) | implementation-in-progress | SPEC-000 |
-| `runbooks/spec-000/execution-lock.md` | [markdown-plan](../runbooks/spec-000/execution-lock.md) | planned | SPEC-000 |
+| `runbooks/spec-000/execution-lock.md` | [existing-with-sidecar](../runbooks/spec-000/execution-lock.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-000/supply-chain.md` | [markdown-plan](../runbooks/spec-000/supply-chain.md) | planned | SPEC-000 |
 | `runbooks/spec-000/test-harness.md` | [markdown-plan](../runbooks/spec-000/test-harness.md) | planned | SPEC-000 |
 | `runbooks/spec-000/verify-ticket.md` | [markdown-plan](../runbooks/spec-000/verify-ticket.md) | planned | SPEC-000 |
@@ -1443,7 +1443,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `runners/sql/entry.ts` | [comment-only-source](../runners/sql/entry.ts) | planned | SPEC-030 |
 | `runners/types.ts` | [comment-only-source](../runners/types.ts) | planned | SPEC-030 |
 | `tests/admission/spec-000/baseline-inventory.test.ts` | [existing-with-sidecar](../tests/admission/spec-000/baseline-inventory.test.ts.plan.md) | implementation-in-progress | SPEC-000 |
-| `tests/admission/spec-000/execution-lock.test.ts` | [comment-only-source](../tests/admission/spec-000/execution-lock.test.ts) | planned | SPEC-000 |
+| `tests/admission/spec-000/execution-lock.test.ts` | [existing-with-sidecar](../tests/admission/spec-000/execution-lock.test.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/admission/spec-010/provider-qualification.test.ts` | [comment-only-source](../tests/admission/spec-010/provider-qualification.test.ts) | planned | SPEC-010 |
 | `tests/admission/spec-011/whatsapp-qualification.test.ts` | [comment-only-source](../tests/admission/spec-011/whatsapp-qualification.test.ts) | planned | SPEC-011 |
 | `tests/admission/spec-012/usability-evidence.test.ts` | [comment-only-source](../tests/admission/spec-012/usability-evidence.test.ts) | planned | SPEC-012 |
@@ -1716,7 +1716,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/component/spec-054/rivet-preparation.test.ts` | [comment-only-source](../tests/component/spec-054/rivet-preparation.test.ts) | planned | SPEC-054 |
 | `tests/component/spec-054/rivet-recovery.test.ts` | [comment-only-source](../tests/component/spec-054/rivet-recovery.test.ts) | planned | SPEC-054 |
 | `tests/fixtures/spec-000/baseline-inventory.json` | [existing-with-sidecar](../tests/fixtures/spec-000/baseline-inventory.json.plan.md) | implementation-in-progress | SPEC-000 |
-| `tests/fixtures/spec-000/execution-lock.json` | [sidecar-only](../tests/fixtures/spec-000/execution-lock.json.plan.md) | planned | SPEC-000 |
+| `tests/fixtures/spec-000/execution-lock.json` | [existing-with-sidecar](../tests/fixtures/spec-000/execution-lock.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/fixtures/spec-000/supply-chain.json` | [sidecar-only](../tests/fixtures/spec-000/supply-chain.json.plan.md) | planned | SPEC-000 |
 | `tests/fixtures/spec-000/test-harness.json` | [sidecar-only](../tests/fixtures/spec-000/test-harness.json.plan.md) | planned | SPEC-000 |
 | `tests/fixtures/spec-000/verify-ticket.json` | [sidecar-only](../tests/fixtures/spec-000/verify-ticket.json.plan.md) | planned | SPEC-000 |
