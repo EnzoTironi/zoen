@@ -3,6 +3,7 @@ export { CaptureStager, isStaged, isQuarantined } from './capture.js';
 export { CaptureAdmission } from './admission.js';
 export { EvidenceReader } from './evidence-read.js';
 export { EvidenceExtractor, EXTRACTOR_IMPL } from './extract.js';
+export { CaptureGarbageCollector } from './capture-gc.js';
 export type {
   CaptureState,
   SourceBinding,
@@ -25,6 +26,10 @@ export type {
   ExtractCandidate,
   ExtractInput,
   ExtractResult,
+  RetentionPinKind,
+  RetentionPinInput,
+  CaptureGcInput,
+  CaptureGcResult,
 } from './types.js';
 export type {
   CaptureByteSource,
@@ -32,4 +37,5 @@ export type {
   AdmitCapturePort,
   ReadEvidencePort,
   ExtractPort,
+  CaptureGcPort,
 } from './ports.js';

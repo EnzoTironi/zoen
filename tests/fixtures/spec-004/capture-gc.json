@@ -1,0 +1,10 @@
+{
+  "seed": "zn-0029-capture-gc-seed-v1",
+  "seedDigest": "2222222222222222222222222222222222222222222222222222222222222222",
+  "purpose": "operations",
+  "sourceNamespace": "uploads.csv",
+  "domain": "records",
+  "predicate": "imported_row",
+  "mappingDigest": "3333333333333333333333333333333333333333333333333333333333333333",
+  "maxBytes": 4096
+}

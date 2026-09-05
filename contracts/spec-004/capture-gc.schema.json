@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-004/capture-gc.schema.json",
+  "title": "ZN-0029 capture-gc fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "sourceNamespace", "domain", "predicate", "mappingDigest", "maxBytes"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0029-capture-gc-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "sourceNamespace": { "type": "string" },
+    "domain": { "type": "string" },
+    "predicate": { "type": "string" },
+    "mappingDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "maxBytes": { "type": "integer", "minimum": 1 }
+  }
+}

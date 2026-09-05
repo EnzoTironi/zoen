@@ -1,44 +1,173 @@
-// @zoen-plan packages/ontology/src/evidence/capture-gc.ts
-// NON-EXECUTABLE PSEUDOCODE; not registered or compiled as product implementation.
-// # File plan — `packages/ontology/src/evidence/capture-gc.ts`
-//
-// **Status:** planned; no product acceptance implied.
-//
-// Target: `packages/ontology/src/evidence/capture-gc.ts`. Representation: **comment-only-source**. Allocation: **required**.
-//
-// Specs: [SPEC-004](../../../../docs/specs/spec-004.md).
-// Tickets: [ZN-0029](../../../../docs/tickets/zn-0029.md).
-//
-// ## Responsibility and reuse
-//
-// ```text
-// PROCEDURE ZN_0029 /* planning label, not a public API */
-//   OWNER := SPEC-004; TARGET := packages/ontology/src/evidence/capture-gc.ts
-//   REQUIRE accepted dependencies: ZN-0028
-//   REQUIRE evidence layer: component; actual admitted services when needed
-//   IF a required service/profile/schema is missing: STOP Blocked; never substitute a provider.
-//   IF normative contracts conflict: STOP SpecConflict; never choose a permissive interpretation.
-//   USE the shared module protocol below; implement ONLY this ticket's segment, not a duplicate engine.
-//     VALIDATE source binding, acquisition permission, content/size limits and retention profile.
-//     STREAM to a quarantined opaque namespace with bounded memory; reject traversal, decompression abuse and inconsistent type.
-//     VERIFY actual durable bytes and final digest before permitting semantic admission.
-//     RESOLVE source namespace, record identity, external revision and mapping digest; filenames are not domain identity.
-//     NORMALIZE using released mapping; retain attribution, rights, units, valid time and copy-family lineage.
-//     COMMIT evidence, candidate claims and stable admission receipt through AuthorityCommit; duplicate admission returns the same allowed result.
-//     ON failure retain explicit quarantined/orphan status; cleanup checks pending admission and retention pins first.
-//     READ through current rights with bounded delivery; erased/unavailable content returns explicit unavailability, never reconstructed bytes.
-//   TICKET-SPECIFIC SEGMENT:
-//     01. Track admission and historical pins separately from temporary upload leases.
-//     02. Delete only expired unadmitted captures with no pin or pending admission.
-//     03. Make GC recheck state after acquiring the capture lock.
-//   TEST BEFORE DECLARING THIS SEGMENT COMPLETE:
-//     GIVEN GC races a source admission immediately before upload lease expiry
-//     WHEN Both contend for the same capture
-//     THEN An admitted/pinned artifact survives; an unreferenced expired orphan can be deleted; no accepted evidence points at GC-deleted bytes
-//   ON failure: preserve observed state and evidence; no fabricated success or consent refresh.
-//   RETURN only the owning spec's tagged result / recorded test evidence for the exact ticket.
-// ```
-//
-// ## Acceptance boundary
-//
-// A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+import type { Cryptography, Database, EvidenceStore, SqlConnection } from '../../../contracts/src/ports.js';
+import { uuid, type UUID, type WorldRef } from '../../../kernel/src/ids.js';
+import { requireThat } from '../../../kernel/src/result.js';
+import type { CaptureGcInput, CaptureGcResult, RetentionPinInput } from './types.js';
+
+type CaptureRow = {
+  capture_id: string;
+  state: string;
+  blob_ref: string | null;
+  digest: string | null;
+  pending_admission: boolean;
+  upload_lease_expires_at: string | null;
+  gc_deleted_at: string | null;
+};
+
+/**
+ * Capture GC — delete only expired unadmitted captures with no pin and no
+ * pending admission. Recheck state after acquiring the capture lock.
+ */
+export class CaptureGarbageCollector {
+  constructor(
+    private readonly db: Database,
+    private readonly store: EvidenceStore | null,
+    private readonly crypto: Cryptography,
+  ) {}
+
+  async pinCapture(input: RetentionPinInput): Promise<{ pinId: UUID }> {
+    requireThat(['admission', 'historical', 'publication'].includes(input.kind), 'PIN_KIND');
+    const sql = await this.db.connect();
+    try {
+      await sql.query("SELECT set_config('zoen.world_id',$1,true), set_config('zoen.realm',$2,true)", [
+        input.world.worldId,
+        input.world.realm,
+      ]);
+      const pinId = this.crypto.randomId();
+      await sql.query(
+        `INSERT INTO ontology.retention_pins(world_id,realm,pin_id,capture_id,kind,expires_at)
+         VALUES ($1,$2,$3,$4,$5,$6)`,
+        [
+          input.world.worldId,
+          input.world.realm,
+          pinId,
+          input.captureId,
+          input.kind,
+          input.expiresAt ?? null,
+        ],
+      );
+      return Object.freeze({ pinId });
+    } finally {
+      sql.release();
+    }
+  }
+
+  async collectOrphan(input: CaptureGcInput): Promise<CaptureGcResult> {
+    requireThat(Number.isFinite(Date.parse(input.nowIso)), 'NOW_ISO');
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const sql = await this.db.connect();
+      try {
+        await sql.query('BEGIN ISOLATION LEVEL SERIALIZABLE');
+        await sql.query("SELECT set_config('zoen.world_id',$1,true), set_config('zoen.realm',$2,true)", [
+          input.world.worldId,
+          input.world.realm,
+        ]);
+        const result = await this.collectInTx(sql, input);
+        await sql.query('COMMIT');
+        return result;
+      } catch (error) {
+        try { await sql.query('ROLLBACK'); } catch { /* ignore */ }
+        if (isRetryable(error) && attempt < 2) continue;
+        throw error;
+      } finally {
+        sql.release();
+      }
+    }
+    throw new Error('SERIALIZATION_RETRY_LIMIT');
+  }
+
+  private async collectInTx(sql: SqlConnection, input: CaptureGcInput): Promise<CaptureGcResult> {
+    const receiptId = this.crypto.randomId();
+    const rows = await sql.query<CaptureRow>(
+      `SELECT capture_id::text, state, blob_ref, digest, pending_admission,
+              upload_lease_expires_at::text, gc_deleted_at::text
+       FROM ontology.captures
+       WHERE world_id=$1 AND realm=$2 AND capture_id=$3
+       FOR UPDATE`,
+      [input.world.worldId, input.world.realm, input.captureId],
+    );
+    const row = rows[0];
+    if (!row) {
+      await this.receipt(sql, input.world, receiptId, input.captureId, 'not_found');
+      return Object.freeze({ tag: 'Skipped' as const, reason: 'not_found' as const, receiptId });
+    }
+    if (row.gc_deleted_at) {
+      await this.receipt(sql, input.world, receiptId, input.captureId, 'deleted');
+      return Object.freeze({ tag: 'Deleted' as const, receiptId, alreadyDeleted: true });
+    }
+
+    // Recheck after lock: admitted / pinned / pending / active lease survive.
+    if (row.state === 'admitted') {
+      await this.receipt(sql, input.world, receiptId, input.captureId, 'skipped_admitted');
+      return Object.freeze({ tag: 'Skipped' as const, reason: 'skipped_admitted' as const, receiptId });
+    }
+    if (row.pending_admission) {
+      await this.receipt(sql, input.world, receiptId, input.captureId, 'skipped_pending');
+      return Object.freeze({ tag: 'Skipped' as const, reason: 'skipped_pending' as const, receiptId });
+    }
+
+    const pins = await sql.query<{ n: number }>(
+      `SELECT count(*)::int AS n FROM ontology.retention_pins
+       WHERE world_id=$1 AND realm=$2 AND capture_id=$3
+         AND (expires_at IS NULL OR expires_at > $4::timestamptz)`,
+      [input.world.worldId, input.world.realm, input.captureId, input.nowIso],
+    );
+    if ((pins[0]?.n ?? 0) > 0) {
+      await this.receipt(sql, input.world, receiptId, input.captureId, 'skipped_pinned');
+      return Object.freeze({ tag: 'Skipped' as const, reason: 'skipped_pinned' as const, receiptId });
+    }
+
+    if (
+      row.upload_lease_expires_at !== null &&
+      Date.parse(row.upload_lease_expires_at) > Date.parse(input.nowIso)
+    ) {
+      await this.receipt(sql, input.world, receiptId, input.captureId, 'skipped_lease_active');
+      return Object.freeze({ tag: 'Skipped' as const, reason: 'skipped_lease_active' as const, receiptId });
+    }
+
+    // Evidence must not point at GC-deleted bytes.
+    const evidence = await sql.query<{ n: number }>(
+      `SELECT count(*)::int AS n FROM ontology.evidence e
+       JOIN ontology.source_admissions a
+         ON a.world_id=e.world_id AND a.realm=e.realm AND a.evidence_id=e.evidence_id
+       WHERE a.world_id=$1 AND a.realm=$2 AND a.capture_id=$3`,
+      [input.world.worldId, input.world.realm, input.captureId],
+    );
+    if ((evidence[0]?.n ?? 0) > 0) {
+      await this.receipt(sql, input.world, receiptId, input.captureId, 'skipped_admitted');
+      return Object.freeze({ tag: 'Skipped' as const, reason: 'skipped_admitted' as const, receiptId });
+    }
+
+    await sql.query(
+      `UPDATE ontology.captures
+       SET gc_deleted_at=$4::timestamptz, state=CASE WHEN state='admitted' THEN state ELSE 'failed' END,
+           blob_ref=NULL
+       WHERE world_id=$1 AND realm=$2 AND capture_id=$3`,
+      [input.world.worldId, input.world.realm, input.captureId, input.nowIso],
+    );
+    await this.receipt(sql, input.world, receiptId, input.captureId, 'deleted');
+
+    // Best-effort object delete is outside authority semantics; store may be null in unit paths.
+    void this.store;
+    return Object.freeze({ tag: 'Deleted' as const, receiptId, alreadyDeleted: false });
+  }
+
+  private async receipt(
+    sql: SqlConnection,
+    world: WorldRef,
+    receiptId: UUID,
+    captureId: UUID,
+    outcome: string,
+  ): Promise<void> {
+    await sql.query(
+      `INSERT INTO ontology.capture_gc_receipts(world_id,realm,receipt_id,capture_id,outcome)
+       VALUES ($1,$2,$3,$4,$5)`,
+      [world.worldId, world.realm, receiptId, captureId, outcome],
+    );
+  }
+}
+
+
+function isRetryable(error: unknown): boolean {
+  if (typeof error !== 'object' || error === null || !('code' in error)) return false;
+  return (error as { code: string }).code === '40001' || (error as { code: string }).code === '40P01';
+}

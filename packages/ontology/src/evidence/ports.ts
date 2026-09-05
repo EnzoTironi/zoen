@@ -1,6 +1,8 @@
 import type {
   AdmissionReceipt,
   AdmitCaptureInput,
+  CaptureGcInput,
+  CaptureGcResult,
   CaptureRef,
   DeclaredCaptureMetadata,
   ExtractInput,
@@ -8,13 +10,17 @@ import type {
   QuarantinedCapture,
   ReadEvidenceInput,
   ReadEvidenceResult,
+  RetentionPinInput,
   SourceBinding,
   StageCaptureResult,
 } from './types.js';
+import type { UUID } from '../../../kernel/src/ids.js';
 
 export type {
   AdmissionReceipt,
   AdmitCaptureInput,
+  CaptureGcInput,
+  CaptureGcResult,
   CaptureRef,
   DeclaredCaptureMetadata,
   ExtractInput,
@@ -22,6 +28,7 @@ export type {
   QuarantinedCapture,
   ReadEvidenceInput,
   ReadEvidenceResult,
+  RetentionPinInput,
   SourceBinding,
   StageCaptureResult,
 };
@@ -46,4 +53,9 @@ export interface ReadEvidencePort {
 
 export interface ExtractPort {
   extract(input: ExtractInput): Promise<ExtractResult>;
+}
+
+export interface CaptureGcPort {
+  pinCapture(input: RetentionPinInput): Promise<{ pinId: UUID }>;
+  collectOrphan(input: CaptureGcInput): Promise<CaptureGcResult>;
 }

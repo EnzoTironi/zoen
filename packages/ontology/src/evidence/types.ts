@@ -167,3 +167,31 @@ export type ExtractResult =
       resultDigest: string;
       firstRun: boolean;
     }>;
+
+export type RetentionPinKind = 'admission' | 'historical' | 'publication';
+
+export type RetentionPinInput = Readonly<{
+  world: WorldRef;
+  captureId: UUID;
+  kind: RetentionPinKind;
+  expiresAt?: string;
+}>;
+
+export type CaptureGcInput = Readonly<{
+  world: WorldRef;
+  captureId: UUID;
+  nowIso: string;
+}>;
+
+export type CaptureGcResult =
+  | Readonly<{ tag: 'Deleted'; receiptId: UUID; alreadyDeleted: boolean }>
+  | Readonly<{
+      tag: 'Skipped';
+      reason:
+        | 'not_found'
+        | 'skipped_pinned'
+        | 'skipped_pending'
+        | 'skipped_admitted'
+        | 'skipped_lease_active';
+      receiptId: UUID;
+    }>;
