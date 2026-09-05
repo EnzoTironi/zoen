@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "3.1127.0",
+    "@cloudflare/workers-types": "5.20260905.1",
     "@effect/platform-node": "4.0.0-rc.112",
     "@effect/sql-pg": "4.0.0-rc.112",
     "@effect/tsgo": "0.41.0",
@@ -26,6 +27,7 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.7",
     "@vitejs/plugin-react": "6.1.1",
+    "bun-types": "1.4.1",
     "effect": "4.0.0-rc.112",
     "oxfmt": "0.66.0",
     "oxlint": "1.81.0",

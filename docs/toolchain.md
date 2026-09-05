@@ -38,3 +38,11 @@ Testes unitários usam `*.test.ts(x)`; integrações usam `*.integration.test.ts
 A análise global continua cobrindo fontes e testes pelo tsconfig raiz. Vitest usa aliases explícitos para as fontes e herança do config nos dois projetos; as provas de unidade e integração não dependem de um `dist` antigo. A CI compila o core e carrega os módulos emitidos separadamente. Esse build não conclui o servidor, o cliente web ou a CLI, cujos entrypoints ainda estão em composição.
 
 Uma contraprova em worktree sem `dist` mostrou que targets de `paths` sem a extensão `.ts` não resolviam com NodeNext. Os targets incluem a extensão explicitamente. O typecheck foi repetido com os dois diretórios `dist` retirados temporariamente da árvore e passou; os artefatos foram preservados e restaurados depois da execução.
+
+## Declarações de Better Auth
+
+Um import real de `better-auth@1.7.2` reproduziu quatro erros de declaração no TS7 estrito: os tipos opcionais `bun:sqlite` e Cloudflare ausentes, um default genérico emitido por `@better-fetch/fetch@1.3.1` incompatível com `exactOptionalPropertyTypes`, e um `Timer` global inexistente no Node. `skipLibCheck` permanece falso.
+
+Os pacotes oficiais `bun-types@1.4.1` e `@cloudflare/workers-types@5.20260905.1` fornecem os tipos exigidos pelo contrato da biblioteca. O tsconfig inclui somente `bun-types/sqlite`: carregar todos os tipos Bun reproduziu conflitos de `ImportMeta` com Vite e de globals com Node 24. Essa seleção usa a declaração original do fornecedor e não instala um runtime Bun ou um adapter SQLite na aplicação.
+
+O patch versionado em `patches/@better-fetch__fetch@1.3.1.patch`, aplicado pelo pnpm e vinculado no lock, altera somente as duas declarações ESM/CJS. Ele restaura o alias genérico de [fetch.ts no upstream](https://github.com/better-auth/better-fetch/blob/2d16606a5f8145e4e1540896e6e7121d5a23a9b0/packages/better-fetch/src/fetch.ts) e o tipo `ReturnType<typeof setTimeout>` de [utils.ts na mesma revisão](https://github.com/better-auth/better-fetch/blob/2d16606a5f8145e4e1540896e6e7121d5a23a9b0/packages/better-fetch/src/utils.ts). Nenhum JavaScript da dependência foi alterado. O mesmo import passou no typecheck completo após essas correções; a prova de identidade usa os fluxos reais de EX09.

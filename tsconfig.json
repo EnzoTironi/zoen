@@ -19,7 +19,7 @@
       "@zoen/authority/*": ["./packages/authority/src/*.ts"]
     },
     "jsx": "react-jsx",
-    "types": ["node"],
+    "types": ["node", "bun-types/sqlite"],
     "skipLibCheck": false
   },
   "include": [
