@@ -10,13 +10,22 @@ import { SqlClient } from "effect/unstable/sql";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.ts";
 import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/d01/database.ts";
 import { createAccount } from "../../../../apps/server/test/identity/d01/http.ts";
-import { grantWorldReadAccess } from "../../../../packages/authority/src/access/sharing/mutation.ts";
+import { inspectWorldAccess } from "../../../../packages/authority/src/access/sharing/inspect.ts";
+import {
+  grantWorldReadAccess,
+  revokeWorldReadAccess,
+} from "../../../../packages/authority/src/access/sharing/mutation.ts";
 import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
 } from "../../../../packages/authority/src/commit/configuration.ts";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.ts";
 import { importEvidence } from "../../../../packages/authority/src/evidence/d01/import.ts";
+import { openEvidence } from "../../../../packages/authority/src/evidence/d01/open.ts";
+import { answerQuestion } from "../../../../packages/authority/src/knowledge/corrections/answer.ts";
+import { proposeCorrection } from "../../../../packages/authority/src/knowledge/corrections/propose.ts";
+import { undoCorrection } from "../../../../packages/authority/src/knowledge/corrections/undo.ts";
+import { inspect } from "../../../../packages/authority/src/knowledge/d01/inspect.ts";
 import {
   Presence,
   VerifiedRequestContext,
@@ -26,11 +35,20 @@ import {
   digestBytes,
 } from "../../../../packages/authority/src/values/canonical.ts";
 import {
+  AnswerQuestion,
   CreatePersonalWorld,
   ImportEvidence,
+  Inspect,
+  OpenEvidence,
+  ProposeCorrection,
+  UndoCorrection,
 } from "../../../../packages/contracts/src/d01/operations.ts";
 import type { WorldRef } from "../../../../packages/contracts/src/d01/values.ts";
-import { GrantWorldReadAccess } from "../../../../packages/contracts/src/sharing/operations.ts";
+import {
+  GrantWorldReadAccess,
+  InspectWorldAccess,
+  RevokeWorldReadAccess,
+} from "../../../../packages/contracts/src/sharing/operations.ts";
 import { configuration } from "../../d01/commit/fixture.ts";
 
 type Fixture = Parameters<Parameters<typeof withD01IdentityDatabase>[0]>[0];
@@ -203,6 +221,273 @@ it.live(
                   sharingResult: "Stale",
                 })
               )
+            );
+          }).pipe(
+            Effect.provide(
+              Layer.mergeAll(
+                configuration,
+                fixture.database.authority,
+                fixture.runtime
+              )
+            )
+          )
+        );
+      })
+    )
+);
+
+it.live(
+  "independent SH-02–04 viewer reads World evidence without observing private owner Questions corrections or Frames",
+  () =>
+    withD01IdentityDatabase((fixture) =>
+      Effect.gen(function* setupAudience() {
+        yield* installSharing(fixture);
+        return yield* withStorage(() =>
+          Effect.gen(function* privateAudience() {
+            const owner = yield* createAccount(fixture.config.baseUrl);
+            const viewer = yield* createAccount(fixture.config.baseUrl);
+            const stranger = yield* createAccount(fixture.config.baseUrl);
+            const ownerContext = yield* contextFromCredential(owner.credential);
+            const viewerContext = yield* contextFromCredential(
+              viewer.credential
+            );
+            const strangerContext = yield* contextFromCredential(
+              stranger.credential
+            );
+            const { worldRef } = yield* createPersonalWorld(
+              ownerContext,
+              yield* createRequest()
+            );
+            const firstInput = yield* importRequest(worldRef);
+            const first = yield* importEvidence(ownerContext, firstInput);
+            yield* importEvidence(
+              ownerContext,
+              yield* importRequest(worldRef, "2")
+            );
+            yield* grantWorldReadAccess(
+              ownerContext,
+              yield* grantRequest(worldRef, viewer.user.id)
+            );
+            const inspectInput = yield* Schema.decodeEffect(Inspect)({
+              input: { atFrame: null, subjectKey: "A" },
+              operation: "Inspect",
+              purpose: "personal-records",
+              schemaVersion: "d01.v1",
+              worldRef,
+            });
+            const openInput = yield* Schema.decodeEffect(OpenEvidence)({
+              input: { evidenceRef: first.evidenceRef },
+              operation: "OpenEvidence",
+              purpose: "personal-records",
+              schemaVersion: "d01.v1",
+              worldRef,
+            });
+            const visibleBefore = yield* inspect(viewerContext, inspectInput);
+            const ownerBefore = yield* inspect(ownerContext, inspectInput);
+            const originalBytes = yield* openEvidence(viewerContext, openInput);
+            expect(originalBytes.document).toBe(firstInput.input.document);
+            expect(visibleBefore.frame.claims).toHaveLength(2);
+            expect(visibleBefore.frame.scopedCorrections).toStrictEqual([]);
+            const proposalInput = yield* Schema.decodeEffect(ProposeCorrection)(
+              {
+                input: {
+                  consequence: {
+                    choice: { _tag: "unknown" },
+                    subjectKey: "A",
+                    validTime: {
+                      _tag: "DateInterval",
+                      from: "2026-09-01",
+                      to: "2026-10-01",
+                    },
+                  },
+                  frameRef: ownerBefore.frame.frameRef,
+                },
+                operation: "ProposeCorrection",
+                operationId: randomUUID(),
+                purpose: "personal-records",
+                schemaVersion: "d01.v1",
+                worldRef,
+              }
+            );
+            const proposal = yield* proposeCorrection(
+              ownerContext,
+              proposalInput
+            );
+            const pending = yield* inspect(viewerContext, inspectInput);
+            const answerInput = yield* Schema.decodeEffect(AnswerQuestion)({
+              input: {
+                answer: "confirm",
+                consequenceDigest: proposal.consequenceDigest,
+                questionRef: proposal.questionRef,
+              },
+              operation: "AnswerQuestion",
+              operationId: randomUUID(),
+              purpose: "personal-records",
+              schemaVersion: "d01.v1",
+              worldRef,
+            });
+            for (const questionRef of [proposal.questionRef, randomUUID()]) {
+              expect(
+                yield* answerQuestion(
+                  viewerContext,
+                  yield* Schema.decodeEffect(AnswerQuestion)({
+                    ...answerInput,
+                    input: { ...answerInput.input, questionRef },
+                  })
+                ).pipe(Effect.flip)
+              ).toMatchObject({
+                _tag: "NotFoundOrDenied",
+                code: "NOT_FOUND_OR_DENIED",
+              });
+            }
+            yield* answerQuestion(ownerContext, answerInput);
+            const ownerAfter = yield* inspect(ownerContext, inspectInput);
+            const visibleAfter = yield* inspect(viewerContext, inspectInput);
+            expect(ownerAfter.frame.scopedCorrections).toHaveLength(1);
+            const { frameRef: _beforeRef, ...beforePayload } =
+              visibleBefore.frame;
+            const { frameRef: _pendingRef, ...pendingPayload } = pending.frame;
+            const { frameRef: _afterRef, ...afterPayload } = visibleAfter.frame;
+            // Only independently generated Frame IDs are normalized; all functional DTO fields remain compared.
+            expect(pendingPayload).toStrictEqual(beforePayload);
+            expect(afterPayload).toStrictEqual(beforePayload);
+            expect(yield* openEvidence(viewerContext, openInput)).toStrictEqual(
+              originalBytes
+            );
+            const ownFrame = {
+              ...inspectInput,
+              input: {
+                ...inspectInput.input,
+                atFrame: visibleBefore.frame.frameRef,
+              },
+            };
+            expect(yield* inspect(viewerContext, ownFrame)).toStrictEqual(
+              visibleBefore
+            );
+            for (const context of [viewerContext, strangerContext]) {
+              expect(
+                yield* inspect(context, {
+                  ...inspectInput,
+                  input: {
+                    ...inspectInput.input,
+                    atFrame: ownerAfter.frame.frameRef,
+                  },
+                }).pipe(Effect.flip)
+              ).toMatchObject({ _tag: "NotFoundOrDenied" });
+            }
+            expect(
+              yield* inspect(ownerContext, ownFrame).pipe(Effect.flip)
+            ).toMatchObject({ _tag: "NotFoundOrDenied" });
+            expect(
+              yield* openEvidence(strangerContext, openInput).pipe(Effect.flip)
+            ).toMatchObject({ _tag: "NotFoundOrDenied" });
+            expect(
+              yield* importEvidence(
+                viewerContext,
+                yield* importRequest(worldRef, "3")
+              ).pipe(Effect.flip)
+            ).toMatchObject({ _tag: "NotFoundOrDenied" });
+            expect(
+              yield* proposeCorrection(viewerContext, {
+                ...proposalInput,
+                input: {
+                  ...proposalInput.input,
+                  frameRef: visibleAfter.frame.frameRef,
+                },
+              }).pipe(Effect.flip)
+            ).toMatchObject({ _tag: "NotFoundOrDenied" });
+            expect(
+              yield* grantWorldReadAccess(
+                viewerContext,
+                yield* grantRequest(worldRef, stranger.user.id)
+              ).pipe(Effect.flip)
+            ).toMatchObject({ _tag: "NotFoundOrDenied" });
+            expect(
+              yield* revokeWorldReadAccess(
+                viewerContext,
+                yield* Schema.decodeEffect(RevokeWorldReadAccess)({
+                  input: {
+                    expectedRevision: "0",
+                    principalRef: viewer.user.id,
+                  },
+                  operation: "RevokeWorldReadAccess",
+                  operationId: randomUUID(),
+                  purpose: "personal-records",
+                  schemaVersion: "d03.sharing.v1",
+                  worldRef,
+                })
+              ).pipe(Effect.flip)
+            ).toMatchObject({ _tag: "NotFoundOrDenied" });
+            const [correction] = ownerAfter.frame.scopedCorrections;
+            if (correction === undefined) {
+              throw new Error("Expected an actual owner correction");
+            }
+            expect(
+              yield* undoCorrection(
+                viewerContext,
+                yield* Schema.decodeEffect(UndoCorrection)({
+                  input: {
+                    correctionRef: correction.correctionRef,
+                    frameRef: ownerAfter.frame.frameRef,
+                  },
+                  operation: "UndoCorrection",
+                  operationId: randomUUID(),
+                  purpose: "personal-records",
+                  schemaVersion: "d01.v1",
+                  worldRef,
+                })
+              ).pipe(Effect.flip)
+            ).toMatchObject({ _tag: "NotFoundOrDenied" });
+            const selfAccess = yield* inspectWorldAccess(
+              viewerContext,
+              yield* Schema.decodeEffect(InspectWorldAccess)({
+                input: { principalRef: null },
+                operation: "InspectWorldAccess",
+                purpose: "personal-records",
+                schemaVersion: "d03.sharing.v1",
+                worldRef,
+              })
+            );
+            expect(selfAccess.membership).toStrictEqual({
+              principalRef: viewer.user.id,
+              revision: "0",
+              role: "viewer",
+              state: "active",
+            });
+            for (const principalRef of [
+              owner.user.id,
+              stranger.user.id,
+              randomUUID(),
+            ]) {
+              expect(
+                yield* inspectWorldAccess(
+                  viewerContext,
+                  yield* Schema.decodeEffect(InspectWorldAccess)({
+                    input: { principalRef },
+                    operation: "InspectWorldAccess",
+                    purpose: "personal-records",
+                    schemaVersion: "d03.sharing.v1",
+                    worldRef,
+                  })
+                ).pipe(Effect.flip)
+              ).toMatchObject({
+                _tag: "NotFoundOrDenied",
+                code: "NOT_FOUND_OR_DENIED",
+              });
+            }
+            const laterInput = yield* importRequest(worldRef, "3");
+            const later = yield* importEvidence(ownerContext, laterInput);
+            expect(
+              (yield* inspect(viewerContext, inspectInput)).frame.claims
+            ).toHaveLength(3);
+            expect(
+              (yield* openEvidence(viewerContext, {
+                ...openInput,
+                input: { evidenceRef: later.evidenceRef },
+              })).document
+            ).toBe(laterInput.input.document);
+            expect(yield* inspect(viewerContext, ownFrame)).toStrictEqual(
+              visibleBefore
             );
           }).pipe(
             Effect.provide(
