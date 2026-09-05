@@ -46,9 +46,15 @@ Command: `ZOEN_TEST_WEB_URL=http://127.0.0.1:4316 pnpm exec playwright test --co
 
 Recommended test correction: register waitForResponse before clicking Sair, retain immediate content-clearing assertions, require sign-out 200 and get-session null, then perform the existing back-navigation assertions. This does not prove logout survives page closure before provider acknowledgement. A product requirement to guarantee that stronger behavior requires separate design and proof; this review does not claim it.
 
+## Independent review of the witness correction
+
+Reviewed root commit `477cedd8b6602b0b25a1cec462dcbc8975926f30`. The helper registers its response observer before clicking, requires the real POST sign-out HTTP 200 and real get-session HTTP 200/null, and both JSON/CSV consumers retain the post-back login and content-removal assertions. No product behavior changed and no oracle was relaxed. This is source review plus the independent causal experiment above, not a claim that this reviewer executed the updated twelve-test suite; root owns that run.
+
 ## Preserved diagnostic source
 
-```typescript
+SHA-256 of the exact UTF-8 bytes inside the following fence (including its final newline, excluding fence delimiters): `1fcd971912320664c1a222ab63292b8a7aada23eecc50a62d54190a88adaa632`.
+
+```text
 import { randomBytes, randomUUID } from "node:crypto";
 import { writeFile } from "node:fs/promises";
 import { setTimeout } from "node:timers/promises";
