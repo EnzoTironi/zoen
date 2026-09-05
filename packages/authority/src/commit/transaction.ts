@@ -2,7 +2,7 @@ import {
   RetryableInfrastructureFailure,
   Unavailable,
 } from "@zoen/contracts/d01/errors";
-import { Effect } from "effect";
+import { Cause, Effect } from "effect";
 import { SqlClient, SqlError } from "effect/unstable/sql";
 
 export const isTransactionConflict = (error: unknown): boolean =>
@@ -21,6 +21,17 @@ export const serializable = Effect.fn("authority.commit.serializable")(
         )
       )
       .pipe(
+        Effect.catchCause((cause) => {
+          const [reason] = cause.reasons;
+          // RC112 turns COMMIT failures into a single SQL defect. Restore only
+          // that typed failure; preserve mixed causes and interruptions.
+          return cause.reasons.length === 1 &&
+            reason !== undefined &&
+            Cause.isDieReason(reason) &&
+            SqlError.isSqlError(reason.defect)
+            ? Effect.fail(reason.defect)
+            : Effect.failCause(cause);
+        }),
         Effect.retry({ times: 2, while: isTransactionConflict }),
         Effect.catchTag("SqlError", (error) =>
           Effect.fail(

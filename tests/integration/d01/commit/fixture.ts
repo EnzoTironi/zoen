@@ -1,0 +1,65 @@
+import { randomUUID } from "node:crypto";
+
+import { DateTime, Effect, Layer, Schema } from "effect";
+
+import {
+  AuthorityInstallation,
+  AuthorityInstallationSchema,
+} from "../../../../packages/authority/src/commit/configuration.js";
+import {
+  DataPolicy,
+  DataPolicySchema,
+  VerifiedRequestContext,
+} from "../../../../packages/authority/src/ports/d01/context.js";
+import { digestBytes } from "../../../../packages/authority/src/values/canonical.js";
+import { CreatePersonalWorld } from "../../../../packages/contracts/src/d01/operations.js";
+
+const installation = Schema.decodeSync(AuthorityInstallationSchema)({
+  cellEpoch: "1",
+  cellId: randomUUID(),
+  generationId: randomUUID(),
+  releaseDigest: digestBytes(
+    new TextEncoder().encode(
+      "EX05 integration fixture: private-world genesis implementation"
+    )
+  ),
+});
+const policy = Schema.decodeSync(DataPolicySchema)({
+  dataScope: "admitted-non-sensitive",
+  enabledRealm: "live",
+  erasure: false,
+  legalHold: false,
+  licensedExpiry: false,
+  profileId: "d01-local-retained-v1",
+  restoreAfterErasure: false,
+  retention: "while-pinned",
+});
+export const configuration = Layer.merge(
+  Layer.succeed(AuthorityInstallation, installation),
+  Layer.succeed(DataPolicy, policy)
+);
+
+export const makeInput = Effect.fn("EX05.makeInput")(function* makeInput() {
+  const now = yield* DateTime.now;
+  const context = yield* Schema.decodeEffect(VerifiedRequestContext)({
+    deadline: DateTime.formatIso(DateTime.add(now, { seconds: 30 })),
+    presence: {
+      authenticatedAt: DateTime.formatIso(
+        DateTime.subtract(now, { seconds: 1 })
+      ),
+      expiresAt: DateTime.formatIso(DateTime.add(now, { minutes: 1 })),
+      principalId: randomUUID(),
+      realm: "live",
+      sessionId: randomUUID(),
+    },
+    purpose: "personal-records",
+  });
+  const request = yield* Schema.decodeEffect(CreatePersonalWorld)({
+    input: {},
+    operation: "CreatePersonalWorld",
+    operationId: randomUUID(),
+    purpose: "personal-records",
+    schemaVersion: "d01.v1",
+  });
+  return { context, request };
+});
