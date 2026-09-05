@@ -1,0 +1,498 @@
+import { randomBytes, randomUUID } from "node:crypto";
+import { fileURLToPath } from "node:url";
+
+import { PutBucketVersioningCommand } from "@aws-sdk/client-s3";
+import { NodeServices } from "@effect/platform-node";
+import { PgClient } from "@effect/sql-pg";
+import { expect, it } from "@effect/vitest";
+import {
+  AuthorityInstallation,
+  AuthorityInstallationSchema,
+} from "@zoen/authority/commit/configuration";
+import {
+  DataPolicy,
+  DataPolicySchema,
+  PrincipalId,
+} from "@zoen/authority/ports/d01/context";
+import { membershipDisclosureKey } from "@zoen/authority/ports/disclosure/keys";
+import {
+  EvidenceImported,
+  EvidenceOpened,
+  WorldCreated,
+} from "@zoen/contracts/d01/operations";
+import {
+  PrincipalRef,
+  WorldReadAccessGranted,
+  WorldReadAccessRevoked,
+} from "@zoen/contracts/sharing/operations";
+import {
+  Config,
+  Effect,
+  Fiber,
+  FileSystem,
+  Layer,
+  Redacted,
+  Schedule,
+  Schema,
+} from "effect";
+import {
+  Cookies,
+  FetchHttpClient,
+  HttpClient,
+  HttpClientRequest,
+} from "effect/unstable/http";
+import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
+import { SqlClient } from "effect/unstable/sql";
+
+import {
+  sdk,
+  withStorage,
+} from "../../../../apps/server/test/adapters/object-storage/d01/fixture.ts";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
+import { applyDisclosureMigrations } from "../../../../ops/migrations/run.ts";
+import { configuration } from "../../d01/commit/fixture.ts";
+import { makeHttpProcessConfiguration } from "./http-process-configuration.ts";
+
+const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
+const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
+  probe.pipe(
+    Effect.repeat({
+      schedule: Schedule.spaced("20 millis"),
+      until: (done) => done,
+    }),
+    Effect.timeout("8 seconds")
+  );
+const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const sharing = {
+  purpose: "personal-records",
+  schemaVersion: "d03.sharing.v1",
+};
+const path = "/api/d01/execute";
+const sharingPath = "/api/d03/sharing";
+const document = json({
+  records: [
+    {
+      externalId: "order-1",
+      predicate: "obligation.amount",
+      subjectKey: "order-1",
+      validTime: { _tag: "DateInterval", from: "2026-09-01", to: "2026-10-01" },
+      value: { _tag: "Known", amount: "42.25", currency: "BRL" },
+    },
+  ],
+  schemaVersion: "d01.v1",
+  source: {
+    externalId: "orders",
+    label: "Private HTTP process bytes — ação",
+    namespace: "process-review",
+    revision: "1",
+  },
+});
+
+const post = Effect.fn("review.publicHttp")(function* post(
+  origin: string,
+  target: string,
+  request: unknown,
+  cookie?: Redacted.Redacted
+) {
+  const response = yield* HttpClientRequest.post(`${origin}${target}`).pipe(
+    HttpClientRequest.setHeaders({
+      origin,
+      ...(cookie === undefined ? {} : { cookie: Redacted.value(cookie) }),
+    }),
+    HttpClientRequest.bodyJsonUnsafe(request),
+    HttpClient.execute
+  );
+  const raw = yield* response.text;
+  const body = yield* Schema.decodeEffect(
+    Schema.fromJsonString(Schema.Unknown)
+  )(raw);
+  return {
+    body,
+    cookie: Redacted.make(Cookies.toCookieHeader(response.cookies)),
+    headers: response.headers,
+    raw,
+    status: response.status,
+  };
+});
+
+for (const stage of ["before-shared", "before-end"] as const) {
+  it.live(
+    `independent SH07/08 two real HTTP processes: ${stage} orders public revocation and private emission`,
+    () =>
+      withD01Database(
+        (database) =>
+          withStorage((storage) =>
+            Effect.scoped(
+              Effect.gen(function* processOrdering() {
+                const fs = yield* FileSystem.FileSystem;
+                const sql = yield* SqlClient.SqlClient;
+                const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
+                const installation = yield* AuthorityInstallation;
+                const policy = yield* DataPolicy;
+                const adminUrl = yield* Config.redacted(
+                  "ZOEN_TEST_DATABASE_URL"
+                );
+                yield* sdk((signal) =>
+                  storage.client.send(
+                    new PutBucketVersioningCommand({
+                      Bucket: storage.config.bucket,
+                      VersioningConfiguration: { Status: "Enabled" },
+                    }),
+                    { abortSignal: signal }
+                  )
+                );
+                const directory = yield* fs.makeTempDirectoryScoped({
+                  prefix: "zoen-disclosure-http-process-",
+                });
+                yield* fs.chmod(directory, 0o700);
+                const secret = randomBytes(32).toString("hex");
+                const spawn = Effect.fn("review.spawnHttp")(function* spawn(
+                  name: string
+                ) {
+                  const file = `${directory}/${name}.json`;
+                  const prefix = `${directory}/${name}`;
+                  const config = yield* Schema.encodeEffect(
+                    Schema.fromJsonString(
+                      makeHttpProcessConfiguration(
+                        AuthorityInstallationSchema,
+                        DataPolicySchema
+                      )
+                    )
+                  )({
+                    authorityUrl: Redacted.value(database.urls.authority),
+                    controlPrefix: prefix,
+                    identityUrl: Redacted.value(database.urls.identity),
+                    installation,
+                    policy,
+                    secret,
+                    storage: {
+                      accessKeyId: Redacted.value(
+                        storage.config.credentials.accessKeyId
+                      ),
+                      bucket: storage.config.bucket,
+                      endpoint: storage.config.endpoint.href,
+                      secretAccessKey: Redacted.value(
+                        storage.config.credentials.secretAccessKey
+                      ),
+                    },
+                  });
+                  yield* fs.writeFileString(file, config, { mode: 0o600 });
+                  const child = yield* spawner.spawn(
+                    ChildProcess.make(
+                      process.execPath,
+                      [
+                        fileURLToPath(
+                          new URL("http-process.ts", import.meta.url)
+                        ),
+                      ],
+                      {
+                        env: { ZOEN_DISCLOSURE_HTTP_CONFIG: file },
+                        forceKillAfter: "500 millis",
+                      }
+                    )
+                  );
+                  yield* Effect.addFinalizer(() =>
+                    fs
+                      .writeFileString(`${prefix}.release`, "release\n", {
+                        mode: 0o600,
+                      })
+                      .pipe(Effect.orDie)
+                  );
+                  yield* waitUntil(fs.exists(`${file}.ready`));
+                  const ready = yield* fs.readFileString(`${file}.ready`).pipe(
+                    Effect.flatMap(
+                      Schema.decodeEffect(
+                        Schema.fromJsonString(
+                          Schema.Struct({
+                            origin: Schema.String,
+                            pid: Schema.Int,
+                          })
+                        )
+                      )
+                    )
+                  );
+                  return { ...ready, child, prefix };
+                });
+                const controller = yield* spawn("controller");
+                const reader = yield* spawn("reader");
+                expect(reader.pid).not.toBe(controller.pid);
+                const signup = Effect.fn("review.signup")(function* signup(
+                  name: string
+                ) {
+                  const response = yield* post(
+                    controller.origin,
+                    "/api/auth/sign-up/email",
+                    {
+                      email: `${randomUUID()}@example.test`,
+                      name,
+                      password: randomBytes(24).toString("base64url"),
+                    }
+                  );
+                  expect(response.status).toBe(200);
+                  const account = yield* Schema.decodeUnknownEffect(
+                    Schema.Struct({ user: Schema.Struct({ id: PrincipalRef }) })
+                  )(response.body);
+                  return {
+                    cookie: response.cookie,
+                    principal: account.user.id,
+                  };
+                });
+                const owner = yield* signup("Process owner");
+                const viewer = yield* signup("Process viewer");
+                const createdResponse = yield* post(
+                  controller.origin,
+                  path,
+                  {
+                    ...d01,
+                    input: {},
+                    operation: "CreatePersonalWorld",
+                    operationId: randomUUID(),
+                  },
+                  owner.cookie
+                );
+                expect(createdResponse.status).toBe(200);
+                const { worldRef } = yield* Schema.decodeUnknownEffect(
+                  WorldCreated
+                )(createdResponse.body);
+                const importedResponse = yield* post(
+                  controller.origin,
+                  path,
+                  {
+                    ...d01,
+                    input: { document },
+                    operation: "ImportEvidence",
+                    operationId: randomUUID(),
+                    worldRef,
+                  },
+                  owner.cookie
+                );
+                expect(importedResponse.status).toBe(200);
+                const imported = yield* Schema.decodeUnknownEffect(
+                  EvidenceImported
+                )(importedResponse.body);
+                const grantResponse = yield* post(
+                  controller.origin,
+                  sharingPath,
+                  {
+                    ...sharing,
+                    input: {
+                      expectedRevision: null,
+                      principalRef: viewer.principal,
+                    },
+                    operation: "GrantWorldReadAccess",
+                    operationId: randomUUID(),
+                    worldRef,
+                  },
+                  owner.cookie
+                );
+                expect(grantResponse.status).toBe(200);
+                const grant = yield* Schema.decodeUnknownEffect(
+                  WorldReadAccessGranted
+                )(grantResponse.body);
+                expect(grant.membershipAtCommit.revision).toBe("0");
+                const key = membershipDisclosureKey(
+                  worldRef,
+                  yield* Schema.decodeEffect(PrincipalId)(viewer.principal)
+                );
+                const pending = sql<{
+                  count: number;
+                }>`SELECT count(*)::int AS count FROM jobs.disclosure_pending WHERE membership_key = ${key}`;
+                const locks = sql<{
+                  granted: boolean;
+                  mode: string;
+                  pid: number;
+                }>`SELECT granted, mode, pid FROM pg_locks WHERE locktype = 'advisory' AND database = (SELECT oid FROM pg_database WHERE datname = current_database()) AND classid::bigint = ((hashtextextended(${key}, 0) >> 32) & 4294967295) AND objid::bigint = (hashtextextended(${key}, 0) & 4294967295) AND objsubid = 1 ORDER BY pid, mode`;
+                const mutationState = sql`SELECT (SELECT state FROM authority.memberships WHERE world_id = ${worldRef.worldId} AND principal_id = ${viewer.principal}) AS state, (SELECT revision::text FROM authority.memberships WHERE world_id = ${worldRef.worldId} AND principal_id = ${viewer.principal}) AS revision, (SELECT count(*)::int FROM authority.receipts) AS receipts, (SELECT count(*)::int FROM authority.operations) AS operations, (SELECT count(*)::int FROM jobs.outbox) AS outbox`;
+                const before = yield* mutationState;
+                expect(before[0]).toMatchObject({
+                  revision: "0",
+                  state: "active",
+                });
+                const openRequest = {
+                  ...d01,
+                  input: { evidenceRef: imported.evidenceRef },
+                  operation: "OpenEvidence",
+                  worldRef,
+                };
+                const revokeRequest = {
+                  ...sharing,
+                  input: {
+                    expectedRevision: "0",
+                    principalRef: viewer.principal,
+                  },
+                  operation: "RevokeWorldReadAccess",
+                  operationId: randomUUID(),
+                  worldRef,
+                };
+                yield* fs.writeFileString(
+                  `${reader.prefix}.arm`,
+                  json({ key, kind: stage }),
+                  { mode: 0o600 }
+                );
+                const reading = yield* post(
+                  reader.origin,
+                  path,
+                  openRequest,
+                  viewer.cookie
+                ).pipe(Effect.forkScoped);
+                yield* waitUntil(fs.exists(`${reader.prefix}.reached`));
+                expect(
+                  yield* fs.exists(`${reader.prefix}.submitted`)
+                ).toBeFalsy();
+
+                if (stage === "before-shared") {
+                  expect(yield* pending).toStrictEqual([{ count: 0 }]);
+                  const revoke = yield* post(
+                    controller.origin,
+                    sharingPath,
+                    revokeRequest,
+                    owner.cookie
+                  );
+                  expect(revoke.status).toBe(200);
+                  const receipt = yield* Schema.decodeUnknownEffect(
+                    WorldReadAccessRevoked
+                  )(revoke.body);
+                  expect(receipt.membershipAtCommit).toMatchObject({
+                    revision: "1",
+                    state: "revoked",
+                  });
+                  yield* fs.writeFileString(
+                    `${reader.prefix}.release`,
+                    "release\n",
+                    { mode: 0o600 }
+                  );
+                  const response = yield* Fiber.join(reading);
+                  expect(response.status).toBe(404);
+                  expect(response.body).toStrictEqual({
+                    _tag: "NotFoundOrDenied",
+                    code: "NOT_FOUND_OR_DENIED",
+                  });
+                  expect(response.raw).not.toContain(document);
+                  yield* waitUntil(
+                    pending.pipe(Effect.map((rows) => rows[0]?.count === 0))
+                  );
+                } else {
+                  expect(yield* pending).toStrictEqual([{ count: 1 }]);
+                  const revoking = yield* post(
+                    controller.origin,
+                    sharingPath,
+                    revokeRequest,
+                    owner.cookie
+                  ).pipe(Effect.forkScoped);
+                  yield* waitUntil(
+                    locks.pipe(
+                      Effect.map((rows) =>
+                        rows.some(
+                          (row) => row.mode === "ExclusiveLock" && !row.granted
+                        )
+                      )
+                    )
+                  );
+                  expect(yield* mutationState).toStrictEqual(before);
+                  const holders = (yield* locks).filter(
+                    (row) => row.mode === "ShareLock" && row.granted
+                  );
+                  expect(holders).toHaveLength(1);
+                  const [holder] = holders;
+                  if (holder === undefined) {
+                    throw new Error("Expected one physical reader lock holder");
+                  }
+                  // Administrative fault injection kills the observed lock holder, never a product authorization path.
+                  expect(
+                    yield* SqlClient.SqlClient.use(
+                      (admin) =>
+                        admin`SELECT pg_terminate_backend(${holder.pid}) AS killed`
+                    ).pipe(
+                      Effect.provide(
+                        PgClient.layer({ maxConnections: 1, url: adminUrl })
+                      )
+                    )
+                  ).toStrictEqual([{ killed: true }]);
+                  const refused = yield* Fiber.join(revoking).pipe(
+                    Effect.timeout("8 seconds")
+                  );
+                  expect(refused.status).toBe(503);
+                  expect(refused.body).toStrictEqual({
+                    _tag: "Unavailable",
+                    code: "UNAVAILABLE",
+                  });
+                  expect(yield* pending).toStrictEqual([{ count: 1 }]);
+                  expect(yield* mutationState).toStrictEqual(before);
+                  expect(
+                    yield* fs.exists(`${reader.prefix}.submitted`)
+                  ).toBeFalsy();
+                  yield* fs.writeFileString(
+                    `${reader.prefix}.release`,
+                    "release\n",
+                    { mode: 0o600 }
+                  );
+                  const response = yield* Fiber.join(reading);
+                  expect(response.status).toBe(200);
+                  const opened = yield* Schema.decodeUnknownEffect(
+                    EvidenceOpened
+                  )(response.body);
+                  expect(opened.document).toBe(document);
+                  expect(response.headers["cache-control"]).toBe("no-store");
+                  expect(response.headers["x-content-type-options"]).toBe(
+                    "nosniff"
+                  );
+                  expect(Number(response.headers["content-length"])).toBe(
+                    new TextEncoder().encode(response.raw).byteLength
+                  );
+                  expect(
+                    (yield* fs.readFileString(`${reader.prefix}.submitted`))
+                      .trim()
+                      .split("\n")
+                  ).toHaveLength(1);
+                  // The unchanged assertion deliberately catches ACK suppression after the owner's interruption.
+                  yield* waitUntil(
+                    pending.pipe(Effect.map((rows) => rows[0]?.count === 0))
+                  );
+                  const retry = yield* post(
+                    controller.origin,
+                    sharingPath,
+                    revokeRequest,
+                    owner.cookie
+                  );
+                  expect(retry.status).toBe(200);
+                  const receipt = yield* Schema.decodeUnknownEffect(
+                    WorldReadAccessRevoked
+                  )(retry.body);
+                  expect(receipt.membershipAtCommit).toMatchObject({
+                    revision: "1",
+                    state: "revoked",
+                  });
+                  const denied = yield* post(
+                    reader.origin,
+                    path,
+                    openRequest,
+                    viewer.cookie
+                  );
+                  expect(denied.status).toBe(404);
+                  expect(denied.body).toStrictEqual({
+                    _tag: "NotFoundOrDenied",
+                    code: "NOT_FOUND_OR_DENIED",
+                  });
+                }
+              })
+            ).pipe(
+              Effect.provide(
+                Layer.mergeAll(
+                  database.migration,
+                  configuration,
+                  NodeServices.layer,
+                  FetchHttpClient.layer
+                )
+              )
+            )
+          ),
+        undefined,
+        (database) =>
+          applyDisclosureMigrations(database.names).pipe(
+            Effect.provide(
+              Layer.mergeAll(database.migration, NodeServices.layer)
+            )
+          )
+      )
+  );
+}
