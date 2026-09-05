@@ -9,7 +9,7 @@ Isso é uma análise integral **dos registros**, acrescida de leituras dirigidas
 ## Diagnóstico
 
 | Observação no catálogo anterior | Implicação para o redesenho |
-|---|---|
+| --- | --- |
 | 325 nós, 514 arestas, nenhuma referência inválida e nenhum ciclo | O problema não era um DAG formalmente cíclico |
 | Uma raiz e caminho mais longo de 170 nós | Muito trabalho precisa atravessar uma longa cadeia declarada; isso não estima dias |
 | 286 arestas ao ID imediatamente anterior; 261 na mesma spec | Sinal de ordenação por catálogo, a revisar semanticamente; não prova de que todas são artificiais |

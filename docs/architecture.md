@@ -50,7 +50,7 @@ O diagrama representa chamadas, não imports de cliente para backend. `contracts
 ## Effect como base
 
 | Responsabilidade | Usar | Semântica que Zoen ainda precisa implementar |
-|---|---|---|
+| --- | --- | --- |
 | Fronteiras e erros | Schema, Schema.Class, Schema.TaggedError | Operações estritas, valores canônicos, erros públicos seguros |
 | Dependências e recursos | Context.Service, Layer, Scope, acquireRelease | Credenciais mínimas e composições explícitas |
 | Trabalho assíncrono | Effect.fn, Effect.gen, Schedule, Stream | Cancelamento, orçamento e revogação por emissão |

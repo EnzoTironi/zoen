@@ -41,7 +41,7 @@ Esses são inputs semânticos concretos, não nomes alegadamente existentes em u
 ## Os 15 pacotes
 
 | ID | Dono | Trabalho e resultado de aceitação | Hard para começar | Integrações adicionais para aceitar |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | EX01 | root | Toolchain real, cinco workspaces, TS7 único, Ultracite zero diagnósticos+CI, PostgreSQL/S3 Docker; probes executam transação e round-trip de bytes reais. | — | — |
 | EX02 | W1 | Schemas/HttpApi mínimos e portas privadas; rejeição de envelope inválido e nenhum principal fornecido pelo cliente vira autoridade. | — | EX01 |
 | EX03 | W2 | UI pura: vazio/upload/divergência/denied/unavailable, teclado e zoom; nenhum fetch ou login fake. | — | EX01 |

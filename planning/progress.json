@@ -1,0 +1,42 @@
+{
+  "status": "in_progress",
+  "goal": "Implementar e provar todas as entregas do redesenho",
+  "integration_branch": "codex/rebuild",
+  "workers": [
+    {
+      "agent": "architecture_redesign",
+      "task": "EX02",
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "worktree": "/Users/enzotironi/zoen-ex02",
+      "state": "in_progress"
+    },
+    {
+      "agent": "roadmap_redesign",
+      "task": "EX03",
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "worktree": "/Users/enzotironi/zoen-ex03",
+      "state": "in_progress"
+    },
+    {
+      "agent": "tickets_redesign",
+      "task": "EX01-infrastructure-proof",
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "worktree": "/Users/enzotironi/zoen-ex01-proof",
+      "state": "in_progress"
+    }
+  ],
+  "temporary_ownership": [
+    {
+      "task": "EX01",
+      "path": "tests/infrastructure/**",
+      "owner": "worker-3",
+      "integration_owner": "root",
+      "reason": "Provas reais independentes enquanto root configura toolchain/CI; revisão cruzada antes de concluir EX01."
+    }
+  ],
+  "verified_deliveries": [],
+  "external_blockers": []
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@zoen/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@effect/platform-node": "4.0.0-rc.112",
+    "@zoen/contracts": "workspace:*",
+    "effect": "4.0.0-rc.112"
+  }
+}

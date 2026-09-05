@@ -10,9 +10,7 @@
       "ZN-0005",
       "ZN-0006"
     ],
-    "delivery_ids": [
-      "D01"
-    ],
+    "delivery_ids": ["D01"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-000"
   },
@@ -27,9 +25,7 @@
       "ZN-0011",
       "ZN-0012"
     ],
-    "delivery_ids": [
-      "D01"
-    ],
+    "delivery_ids": ["D01"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-001"
   },
@@ -44,10 +40,7 @@
       "ZN-0017",
       "ZN-0018"
     ],
-    "delivery_ids": [
-      "D01",
-      "D03"
-    ],
+    "delivery_ids": ["D01", "D03"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-002"
   },
@@ -62,9 +55,7 @@
       "ZN-0023",
       "ZN-0024"
     ],
-    "delivery_ids": [
-      "D01"
-    ],
+    "delivery_ids": ["D01"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-003"
   },
@@ -79,9 +70,7 @@
       "ZN-0029",
       "ZN-0030"
     ],
-    "delivery_ids": [
-      "D01"
-    ],
+    "delivery_ids": ["D01"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-004"
   },
@@ -96,59 +85,31 @@
       "ZN-0035",
       "ZN-0036"
     ],
-    "delivery_ids": [
-      "D01",
-      "D02"
-    ],
+    "delivery_ids": ["D01", "D02"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-005"
   },
   {
     "id": "SPEC-006",
     "title": "Reversible domain identity and temporal explanations",
-    "ticket_ids": [
-      "ZN-0037",
-      "ZN-0038",
-      "ZN-0039",
-      "ZN-0040",
-      "ZN-0041"
-    ],
-    "delivery_ids": [
-      "D02"
-    ],
+    "ticket_ids": ["ZN-0037", "ZN-0038", "ZN-0039", "ZN-0040", "ZN-0041"],
+    "delivery_ids": ["D02"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-006"
   },
   {
     "id": "SPEC-007",
     "title": "WorldFrames and the first semantic surface",
-    "ticket_ids": [
-      "ZN-0042",
-      "ZN-0043",
-      "ZN-0044",
-      "ZN-0045",
-      "ZN-0046"
-    ],
-    "delivery_ids": [
-      "D01"
-    ],
+    "ticket_ids": ["ZN-0042", "ZN-0043", "ZN-0044", "ZN-0045", "ZN-0046"],
+    "delivery_ids": ["D01"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-007"
   },
   {
     "id": "SPEC-008",
     "title": "Baseline observability, local operations and safe migration preparation",
-    "ticket_ids": [
-      "ZN-0047",
-      "ZN-0048",
-      "ZN-0049",
-      "ZN-0050",
-      "ZN-0051"
-    ],
-    "delivery_ids": [
-      "D01",
-      "D04"
-    ],
+    "ticket_ids": ["ZN-0047", "ZN-0048", "ZN-0049", "ZN-0050", "ZN-0051"],
+    "delivery_ids": ["D01", "D04"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-008"
   },
@@ -163,9 +124,7 @@
       "ZN-0056",
       "ZN-0057"
     ],
-    "delivery_ids": [
-      "D05"
-    ],
+    "delivery_ids": ["D05"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-009"
   },
@@ -180,9 +139,7 @@
       "ZN-0062",
       "ZN-0063"
     ],
-    "delivery_ids": [
-      "D05"
-    ],
+    "delivery_ids": ["D05"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-010"
   },
@@ -197,26 +154,15 @@
       "ZN-0068",
       "ZN-0069"
     ],
-    "delivery_ids": [
-      "D06"
-    ],
+    "delivery_ids": ["D06"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-011"
   },
   {
     "id": "SPEC-012",
     "title": "Progressive onboarding and accessible conversation inspection",
-    "ticket_ids": [
-      "ZN-0070",
-      "ZN-0071",
-      "ZN-0072",
-      "ZN-0073",
-      "ZN-0074"
-    ],
-    "delivery_ids": [
-      "D01",
-      "D05"
-    ],
+    "ticket_ids": ["ZN-0070", "ZN-0071", "ZN-0072", "ZN-0073", "ZN-0074"],
+    "delivery_ids": ["D01", "D05"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-012"
   },
@@ -232,9 +178,7 @@
       "ZN-0080",
       "ZN-0081"
     ],
-    "delivery_ids": [
-      "D07"
-    ],
+    "delivery_ids": ["D07"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-013"
   },
@@ -250,9 +194,7 @@
       "ZN-0087",
       "ZN-0088"
     ],
-    "delivery_ids": [
-      "D07"
-    ],
+    "delivery_ids": ["D07"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-014"
   },
@@ -268,42 +210,23 @@
       "ZN-0094",
       "ZN-0095"
     ],
-    "delivery_ids": [
-      "D09"
-    ],
+    "delivery_ids": ["D09"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-015"
   },
   {
     "id": "SPEC-016",
     "title": "Foundation, household and confectionery domain packs",
-    "ticket_ids": [
-      "ZN-0096",
-      "ZN-0097",
-      "ZN-0098",
-      "ZN-0099",
-      "ZN-0100"
-    ],
-    "delivery_ids": [
-      "D07",
-      "D08"
-    ],
+    "ticket_ids": ["ZN-0096", "ZN-0097", "ZN-0098", "ZN-0099", "ZN-0100"],
+    "delivery_ids": ["D07", "D08"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-016"
   },
   {
     "id": "SPEC-017",
     "title": "Clarification prioritization and scoped stewardship",
-    "ticket_ids": [
-      "ZN-0101",
-      "ZN-0102",
-      "ZN-0103",
-      "ZN-0104",
-      "ZN-0105"
-    ],
-    "delivery_ids": [
-      "D02"
-    ],
+    "ticket_ids": ["ZN-0101", "ZN-0102", "ZN-0103", "ZN-0104", "ZN-0105"],
+    "delivery_ids": ["D02"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-017"
   },
@@ -318,9 +241,7 @@
       "ZN-0110",
       "ZN-0111"
     ],
-    "delivery_ids": [
-      "D03"
-    ],
+    "delivery_ids": ["D03"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-018"
   },
@@ -335,9 +256,7 @@
       "ZN-0116",
       "ZN-0117"
     ],
-    "delivery_ids": [
-      "D03"
-    ],
+    "delivery_ids": ["D03"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-019"
   },
@@ -352,25 +271,15 @@
       "ZN-0122",
       "ZN-0123"
     ],
-    "delivery_ids": [
-      "D10"
-    ],
+    "delivery_ids": ["D10"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-020"
   },
   {
     "id": "SPEC-021",
     "title": "Dental operations pack with clinical separation",
-    "ticket_ids": [
-      "ZN-0124",
-      "ZN-0125",
-      "ZN-0126",
-      "ZN-0127",
-      "ZN-0128"
-    ],
-    "delivery_ids": [
-      "D14"
-    ],
+    "ticket_ids": ["ZN-0124", "ZN-0125", "ZN-0126", "ZN-0127", "ZN-0128"],
+    "delivery_ids": ["D14"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-021"
   },
@@ -385,9 +294,7 @@
       "ZN-0133",
       "ZN-0134"
     ],
-    "delivery_ids": [
-      "D11"
-    ],
+    "delivery_ids": ["D11"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-022"
   },
@@ -402,9 +309,7 @@
       "ZN-0139",
       "ZN-0140"
     ],
-    "delivery_ids": [
-      "D12"
-    ],
+    "delivery_ids": ["D12"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-023"
   },
@@ -419,9 +324,7 @@
       "ZN-0145",
       "ZN-0146"
     ],
-    "delivery_ids": [
-      "D12"
-    ],
+    "delivery_ids": ["D12"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-024"
   },
@@ -436,9 +339,7 @@
       "ZN-0151",
       "ZN-0152"
     ],
-    "delivery_ids": [
-      "D13"
-    ],
+    "delivery_ids": ["D13"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-025"
   },
@@ -453,57 +354,31 @@
       "ZN-0157",
       "ZN-0158"
     ],
-    "delivery_ids": [
-      "D08"
-    ],
+    "delivery_ids": ["D08"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-026"
   },
   {
     "id": "SPEC-027",
     "title": "Living World charts, tables, timelines and safe Focus",
-    "ticket_ids": [
-      "ZN-0159",
-      "ZN-0160",
-      "ZN-0161",
-      "ZN-0162",
-      "ZN-0163"
-    ],
-    "delivery_ids": [
-      "D08"
-    ],
+    "ticket_ids": ["ZN-0159", "ZN-0160", "ZN-0161", "ZN-0162", "ZN-0163"],
+    "delivery_ids": ["D08"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-027"
   },
   {
     "id": "SPEC-028",
     "title": "Telegram, email and cross-channel continuity",
-    "ticket_ids": [
-      "ZN-0164",
-      "ZN-0165",
-      "ZN-0166",
-      "ZN-0167",
-      "ZN-0168"
-    ],
-    "delivery_ids": [
-      "D06"
-    ],
+    "ticket_ids": ["ZN-0164", "ZN-0165", "ZN-0166", "ZN-0167", "ZN-0168"],
+    "delivery_ids": ["D06"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-028"
   },
   {
     "id": "SPEC-029",
     "title": "Signed capability artifacts and controlled installation",
-    "ticket_ids": [
-      "ZN-0169",
-      "ZN-0170",
-      "ZN-0171",
-      "ZN-0172",
-      "ZN-0173"
-    ],
-    "delivery_ids": [
-      "D15"
-    ],
+    "ticket_ids": ["ZN-0169", "ZN-0170", "ZN-0171", "ZN-0172", "ZN-0173"],
+    "delivery_ids": ["D15"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-029"
   },
@@ -518,9 +393,7 @@
       "ZN-0178",
       "ZN-0179"
     ],
-    "delivery_ids": [
-      "D15"
-    ],
+    "delivery_ids": ["D15"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-030"
   },
@@ -535,9 +408,7 @@
       "ZN-0184",
       "ZN-0185"
     ],
-    "delivery_ids": [
-      "D16"
-    ],
+    "delivery_ids": ["D16"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-031"
   },
@@ -552,59 +423,31 @@
       "ZN-0190",
       "ZN-0191"
     ],
-    "delivery_ids": [
-      "D16"
-    ],
+    "delivery_ids": ["D16"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-032"
   },
   {
     "id": "SPEC-033",
     "title": "Entitled live feeds, gap-aware subscriptions and action capture",
-    "ticket_ids": [
-      "ZN-0192",
-      "ZN-0193",
-      "ZN-0194",
-      "ZN-0195",
-      "ZN-0196"
-    ],
-    "delivery_ids": [
-      "D16"
-    ],
+    "ticket_ids": ["ZN-0192", "ZN-0193", "ZN-0194", "ZN-0195", "ZN-0196"],
+    "delivery_ids": ["D16"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-033"
   },
   {
     "id": "SPEC-034",
     "title": "Virtual sources and distributed/GPU compute adapters",
-    "ticket_ids": [
-      "ZN-0197",
-      "ZN-0198",
-      "ZN-0199",
-      "ZN-0200",
-      "ZN-0201"
-    ],
-    "delivery_ids": [
-      "D17"
-    ],
+    "ticket_ids": ["ZN-0197", "ZN-0198", "ZN-0199", "ZN-0200", "ZN-0201"],
+    "delivery_ids": ["D17"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-034"
   },
   {
     "id": "SPEC-035",
     "title": "Progressive Workshop: early declarative apps, isolated views and full Studio",
-    "ticket_ids": [
-      "ZN-0202",
-      "ZN-0203",
-      "ZN-0204",
-      "ZN-0205",
-      "ZN-0206"
-    ],
-    "delivery_ids": [
-      "D08",
-      "D15",
-      "D18"
-    ],
+    "ticket_ids": ["ZN-0202", "ZN-0203", "ZN-0204", "ZN-0205", "ZN-0206"],
+    "delivery_ids": ["D08", "D15", "D18"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-035"
   },
@@ -619,9 +462,7 @@
       "ZN-0211",
       "ZN-0212"
     ],
-    "delivery_ids": [
-      "D17"
-    ],
+    "delivery_ids": ["D17"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-036"
   },
@@ -636,9 +477,7 @@
       "ZN-0217",
       "ZN-0218"
     ],
-    "delivery_ids": [
-      "D18"
-    ],
+    "delivery_ids": ["D18"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-037"
   },
@@ -653,9 +492,7 @@
       "ZN-0223",
       "ZN-0224"
     ],
-    "delivery_ids": [
-      "D19"
-    ],
+    "delivery_ids": ["D19"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-038"
   },
@@ -670,9 +507,7 @@
       "ZN-0229",
       "ZN-0230"
     ],
-    "delivery_ids": [
-      "D19"
-    ],
+    "delivery_ids": ["D19"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-039"
   },
@@ -687,9 +522,7 @@
       "ZN-0235",
       "ZN-0236"
     ],
-    "delivery_ids": [
-      "D19"
-    ],
+    "delivery_ids": ["D19"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-040"
   },
@@ -706,41 +539,23 @@
       "ZN-0243",
       "ZN-0244"
     ],
-    "delivery_ids": [
-      "D09"
-    ],
+    "delivery_ids": ["D09"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-041"
   },
   {
     "id": "SPEC-042",
     "title": "Fenced cell migration and single-writer authority epochs",
-    "ticket_ids": [
-      "ZN-0245",
-      "ZN-0246",
-      "ZN-0247",
-      "ZN-0248",
-      "ZN-0249"
-    ],
-    "delivery_ids": [
-      "D20"
-    ],
+    "ticket_ids": ["ZN-0245", "ZN-0246", "ZN-0247", "ZN-0248", "ZN-0249"],
+    "delivery_ids": ["D20"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-042"
   },
   {
     "id": "SPEC-043",
     "title": "Federated Frames, independent approvals and partial global outcomes",
-    "ticket_ids": [
-      "ZN-0250",
-      "ZN-0251",
-      "ZN-0252",
-      "ZN-0253",
-      "ZN-0254"
-    ],
-    "delivery_ids": [
-      "D20"
-    ],
+    "ticket_ids": ["ZN-0250", "ZN-0251", "ZN-0252", "ZN-0253", "ZN-0254"],
+    "delivery_ids": ["D20"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-043"
   },
@@ -755,9 +570,7 @@
       "ZN-0259",
       "ZN-0260"
     ],
-    "delivery_ids": [
-      "D20"
-    ],
+    "delivery_ids": ["D20"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-044"
   },
@@ -772,9 +585,7 @@
       "ZN-0265",
       "ZN-0266"
     ],
-    "delivery_ids": [
-      "D21"
-    ],
+    "delivery_ids": ["D21"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-045"
   },
@@ -789,9 +600,7 @@
       "ZN-0271",
       "ZN-0272"
     ],
-    "delivery_ids": [
-      "D21"
-    ],
+    "delivery_ids": ["D21"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-046"
   },
@@ -808,9 +617,7 @@
       "ZN-0279",
       "ZN-0280"
     ],
-    "delivery_ids": [
-      "D22"
-    ],
+    "delivery_ids": ["D22"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-047"
   },
@@ -825,41 +632,23 @@
       "ZN-0285",
       "ZN-0286"
     ],
-    "delivery_ids": [
-      "Q"
-    ],
+    "delivery_ids": ["Q"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-048"
   },
   {
     "id": "SPEC-049",
     "title": "Shared hosted pilot and progressive product activation",
-    "ticket_ids": [
-      "ZN-0287",
-      "ZN-0288",
-      "ZN-0289",
-      "ZN-0290"
-    ],
-    "delivery_ids": [
-      "D04"
-    ],
+    "ticket_ids": ["ZN-0287", "ZN-0288", "ZN-0289", "ZN-0290"],
+    "delivery_ids": ["D04"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-049"
   },
   {
     "id": "SPEC-050",
     "title": "One semantic executor and transport-only client contract",
-    "ticket_ids": [
-      "ZN-0291",
-      "ZN-0292",
-      "ZN-0293",
-      "ZN-0294",
-      "ZN-0295"
-    ],
-    "delivery_ids": [
-      "D01",
-      "D08"
-    ],
+    "ticket_ids": ["ZN-0291", "ZN-0292", "ZN-0293", "ZN-0294", "ZN-0295"],
+    "delivery_ids": ["D01", "D08"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-050"
   },
@@ -874,9 +663,7 @@
       "ZN-0300",
       "ZN-0301"
     ],
-    "delivery_ids": [
-      "D03"
-    ],
+    "delivery_ids": ["D03"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-051"
   },
@@ -891,11 +678,7 @@
       "ZN-0306",
       "ZN-0307"
     ],
-    "delivery_ids": [
-      "D08",
-      "D11",
-      "D18"
-    ],
+    "delivery_ids": ["D08", "D11", "D18"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-052"
   },
@@ -910,9 +693,7 @@
       "ZN-0312",
       "ZN-0313"
     ],
-    "delivery_ids": [
-      "D15"
-    ],
+    "delivery_ids": ["D15"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-053"
   },
@@ -927,9 +708,7 @@
       "ZN-0318",
       "ZN-0319"
     ],
-    "delivery_ids": [
-      "D15"
-    ],
+    "delivery_ids": ["D15"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-054"
   },
@@ -944,14 +723,7 @@
       "ZN-0324",
       "ZN-0325"
     ],
-    "delivery_ids": [
-      "D08",
-      "D11",
-      "D15",
-      "D16",
-      "D18",
-      "Q"
-    ],
+    "delivery_ids": ["D08", "D11", "D15", "D16", "D18", "Q"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#specs/SPEC-055"
   }

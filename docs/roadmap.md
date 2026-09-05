@@ -9,7 +9,7 @@ A primeira composição pode aceitar apenas um formato e uma operação estreita
 ## Seis fases
 
 | Fase | Resultado | Entregas e condição de saída |
-|---|---|---|
+| --- | --- | --- |
 | P1 — Verdade privada utilizável | Capturar, comparar, explicar, corrigir e desfazer | D01/D02; direitos, retenção e limites mínimos já necessários. Jornada real em web/CLI, histórico, retry e isolamento comprovados |
 | P2 — Uso contínuo e colaboração | Compartilhar/revogar, hospedar e conversar com fatos | Núcleos D03/D04/D05; busca, Notices, primeiro conector e packs operacionais podem ter incrementos. Ativar só providers realmente verificados |
 | P3 — Adaptação pelo usuário | Regras, definições e apps declarativos sem redeploy | D07/D08 e núcleos D11/D18; API/SDK/MCP, cenários simples. Publicação e mudança de significado avaliadas e governadas |
@@ -39,7 +39,7 @@ Há 22 entregas de produto mais Q, uma trilha de qualidade transversal. Cada ent
 O registro estruturado é [planning/deliveries.json](../planning/deliveries.json). Todas as entregas estão **planejadas**, não implementadas. Nenhuma capacidade foi retirada; o destino de cada ticket e capacidade está nos mapas de rastreabilidade.
 
 | ID | Resultado | Núcleo necessário | Dependências por perfil / ativação |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | D01 — Verdade privada em web e CLI | Autenticar, criar World, importar duas fontes, comparar com evidência e direitos atuais; retry não duplica. | — | Autenticação, PostgreSQL e S3 reais. |
 | D02 — Correção e identidade reversíveis | Corrigir/unknown/undo com escopo e histórico; merge/split e stewardship em incrementos próprios. | D01 | Nenhum provider obrigatório para correção local. |
 | D03 — Compartilhamento, revogação e apagamento | Compartilhar sob audiência limitada e revogar em voo; supressão impede ressurreição após restore. | D01 | Política de retenção/hold aplicável e store real; sessão de app só quando D08 existir. |
@@ -62,7 +62,6 @@ O registro estruturado é [planning/deliveries.json](../planning/deliveries.json
 | D20 — Mobilidade, federação e offline | Um escritor na migração; cortes/efeitos parciais na federação; offline filho limitado. | D11, D12, D19 | Infraestrutura real; self-host e fleet qualificados separadamente. |
 | D21 — Informação financeira e risco | Master, corporate actions, posições, valuation e risco reproduzíveis com histórico e licença. | D03, D09, D11, D16 | Direito aos dados/feed e qualidade reais; stress pode consumir D17. |
 | D22 — Ordens até custódia | Ordens/fills/busts/cancel/alocação/custódia conservam quantidades; Unknown não é settlement. | D11, D12, D21 | Broker/custodiante e supervisão reais; federação só para perfil D20. |
-
 
 ## Ordem depois da primeira jornada
 

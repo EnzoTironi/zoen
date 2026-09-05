@@ -1,0 +1,106 @@
+name: Verify
+
+on:
+  pull_request:
+  push:
+    branches: [main, codex/rebuild]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: python3 tooling/verify_plan.py
+
+  unit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:unit
+
+  integration:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
+      - run: pnpm install --frozen-lockfile
+      - name: Configure disposable services
+        run: |
+          python3 - <<'PY'
+          import os, secrets
+          from pathlib import Path
+          admin, runtime = secrets.token_hex(24), secrets.token_hex(24)
+          values = {
+              "ZOEN_TEST_DB_ADMIN_PASSWORD": admin,
+              "ZOEN_TEST_DB_RUNTIME_PASSWORD": runtime,
+              "ZOEN_TEST_DATABASE_URL": f"postgresql://zoen_infra:{admin}@127.0.0.1:55434/zoen_test",
+              "ZOEN_TEST_RUNTIME_DATABASE_URL": f"postgresql://zoen_runtime:{runtime}@127.0.0.1:55434/zoen_test",
+              "ZOEN_TEST_S3_ENDPOINT": "http://127.0.0.1:59004",
+              "ZOEN_TEST_S3_ACCESS_KEY": secrets.token_hex(12),
+              "ZOEN_TEST_S3_SECRET_KEY": secrets.token_hex(32),
+          }
+          target = Path(".env.infra")
+          target.write_text("".join(f"{key}={value}\n" for key, value in values.items()))
+          os.chmod(target, 0o600)
+          PY
+      - run: docker compose --env-file .env.infra -f ops/compose.yaml up -d --wait
+      - run: pnpm test:integration
+      - if: always()
+        run: docker compose --env-file .env.infra -f ops/compose.yaml down --volumes
+
+  components:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444
+        with:
+          node-version-file: .node-version
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:components
+      - if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: component-browser-failure
+          path: test-results
+          if-no-files-found: ignore
+
+  required:
+    if: always()
+    needs: [quality, unit, integration, components]
+    runs-on: ubuntu-24.04
+    env:
+      QUALITY: ${{ needs.quality.result }}
+      UNIT: ${{ needs.unit.result }}
+      INTEGRATION: ${{ needs.integration.result }}
+      COMPONENTS: ${{ needs.components.result }}
+    steps:
+      - run: |
+          test "$QUALITY" = success
+          test "$UNIT" = success
+          test "$INTEGRATION" = success
+          test "$COMPONENTS" = success

@@ -17,14 +17,8 @@
       "id": "D02",
       "phase": "P1",
       "title": "Correção e identidade reversíveis",
-      "depends_on": [
-        "D01"
-      ],
-      "conditional_dependencies": [
-        "D03",
-        "D05",
-        "D07"
-      ],
+      "depends_on": ["D01"],
+      "conditional_dependencies": ["D03", "D05", "D07"],
       "outcome": "Corrigir/unknown/undo com escopo e histórico; merge/split e stewardship em incrementos próprios.",
       "activation_requires": "Nenhum provider obrigatório para correção local.",
       "status": "planned"
@@ -33,12 +27,8 @@
       "id": "D03",
       "phase": "P2",
       "title": "Compartilhamento, revogação e apagamento",
-      "depends_on": [
-        "D01"
-      ],
-      "conditional_dependencies": [
-        "D08"
-      ],
+      "depends_on": ["D01"],
+      "conditional_dependencies": ["D08"],
       "outcome": "Compartilhar sob audiência limitada e revogar em voo; supressão impede ressurreição após restore.",
       "activation_requires": "Política de retenção/hold aplicável e store real; sessão de app só quando D08 existir.",
       "status": "planned"
@@ -47,10 +37,7 @@
       "id": "D04",
       "phase": "P2",
       "title": "Primeiro produto hospedado",
-      "depends_on": [
-        "D01",
-        "D03"
-      ],
+      "depends_on": ["D01", "D03"],
       "conditional_dependencies": [],
       "outcome": "Deploy Fly, operação e restore reais no escopo habilitado, sem cutover implícito.",
       "activation_requires": "Conta/topologia Fly, secrets, persistência, backup e recuperação verificados.",
@@ -60,12 +47,8 @@
       "id": "D05",
       "phase": "P2",
       "title": "Eve com evidência e continuidade",
-      "depends_on": [
-        "D01"
-      ],
-      "conditional_dependencies": [
-        "D03"
-      ],
+      "depends_on": ["D01"],
+      "conditional_dependencies": ["D03"],
       "outcome": "Conversar com fatos, incerteza, cancelamento e journal recuperável; voz como incremento.",
       "activation_requires": "Modelo permitido e API/conta real; voz possui perfil próprio.",
       "status": "planned"
@@ -74,10 +57,7 @@
       "id": "D06",
       "phase": "P4",
       "title": "Canais autorizados",
-      "depends_on": [
-        "D03",
-        "D05"
-      ],
+      "depends_on": ["D03", "D05"],
       "conditional_dependencies": [],
       "outcome": "Ingress durável, vínculo sem autoridade implícita e continuidade; resultado de entrega desconhecido honesto.",
       "activation_requires": "Cada canal tem provider/conta e consentimento próprios; canais independentes.",
@@ -87,10 +67,7 @@
       "id": "D07",
       "phase": "P3",
       "title": "Significado e regras em runtime",
-      "depends_on": [
-        "D01",
-        "D02"
-      ],
+      "depends_on": ["D01", "D02"],
       "conditional_dependencies": [],
       "outcome": "Editar regra/pack, avaliar e ativar geração exata atomicamente, mantendo história explicável.",
       "activation_requires": "Gramática/IR limitados aos operadores implementados.",
@@ -100,15 +77,8 @@
       "id": "D08",
       "phase": "P3",
       "title": "Apps declarativos e superfícies",
-      "depends_on": [
-        "D01"
-      ],
-      "conditional_dependencies": [
-        "D03",
-        "D05",
-        "D07",
-        "D11"
-      ],
+      "depends_on": ["D01"],
+      "conditional_dependencies": ["D03", "D05", "D07", "D11"],
       "outcome": "App privado usa mesma verdade; ampliar para publicação, SDK/MCP, forms e criação assistida.",
       "activation_requires": "Publicação runtime exige D07; sessão D03; forms D11; assistência D05.",
       "status": "planned"
@@ -117,15 +87,8 @@
       "id": "D09",
       "phase": "P5",
       "title": "Fontes e reconciliação reais",
-      "depends_on": [
-        "D01",
-        "D03"
-      ],
-      "conditional_dependencies": [
-        "D07",
-        "D16",
-        "D17"
-      ],
+      "depends_on": ["D01", "D03"],
+      "conditional_dependencies": ["D07", "D16", "D17"],
       "outcome": "Uma fonte autorizada primeiro; paginação, ACL, tombstones e drift; receitas independentes depois.",
       "activation_requires": "Conta/API real por fonte. Mappings runtime exigem D07; CDC D16; virtual D17.",
       "status": "planned"
@@ -134,14 +97,8 @@
       "id": "D10",
       "phase": "P4",
       "title": "Watches e Notices",
-      "depends_on": [
-        "D02",
-        "D03"
-      ],
-      "conditional_dependencies": [
-        "D05",
-        "D06"
-      ],
+      "depends_on": ["D02", "D03"],
+      "conditional_dependencies": ["D05", "D06"],
       "outcome": "Mudança relevante gera Notice deduplicado; ruído e revogação impedem envio indevido.",
       "activation_requires": "Notice local sem provider; transporte exige perfil D06 habilitado.",
       "status": "planned"
@@ -150,15 +107,8 @@
       "id": "D11",
       "phase": "P4",
       "title": "Decisões e aprovações governadas",
-      "depends_on": [
-        "D01",
-        "D03",
-        "D07"
-      ],
-      "conditional_dependencies": [
-        "D05",
-        "D08"
-      ],
+      "depends_on": ["D01", "D03", "D07"],
+      "conditional_dependencies": ["D05", "D08"],
       "outcome": "Case com consequência explícita e aprovação atual; guard alterado retorna Stale sem duplicar decisão.",
       "activation_requires": "Nenhum provider obrigatório para consequência local.",
       "status": "planned"
@@ -167,9 +117,7 @@
       "id": "D12",
       "phase": "P4",
       "title": "Efeitos e Mandates",
-      "depends_on": [
-        "D11"
-      ],
+      "depends_on": ["D11"],
       "conditional_dependencies": [],
       "outcome": "Efeito real, reconciliação de Unknown, orçamento conservado e observação independente do envio.",
       "activation_requires": "Provider de efeito real; contrato de idempotência/consulta e permissão explícitos.",
@@ -179,14 +127,8 @@
       "id": "D13",
       "phase": "P4",
       "title": "Busca e agentes com direitos",
-      "depends_on": [
-        "D01",
-        "D03"
-      ],
-      "conditional_dependencies": [
-        "D05",
-        "D12"
-      ],
+      "depends_on": ["D01", "D03"],
+      "conditional_dependencies": ["D05", "D12"],
       "outcome": "Busca/ranking/counts autorizados; agente especializado não amplia direitos nem orçamento.",
       "activation_requires": "Busca básica independente; modelo e delegação requerem D05/D12.",
       "status": "planned"
@@ -195,14 +137,8 @@
       "id": "D14",
       "phase": "P5",
       "title": "Operação clínica separada",
-      "depends_on": [
-        "D03",
-        "D07"
-      ],
-      "conditional_dependencies": [
-        "D11",
-        "D12"
-      ],
+      "depends_on": ["D03", "D07"],
+      "conditional_dependencies": ["D11", "D12"],
       "outcome": "Agenda administrativa preserva separação clínica; disputa não duplica agendamento.",
       "activation_requires": "Escopo clínico qualificado; consequência real usa D11/D12.",
       "status": "planned"
@@ -211,12 +147,7 @@
       "id": "D15",
       "phase": "P5",
       "title": "Extensões e apps isolados",
-      "depends_on": [
-        "D03",
-        "D07",
-        "D08",
-        "D11"
-      ],
+      "depends_on": ["D03", "D07", "D08", "D11"],
       "conditional_dependencies": [],
       "outcome": "Artefato revisado no runner real; limites, broker, recall e bridge sem segunda semântica.",
       "activation_requires": "Isolamento real; Rivet e MCP Apps são perfis independentes, não pré-requisitos declarativos.",
@@ -226,14 +157,8 @@
       "id": "D16",
       "phase": "P5",
       "title": "Dados densos, CDC e live",
-      "depends_on": [
-        "D01",
-        "D03",
-        "D09"
-      ],
-      "conditional_dependencies": [
-        "D11"
-      ],
+      "depends_on": ["D01", "D03", "D09"],
+      "conditional_dependencies": ["D11"],
       "outcome": "Publicação de snapshot/conjunto atômico; gaps, late data, entitlements e captura da quote explícitos.",
       "activation_requires": "Store/feed e licença reais por perfil; decisão consequencial exige D11.",
       "status": "planned"
@@ -242,15 +167,8 @@
       "id": "D17",
       "phase": "P5",
       "title": "Cenários e compute atribuídos",
-      "depends_on": [
-        "D01",
-        "D03",
-        "D11"
-      ],
-      "conditional_dependencies": [
-        "D15",
-        "D16"
-      ],
+      "depends_on": ["D01", "D03", "D11"],
+      "conditional_dependencies": ["D15", "D16"],
       "outcome": "Overlay não muda live; aplicar gera Case novo. Virtual/GPU/modelos preservam custo e direitos.",
       "activation_requires": "Cenário local independente; runner/GPU/fonte virtual precisam contratos e recursos reais.",
       "status": "planned"
@@ -259,13 +177,8 @@
       "id": "D18",
       "phase": "P6",
       "title": "Workshop, packs e ecossistema",
-      "depends_on": [
-        "D07",
-        "D08"
-      ],
-      "conditional_dependencies": [
-        "D15"
-      ],
+      "depends_on": ["D07", "D08"],
+      "conditional_dependencies": ["D15"],
       "outcome": "Editar/instalar/atualizar/recallar sem sobrescrever significado local; rebase explícito.",
       "activation_requires": "Workshop declarativo em P3; executáveis D15; marketplace comercial exige condições reais.",
       "status": "planned"
@@ -274,15 +187,8 @@
       "id": "D19",
       "phase": "P5",
       "title": "Operação institucional",
-      "depends_on": [
-        "D03",
-        "D04"
-      ],
-      "conditional_dependencies": [
-        "D09",
-        "D12",
-        "D16"
-      ],
+      "depends_on": ["D03", "D04"],
+      "conditional_dependencies": ["D09", "D12", "D16"],
       "outcome": "SSO/SCIM, residência, suporte, quotas e capacidade; revogação do trabalho em voo.",
       "activation_requires": "IdP, cell, rede e envelope de carga/recuperação reais por perfil.",
       "status": "planned"
@@ -291,11 +197,7 @@
       "id": "D20",
       "phase": "P6",
       "title": "Mobilidade, federação e offline",
-      "depends_on": [
-        "D11",
-        "D12",
-        "D19"
-      ],
+      "depends_on": ["D11", "D12", "D19"],
       "conditional_dependencies": [],
       "outcome": "Um escritor na migração; cortes/efeitos parciais na federação; offline filho limitado.",
       "activation_requires": "Infraestrutura real; self-host e fleet qualificados separadamente.",
@@ -305,15 +207,8 @@
       "id": "D21",
       "phase": "P6",
       "title": "Informação financeira e risco",
-      "depends_on": [
-        "D03",
-        "D09",
-        "D11",
-        "D16"
-      ],
-      "conditional_dependencies": [
-        "D17"
-      ],
+      "depends_on": ["D03", "D09", "D11", "D16"],
+      "conditional_dependencies": ["D17"],
       "outcome": "Master, corporate actions, posições, valuation e risco reproduzíveis com histórico e licença.",
       "activation_requires": "Direito aos dados/feed e qualidade reais; stress pode consumir D17.",
       "status": "planned"
@@ -322,14 +217,8 @@
       "id": "D22",
       "phase": "P6",
       "title": "Ordens até custódia",
-      "depends_on": [
-        "D11",
-        "D12",
-        "D21"
-      ],
-      "conditional_dependencies": [
-        "D20"
-      ],
+      "depends_on": ["D11", "D12", "D21"],
+      "conditional_dependencies": ["D20"],
       "outcome": "Ordens/fills/busts/cancel/alocação/custódia conservam quantidades; Unknown não é settlement.",
       "activation_requires": "Broker/custodiante e supervisão reais; federação só para perfil D20.",
       "status": "planned"

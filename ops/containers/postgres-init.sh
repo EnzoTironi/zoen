@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+
+psql --set=ON_ERROR_STOP=1 --set=runtime_password="$ZOEN_TEST_DB_RUNTIME_PASSWORD" --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<'SQL'
+CREATE ROLE zoen_runtime LOGIN PASSWORD :'runtime_password' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+SQL

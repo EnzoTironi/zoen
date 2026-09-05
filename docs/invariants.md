@@ -3,7 +3,7 @@
 Este é um contrato ativo de produto, não evidência de implementação. Preserva as 24 leis da constituição v4 na nova organização. O usuário pode mudar o escopo; um pacote de trabalho, dado externo ou conveniência de implementação não pode enfraquecer uma lei. As alterações deliberadas de recorte e contratos estão em [roadmap.md](roadmap.md). Conflito real é resolvido pelo orquestrador com revisão antes de despachar o código afetado.
 
 | ID | Lei | Testemunha adversária exigida quando aplicável |
-|---|---|---|
+| --- | --- | --- |
 | INV-01 | Identidade prova presença; autoridade concede direitos de domínio; Eve possui estado de relacionamento. | Eve não importa nem recebe credencial da base de autoridade |
 | INV-02 | Evidência, claim atribuída, interpretação, decisão, tentativa de efeito e settlement observado são fatos distintos. | Uma mensagem “paguei” não cria settlement bancário |
 | INV-03 | Comparar significado, identidade, escopo, unidade e tempo antes do valor. | Reservado 1000, faturado 800 e recebido 600 não são automaticamente conflito |

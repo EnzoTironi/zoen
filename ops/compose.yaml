@@ -1,0 +1,42 @@
+name: zoen-rebuild
+
+services:
+  postgres:
+    image: postgres:18.6-trixie@sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280
+    environment:
+      POSTGRES_USER: zoen_infra
+      POSTGRES_DB: zoen_test
+      POSTGRES_PASSWORD: ${ZOEN_TEST_DB_ADMIN_PASSWORD:?Set the disposable database password}
+      ZOEN_TEST_DB_RUNTIME_PASSWORD: ${ZOEN_TEST_DB_RUNTIME_PASSWORD:?Set the runtime database password}
+    ports:
+      - "127.0.0.1:55434:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql
+      - ./containers/postgres-init.sh:/docker-entrypoint-initdb.d/10-zoen-roles.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zoen_infra -d zoen_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+  object-storage:
+    image: rustfs/rustfs:1.0.0-rc.5@sha256:c36b3efea3d1e503f1a2581abd0e7611e0e5820dd30e1850a52384b3fc52bda4
+    command: ["/data"]
+    environment:
+      RUSTFS_ACCESS_KEY: ${ZOEN_TEST_S3_ACCESS_KEY:?Set the disposable storage access key}
+      RUSTFS_SECRET_KEY: ${ZOEN_TEST_S3_SECRET_KEY:?Set the disposable storage secret key}
+      RUSTFS_CONSOLE_ENABLE: "false"
+      RUSTFS_OBS_LOGGER_LEVEL: warn
+    ports:
+      - "127.0.0.1:59004:9000"
+    volumes:
+      - object_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://127.0.0.1:9000/health/ready"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  pg_data:
+  object_data:

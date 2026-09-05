@@ -9,7 +9,7 @@ Node 24, pnpm workspaces com um lock real, TypeScript 7, Effect 4 e Ultracite. O
 Interface de scripts a criar no bootstrap e completar conforme as primeiras suites forem implementadas:
 
 | Comando planejado | O que deve executar |
-|---|---|
+| --- | --- |
 | `pnpm format:check` | Oxfmt com preset Ultracite; todos os arquivos suportados pertinentes |
 | `pnpm lint` | Oxlint com presets Ultracite, type-aware, type-check e avisos como erro |
 | `pnpm typecheck` | Compilador TS7 real, strict, cobrindo todas as fontes e testes TS/TSX |
@@ -38,7 +38,7 @@ Integração, navegador, migração, caos e admissão rodam novamente no commit 
 ## Testemunhas mínimas por comportamento
 
 | Invariante | Testemunha necessária |
-|---|---|
+| --- | --- |
 | Um commit semântico | Concorrência real e falha entre gravações; estado/receipt/outbox não ficam parciais |
 | Retry não duplica | Mesma operação concorrente, reinício e reenvio; digest diferente rejeitado |
 | Direitos atuais | Outra identidade, grant insuficiente, revogação antes de emissão/replay/download |

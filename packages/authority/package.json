@@ -1,0 +1,13 @@
+{
+  "name": "@zoen/authority",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "dependencies": {
+    "@zoen/contracts": "workspace:*",
+    "effect": "4.0.0-rc.112"
+  }
+}

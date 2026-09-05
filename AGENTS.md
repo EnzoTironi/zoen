@@ -20,3 +20,9 @@ Não use mocks de serviços, respostas de provedores fabricadas, identidade priv
 Toda mudança relevante exige falha ou propriedade reproduzível, correção, teste na camada correta e revisão independente. Não altere oráculos para acomodar a implementação. Não conte pseudotestes, suites vazias, `skip`, `todo`, `only`, números do catálogo ou resultado cacheado de integração como prova.
 
 Compilação, lint, unidade, integração, navegador, caos, carga e admissão são evidências distintas. Use `docs/quality.md`. Não aprove seu próprio trabalho. Não fabrique locks, hashes de imagem, segredos, licenças, qualificações ou benchmarks. Não apague evidência de falha.
+
+# Learning more about Effect
+
+This repository uses the Effect Typescript library.
+
+Before writing any Effect code, first read `node_modules/effect/AGENTS.md` **completely**, and follow its links when required. Search `node_modules/effect/src` for APIs the guide does not cover.

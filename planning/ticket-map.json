@@ -8,11 +8,7 @@
     "dependencies_to_reconsider": [],
     "spec_id": "SPEC-000",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0001-AC",
-      "ZN-0001-NEG",
-      "ZN-0001-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0001-AC", "ZN-0001-NEG", "ZN-0001-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0001"
   },
@@ -30,11 +26,7 @@
     ],
     "spec_id": "SPEC-000",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0002-AC",
-      "ZN-0002-NEG",
-      "ZN-0002-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0002-AC", "ZN-0002-NEG", "ZN-0002-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0002"
   },
@@ -52,11 +44,7 @@
     ],
     "spec_id": "SPEC-000",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0003-AC",
-      "ZN-0003-NEG",
-      "ZN-0003-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0003-AC", "ZN-0003-NEG", "ZN-0003-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0003"
   },
@@ -74,11 +62,7 @@
     ],
     "spec_id": "SPEC-000",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0004-AC",
-      "ZN-0004-NEG",
-      "ZN-0004-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0004-AC", "ZN-0004-NEG", "ZN-0004-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0004"
   },
@@ -96,11 +80,7 @@
     ],
     "spec_id": "SPEC-000",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0005-AC",
-      "ZN-0005-NEG",
-      "ZN-0005-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0005-AC", "ZN-0005-NEG", "ZN-0005-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0005"
   },
@@ -118,11 +98,7 @@
     ],
     "spec_id": "SPEC-000",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0006-AC",
-      "ZN-0006-NEG",
-      "ZN-0006-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0006-AC", "ZN-0006-NEG", "ZN-0006-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0006"
   },
@@ -139,14 +115,8 @@
       }
     ],
     "spec_id": "SPEC-001",
-    "capability_ids": [
-      "C023"
-    ],
-    "original_check_ids": [
-      "ZN-0007-AC",
-      "ZN-0007-NEG",
-      "ZN-0007-BOUNDARY"
-    ],
+    "capability_ids": ["C023"],
+    "original_check_ids": ["ZN-0007-AC", "ZN-0007-NEG", "ZN-0007-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0007"
   },
@@ -163,14 +133,8 @@
       }
     ],
     "spec_id": "SPEC-001",
-    "capability_ids": [
-      "C027"
-    ],
-    "original_check_ids": [
-      "ZN-0008-AC",
-      "ZN-0008-NEG",
-      "ZN-0008-BOUNDARY"
-    ],
+    "capability_ids": ["C027"],
+    "original_check_ids": ["ZN-0008-AC", "ZN-0008-NEG", "ZN-0008-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0008"
   },
@@ -187,14 +151,8 @@
       }
     ],
     "spec_id": "SPEC-001",
-    "capability_ids": [
-      "C026"
-    ],
-    "original_check_ids": [
-      "ZN-0009-AC",
-      "ZN-0009-NEG",
-      "ZN-0009-BOUNDARY"
-    ],
+    "capability_ids": ["C026"],
+    "original_check_ids": ["ZN-0009-AC", "ZN-0009-NEG", "ZN-0009-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0009"
   },
@@ -212,11 +170,7 @@
     ],
     "spec_id": "SPEC-001",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0010-AC",
-      "ZN-0010-NEG",
-      "ZN-0010-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0010-AC", "ZN-0010-NEG", "ZN-0010-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0010"
   },
@@ -233,14 +187,8 @@
       }
     ],
     "spec_id": "SPEC-001",
-    "capability_ids": [
-      "C017"
-    ],
-    "original_check_ids": [
-      "ZN-0011-AC",
-      "ZN-0011-NEG",
-      "ZN-0011-BOUNDARY"
-    ],
+    "capability_ids": ["C017"],
+    "original_check_ids": ["ZN-0011-AC", "ZN-0011-NEG", "ZN-0011-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0011"
   },
@@ -258,11 +206,7 @@
     ],
     "spec_id": "SPEC-001",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0012-AC",
-      "ZN-0012-NEG",
-      "ZN-0012-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0012-AC", "ZN-0012-NEG", "ZN-0012-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0012"
   },
@@ -279,14 +223,8 @@
       }
     ],
     "spec_id": "SPEC-002",
-    "capability_ids": [
-      "C052"
-    ],
-    "original_check_ids": [
-      "ZN-0013-AC",
-      "ZN-0013-NEG",
-      "ZN-0013-BOUNDARY"
-    ],
+    "capability_ids": ["C052"],
+    "original_check_ids": ["ZN-0013-AC", "ZN-0013-NEG", "ZN-0013-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0013"
   },
@@ -307,14 +245,8 @@
       }
     ],
     "spec_id": "SPEC-002",
-    "capability_ids": [
-      "C053"
-    ],
-    "original_check_ids": [
-      "ZN-0014-AC",
-      "ZN-0014-NEG",
-      "ZN-0014-BOUNDARY"
-    ],
+    "capability_ids": ["C053"],
+    "original_check_ids": ["ZN-0014-AC", "ZN-0014-NEG", "ZN-0014-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0014"
   },
@@ -331,14 +263,8 @@
       }
     ],
     "spec_id": "SPEC-002",
-    "capability_ids": [
-      "C056"
-    ],
-    "original_check_ids": [
-      "ZN-0015-AC",
-      "ZN-0015-NEG",
-      "ZN-0015-BOUNDARY"
-    ],
+    "capability_ids": ["C056"],
+    "original_check_ids": ["ZN-0015-AC", "ZN-0015-NEG", "ZN-0015-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0015"
   },
@@ -355,14 +281,8 @@
       }
     ],
     "spec_id": "SPEC-002",
-    "capability_ids": [
-      "C053"
-    ],
-    "original_check_ids": [
-      "ZN-0016-AC",
-      "ZN-0016-NEG",
-      "ZN-0016-BOUNDARY"
-    ],
+    "capability_ids": ["C053"],
+    "original_check_ids": ["ZN-0016-AC", "ZN-0016-NEG", "ZN-0016-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0016"
   },
@@ -379,14 +299,8 @@
       }
     ],
     "spec_id": "SPEC-002",
-    "capability_ids": [
-      "C054"
-    ],
-    "original_check_ids": [
-      "ZN-0017-AC",
-      "ZN-0017-NEG",
-      "ZN-0017-BOUNDARY"
-    ],
+    "capability_ids": ["C054"],
+    "original_check_ids": ["ZN-0017-AC", "ZN-0017-NEG", "ZN-0017-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0017"
   },
@@ -404,11 +318,7 @@
     ],
     "spec_id": "SPEC-002",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0018-AC",
-      "ZN-0018-NEG",
-      "ZN-0018-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0018-AC", "ZN-0018-NEG", "ZN-0018-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0018"
   },
@@ -430,11 +340,7 @@
     ],
     "spec_id": "SPEC-003",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0019-AC",
-      "ZN-0019-NEG",
-      "ZN-0019-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0019-AC", "ZN-0019-NEG", "ZN-0019-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0019"
   },
@@ -451,14 +357,8 @@
       }
     ],
     "spec_id": "SPEC-003",
-    "capability_ids": [
-      "C067"
-    ],
-    "original_check_ids": [
-      "ZN-0020-AC",
-      "ZN-0020-NEG",
-      "ZN-0020-BOUNDARY"
-    ],
+    "capability_ids": ["C067"],
+    "original_check_ids": ["ZN-0020-AC", "ZN-0020-NEG", "ZN-0020-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0020"
   },
@@ -475,14 +375,8 @@
       }
     ],
     "spec_id": "SPEC-003",
-    "capability_ids": [
-      "C067"
-    ],
-    "original_check_ids": [
-      "ZN-0021-AC",
-      "ZN-0021-NEG",
-      "ZN-0021-BOUNDARY"
-    ],
+    "capability_ids": ["C067"],
+    "original_check_ids": ["ZN-0021-AC", "ZN-0021-NEG", "ZN-0021-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0021"
   },
@@ -499,14 +393,8 @@
       }
     ],
     "spec_id": "SPEC-003",
-    "capability_ids": [
-      "C068"
-    ],
-    "original_check_ids": [
-      "ZN-0022-AC",
-      "ZN-0022-NEG",
-      "ZN-0022-BOUNDARY"
-    ],
+    "capability_ids": ["C068"],
+    "original_check_ids": ["ZN-0022-AC", "ZN-0022-NEG", "ZN-0022-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0022"
   },
@@ -523,14 +411,8 @@
       }
     ],
     "spec_id": "SPEC-003",
-    "capability_ids": [
-      "C069"
-    ],
-    "original_check_ids": [
-      "ZN-0023-AC",
-      "ZN-0023-NEG",
-      "ZN-0023-BOUNDARY"
-    ],
+    "capability_ids": ["C069"],
+    "original_check_ids": ["ZN-0023-AC", "ZN-0023-NEG", "ZN-0023-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0023"
   },
@@ -548,11 +430,7 @@
     ],
     "spec_id": "SPEC-003",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0024-AC",
-      "ZN-0024-NEG",
-      "ZN-0024-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0024-AC", "ZN-0024-NEG", "ZN-0024-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0024"
   },
@@ -569,15 +447,8 @@
       }
     ],
     "spec_id": "SPEC-004",
-    "capability_ids": [
-      "C014",
-      "C046"
-    ],
-    "original_check_ids": [
-      "ZN-0025-AC",
-      "ZN-0025-NEG",
-      "ZN-0025-BOUNDARY"
-    ],
+    "capability_ids": ["C014", "C046"],
+    "original_check_ids": ["ZN-0025-AC", "ZN-0025-NEG", "ZN-0025-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0025"
   },
@@ -594,16 +465,8 @@
       }
     ],
     "spec_id": "SPEC-004",
-    "capability_ids": [
-      "C014",
-      "C015",
-      "C049"
-    ],
-    "original_check_ids": [
-      "ZN-0026-AC",
-      "ZN-0026-NEG",
-      "ZN-0026-BOUNDARY"
-    ],
+    "capability_ids": ["C014", "C015", "C049"],
+    "original_check_ids": ["ZN-0026-AC", "ZN-0026-NEG", "ZN-0026-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0026"
   },
@@ -620,15 +483,8 @@
       }
     ],
     "spec_id": "SPEC-004",
-    "capability_ids": [
-      "C055",
-      "C061"
-    ],
-    "original_check_ids": [
-      "ZN-0027-AC",
-      "ZN-0027-NEG",
-      "ZN-0027-BOUNDARY"
-    ],
+    "capability_ids": ["C055", "C061"],
+    "original_check_ids": ["ZN-0027-AC", "ZN-0027-NEG", "ZN-0027-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0027"
   },
@@ -645,16 +501,8 @@
       }
     ],
     "spec_id": "SPEC-004",
-    "capability_ids": [
-      "C027",
-      "C046",
-      "C050"
-    ],
-    "original_check_ids": [
-      "ZN-0028-AC",
-      "ZN-0028-NEG",
-      "ZN-0028-BOUNDARY"
-    ],
+    "capability_ids": ["C027", "C046", "C050"],
+    "original_check_ids": ["ZN-0028-AC", "ZN-0028-NEG", "ZN-0028-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0028"
   },
@@ -671,14 +519,8 @@
       }
     ],
     "spec_id": "SPEC-004",
-    "capability_ids": [
-      "C014"
-    ],
-    "original_check_ids": [
-      "ZN-0029-AC",
-      "ZN-0029-NEG",
-      "ZN-0029-BOUNDARY"
-    ],
+    "capability_ids": ["C014"],
+    "original_check_ids": ["ZN-0029-AC", "ZN-0029-NEG", "ZN-0029-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0029"
   },
@@ -699,16 +541,8 @@
       }
     ],
     "spec_id": "SPEC-004",
-    "capability_ids": [
-      "C014",
-      "C015",
-      "C017"
-    ],
-    "original_check_ids": [
-      "ZN-0030-AC",
-      "ZN-0030-NEG",
-      "ZN-0030-BOUNDARY"
-    ],
+    "capability_ids": ["C014", "C015", "C017"],
+    "original_check_ids": ["ZN-0030-AC", "ZN-0030-NEG", "ZN-0030-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0030"
   },
@@ -725,16 +559,8 @@
       }
     ],
     "spec_id": "SPEC-005",
-    "capability_ids": [
-      "C015",
-      "C016",
-      "C027"
-    ],
-    "original_check_ids": [
-      "ZN-0031-AC",
-      "ZN-0031-NEG",
-      "ZN-0031-BOUNDARY"
-    ],
+    "capability_ids": ["C015", "C016", "C027"],
+    "original_check_ids": ["ZN-0031-AC", "ZN-0031-NEG", "ZN-0031-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0031"
   },
@@ -751,14 +577,8 @@
       }
     ],
     "spec_id": "SPEC-005",
-    "capability_ids": [
-      "C018"
-    ],
-    "original_check_ids": [
-      "ZN-0032-AC",
-      "ZN-0032-NEG",
-      "ZN-0032-BOUNDARY"
-    ],
+    "capability_ids": ["C018"],
+    "original_check_ids": ["ZN-0032-AC", "ZN-0032-NEG", "ZN-0032-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0032"
   },
@@ -775,15 +595,8 @@
       }
     ],
     "spec_id": "SPEC-005",
-    "capability_ids": [
-      "C016",
-      "C017"
-    ],
-    "original_check_ids": [
-      "ZN-0033-AC",
-      "ZN-0033-NEG",
-      "ZN-0033-BOUNDARY"
-    ],
+    "capability_ids": ["C016", "C017"],
+    "original_check_ids": ["ZN-0033-AC", "ZN-0033-NEG", "ZN-0033-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0033"
   },
@@ -800,15 +613,8 @@
       }
     ],
     "spec_id": "SPEC-005",
-    "capability_ids": [
-      "C020",
-      "C021"
-    ],
-    "original_check_ids": [
-      "ZN-0034-AC",
-      "ZN-0034-NEG",
-      "ZN-0034-BOUNDARY"
-    ],
+    "capability_ids": ["C020", "C021"],
+    "original_check_ids": ["ZN-0034-AC", "ZN-0034-NEG", "ZN-0034-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0034"
   },
@@ -825,16 +631,8 @@
       }
     ],
     "spec_id": "SPEC-005",
-    "capability_ids": [
-      "C021",
-      "C022",
-      "C028"
-    ],
-    "original_check_ids": [
-      "ZN-0035-AC",
-      "ZN-0035-NEG",
-      "ZN-0035-BOUNDARY"
-    ],
+    "capability_ids": ["C021", "C022", "C028"],
+    "original_check_ids": ["ZN-0035-AC", "ZN-0035-NEG", "ZN-0035-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0035"
   },
@@ -851,15 +649,8 @@
       }
     ],
     "spec_id": "SPEC-005",
-    "capability_ids": [
-      "C028",
-      "C058"
-    ],
-    "original_check_ids": [
-      "ZN-0036-AC",
-      "ZN-0036-NEG",
-      "ZN-0036-BOUNDARY"
-    ],
+    "capability_ids": ["C028", "C058"],
+    "original_check_ids": ["ZN-0036-AC", "ZN-0036-NEG", "ZN-0036-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0036"
   },
@@ -876,14 +667,8 @@
       }
     ],
     "spec_id": "SPEC-006",
-    "capability_ids": [
-      "C023"
-    ],
-    "original_check_ids": [
-      "ZN-0037-AC",
-      "ZN-0037-NEG",
-      "ZN-0037-BOUNDARY"
-    ],
+    "capability_ids": ["C023"],
+    "original_check_ids": ["ZN-0037-AC", "ZN-0037-NEG", "ZN-0037-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0037"
   },
@@ -900,14 +685,8 @@
       }
     ],
     "spec_id": "SPEC-006",
-    "capability_ids": [
-      "C025"
-    ],
-    "original_check_ids": [
-      "ZN-0038-AC",
-      "ZN-0038-NEG",
-      "ZN-0038-BOUNDARY"
-    ],
+    "capability_ids": ["C025"],
+    "original_check_ids": ["ZN-0038-AC", "ZN-0038-NEG", "ZN-0038-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0038"
   },
@@ -924,15 +703,8 @@
       }
     ],
     "spec_id": "SPEC-006",
-    "capability_ids": [
-      "C024",
-      "C028"
-    ],
-    "original_check_ids": [
-      "ZN-0039-AC",
-      "ZN-0039-NEG",
-      "ZN-0039-BOUNDARY"
-    ],
+    "capability_ids": ["C024", "C028"],
+    "original_check_ids": ["ZN-0039-AC", "ZN-0039-NEG", "ZN-0039-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0039"
   },
@@ -949,15 +721,8 @@
       }
     ],
     "spec_id": "SPEC-006",
-    "capability_ids": [
-      "C024",
-      "C021"
-    ],
-    "original_check_ids": [
-      "ZN-0040-AC",
-      "ZN-0040-NEG",
-      "ZN-0040-BOUNDARY"
-    ],
+    "capability_ids": ["C024", "C021"],
+    "original_check_ids": ["ZN-0040-AC", "ZN-0040-NEG", "ZN-0040-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0040"
   },
@@ -974,15 +739,8 @@
       }
     ],
     "spec_id": "SPEC-006",
-    "capability_ids": [
-      "C026",
-      "C028"
-    ],
-    "original_check_ids": [
-      "ZN-0041-AC",
-      "ZN-0041-NEG",
-      "ZN-0041-BOUNDARY"
-    ],
+    "capability_ids": ["C026", "C028"],
+    "original_check_ids": ["ZN-0041-AC", "ZN-0041-NEG", "ZN-0041-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0041"
   },
@@ -999,15 +757,8 @@
       }
     ],
     "spec_id": "SPEC-007",
-    "capability_ids": [
-      "C026",
-      "C028"
-    ],
-    "original_check_ids": [
-      "ZN-0042-AC",
-      "ZN-0042-NEG",
-      "ZN-0042-BOUNDARY"
-    ],
+    "capability_ids": ["C026", "C028"],
+    "original_check_ids": ["ZN-0042-AC", "ZN-0042-NEG", "ZN-0042-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0042"
   },
@@ -1024,16 +775,8 @@
       }
     ],
     "spec_id": "SPEC-007",
-    "capability_ids": [
-      "C094",
-      "C095",
-      "C099"
-    ],
-    "original_check_ids": [
-      "ZN-0043-AC",
-      "ZN-0043-NEG",
-      "ZN-0043-BOUNDARY"
-    ],
+    "capability_ids": ["C094", "C095", "C099"],
+    "original_check_ids": ["ZN-0043-AC", "ZN-0043-NEG", "ZN-0043-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0043"
   },
@@ -1050,15 +793,8 @@
       }
     ],
     "spec_id": "SPEC-007",
-    "capability_ids": [
-      "C055",
-      "C097"
-    ],
-    "original_check_ids": [
-      "ZN-0044-AC",
-      "ZN-0044-NEG",
-      "ZN-0044-BOUNDARY"
-    ],
+    "capability_ids": ["C055", "C097"],
+    "original_check_ids": ["ZN-0044-AC", "ZN-0044-NEG", "ZN-0044-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0044"
   },
@@ -1083,18 +819,8 @@
       }
     ],
     "spec_id": "SPEC-007",
-    "capability_ids": [
-      "C005",
-      "C010",
-      "C094",
-      "C095",
-      "C099"
-    ],
-    "original_check_ids": [
-      "ZN-0045-AC",
-      "ZN-0045-NEG",
-      "ZN-0045-BOUNDARY"
-    ],
+    "capability_ids": ["C005", "C010", "C094", "C095", "C099"],
+    "original_check_ids": ["ZN-0045-AC", "ZN-0045-NEG", "ZN-0045-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0045"
   },
@@ -1111,16 +837,8 @@
       }
     ],
     "spec_id": "SPEC-007",
-    "capability_ids": [
-      "C010",
-      "C013",
-      "C028"
-    ],
-    "original_check_ids": [
-      "ZN-0046-AC",
-      "ZN-0046-NEG",
-      "ZN-0046-BOUNDARY"
-    ],
+    "capability_ids": ["C010", "C013", "C028"],
+    "original_check_ids": ["ZN-0046-AC", "ZN-0046-NEG", "ZN-0046-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0046"
   },
@@ -1142,11 +860,7 @@
     ],
     "spec_id": "SPEC-008",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0047-AC",
-      "ZN-0047-NEG",
-      "ZN-0047-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0047-AC", "ZN-0047-NEG", "ZN-0047-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0047"
   },
@@ -1164,11 +878,7 @@
     ],
     "spec_id": "SPEC-008",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0048-AC",
-      "ZN-0048-NEG",
-      "ZN-0048-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0048-AC", "ZN-0048-NEG", "ZN-0048-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0048"
   },
@@ -1189,14 +899,8 @@
       }
     ],
     "spec_id": "SPEC-008",
-    "capability_ids": [
-      "C064"
-    ],
-    "original_check_ids": [
-      "ZN-0049-AC",
-      "ZN-0049-NEG",
-      "ZN-0049-BOUNDARY"
-    ],
+    "capability_ids": ["C064"],
+    "original_check_ids": ["ZN-0049-AC", "ZN-0049-NEG", "ZN-0049-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0049"
   },
@@ -1214,11 +918,7 @@
     ],
     "spec_id": "SPEC-008",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0050-AC",
-      "ZN-0050-NEG",
-      "ZN-0050-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0050-AC", "ZN-0050-NEG", "ZN-0050-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0050"
   },
@@ -1236,11 +936,7 @@
     ],
     "spec_id": "SPEC-008",
     "capability_ids": [],
-    "original_check_ids": [
-      "ZN-0051-AC",
-      "ZN-0051-NEG",
-      "ZN-0051-BOUNDARY"
-    ],
+    "original_check_ids": ["ZN-0051-AC", "ZN-0051-NEG", "ZN-0051-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0051"
   },
@@ -1265,15 +961,8 @@
       }
     ],
     "spec_id": "SPEC-009",
-    "capability_ids": [
-      "C001",
-      "C002"
-    ],
-    "original_check_ids": [
-      "ZN-0052-AC",
-      "ZN-0052-NEG",
-      "ZN-0052-BOUNDARY"
-    ],
+    "capability_ids": ["C001", "C002"],
+    "original_check_ids": ["ZN-0052-AC", "ZN-0052-NEG", "ZN-0052-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0052"
   },
@@ -1290,15 +979,8 @@
       }
     ],
     "spec_id": "SPEC-009",
-    "capability_ids": [
-      "C001",
-      "C007"
-    ],
-    "original_check_ids": [
-      "ZN-0053-AC",
-      "ZN-0053-NEG",
-      "ZN-0053-BOUNDARY"
-    ],
+    "capability_ids": ["C001", "C007"],
+    "original_check_ids": ["ZN-0053-AC", "ZN-0053-NEG", "ZN-0053-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0053"
   },
@@ -1315,15 +997,8 @@
       }
     ],
     "spec_id": "SPEC-009",
-    "capability_ids": [
-      "C001",
-      "C002"
-    ],
-    "original_check_ids": [
-      "ZN-0054-AC",
-      "ZN-0054-NEG",
-      "ZN-0054-BOUNDARY"
-    ],
+    "capability_ids": ["C001", "C002"],
+    "original_check_ids": ["ZN-0054-AC", "ZN-0054-NEG", "ZN-0054-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0054"
   },
@@ -1340,14 +1015,8 @@
       }
     ],
     "spec_id": "SPEC-009",
-    "capability_ids": [
-      "C007"
-    ],
-    "original_check_ids": [
-      "ZN-0055-AC",
-      "ZN-0055-NEG",
-      "ZN-0055-BOUNDARY"
-    ],
+    "capability_ids": ["C007"],
+    "original_check_ids": ["ZN-0055-AC", "ZN-0055-NEG", "ZN-0055-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0055"
   },
@@ -1364,14 +1033,8 @@
       }
     ],
     "spec_id": "SPEC-009",
-    "capability_ids": [
-      "C002"
-    ],
-    "original_check_ids": [
-      "ZN-0056-AC",
-      "ZN-0056-NEG",
-      "ZN-0056-BOUNDARY"
-    ],
+    "capability_ids": ["C002"],
+    "original_check_ids": ["ZN-0056-AC", "ZN-0056-NEG", "ZN-0056-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0056"
   },
@@ -1388,16 +1051,8 @@
       }
     ],
     "spec_id": "SPEC-009",
-    "capability_ids": [
-      "C001",
-      "C002",
-      "C007"
-    ],
-    "original_check_ids": [
-      "ZN-0057-AC",
-      "ZN-0057-NEG",
-      "ZN-0057-BOUNDARY"
-    ],
+    "capability_ids": ["C001", "C002", "C007"],
+    "original_check_ids": ["ZN-0057-AC", "ZN-0057-NEG", "ZN-0057-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0057"
   },
@@ -1414,16 +1069,8 @@
       }
     ],
     "spec_id": "SPEC-010",
-    "capability_ids": [
-      "C002",
-      "C005",
-      "C083"
-    ],
-    "original_check_ids": [
-      "ZN-0058-AC",
-      "ZN-0058-NEG",
-      "ZN-0058-BOUNDARY"
-    ],
+    "capability_ids": ["C002", "C005", "C083"],
+    "original_check_ids": ["ZN-0058-AC", "ZN-0058-NEG", "ZN-0058-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0058"
   },
@@ -1440,14 +1087,8 @@
       }
     ],
     "spec_id": "SPEC-010",
-    "capability_ids": [
-      "C006"
-    ],
-    "original_check_ids": [
-      "ZN-0059-AC",
-      "ZN-0059-NEG",
-      "ZN-0059-BOUNDARY"
-    ],
+    "capability_ids": ["C006"],
+    "original_check_ids": ["ZN-0059-AC", "ZN-0059-NEG", "ZN-0059-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0059"
   },
@@ -1464,15 +1105,8 @@
       }
     ],
     "spec_id": "SPEC-010",
-    "capability_ids": [
-      "C008",
-      "C085"
-    ],
-    "original_check_ids": [
-      "ZN-0060-AC",
-      "ZN-0060-NEG",
-      "ZN-0060-BOUNDARY"
-    ],
+    "capability_ids": ["C008", "C085"],
+    "original_check_ids": ["ZN-0060-AC", "ZN-0060-NEG", "ZN-0060-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0060"
   },
@@ -1489,16 +1123,8 @@
       }
     ],
     "spec_id": "SPEC-010",
-    "capability_ids": [
-      "C001",
-      "C005",
-      "C083"
-    ],
-    "original_check_ids": [
-      "ZN-0061-AC",
-      "ZN-0061-NEG",
-      "ZN-0061-BOUNDARY"
-    ],
+    "capability_ids": ["C001", "C005", "C083"],
+    "original_check_ids": ["ZN-0061-AC", "ZN-0061-NEG", "ZN-0061-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0061"
   },
@@ -1515,15 +1141,8 @@
       }
     ],
     "spec_id": "SPEC-010",
-    "capability_ids": [
-      "C003",
-      "C020"
-    ],
-    "original_check_ids": [
-      "ZN-0062-AC",
-      "ZN-0062-NEG",
-      "ZN-0062-BOUNDARY"
-    ],
+    "capability_ids": ["C003", "C020"],
+    "original_check_ids": ["ZN-0062-AC", "ZN-0062-NEG", "ZN-0062-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0062"
   },
@@ -1540,15 +1159,8 @@
       }
     ],
     "spec_id": "SPEC-010",
-    "capability_ids": [
-      "C003",
-      "C008"
-    ],
-    "original_check_ids": [
-      "ZN-0063-AC",
-      "ZN-0063-NEG",
-      "ZN-0063-BOUNDARY"
-    ],
+    "capability_ids": ["C003", "C008"],
+    "original_check_ids": ["ZN-0063-AC", "ZN-0063-NEG", "ZN-0063-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0063"
   },
@@ -1569,14 +1181,8 @@
       }
     ],
     "spec_id": "SPEC-011",
-    "capability_ids": [
-      "C087"
-    ],
-    "original_check_ids": [
-      "ZN-0064-AC",
-      "ZN-0064-NEG",
-      "ZN-0064-BOUNDARY"
-    ],
+    "capability_ids": ["C087"],
+    "original_check_ids": ["ZN-0064-AC", "ZN-0064-NEG", "ZN-0064-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0064"
   },
@@ -1593,14 +1199,8 @@
       }
     ],
     "spec_id": "SPEC-011",
-    "capability_ids": [
-      "C089"
-    ],
-    "original_check_ids": [
-      "ZN-0065-AC",
-      "ZN-0065-NEG",
-      "ZN-0065-BOUNDARY"
-    ],
+    "capability_ids": ["C089"],
+    "original_check_ids": ["ZN-0065-AC", "ZN-0065-NEG", "ZN-0065-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0065"
   },
@@ -1617,14 +1217,8 @@
       }
     ],
     "spec_id": "SPEC-011",
-    "capability_ids": [
-      "C088"
-    ],
-    "original_check_ids": [
-      "ZN-0066-AC",
-      "ZN-0066-NEG",
-      "ZN-0066-BOUNDARY"
-    ],
+    "capability_ids": ["C088"],
+    "original_check_ids": ["ZN-0066-AC", "ZN-0066-NEG", "ZN-0066-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0066"
   },
@@ -1641,14 +1235,8 @@
       }
     ],
     "spec_id": "SPEC-011",
-    "capability_ids": [
-      "C090"
-    ],
-    "original_check_ids": [
-      "ZN-0067-AC",
-      "ZN-0067-NEG",
-      "ZN-0067-BOUNDARY"
-    ],
+    "capability_ids": ["C090"],
+    "original_check_ids": ["ZN-0067-AC", "ZN-0067-NEG", "ZN-0067-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0067"
   },
@@ -1669,15 +1257,8 @@
       }
     ],
     "spec_id": "SPEC-011",
-    "capability_ids": [
-      "C089",
-      "C013"
-    ],
-    "original_check_ids": [
-      "ZN-0068-AC",
-      "ZN-0068-NEG",
-      "ZN-0068-BOUNDARY"
-    ],
+    "capability_ids": ["C089", "C013"],
+    "original_check_ids": ["ZN-0068-AC", "ZN-0068-NEG", "ZN-0068-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0068"
   },
@@ -1694,16 +1275,8 @@
       }
     ],
     "spec_id": "SPEC-011",
-    "capability_ids": [
-      "C087",
-      "C088",
-      "C090"
-    ],
-    "original_check_ids": [
-      "ZN-0069-AC",
-      "ZN-0069-NEG",
-      "ZN-0069-BOUNDARY"
-    ],
+    "capability_ids": ["C087", "C088", "C090"],
+    "original_check_ids": ["ZN-0069-AC", "ZN-0069-NEG", "ZN-0069-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0069"
   },
@@ -1732,15 +1305,8 @@
       }
     ],
     "spec_id": "SPEC-012",
-    "capability_ids": [
-      "C004",
-      "C005"
-    ],
-    "original_check_ids": [
-      "ZN-0070-AC",
-      "ZN-0070-NEG",
-      "ZN-0070-BOUNDARY"
-    ],
+    "capability_ids": ["C004", "C005"],
+    "original_check_ids": ["ZN-0070-AC", "ZN-0070-NEG", "ZN-0070-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0070"
   },
@@ -1757,15 +1323,8 @@
       }
     ],
     "spec_id": "SPEC-012",
-    "capability_ids": [
-      "C009",
-      "C003"
-    ],
-    "original_check_ids": [
-      "ZN-0071-AC",
-      "ZN-0071-NEG",
-      "ZN-0071-BOUNDARY"
-    ],
+    "capability_ids": ["C009", "C003"],
+    "original_check_ids": ["ZN-0071-AC", "ZN-0071-NEG", "ZN-0071-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0071"
   },
@@ -1782,16 +1341,8 @@
       }
     ],
     "spec_id": "SPEC-012",
-    "capability_ids": [
-      "C010",
-      "C019",
-      "C020"
-    ],
-    "original_check_ids": [
-      "ZN-0072-AC",
-      "ZN-0072-NEG",
-      "ZN-0072-BOUNDARY"
-    ],
+    "capability_ids": ["C010", "C019", "C020"],
+    "original_check_ids": ["ZN-0072-AC", "ZN-0072-NEG", "ZN-0072-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0072"
   },
@@ -1808,15 +1359,8 @@
       }
     ],
     "spec_id": "SPEC-012",
-    "capability_ids": [
-      "C011",
-      "C013"
-    ],
-    "original_check_ids": [
-      "ZN-0073-AC",
-      "ZN-0073-NEG",
-      "ZN-0073-BOUNDARY"
-    ],
+    "capability_ids": ["C011", "C013"],
+    "original_check_ids": ["ZN-0073-AC", "ZN-0073-NEG", "ZN-0073-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0073"
   },
@@ -1833,15 +1377,8 @@
       }
     ],
     "spec_id": "SPEC-012",
-    "capability_ids": [
-      "C004",
-      "C009"
-    ],
-    "original_check_ids": [
-      "ZN-0074-AC",
-      "ZN-0074-NEG",
-      "ZN-0074-BOUNDARY"
-    ],
+    "capability_ids": ["C004", "C009"],
+    "original_check_ids": ["ZN-0074-AC", "ZN-0074-NEG", "ZN-0074-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0074"
   },
@@ -1866,14 +1403,8 @@
       }
     ],
     "spec_id": "SPEC-013",
-    "capability_ids": [
-      "C030"
-    ],
-    "original_check_ids": [
-      "ZN-0075-AC",
-      "ZN-0075-NEG",
-      "ZN-0075-BOUNDARY"
-    ],
+    "capability_ids": ["C030"],
+    "original_check_ids": ["ZN-0075-AC", "ZN-0075-NEG", "ZN-0075-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0075"
   },
@@ -1890,15 +1421,8 @@
       }
     ],
     "spec_id": "SPEC-013",
-    "capability_ids": [
-      "C031",
-      "C033"
-    ],
-    "original_check_ids": [
-      "ZN-0076-AC",
-      "ZN-0076-NEG",
-      "ZN-0076-BOUNDARY"
-    ],
+    "capability_ids": ["C031", "C033"],
+    "original_check_ids": ["ZN-0076-AC", "ZN-0076-NEG", "ZN-0076-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0076"
   },
@@ -1915,16 +1439,8 @@
       }
     ],
     "spec_id": "SPEC-013",
-    "capability_ids": [
-      "C032",
-      "C033",
-      "C105"
-    ],
-    "original_check_ids": [
-      "ZN-0077-AC",
-      "ZN-0077-NEG",
-      "ZN-0077-BOUNDARY"
-    ],
+    "capability_ids": ["C032", "C033", "C105"],
+    "original_check_ids": ["ZN-0077-AC", "ZN-0077-NEG", "ZN-0077-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0077"
   },
@@ -1941,16 +1457,8 @@
       }
     ],
     "spec_id": "SPEC-013",
-    "capability_ids": [
-      "C037",
-      "C097",
-      "C099"
-    ],
-    "original_check_ids": [
-      "ZN-0078-AC",
-      "ZN-0078-NEG",
-      "ZN-0078-BOUNDARY"
-    ],
+    "capability_ids": ["C037", "C097", "C099"],
+    "original_check_ids": ["ZN-0078-AC", "ZN-0078-NEG", "ZN-0078-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0078"
   },
@@ -1967,15 +1475,8 @@
       }
     ],
     "spec_id": "SPEC-013",
-    "capability_ids": [
-      "C035",
-      "C043"
-    ],
-    "original_check_ids": [
-      "ZN-0079-AC",
-      "ZN-0079-NEG",
-      "ZN-0079-BOUNDARY"
-    ],
+    "capability_ids": ["C035", "C043"],
+    "original_check_ids": ["ZN-0079-AC", "ZN-0079-NEG", "ZN-0079-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0079"
   },
@@ -1992,14 +1493,8 @@
       }
     ],
     "spec_id": "SPEC-013",
-    "capability_ids": [
-      "C030"
-    ],
-    "original_check_ids": [
-      "ZN-0080-AC",
-      "ZN-0080-NEG",
-      "ZN-0080-BOUNDARY"
-    ],
+    "capability_ids": ["C030"],
+    "original_check_ids": ["ZN-0080-AC", "ZN-0080-NEG", "ZN-0080-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0080"
   },
@@ -2016,14 +1511,8 @@
       }
     ],
     "spec_id": "SPEC-013",
-    "capability_ids": [
-      "C037"
-    ],
-    "original_check_ids": [
-      "ZN-0081-AC",
-      "ZN-0081-NEG",
-      "ZN-0081-BOUNDARY"
-    ],
+    "capability_ids": ["C037"],
+    "original_check_ids": ["ZN-0081-AC", "ZN-0081-NEG", "ZN-0081-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0081"
   },
@@ -2044,16 +1533,8 @@
       }
     ],
     "spec_id": "SPEC-014",
-    "capability_ids": [
-      "C029",
-      "C034",
-      "C036"
-    ],
-    "original_check_ids": [
-      "ZN-0082-AC",
-      "ZN-0082-NEG",
-      "ZN-0082-BOUNDARY"
-    ],
+    "capability_ids": ["C029", "C034", "C036"],
+    "original_check_ids": ["ZN-0082-AC", "ZN-0082-NEG", "ZN-0082-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0082"
   },
@@ -2070,14 +1551,8 @@
       }
     ],
     "spec_id": "SPEC-014",
-    "capability_ids": [
-      "C038"
-    ],
-    "original_check_ids": [
-      "ZN-0083-AC",
-      "ZN-0083-NEG",
-      "ZN-0083-BOUNDARY"
-    ],
+    "capability_ids": ["C038"],
+    "original_check_ids": ["ZN-0083-AC", "ZN-0083-NEG", "ZN-0083-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0083"
   },
@@ -2094,15 +1569,8 @@
       }
     ],
     "spec_id": "SPEC-014",
-    "capability_ids": [
-      "C037",
-      "C038"
-    ],
-    "original_check_ids": [
-      "ZN-0084-AC",
-      "ZN-0084-NEG",
-      "ZN-0084-BOUNDARY"
-    ],
+    "capability_ids": ["C037", "C038"],
+    "original_check_ids": ["ZN-0084-AC", "ZN-0084-NEG", "ZN-0084-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0084"
   },
@@ -2119,15 +1587,8 @@
       }
     ],
     "spec_id": "SPEC-014",
-    "capability_ids": [
-      "C039",
-      "C043"
-    ],
-    "original_check_ids": [
-      "ZN-0085-AC",
-      "ZN-0085-NEG",
-      "ZN-0085-BOUNDARY"
-    ],
+    "capability_ids": ["C039", "C043"],
+    "original_check_ids": ["ZN-0085-AC", "ZN-0085-NEG", "ZN-0085-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0085"
   },
@@ -2144,14 +1605,8 @@
       }
     ],
     "spec_id": "SPEC-014",
-    "capability_ids": [
-      "C040"
-    ],
-    "original_check_ids": [
-      "ZN-0086-AC",
-      "ZN-0086-NEG",
-      "ZN-0086-BOUNDARY"
-    ],
+    "capability_ids": ["C040"],
+    "original_check_ids": ["ZN-0086-AC", "ZN-0086-NEG", "ZN-0086-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0086"
   },
@@ -2168,15 +1623,8 @@
       }
     ],
     "spec_id": "SPEC-014",
-    "capability_ids": [
-      "C041",
-      "C042"
-    ],
-    "original_check_ids": [
-      "ZN-0087-AC",
-      "ZN-0087-NEG",
-      "ZN-0087-BOUNDARY"
-    ],
+    "capability_ids": ["C041", "C042"],
+    "original_check_ids": ["ZN-0087-AC", "ZN-0087-NEG", "ZN-0087-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0087"
   },
@@ -2193,17 +1641,8 @@
       }
     ],
     "spec_id": "SPEC-014",
-    "capability_ids": [
-      "C029",
-      "C034",
-      "C040",
-      "C043"
-    ],
-    "original_check_ids": [
-      "ZN-0088-AC",
-      "ZN-0088-NEG",
-      "ZN-0088-BOUNDARY"
-    ],
+    "capability_ids": ["C029", "C034", "C040", "C043"],
+    "original_check_ids": ["ZN-0088-AC", "ZN-0088-NEG", "ZN-0088-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0088"
   },
@@ -2228,15 +1667,8 @@
       }
     ],
     "spec_id": "SPEC-015",
-    "capability_ids": [
-      "C044",
-      "C022"
-    ],
-    "original_check_ids": [
-      "ZN-0089-AC",
-      "ZN-0089-NEG",
-      "ZN-0089-BOUNDARY"
-    ],
+    "capability_ids": ["C044", "C022"],
+    "original_check_ids": ["ZN-0089-AC", "ZN-0089-NEG", "ZN-0089-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0089"
   },
@@ -2253,14 +1685,8 @@
       }
     ],
     "spec_id": "SPEC-015",
-    "capability_ids": [
-      "C045"
-    ],
-    "original_check_ids": [
-      "ZN-0090-AC",
-      "ZN-0090-NEG",
-      "ZN-0090-BOUNDARY"
-    ],
+    "capability_ids": ["C045"],
+    "original_check_ids": ["ZN-0090-AC", "ZN-0090-NEG", "ZN-0090-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0090"
   },
@@ -2277,15 +1703,8 @@
       }
     ],
     "spec_id": "SPEC-015",
-    "capability_ids": [
-      "C047",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0091-AC",
-      "ZN-0091-NEG",
-      "ZN-0091-BOUNDARY"
-    ],
+    "capability_ids": ["C047", "C103"],
+    "original_check_ids": ["ZN-0091-AC", "ZN-0091-NEG", "ZN-0091-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0091"
   },
@@ -2302,15 +1721,8 @@
       }
     ],
     "spec_id": "SPEC-015",
-    "capability_ids": [
-      "C049",
-      "C106"
-    ],
-    "original_check_ids": [
-      "ZN-0092-AC",
-      "ZN-0092-NEG",
-      "ZN-0092-BOUNDARY"
-    ],
+    "capability_ids": ["C049", "C106"],
+    "original_check_ids": ["ZN-0092-AC", "ZN-0092-NEG", "ZN-0092-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0092"
   },
@@ -2327,15 +1739,8 @@
       }
     ],
     "spec_id": "SPEC-015",
-    "capability_ids": [
-      "C048",
-      "C050"
-    ],
-    "original_check_ids": [
-      "ZN-0093-AC",
-      "ZN-0093-NEG",
-      "ZN-0093-BOUNDARY"
-    ],
+    "capability_ids": ["C048", "C050"],
+    "original_check_ids": ["ZN-0093-AC", "ZN-0093-NEG", "ZN-0093-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0093"
   },
@@ -2352,14 +1757,8 @@
       }
     ],
     "spec_id": "SPEC-015",
-    "capability_ids": [
-      "C051"
-    ],
-    "original_check_ids": [
-      "ZN-0094-AC",
-      "ZN-0094-NEG",
-      "ZN-0094-BOUNDARY"
-    ],
+    "capability_ids": ["C051"],
+    "original_check_ids": ["ZN-0094-AC", "ZN-0094-NEG", "ZN-0094-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0094"
   },
@@ -2376,17 +1775,8 @@
       }
     ],
     "spec_id": "SPEC-015",
-    "capability_ids": [
-      "C044",
-      "C045",
-      "C047",
-      "C049"
-    ],
-    "original_check_ids": [
-      "ZN-0095-AC",
-      "ZN-0095-NEG",
-      "ZN-0095-BOUNDARY"
-    ],
+    "capability_ids": ["C044", "C045", "C047", "C049"],
+    "original_check_ids": ["ZN-0095-AC", "ZN-0095-NEG", "ZN-0095-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0095"
   },
@@ -2411,15 +1801,8 @@
       }
     ],
     "spec_id": "SPEC-016",
-    "capability_ids": [
-      "C030",
-      "C117"
-    ],
-    "original_check_ids": [
-      "ZN-0096-AC",
-      "ZN-0096-NEG",
-      "ZN-0096-BOUNDARY"
-    ],
+    "capability_ids": ["C030", "C117"],
+    "original_check_ids": ["ZN-0096-AC", "ZN-0096-NEG", "ZN-0096-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0096"
   },
@@ -2436,15 +1819,8 @@
       }
     ],
     "spec_id": "SPEC-016",
-    "capability_ids": [
-      "C130",
-      "C005"
-    ],
-    "original_check_ids": [
-      "ZN-0097-AC",
-      "ZN-0097-NEG",
-      "ZN-0097-BOUNDARY"
-    ],
+    "capability_ids": ["C130", "C005"],
+    "original_check_ids": ["ZN-0097-AC", "ZN-0097-NEG", "ZN-0097-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0097"
   },
@@ -2461,15 +1837,8 @@
       }
     ],
     "spec_id": "SPEC-016",
-    "capability_ids": [
-      "C131",
-      "C027"
-    ],
-    "original_check_ids": [
-      "ZN-0098-AC",
-      "ZN-0098-NEG",
-      "ZN-0098-BOUNDARY"
-    ],
+    "capability_ids": ["C131", "C027"],
+    "original_check_ids": ["ZN-0098-AC", "ZN-0098-NEG", "ZN-0098-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0098"
   },
@@ -2486,16 +1855,8 @@
       }
     ],
     "spec_id": "SPEC-016",
-    "capability_ids": [
-      "C130",
-      "C131",
-      "C099"
-    ],
-    "original_check_ids": [
-      "ZN-0099-AC",
-      "ZN-0099-NEG",
-      "ZN-0099-BOUNDARY"
-    ],
+    "capability_ids": ["C130", "C131", "C099"],
+    "original_check_ids": ["ZN-0099-AC", "ZN-0099-NEG", "ZN-0099-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0099"
   },
@@ -2512,17 +1873,8 @@
       }
     ],
     "spec_id": "SPEC-016",
-    "capability_ids": [
-      "C130",
-      "C131",
-      "C029",
-      "C036"
-    ],
-    "original_check_ids": [
-      "ZN-0100-AC",
-      "ZN-0100-NEG",
-      "ZN-0100-BOUNDARY"
-    ],
+    "capability_ids": ["C130", "C131", "C029", "C036"],
+    "original_check_ids": ["ZN-0100-AC", "ZN-0100-NEG", "ZN-0100-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0100"
   },
@@ -2547,15 +1899,8 @@
       }
     ],
     "spec_id": "SPEC-017",
-    "capability_ids": [
-      "C019",
-      "C022"
-    ],
-    "original_check_ids": [
-      "ZN-0101-AC",
-      "ZN-0101-NEG",
-      "ZN-0101-BOUNDARY"
-    ],
+    "capability_ids": ["C019", "C022"],
+    "original_check_ids": ["ZN-0101-AC", "ZN-0101-NEG", "ZN-0101-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0101"
   },
@@ -2572,15 +1917,8 @@
       }
     ],
     "spec_id": "SPEC-017",
-    "capability_ids": [
-      "C019",
-      "C036"
-    ],
-    "original_check_ids": [
-      "ZN-0102-AC",
-      "ZN-0102-NEG",
-      "ZN-0102-BOUNDARY"
-    ],
+    "capability_ids": ["C019", "C036"],
+    "original_check_ids": ["ZN-0102-AC", "ZN-0102-NEG", "ZN-0102-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0102"
   },
@@ -2597,16 +1935,8 @@
       }
     ],
     "spec_id": "SPEC-017",
-    "capability_ids": [
-      "C020",
-      "C029",
-      "C036"
-    ],
-    "original_check_ids": [
-      "ZN-0103-AC",
-      "ZN-0103-NEG",
-      "ZN-0103-BOUNDARY"
-    ],
+    "capability_ids": ["C020", "C029", "C036"],
+    "original_check_ids": ["ZN-0103-AC", "ZN-0103-NEG", "ZN-0103-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0103"
   },
@@ -2623,15 +1953,8 @@
       }
     ],
     "spec_id": "SPEC-017",
-    "capability_ids": [
-      "C019",
-      "C021"
-    ],
-    "original_check_ids": [
-      "ZN-0104-AC",
-      "ZN-0104-NEG",
-      "ZN-0104-BOUNDARY"
-    ],
+    "capability_ids": ["C019", "C021"],
+    "original_check_ids": ["ZN-0104-AC", "ZN-0104-NEG", "ZN-0104-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0104"
   },
@@ -2648,15 +1971,8 @@
       }
     ],
     "spec_id": "SPEC-017",
-    "capability_ids": [
-      "C022",
-      "C036"
-    ],
-    "original_check_ids": [
-      "ZN-0105-AC",
-      "ZN-0105-NEG",
-      "ZN-0105-BOUNDARY"
-    ],
+    "capability_ids": ["C022", "C036"],
+    "original_check_ids": ["ZN-0105-AC", "ZN-0105-NEG", "ZN-0105-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0105"
   },
@@ -2685,15 +2001,8 @@
       }
     ],
     "spec_id": "SPEC-018",
-    "capability_ids": [
-      "C055",
-      "C056"
-    ],
-    "original_check_ids": [
-      "ZN-0106-AC",
-      "ZN-0106-NEG",
-      "ZN-0106-BOUNDARY"
-    ],
+    "capability_ids": ["C055", "C056"],
+    "original_check_ids": ["ZN-0106-AC", "ZN-0106-NEG", "ZN-0106-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0106"
   },
@@ -2710,16 +2019,8 @@
       }
     ],
     "spec_id": "SPEC-018",
-    "capability_ids": [
-      "C054",
-      "C060",
-      "C052"
-    ],
-    "original_check_ids": [
-      "ZN-0107-AC",
-      "ZN-0107-NEG",
-      "ZN-0107-BOUNDARY"
-    ],
+    "capability_ids": ["C054", "C060", "C052"],
+    "original_check_ids": ["ZN-0107-AC", "ZN-0107-NEG", "ZN-0107-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0107"
   },
@@ -2736,15 +2037,8 @@
       }
     ],
     "spec_id": "SPEC-018",
-    "capability_ids": [
-      "C057",
-      "C085"
-    ],
-    "original_check_ids": [
-      "ZN-0108-AC",
-      "ZN-0108-NEG",
-      "ZN-0108-BOUNDARY"
-    ],
+    "capability_ids": ["C057", "C085"],
+    "original_check_ids": ["ZN-0108-AC", "ZN-0108-NEG", "ZN-0108-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0108"
   },
@@ -2761,15 +2055,8 @@
       }
     ],
     "spec_id": "SPEC-018",
-    "capability_ids": [
-      "C058",
-      "C059"
-    ],
-    "original_check_ids": [
-      "ZN-0109-AC",
-      "ZN-0109-NEG",
-      "ZN-0109-BOUNDARY"
-    ],
+    "capability_ids": ["C058", "C059"],
+    "original_check_ids": ["ZN-0109-AC", "ZN-0109-NEG", "ZN-0109-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0109"
   },
@@ -2786,16 +2073,8 @@
       }
     ],
     "spec_id": "SPEC-018",
-    "capability_ids": [
-      "C048",
-      "C054",
-      "C055"
-    ],
-    "original_check_ids": [
-      "ZN-0110-AC",
-      "ZN-0110-NEG",
-      "ZN-0110-BOUNDARY"
-    ],
+    "capability_ids": ["C048", "C054", "C055"],
+    "original_check_ids": ["ZN-0110-AC", "ZN-0110-NEG", "ZN-0110-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0110"
   },
@@ -2812,17 +2091,8 @@
       }
     ],
     "spec_id": "SPEC-018",
-    "capability_ids": [
-      "C055",
-      "C057",
-      "C058",
-      "C059"
-    ],
-    "original_check_ids": [
-      "ZN-0111-AC",
-      "ZN-0111-NEG",
-      "ZN-0111-BOUNDARY"
-    ],
+    "capability_ids": ["C055", "C057", "C058", "C059"],
+    "original_check_ids": ["ZN-0111-AC", "ZN-0111-NEG", "ZN-0111-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0111"
   },
@@ -2843,14 +2113,8 @@
       }
     ],
     "spec_id": "SPEC-019",
-    "capability_ids": [
-      "C061"
-    ],
-    "original_check_ids": [
-      "ZN-0112-AC",
-      "ZN-0112-NEG",
-      "ZN-0112-BOUNDARY"
-    ],
+    "capability_ids": ["C061"],
+    "original_check_ids": ["ZN-0112-AC", "ZN-0112-NEG", "ZN-0112-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0112"
   },
@@ -2867,14 +2131,8 @@
       }
     ],
     "spec_id": "SPEC-019",
-    "capability_ids": [
-      "C062"
-    ],
-    "original_check_ids": [
-      "ZN-0113-AC",
-      "ZN-0113-NEG",
-      "ZN-0113-BOUNDARY"
-    ],
+    "capability_ids": ["C062"],
+    "original_check_ids": ["ZN-0113-AC", "ZN-0113-NEG", "ZN-0113-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0113"
   },
@@ -2891,14 +2149,8 @@
       }
     ],
     "spec_id": "SPEC-019",
-    "capability_ids": [
-      "C062"
-    ],
-    "original_check_ids": [
-      "ZN-0114-AC",
-      "ZN-0114-NEG",
-      "ZN-0114-BOUNDARY"
-    ],
+    "capability_ids": ["C062"],
+    "original_check_ids": ["ZN-0114-AC", "ZN-0114-NEG", "ZN-0114-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0114"
   },
@@ -2915,14 +2167,8 @@
       }
     ],
     "spec_id": "SPEC-019",
-    "capability_ids": [
-      "C063"
-    ],
-    "original_check_ids": [
-      "ZN-0115-AC",
-      "ZN-0115-NEG",
-      "ZN-0115-BOUNDARY"
-    ],
+    "capability_ids": ["C063"],
+    "original_check_ids": ["ZN-0115-AC", "ZN-0115-NEG", "ZN-0115-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0115"
   },
@@ -2939,14 +2185,8 @@
       }
     ],
     "spec_id": "SPEC-019",
-    "capability_ids": [
-      "C064"
-    ],
-    "original_check_ids": [
-      "ZN-0116-AC",
-      "ZN-0116-NEG",
-      "ZN-0116-BOUNDARY"
-    ],
+    "capability_ids": ["C064"],
+    "original_check_ids": ["ZN-0116-AC", "ZN-0116-NEG", "ZN-0116-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0116"
   },
@@ -2963,18 +2203,8 @@
       }
     ],
     "spec_id": "SPEC-019",
-    "capability_ids": [
-      "C021",
-      "C061",
-      "C062",
-      "C063",
-      "C064"
-    ],
-    "original_check_ids": [
-      "ZN-0117-AC",
-      "ZN-0117-NEG",
-      "ZN-0117-BOUNDARY"
-    ],
+    "capability_ids": ["C021", "C061", "C062", "C063", "C064"],
+    "original_check_ids": ["ZN-0117-AC", "ZN-0117-NEG", "ZN-0117-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0117"
   },
@@ -2999,14 +2229,8 @@
       }
     ],
     "spec_id": "SPEC-020",
-    "capability_ids": [
-      "C074"
-    ],
-    "original_check_ids": [
-      "ZN-0118-AC",
-      "ZN-0118-NEG",
-      "ZN-0118-BOUNDARY"
-    ],
+    "capability_ids": ["C074"],
+    "original_check_ids": ["ZN-0118-AC", "ZN-0118-NEG", "ZN-0118-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0118"
   },
@@ -3023,15 +2247,8 @@
       }
     ],
     "spec_id": "SPEC-020",
-    "capability_ids": [
-      "C074",
-      "C075"
-    ],
-    "original_check_ids": [
-      "ZN-0119-AC",
-      "ZN-0119-NEG",
-      "ZN-0119-BOUNDARY"
-    ],
+    "capability_ids": ["C074", "C075"],
+    "original_check_ids": ["ZN-0119-AC", "ZN-0119-NEG", "ZN-0119-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0119"
   },
@@ -3048,14 +2265,8 @@
       }
     ],
     "spec_id": "SPEC-020",
-    "capability_ids": [
-      "C076"
-    ],
-    "original_check_ids": [
-      "ZN-0120-AC",
-      "ZN-0120-NEG",
-      "ZN-0120-BOUNDARY"
-    ],
+    "capability_ids": ["C076"],
+    "original_check_ids": ["ZN-0120-AC", "ZN-0120-NEG", "ZN-0120-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0120"
   },
@@ -3072,15 +2283,8 @@
       }
     ],
     "spec_id": "SPEC-020",
-    "capability_ids": [
-      "C076",
-      "C088"
-    ],
-    "original_check_ids": [
-      "ZN-0121-AC",
-      "ZN-0121-NEG",
-      "ZN-0121-BOUNDARY"
-    ],
+    "capability_ids": ["C076", "C088"],
+    "original_check_ids": ["ZN-0121-AC", "ZN-0121-NEG", "ZN-0121-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0121"
   },
@@ -3097,15 +2301,8 @@
       }
     ],
     "spec_id": "SPEC-020",
-    "capability_ids": [
-      "C074",
-      "C076"
-    ],
-    "original_check_ids": [
-      "ZN-0122-AC",
-      "ZN-0122-NEG",
-      "ZN-0122-BOUNDARY"
-    ],
+    "capability_ids": ["C074", "C076"],
+    "original_check_ids": ["ZN-0122-AC", "ZN-0122-NEG", "ZN-0122-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0122"
   },
@@ -3122,15 +2319,8 @@
       }
     ],
     "spec_id": "SPEC-020",
-    "capability_ids": [
-      "C075",
-      "C076"
-    ],
-    "original_check_ids": [
-      "ZN-0123-AC",
-      "ZN-0123-NEG",
-      "ZN-0123-BOUNDARY"
-    ],
+    "capability_ids": ["C075", "C076"],
+    "original_check_ids": ["ZN-0123-AC", "ZN-0123-NEG", "ZN-0123-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0123"
   },
@@ -3159,15 +2349,8 @@
       }
     ],
     "spec_id": "SPEC-021",
-    "capability_ids": [
-      "C132",
-      "C055"
-    ],
-    "original_check_ids": [
-      "ZN-0124-AC",
-      "ZN-0124-NEG",
-      "ZN-0124-BOUNDARY"
-    ],
+    "capability_ids": ["C132", "C055"],
+    "original_check_ids": ["ZN-0124-AC", "ZN-0124-NEG", "ZN-0124-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0124"
   },
@@ -3184,14 +2367,8 @@
       }
     ],
     "spec_id": "SPEC-021",
-    "capability_ids": [
-      "C132"
-    ],
-    "original_check_ids": [
-      "ZN-0125-AC",
-      "ZN-0125-NEG",
-      "ZN-0125-BOUNDARY"
-    ],
+    "capability_ids": ["C132"],
+    "original_check_ids": ["ZN-0125-AC", "ZN-0125-NEG", "ZN-0125-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0125"
   },
@@ -3208,15 +2385,8 @@
       }
     ],
     "spec_id": "SPEC-021",
-    "capability_ids": [
-      "C132",
-      "C068"
-    ],
-    "original_check_ids": [
-      "ZN-0126-AC",
-      "ZN-0126-NEG",
-      "ZN-0126-BOUNDARY"
-    ],
+    "capability_ids": ["C132", "C068"],
+    "original_check_ids": ["ZN-0126-AC", "ZN-0126-NEG", "ZN-0126-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0126"
   },
@@ -3233,16 +2403,8 @@
       }
     ],
     "spec_id": "SPEC-021",
-    "capability_ids": [
-      "C132",
-      "C058",
-      "C059"
-    ],
-    "original_check_ids": [
-      "ZN-0127-AC",
-      "ZN-0127-NEG",
-      "ZN-0127-BOUNDARY"
-    ],
+    "capability_ids": ["C132", "C058", "C059"],
+    "original_check_ids": ["ZN-0127-AC", "ZN-0127-NEG", "ZN-0127-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0127"
   },
@@ -3259,14 +2421,8 @@
       }
     ],
     "spec_id": "SPEC-021",
-    "capability_ids": [
-      "C132"
-    ],
-    "original_check_ids": [
-      "ZN-0128-AC",
-      "ZN-0128-NEG",
-      "ZN-0128-BOUNDARY"
-    ],
+    "capability_ids": ["C132"],
+    "original_check_ids": ["ZN-0128-AC", "ZN-0128-NEG", "ZN-0128-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0128"
   },
@@ -3291,15 +2447,8 @@
       }
     ],
     "spec_id": "SPEC-022",
-    "capability_ids": [
-      "C065",
-      "C068"
-    ],
-    "original_check_ids": [
-      "ZN-0129-AC",
-      "ZN-0129-NEG",
-      "ZN-0129-BOUNDARY"
-    ],
+    "capability_ids": ["C065", "C068"],
+    "original_check_ids": ["ZN-0129-AC", "ZN-0129-NEG", "ZN-0129-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0129"
   },
@@ -3316,15 +2465,8 @@
       }
     ],
     "spec_id": "SPEC-022",
-    "capability_ids": [
-      "C065",
-      "C072"
-    ],
-    "original_check_ids": [
-      "ZN-0130-AC",
-      "ZN-0130-NEG",
-      "ZN-0130-BOUNDARY"
-    ],
+    "capability_ids": ["C065", "C072"],
+    "original_check_ids": ["ZN-0130-AC", "ZN-0130-NEG", "ZN-0130-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0130"
   },
@@ -3341,14 +2483,8 @@
       }
     ],
     "spec_id": "SPEC-022",
-    "capability_ids": [
-      "C066"
-    ],
-    "original_check_ids": [
-      "ZN-0131-AC",
-      "ZN-0131-NEG",
-      "ZN-0131-BOUNDARY"
-    ],
+    "capability_ids": ["C066"],
+    "original_check_ids": ["ZN-0131-AC", "ZN-0131-NEG", "ZN-0131-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0131"
   },
@@ -3365,15 +2501,8 @@
       }
     ],
     "spec_id": "SPEC-022",
-    "capability_ids": [
-      "C067",
-      "C069"
-    ],
-    "original_check_ids": [
-      "ZN-0132-AC",
-      "ZN-0132-NEG",
-      "ZN-0132-BOUNDARY"
-    ],
+    "capability_ids": ["C067", "C069"],
+    "original_check_ids": ["ZN-0132-AC", "ZN-0132-NEG", "ZN-0132-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0132"
   },
@@ -3390,16 +2519,8 @@
       }
     ],
     "spec_id": "SPEC-022",
-    "capability_ids": [
-      "C065",
-      "C066",
-      "C099"
-    ],
-    "original_check_ids": [
-      "ZN-0133-AC",
-      "ZN-0133-NEG",
-      "ZN-0133-BOUNDARY"
-    ],
+    "capability_ids": ["C065", "C066", "C099"],
+    "original_check_ids": ["ZN-0133-AC", "ZN-0133-NEG", "ZN-0133-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0133"
   },
@@ -3416,16 +2537,8 @@
       }
     ],
     "spec_id": "SPEC-022",
-    "capability_ids": [
-      "C065",
-      "C067",
-      "C068"
-    ],
-    "original_check_ids": [
-      "ZN-0134-AC",
-      "ZN-0134-NEG",
-      "ZN-0134-BOUNDARY"
-    ],
+    "capability_ids": ["C065", "C067", "C068"],
+    "original_check_ids": ["ZN-0134-AC", "ZN-0134-NEG", "ZN-0134-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0134"
   },
@@ -3446,15 +2559,8 @@
       }
     ],
     "spec_id": "SPEC-023",
-    "capability_ids": [
-      "C069",
-      "C070"
-    ],
-    "original_check_ids": [
-      "ZN-0135-AC",
-      "ZN-0135-NEG",
-      "ZN-0135-BOUNDARY"
-    ],
+    "capability_ids": ["C069", "C070"],
+    "original_check_ids": ["ZN-0135-AC", "ZN-0135-NEG", "ZN-0135-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0135"
   },
@@ -3471,15 +2577,8 @@
       }
     ],
     "spec_id": "SPEC-023",
-    "capability_ids": [
-      "C069",
-      "C072"
-    ],
-    "original_check_ids": [
-      "ZN-0136-AC",
-      "ZN-0136-NEG",
-      "ZN-0136-BOUNDARY"
-    ],
+    "capability_ids": ["C069", "C072"],
+    "original_check_ids": ["ZN-0136-AC", "ZN-0136-NEG", "ZN-0136-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0136"
   },
@@ -3496,15 +2595,8 @@
       }
     ],
     "spec_id": "SPEC-023",
-    "capability_ids": [
-      "C070",
-      "C071"
-    ],
-    "original_check_ids": [
-      "ZN-0137-AC",
-      "ZN-0137-NEG",
-      "ZN-0137-BOUNDARY"
-    ],
+    "capability_ids": ["C070", "C071"],
+    "original_check_ids": ["ZN-0137-AC", "ZN-0137-NEG", "ZN-0137-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0137"
   },
@@ -3521,15 +2613,8 @@
       }
     ],
     "spec_id": "SPEC-023",
-    "capability_ids": [
-      "C070",
-      "C071"
-    ],
-    "original_check_ids": [
-      "ZN-0138-AC",
-      "ZN-0138-NEG",
-      "ZN-0138-BOUNDARY"
-    ],
+    "capability_ids": ["C070", "C071"],
+    "original_check_ids": ["ZN-0138-AC", "ZN-0138-NEG", "ZN-0138-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0138"
   },
@@ -3546,14 +2631,8 @@
       }
     ],
     "spec_id": "SPEC-023",
-    "capability_ids": [
-      "C072"
-    ],
-    "original_check_ids": [
-      "ZN-0139-AC",
-      "ZN-0139-NEG",
-      "ZN-0139-BOUNDARY"
-    ],
+    "capability_ids": ["C072"],
+    "original_check_ids": ["ZN-0139-AC", "ZN-0139-NEG", "ZN-0139-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0139"
   },
@@ -3570,17 +2649,8 @@
       }
     ],
     "spec_id": "SPEC-023",
-    "capability_ids": [
-      "C069",
-      "C070",
-      "C071",
-      "C072"
-    ],
-    "original_check_ids": [
-      "ZN-0140-AC",
-      "ZN-0140-NEG",
-      "ZN-0140-BOUNDARY"
-    ],
+    "capability_ids": ["C069", "C070", "C071", "C072"],
+    "original_check_ids": ["ZN-0140-AC", "ZN-0140-NEG", "ZN-0140-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0140"
   },
@@ -3605,15 +2675,8 @@
       }
     ],
     "spec_id": "SPEC-024",
-    "capability_ids": [
-      "C073",
-      "C080"
-    ],
-    "original_check_ids": [
-      "ZN-0141-AC",
-      "ZN-0141-NEG",
-      "ZN-0141-BOUNDARY"
-    ],
+    "capability_ids": ["C073", "C080"],
+    "original_check_ids": ["ZN-0141-AC", "ZN-0141-NEG", "ZN-0141-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0141"
   },
@@ -3630,15 +2693,8 @@
       }
     ],
     "spec_id": "SPEC-024",
-    "capability_ids": [
-      "C077",
-      "C079"
-    ],
-    "original_check_ids": [
-      "ZN-0142-AC",
-      "ZN-0142-NEG",
-      "ZN-0142-BOUNDARY"
-    ],
+    "capability_ids": ["C077", "C079"],
+    "original_check_ids": ["ZN-0142-AC", "ZN-0142-NEG", "ZN-0142-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0142"
   },
@@ -3655,14 +2711,8 @@
       }
     ],
     "spec_id": "SPEC-024",
-    "capability_ids": [
-      "C078"
-    ],
-    "original_check_ids": [
-      "ZN-0143-AC",
-      "ZN-0143-NEG",
-      "ZN-0143-BOUNDARY"
-    ],
+    "capability_ids": ["C078"],
+    "original_check_ids": ["ZN-0143-AC", "ZN-0143-NEG", "ZN-0143-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0143"
   },
@@ -3679,16 +2729,8 @@
       }
     ],
     "spec_id": "SPEC-024",
-    "capability_ids": [
-      "C079",
-      "C080",
-      "C072"
-    ],
-    "original_check_ids": [
-      "ZN-0144-AC",
-      "ZN-0144-NEG",
-      "ZN-0144-BOUNDARY"
-    ],
+    "capability_ids": ["C079", "C080", "C072"],
+    "original_check_ids": ["ZN-0144-AC", "ZN-0144-NEG", "ZN-0144-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0144"
   },
@@ -3709,17 +2751,8 @@
       }
     ],
     "spec_id": "SPEC-024",
-    "capability_ids": [
-      "C130",
-      "C131",
-      "C132",
-      "C077"
-    ],
-    "original_check_ids": [
-      "ZN-0145-AC",
-      "ZN-0145-NEG",
-      "ZN-0145-BOUNDARY"
-    ],
+    "capability_ids": ["C130", "C131", "C132", "C077"],
+    "original_check_ids": ["ZN-0145-AC", "ZN-0145-NEG", "ZN-0145-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0145"
   },
@@ -3736,18 +2769,8 @@
       }
     ],
     "spec_id": "SPEC-024",
-    "capability_ids": [
-      "C073",
-      "C077",
-      "C078",
-      "C079",
-      "C080"
-    ],
-    "original_check_ids": [
-      "ZN-0146-AC",
-      "ZN-0146-NEG",
-      "ZN-0146-BOUNDARY"
-    ],
+    "capability_ids": ["C073", "C077", "C078", "C079", "C080"],
+    "original_check_ids": ["ZN-0146-AC", "ZN-0146-NEG", "ZN-0146-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0146"
   },
@@ -3768,15 +2791,8 @@
       }
     ],
     "spec_id": "SPEC-025",
-    "capability_ids": [
-      "C081",
-      "C085"
-    ],
-    "original_check_ids": [
-      "ZN-0147-AC",
-      "ZN-0147-NEG",
-      "ZN-0147-BOUNDARY"
-    ],
+    "capability_ids": ["C081", "C085"],
+    "original_check_ids": ["ZN-0147-AC", "ZN-0147-NEG", "ZN-0147-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0147"
   },
@@ -3793,15 +2809,8 @@
       }
     ],
     "spec_id": "SPEC-025",
-    "capability_ids": [
-      "C082",
-      "C058"
-    ],
-    "original_check_ids": [
-      "ZN-0148-AC",
-      "ZN-0148-NEG",
-      "ZN-0148-BOUNDARY"
-    ],
+    "capability_ids": ["C082", "C058"],
+    "original_check_ids": ["ZN-0148-AC", "ZN-0148-NEG", "ZN-0148-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0148"
   },
@@ -3818,15 +2827,8 @@
       }
     ],
     "spec_id": "SPEC-025",
-    "capability_ids": [
-      "C081",
-      "C083"
-    ],
-    "original_check_ids": [
-      "ZN-0149-AC",
-      "ZN-0149-NEG",
-      "ZN-0149-BOUNDARY"
-    ],
+    "capability_ids": ["C081", "C083"],
+    "original_check_ids": ["ZN-0149-AC", "ZN-0149-NEG", "ZN-0149-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0149"
   },
@@ -3843,14 +2845,8 @@
       }
     ],
     "spec_id": "SPEC-025",
-    "capability_ids": [
-      "C084"
-    ],
-    "original_check_ids": [
-      "ZN-0150-AC",
-      "ZN-0150-NEG",
-      "ZN-0150-BOUNDARY"
-    ],
+    "capability_ids": ["C084"],
+    "original_check_ids": ["ZN-0150-AC", "ZN-0150-NEG", "ZN-0150-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0150"
   },
@@ -3867,15 +2863,8 @@
       }
     ],
     "spec_id": "SPEC-025",
-    "capability_ids": [
-      "C086",
-      "C080"
-    ],
-    "original_check_ids": [
-      "ZN-0151-AC",
-      "ZN-0151-NEG",
-      "ZN-0151-BOUNDARY"
-    ],
+    "capability_ids": ["C086", "C080"],
+    "original_check_ids": ["ZN-0151-AC", "ZN-0151-NEG", "ZN-0151-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0151"
   },
@@ -3892,19 +2881,8 @@
       }
     ],
     "spec_id": "SPEC-025",
-    "capability_ids": [
-      "C081",
-      "C082",
-      "C083",
-      "C084",
-      "C085",
-      "C086"
-    ],
-    "original_check_ids": [
-      "ZN-0152-AC",
-      "ZN-0152-NEG",
-      "ZN-0152-BOUNDARY"
-    ],
+    "capability_ids": ["C081", "C082", "C083", "C084", "C085", "C086"],
+    "original_check_ids": ["ZN-0152-AC", "ZN-0152-NEG", "ZN-0152-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0152"
   },
@@ -3929,15 +2907,8 @@
       }
     ],
     "spec_id": "SPEC-026",
-    "capability_ids": [
-      "C094",
-      "C099"
-    ],
-    "original_check_ids": [
-      "ZN-0153-AC",
-      "ZN-0153-NEG",
-      "ZN-0153-BOUNDARY"
-    ],
+    "capability_ids": ["C094", "C099"],
+    "original_check_ids": ["ZN-0153-AC", "ZN-0153-NEG", "ZN-0153-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0153"
   },
@@ -3954,15 +2925,8 @@
       }
     ],
     "spec_id": "SPEC-026",
-    "capability_ids": [
-      "C095",
-      "C099"
-    ],
-    "original_check_ids": [
-      "ZN-0154-AC",
-      "ZN-0154-NEG",
-      "ZN-0154-BOUNDARY"
-    ],
+    "capability_ids": ["C095", "C099"],
+    "original_check_ids": ["ZN-0154-AC", "ZN-0154-NEG", "ZN-0154-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0154"
   },
@@ -3979,15 +2943,8 @@
       }
     ],
     "spec_id": "SPEC-026",
-    "capability_ids": [
-      "C098",
-      "C097"
-    ],
-    "original_check_ids": [
-      "ZN-0155-AC",
-      "ZN-0155-NEG",
-      "ZN-0155-BOUNDARY"
-    ],
+    "capability_ids": ["C098", "C097"],
+    "original_check_ids": ["ZN-0155-AC", "ZN-0155-NEG", "ZN-0155-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0155"
   },
@@ -4004,15 +2961,8 @@
       }
     ],
     "spec_id": "SPEC-026",
-    "capability_ids": [
-      "C096",
-      "C097"
-    ],
-    "original_check_ids": [
-      "ZN-0156-AC",
-      "ZN-0156-NEG",
-      "ZN-0156-BOUNDARY"
-    ],
+    "capability_ids": ["C096", "C097"],
+    "original_check_ids": ["ZN-0156-AC", "ZN-0156-NEG", "ZN-0156-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0156"
   },
@@ -4029,15 +2979,8 @@
       }
     ],
     "spec_id": "SPEC-026",
-    "capability_ids": [
-      "C093",
-      "C094"
-    ],
-    "original_check_ids": [
-      "ZN-0157-AC",
-      "ZN-0157-NEG",
-      "ZN-0157-BOUNDARY"
-    ],
+    "capability_ids": ["C093", "C094"],
+    "original_check_ids": ["ZN-0157-AC", "ZN-0157-NEG", "ZN-0157-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0157"
   },
@@ -4058,19 +3001,8 @@
       }
     ],
     "spec_id": "SPEC-026",
-    "capability_ids": [
-      "C094",
-      "C095",
-      "C096",
-      "C097",
-      "C098",
-      "C099"
-    ],
-    "original_check_ids": [
-      "ZN-0158-AC",
-      "ZN-0158-NEG",
-      "ZN-0158-BOUNDARY"
-    ],
+    "capability_ids": ["C094", "C095", "C096", "C097", "C098", "C099"],
+    "original_check_ids": ["ZN-0158-AC", "ZN-0158-NEG", "ZN-0158-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0158"
   },
@@ -4095,14 +3027,8 @@
       }
     ],
     "spec_id": "SPEC-027",
-    "capability_ids": [
-      "C012"
-    ],
-    "original_check_ids": [
-      "ZN-0159-AC",
-      "ZN-0159-NEG",
-      "ZN-0159-BOUNDARY"
-    ],
+    "capability_ids": ["C012"],
+    "original_check_ids": ["ZN-0159-AC", "ZN-0159-NEG", "ZN-0159-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0159"
   },
@@ -4119,15 +3045,8 @@
       }
     ],
     "spec_id": "SPEC-027",
-    "capability_ids": [
-      "C009",
-      "C012"
-    ],
-    "original_check_ids": [
-      "ZN-0160-AC",
-      "ZN-0160-NEG",
-      "ZN-0160-BOUNDARY"
-    ],
+    "capability_ids": ["C009", "C012"],
+    "original_check_ids": ["ZN-0160-AC", "ZN-0160-NEG", "ZN-0160-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0160"
   },
@@ -4144,15 +3063,8 @@
       }
     ],
     "spec_id": "SPEC-027",
-    "capability_ids": [
-      "C010",
-      "C013"
-    ],
-    "original_check_ids": [
-      "ZN-0161-AC",
-      "ZN-0161-NEG",
-      "ZN-0161-BOUNDARY"
-    ],
+    "capability_ids": ["C010", "C013"],
+    "original_check_ids": ["ZN-0161-AC", "ZN-0161-NEG", "ZN-0161-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0161"
   },
@@ -4173,15 +3085,8 @@
       }
     ],
     "spec_id": "SPEC-027",
-    "capability_ids": [
-      "C011",
-      "C057"
-    ],
-    "original_check_ids": [
-      "ZN-0162-AC",
-      "ZN-0162-NEG",
-      "ZN-0162-BOUNDARY"
-    ],
+    "capability_ids": ["C011", "C057"],
+    "original_check_ids": ["ZN-0162-AC", "ZN-0162-NEG", "ZN-0162-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0162"
   },
@@ -4198,18 +3103,8 @@
       }
     ],
     "spec_id": "SPEC-027",
-    "capability_ids": [
-      "C009",
-      "C010",
-      "C011",
-      "C012",
-      "C013"
-    ],
-    "original_check_ids": [
-      "ZN-0163-AC",
-      "ZN-0163-NEG",
-      "ZN-0163-BOUNDARY"
-    ],
+    "capability_ids": ["C009", "C010", "C011", "C012", "C013"],
+    "original_check_ids": ["ZN-0163-AC", "ZN-0163-NEG", "ZN-0163-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0163"
   },
@@ -4234,14 +3129,8 @@
       }
     ],
     "spec_id": "SPEC-028",
-    "capability_ids": [
-      "C091"
-    ],
-    "original_check_ids": [
-      "ZN-0164-AC",
-      "ZN-0164-NEG",
-      "ZN-0164-BOUNDARY"
-    ],
+    "capability_ids": ["C091"],
+    "original_check_ids": ["ZN-0164-AC", "ZN-0164-NEG", "ZN-0164-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0164"
   },
@@ -4258,14 +3147,8 @@
       }
     ],
     "spec_id": "SPEC-028",
-    "capability_ids": [
-      "C092"
-    ],
-    "original_check_ids": [
-      "ZN-0165-AC",
-      "ZN-0165-NEG",
-      "ZN-0165-BOUNDARY"
-    ],
+    "capability_ids": ["C092"],
+    "original_check_ids": ["ZN-0165-AC", "ZN-0165-NEG", "ZN-0165-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0165"
   },
@@ -4282,15 +3165,8 @@
       }
     ],
     "spec_id": "SPEC-028",
-    "capability_ids": [
-      "C093",
-      "C059"
-    ],
-    "original_check_ids": [
-      "ZN-0166-AC",
-      "ZN-0166-NEG",
-      "ZN-0166-BOUNDARY"
-    ],
+    "capability_ids": ["C093", "C059"],
+    "original_check_ids": ["ZN-0166-AC", "ZN-0166-NEG", "ZN-0166-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0166"
   },
@@ -4307,17 +3183,8 @@
       }
     ],
     "spec_id": "SPEC-028",
-    "capability_ids": [
-      "C090",
-      "C091",
-      "C092",
-      "C093"
-    ],
-    "original_check_ids": [
-      "ZN-0167-AC",
-      "ZN-0167-NEG",
-      "ZN-0167-BOUNDARY"
-    ],
+    "capability_ids": ["C090", "C091", "C092", "C093"],
+    "original_check_ids": ["ZN-0167-AC", "ZN-0167-NEG", "ZN-0167-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0167"
   },
@@ -4334,16 +3201,8 @@
       }
     ],
     "spec_id": "SPEC-028",
-    "capability_ids": [
-      "C091",
-      "C092",
-      "C093"
-    ],
-    "original_check_ids": [
-      "ZN-0168-AC",
-      "ZN-0168-NEG",
-      "ZN-0168-BOUNDARY"
-    ],
+    "capability_ids": ["C091", "C092", "C093"],
+    "original_check_ids": ["ZN-0168-AC", "ZN-0168-NEG", "ZN-0168-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0168"
   },
@@ -4368,15 +3227,8 @@
       }
     ],
     "spec_id": "SPEC-029",
-    "capability_ids": [
-      "C100",
-      "C104"
-    ],
-    "original_check_ids": [
-      "ZN-0169-AC",
-      "ZN-0169-NEG",
-      "ZN-0169-BOUNDARY"
-    ],
+    "capability_ids": ["C100", "C104"],
+    "original_check_ids": ["ZN-0169-AC", "ZN-0169-NEG", "ZN-0169-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0169"
   },
@@ -4393,15 +3245,8 @@
       }
     ],
     "spec_id": "SPEC-029",
-    "capability_ids": [
-      "C100",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0170-AC",
-      "ZN-0170-NEG",
-      "ZN-0170-BOUNDARY"
-    ],
+    "capability_ids": ["C100", "C103"],
+    "original_check_ids": ["ZN-0170-AC", "ZN-0170-NEG", "ZN-0170-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0170"
   },
@@ -4418,15 +3263,8 @@
       }
     ],
     "spec_id": "SPEC-029",
-    "capability_ids": [
-      "C105",
-      "C102"
-    ],
-    "original_check_ids": [
-      "ZN-0171-AC",
-      "ZN-0171-NEG",
-      "ZN-0171-BOUNDARY"
-    ],
+    "capability_ids": ["C105", "C102"],
+    "original_check_ids": ["ZN-0171-AC", "ZN-0171-NEG", "ZN-0171-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0171"
   },
@@ -4443,14 +3281,8 @@
       }
     ],
     "spec_id": "SPEC-029",
-    "capability_ids": [
-      "C104"
-    ],
-    "original_check_ids": [
-      "ZN-0172-AC",
-      "ZN-0172-NEG",
-      "ZN-0172-BOUNDARY"
-    ],
+    "capability_ids": ["C104"],
+    "original_check_ids": ["ZN-0172-AC", "ZN-0172-NEG", "ZN-0172-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0172"
   },
@@ -4467,16 +3299,8 @@
       }
     ],
     "spec_id": "SPEC-029",
-    "capability_ids": [
-      "C100",
-      "C104",
-      "C105"
-    ],
-    "original_check_ids": [
-      "ZN-0173-AC",
-      "ZN-0173-NEG",
-      "ZN-0173-BOUNDARY"
-    ],
+    "capability_ids": ["C100", "C104", "C105"],
+    "original_check_ids": ["ZN-0173-AC", "ZN-0173-NEG", "ZN-0173-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0173"
   },
@@ -4501,14 +3325,8 @@
       }
     ],
     "spec_id": "SPEC-030",
-    "capability_ids": [
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0174-AC",
-      "ZN-0174-NEG",
-      "ZN-0174-BOUNDARY"
-    ],
+    "capability_ids": ["C103"],
+    "original_check_ids": ["ZN-0174-AC", "ZN-0174-NEG", "ZN-0174-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0174"
   },
@@ -4525,14 +3343,8 @@
       }
     ],
     "spec_id": "SPEC-030",
-    "capability_ids": [
-      "C102"
-    ],
-    "original_check_ids": [
-      "ZN-0175-AC",
-      "ZN-0175-NEG",
-      "ZN-0175-BOUNDARY"
-    ],
+    "capability_ids": ["C102"],
+    "original_check_ids": ["ZN-0175-AC", "ZN-0175-NEG", "ZN-0175-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0175"
   },
@@ -4549,14 +3361,8 @@
       }
     ],
     "spec_id": "SPEC-030",
-    "capability_ids": [
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0176-AC",
-      "ZN-0176-NEG",
-      "ZN-0176-BOUNDARY"
-    ],
+    "capability_ids": ["C103"],
+    "original_check_ids": ["ZN-0176-AC", "ZN-0176-NEG", "ZN-0176-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0176"
   },
@@ -4573,14 +3379,8 @@
       }
     ],
     "spec_id": "SPEC-030",
-    "capability_ids": [
-      "C101"
-    ],
-    "original_check_ids": [
-      "ZN-0177-AC",
-      "ZN-0177-NEG",
-      "ZN-0177-BOUNDARY"
-    ],
+    "capability_ids": ["C101"],
+    "original_check_ids": ["ZN-0177-AC", "ZN-0177-NEG", "ZN-0177-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0177"
   },
@@ -4597,15 +3397,8 @@
       }
     ],
     "spec_id": "SPEC-030",
-    "capability_ids": [
-      "C102",
-      "C104"
-    ],
-    "original_check_ids": [
-      "ZN-0178-AC",
-      "ZN-0178-NEG",
-      "ZN-0178-BOUNDARY"
-    ],
+    "capability_ids": ["C102", "C104"],
+    "original_check_ids": ["ZN-0178-AC", "ZN-0178-NEG", "ZN-0178-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0178"
   },
@@ -4622,18 +3415,8 @@
       }
     ],
     "spec_id": "SPEC-030",
-    "capability_ids": [
-      "C100",
-      "C101",
-      "C102",
-      "C103",
-      "C104"
-    ],
-    "original_check_ids": [
-      "ZN-0179-AC",
-      "ZN-0179-NEG",
-      "ZN-0179-BOUNDARY"
-    ],
+    "capability_ids": ["C100", "C101", "C102", "C103", "C104"],
+    "original_check_ids": ["ZN-0179-AC", "ZN-0179-NEG", "ZN-0179-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0179"
   },
@@ -4658,14 +3441,8 @@
       }
     ],
     "spec_id": "SPEC-031",
-    "capability_ids": [
-      "C111"
-    ],
-    "original_check_ids": [
-      "ZN-0180-AC",
-      "ZN-0180-NEG",
-      "ZN-0180-BOUNDARY"
-    ],
+    "capability_ids": ["C111"],
+    "original_check_ids": ["ZN-0180-AC", "ZN-0180-NEG", "ZN-0180-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0180"
   },
@@ -4682,15 +3459,8 @@
       }
     ],
     "spec_id": "SPEC-031",
-    "capability_ids": [
-      "C111",
-      "C112"
-    ],
-    "original_check_ids": [
-      "ZN-0181-AC",
-      "ZN-0181-NEG",
-      "ZN-0181-BOUNDARY"
-    ],
+    "capability_ids": ["C111", "C112"],
+    "original_check_ids": ["ZN-0181-AC", "ZN-0181-NEG", "ZN-0181-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0181"
   },
@@ -4707,14 +3477,8 @@
       }
     ],
     "spec_id": "SPEC-031",
-    "capability_ids": [
-      "C112"
-    ],
-    "original_check_ids": [
-      "ZN-0182-AC",
-      "ZN-0182-NEG",
-      "ZN-0182-BOUNDARY"
-    ],
+    "capability_ids": ["C112"],
+    "original_check_ids": ["ZN-0182-AC", "ZN-0182-NEG", "ZN-0182-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0182"
   },
@@ -4731,14 +3495,8 @@
       }
     ],
     "spec_id": "SPEC-031",
-    "capability_ids": [
-      "C112"
-    ],
-    "original_check_ids": [
-      "ZN-0183-AC",
-      "ZN-0183-NEG",
-      "ZN-0183-BOUNDARY"
-    ],
+    "capability_ids": ["C112"],
+    "original_check_ids": ["ZN-0183-AC", "ZN-0183-NEG", "ZN-0183-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0183"
   },
@@ -4755,16 +3513,8 @@
       }
     ],
     "spec_id": "SPEC-031",
-    "capability_ids": [
-      "C028",
-      "C111",
-      "C112"
-    ],
-    "original_check_ids": [
-      "ZN-0184-AC",
-      "ZN-0184-NEG",
-      "ZN-0184-BOUNDARY"
-    ],
+    "capability_ids": ["C028", "C111", "C112"],
+    "original_check_ids": ["ZN-0184-AC", "ZN-0184-NEG", "ZN-0184-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0184"
   },
@@ -4781,16 +3531,8 @@
       }
     ],
     "spec_id": "SPEC-031",
-    "capability_ids": [
-      "C111",
-      "C112",
-      "C062"
-    ],
-    "original_check_ids": [
-      "ZN-0185-AC",
-      "ZN-0185-NEG",
-      "ZN-0185-BOUNDARY"
-    ],
+    "capability_ids": ["C111", "C112", "C062"],
+    "original_check_ids": ["ZN-0185-AC", "ZN-0185-NEG", "ZN-0185-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0185"
   },
@@ -4815,15 +3557,8 @@
       }
     ],
     "spec_id": "SPEC-032",
-    "capability_ids": [
-      "C106",
-      "C109"
-    ],
-    "original_check_ids": [
-      "ZN-0186-AC",
-      "ZN-0186-NEG",
-      "ZN-0186-BOUNDARY"
-    ],
+    "capability_ids": ["C106", "C109"],
+    "original_check_ids": ["ZN-0186-AC", "ZN-0186-NEG", "ZN-0186-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0186"
   },
@@ -4840,14 +3575,8 @@
       }
     ],
     "spec_id": "SPEC-032",
-    "capability_ids": [
-      "C106"
-    ],
-    "original_check_ids": [
-      "ZN-0187-AC",
-      "ZN-0187-NEG",
-      "ZN-0187-BOUNDARY"
-    ],
+    "capability_ids": ["C106"],
+    "original_check_ids": ["ZN-0187-AC", "ZN-0187-NEG", "ZN-0187-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0187"
   },
@@ -4864,15 +3593,8 @@
       }
     ],
     "spec_id": "SPEC-032",
-    "capability_ids": [
-      "C106",
-      "C107"
-    ],
-    "original_check_ids": [
-      "ZN-0188-AC",
-      "ZN-0188-NEG",
-      "ZN-0188-BOUNDARY"
-    ],
+    "capability_ids": ["C106", "C107"],
+    "original_check_ids": ["ZN-0188-AC", "ZN-0188-NEG", "ZN-0188-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0188"
   },
@@ -4889,15 +3611,8 @@
       }
     ],
     "spec_id": "SPEC-032",
-    "capability_ids": [
-      "C107",
-      "C026"
-    ],
-    "original_check_ids": [
-      "ZN-0189-AC",
-      "ZN-0189-NEG",
-      "ZN-0189-BOUNDARY"
-    ],
+    "capability_ids": ["C107", "C026"],
+    "original_check_ids": ["ZN-0189-AC", "ZN-0189-NEG", "ZN-0189-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0189"
   },
@@ -4914,15 +3629,8 @@
       }
     ],
     "spec_id": "SPEC-032",
-    "capability_ids": [
-      "C109",
-      "C110"
-    ],
-    "original_check_ids": [
-      "ZN-0190-AC",
-      "ZN-0190-NEG",
-      "ZN-0190-BOUNDARY"
-    ],
+    "capability_ids": ["C109", "C110"],
+    "original_check_ids": ["ZN-0190-AC", "ZN-0190-NEG", "ZN-0190-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0190"
   },
@@ -4939,18 +3647,8 @@
       }
     ],
     "spec_id": "SPEC-032",
-    "capability_ids": [
-      "C106",
-      "C107",
-      "C109",
-      "C110",
-      "C112"
-    ],
-    "original_check_ids": [
-      "ZN-0191-AC",
-      "ZN-0191-NEG",
-      "ZN-0191-BOUNDARY"
-    ],
+    "capability_ids": ["C106", "C107", "C109", "C110", "C112"],
+    "original_check_ids": ["ZN-0191-AC", "ZN-0191-NEG", "ZN-0191-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0191"
   },
@@ -4975,15 +3673,8 @@
       }
     ],
     "spec_id": "SPEC-033",
-    "capability_ids": [
-      "C113",
-      "C107"
-    ],
-    "original_check_ids": [
-      "ZN-0192-AC",
-      "ZN-0192-NEG",
-      "ZN-0192-BOUNDARY"
-    ],
+    "capability_ids": ["C113", "C107"],
+    "original_check_ids": ["ZN-0192-AC", "ZN-0192-NEG", "ZN-0192-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0192"
   },
@@ -5000,15 +3691,8 @@
       }
     ],
     "spec_id": "SPEC-033",
-    "capability_ids": [
-      "C113",
-      "C114"
-    ],
-    "original_check_ids": [
-      "ZN-0193-AC",
-      "ZN-0193-NEG",
-      "ZN-0193-BOUNDARY"
-    ],
+    "capability_ids": ["C113", "C114"],
+    "original_check_ids": ["ZN-0193-AC", "ZN-0193-NEG", "ZN-0193-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0193"
   },
@@ -5025,14 +3709,8 @@
       }
     ],
     "spec_id": "SPEC-033",
-    "capability_ids": [
-      "C115"
-    ],
-    "original_check_ids": [
-      "ZN-0194-AC",
-      "ZN-0194-NEG",
-      "ZN-0194-BOUNDARY"
-    ],
+    "capability_ids": ["C115"],
+    "original_check_ids": ["ZN-0194-AC", "ZN-0194-NEG", "ZN-0194-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0194"
   },
@@ -5049,15 +3727,8 @@
       }
     ],
     "spec_id": "SPEC-033",
-    "capability_ids": [
-      "C113",
-      "C111"
-    ],
-    "original_check_ids": [
-      "ZN-0195-AC",
-      "ZN-0195-NEG",
-      "ZN-0195-BOUNDARY"
-    ],
+    "capability_ids": ["C113", "C111"],
+    "original_check_ids": ["ZN-0195-AC", "ZN-0195-NEG", "ZN-0195-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0195"
   },
@@ -5074,16 +3745,8 @@
       }
     ],
     "spec_id": "SPEC-033",
-    "capability_ids": [
-      "C113",
-      "C114",
-      "C115"
-    ],
-    "original_check_ids": [
-      "ZN-0196-AC",
-      "ZN-0196-NEG",
-      "ZN-0196-BOUNDARY"
-    ],
+    "capability_ids": ["C113", "C114", "C115"],
+    "original_check_ids": ["ZN-0196-AC", "ZN-0196-NEG", "ZN-0196-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0196"
   },
@@ -5108,14 +3771,8 @@
       }
     ],
     "spec_id": "SPEC-034",
-    "capability_ids": [
-      "C108"
-    ],
-    "original_check_ids": [
-      "ZN-0197-AC",
-      "ZN-0197-NEG",
-      "ZN-0197-BOUNDARY"
-    ],
+    "capability_ids": ["C108"],
+    "original_check_ids": ["ZN-0197-AC", "ZN-0197-NEG", "ZN-0197-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0197"
   },
@@ -5132,14 +3789,8 @@
       }
     ],
     "spec_id": "SPEC-034",
-    "capability_ids": [
-      "C108"
-    ],
-    "original_check_ids": [
-      "ZN-0198-AC",
-      "ZN-0198-NEG",
-      "ZN-0198-BOUNDARY"
-    ],
+    "capability_ids": ["C108"],
+    "original_check_ids": ["ZN-0198-AC", "ZN-0198-NEG", "ZN-0198-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0198"
   },
@@ -5156,14 +3807,8 @@
       }
     ],
     "spec_id": "SPEC-034",
-    "capability_ids": [
-      "C116"
-    ],
-    "original_check_ids": [
-      "ZN-0199-AC",
-      "ZN-0199-NEG",
-      "ZN-0199-BOUNDARY"
-    ],
+    "capability_ids": ["C116"],
+    "original_check_ids": ["ZN-0199-AC", "ZN-0199-NEG", "ZN-0199-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0199"
   },
@@ -5180,15 +3825,8 @@
       }
     ],
     "spec_id": "SPEC-034",
-    "capability_ids": [
-      "C116",
-      "C129"
-    ],
-    "original_check_ids": [
-      "ZN-0200-AC",
-      "ZN-0200-NEG",
-      "ZN-0200-BOUNDARY"
-    ],
+    "capability_ids": ["C116", "C129"],
+    "original_check_ids": ["ZN-0200-AC", "ZN-0200-NEG", "ZN-0200-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0200"
   },
@@ -5205,15 +3843,8 @@
       }
     ],
     "spec_id": "SPEC-034",
-    "capability_ids": [
-      "C108",
-      "C116"
-    ],
-    "original_check_ids": [
-      "ZN-0201-AC",
-      "ZN-0201-NEG",
-      "ZN-0201-BOUNDARY"
-    ],
+    "capability_ids": ["C108", "C116"],
+    "original_check_ids": ["ZN-0201-AC", "ZN-0201-NEG", "ZN-0201-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0201"
   },
@@ -5246,15 +3877,8 @@
       }
     ],
     "spec_id": "SPEC-035",
-    "capability_ids": [
-      "C123",
-      "C041"
-    ],
-    "original_check_ids": [
-      "ZN-0202-AC",
-      "ZN-0202-NEG",
-      "ZN-0202-BOUNDARY"
-    ],
+    "capability_ids": ["C123", "C041"],
+    "original_check_ids": ["ZN-0202-AC", "ZN-0202-NEG", "ZN-0202-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0202"
   },
@@ -5283,14 +3907,8 @@
       }
     ],
     "spec_id": "SPEC-035",
-    "capability_ids": [
-      "C124"
-    ],
-    "original_check_ids": [
-      "ZN-0203-AC",
-      "ZN-0203-NEG",
-      "ZN-0203-BOUNDARY"
-    ],
+    "capability_ids": ["C124"],
+    "original_check_ids": ["ZN-0203-AC", "ZN-0203-NEG", "ZN-0203-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0203"
   },
@@ -5311,14 +3929,8 @@
       }
     ],
     "spec_id": "SPEC-035",
-    "capability_ids": [
-      "C125"
-    ],
-    "original_check_ids": [
-      "ZN-0204-AC",
-      "ZN-0204-NEG",
-      "ZN-0204-BOUNDARY"
-    ],
+    "capability_ids": ["C125"],
+    "original_check_ids": ["ZN-0204-AC", "ZN-0204-NEG", "ZN-0204-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0204"
   },
@@ -5339,14 +3951,8 @@
       }
     ],
     "spec_id": "SPEC-035",
-    "capability_ids": [
-      "C126"
-    ],
-    "original_check_ids": [
-      "ZN-0205-AC",
-      "ZN-0205-NEG",
-      "ZN-0205-BOUNDARY"
-    ],
+    "capability_ids": ["C126"],
+    "original_check_ids": ["ZN-0205-AC", "ZN-0205-NEG", "ZN-0205-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0205"
   },
@@ -5375,17 +3981,8 @@
       }
     ],
     "spec_id": "SPEC-035",
-    "capability_ids": [
-      "C123",
-      "C124",
-      "C125",
-      "C126"
-    ],
-    "original_check_ids": [
-      "ZN-0206-AC",
-      "ZN-0206-NEG",
-      "ZN-0206-BOUNDARY"
-    ],
+    "capability_ids": ["C123", "C124", "C125", "C126"],
+    "original_check_ids": ["ZN-0206-AC", "ZN-0206-NEG", "ZN-0206-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0206"
   },
@@ -5418,14 +4015,8 @@
       }
     ],
     "spec_id": "SPEC-036",
-    "capability_ids": [
-      "C127"
-    ],
-    "original_check_ids": [
-      "ZN-0207-AC",
-      "ZN-0207-NEG",
-      "ZN-0207-BOUNDARY"
-    ],
+    "capability_ids": ["C127"],
+    "original_check_ids": ["ZN-0207-AC", "ZN-0207-NEG", "ZN-0207-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0207"
   },
@@ -5442,15 +4033,8 @@
       }
     ],
     "spec_id": "SPEC-036",
-    "capability_ids": [
-      "C127",
-      "C012"
-    ],
-    "original_check_ids": [
-      "ZN-0208-AC",
-      "ZN-0208-NEG",
-      "ZN-0208-BOUNDARY"
-    ],
+    "capability_ids": ["C127", "C012"],
+    "original_check_ids": ["ZN-0208-AC", "ZN-0208-NEG", "ZN-0208-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0208"
   },
@@ -5467,14 +4051,8 @@
       }
     ],
     "spec_id": "SPEC-036",
-    "capability_ids": [
-      "C128"
-    ],
-    "original_check_ids": [
-      "ZN-0209-AC",
-      "ZN-0209-NEG",
-      "ZN-0209-BOUNDARY"
-    ],
+    "capability_ids": ["C128"],
+    "original_check_ids": ["ZN-0209-AC", "ZN-0209-NEG", "ZN-0209-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0209"
   },
@@ -5491,15 +4069,8 @@
       }
     ],
     "spec_id": "SPEC-036",
-    "capability_ids": [
-      "C129",
-      "C122"
-    ],
-    "original_check_ids": [
-      "ZN-0210-AC",
-      "ZN-0210-NEG",
-      "ZN-0210-BOUNDARY"
-    ],
+    "capability_ids": ["C129", "C122"],
+    "original_check_ids": ["ZN-0210-AC", "ZN-0210-NEG", "ZN-0210-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0210"
   },
@@ -5516,15 +4087,8 @@
       }
     ],
     "spec_id": "SPEC-036",
-    "capability_ids": [
-      "C129",
-      "C083"
-    ],
-    "original_check_ids": [
-      "ZN-0211-AC",
-      "ZN-0211-NEG",
-      "ZN-0211-BOUNDARY"
-    ],
+    "capability_ids": ["C129", "C083"],
+    "original_check_ids": ["ZN-0211-AC", "ZN-0211-NEG", "ZN-0211-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0211"
   },
@@ -5541,17 +4105,8 @@
       }
     ],
     "spec_id": "SPEC-036",
-    "capability_ids": [
-      "C127",
-      "C128",
-      "C129",
-      "C028"
-    ],
-    "original_check_ids": [
-      "ZN-0212-AC",
-      "ZN-0212-NEG",
-      "ZN-0212-BOUNDARY"
-    ],
+    "capability_ids": ["C127", "C128", "C129", "C028"],
+    "original_check_ids": ["ZN-0212-AC", "ZN-0212-NEG", "ZN-0212-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0212"
   },
@@ -5580,15 +4135,8 @@
       }
     ],
     "spec_id": "SPEC-037",
-    "capability_ids": [
-      "C117",
-      "C120"
-    ],
-    "original_check_ids": [
-      "ZN-0213-AC",
-      "ZN-0213-NEG",
-      "ZN-0213-BOUNDARY"
-    ],
+    "capability_ids": ["C117", "C120"],
+    "original_check_ids": ["ZN-0213-AC", "ZN-0213-NEG", "ZN-0213-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0213"
   },
@@ -5605,14 +4153,8 @@
       }
     ],
     "spec_id": "SPEC-037",
-    "capability_ids": [
-      "C118"
-    ],
-    "original_check_ids": [
-      "ZN-0214-AC",
-      "ZN-0214-NEG",
-      "ZN-0214-BOUNDARY"
-    ],
+    "capability_ids": ["C118"],
+    "original_check_ids": ["ZN-0214-AC", "ZN-0214-NEG", "ZN-0214-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0214"
   },
@@ -5629,14 +4171,8 @@
       }
     ],
     "spec_id": "SPEC-037",
-    "capability_ids": [
-      "C119"
-    ],
-    "original_check_ids": [
-      "ZN-0215-AC",
-      "ZN-0215-NEG",
-      "ZN-0215-BOUNDARY"
-    ],
+    "capability_ids": ["C119"],
+    "original_check_ids": ["ZN-0215-AC", "ZN-0215-NEG", "ZN-0215-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0215"
   },
@@ -5653,15 +4189,8 @@
       }
     ],
     "spec_id": "SPEC-037",
-    "capability_ids": [
-      "C120",
-      "C122"
-    ],
-    "original_check_ids": [
-      "ZN-0216-AC",
-      "ZN-0216-NEG",
-      "ZN-0216-BOUNDARY"
-    ],
+    "capability_ids": ["C120", "C122"],
+    "original_check_ids": ["ZN-0216-AC", "ZN-0216-NEG", "ZN-0216-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0216"
   },
@@ -5678,14 +4207,8 @@
       }
     ],
     "spec_id": "SPEC-037",
-    "capability_ids": [
-      "C121"
-    ],
-    "original_check_ids": [
-      "ZN-0217-AC",
-      "ZN-0217-NEG",
-      "ZN-0217-BOUNDARY"
-    ],
+    "capability_ids": ["C121"],
+    "original_check_ids": ["ZN-0217-AC", "ZN-0217-NEG", "ZN-0217-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0217"
   },
@@ -5702,18 +4225,8 @@
       }
     ],
     "spec_id": "SPEC-037",
-    "capability_ids": [
-      "C117",
-      "C118",
-      "C119",
-      "C120",
-      "C122"
-    ],
-    "original_check_ids": [
-      "ZN-0218-AC",
-      "ZN-0218-NEG",
-      "ZN-0218-BOUNDARY"
-    ],
+    "capability_ids": ["C117", "C118", "C119", "C120", "C122"],
+    "original_check_ids": ["ZN-0218-AC", "ZN-0218-NEG", "ZN-0218-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0218"
   },
@@ -5738,15 +4251,8 @@
       }
     ],
     "spec_id": "SPEC-038",
-    "capability_ids": [
-      "C134",
-      "C052"
-    ],
-    "original_check_ids": [
-      "ZN-0219-AC",
-      "ZN-0219-NEG",
-      "ZN-0219-BOUNDARY"
-    ],
+    "capability_ids": ["C134", "C052"],
+    "original_check_ids": ["ZN-0219-AC", "ZN-0219-NEG", "ZN-0219-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0219"
   },
@@ -5763,15 +4269,8 @@
       }
     ],
     "spec_id": "SPEC-038",
-    "capability_ids": [
-      "C134",
-      "C054"
-    ],
-    "original_check_ids": [
-      "ZN-0220-AC",
-      "ZN-0220-NEG",
-      "ZN-0220-BOUNDARY"
-    ],
+    "capability_ids": ["C134", "C054"],
+    "original_check_ids": ["ZN-0220-AC", "ZN-0220-NEG", "ZN-0220-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0220"
   },
@@ -5788,15 +4287,8 @@
       }
     ],
     "spec_id": "SPEC-038",
-    "capability_ids": [
-      "C134",
-      "C053"
-    ],
-    "original_check_ids": [
-      "ZN-0221-AC",
-      "ZN-0221-NEG",
-      "ZN-0221-BOUNDARY"
-    ],
+    "capability_ids": ["C134", "C053"],
+    "original_check_ids": ["ZN-0221-AC", "ZN-0221-NEG", "ZN-0221-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0221"
   },
@@ -5813,15 +4305,8 @@
       }
     ],
     "spec_id": "SPEC-038",
-    "capability_ids": [
-      "C056",
-      "C137"
-    ],
-    "original_check_ids": [
-      "ZN-0222-AC",
-      "ZN-0222-NEG",
-      "ZN-0222-BOUNDARY"
-    ],
+    "capability_ids": ["C056", "C137"],
+    "original_check_ids": ["ZN-0222-AC", "ZN-0222-NEG", "ZN-0222-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0222"
   },
@@ -5838,16 +4323,8 @@
       }
     ],
     "spec_id": "SPEC-038",
-    "capability_ids": [
-      "C134",
-      "C054",
-      "C138"
-    ],
-    "original_check_ids": [
-      "ZN-0223-AC",
-      "ZN-0223-NEG",
-      "ZN-0223-BOUNDARY"
-    ],
+    "capability_ids": ["C134", "C054", "C138"],
+    "original_check_ids": ["ZN-0223-AC", "ZN-0223-NEG", "ZN-0223-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0223"
   },
@@ -5864,14 +4341,8 @@
       }
     ],
     "spec_id": "SPEC-038",
-    "capability_ids": [
-      "C134"
-    ],
-    "original_check_ids": [
-      "ZN-0224-AC",
-      "ZN-0224-NEG",
-      "ZN-0224-BOUNDARY"
-    ],
+    "capability_ids": ["C134"],
+    "original_check_ids": ["ZN-0224-AC", "ZN-0224-NEG", "ZN-0224-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0224"
   },
@@ -5896,16 +4367,8 @@
       }
     ],
     "spec_id": "SPEC-039",
-    "capability_ids": [
-      "C133",
-      "C135",
-      "C137"
-    ],
-    "original_check_ids": [
-      "ZN-0225-AC",
-      "ZN-0225-NEG",
-      "ZN-0225-BOUNDARY"
-    ],
+    "capability_ids": ["C133", "C135", "C137"],
+    "original_check_ids": ["ZN-0225-AC", "ZN-0225-NEG", "ZN-0225-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0225"
   },
@@ -5922,15 +4385,8 @@
       }
     ],
     "spec_id": "SPEC-039",
-    "capability_ids": [
-      "C136",
-      "C137"
-    ],
-    "original_check_ids": [
-      "ZN-0226-AC",
-      "ZN-0226-NEG",
-      "ZN-0226-BOUNDARY"
-    ],
+    "capability_ids": ["C136", "C137"],
+    "original_check_ids": ["ZN-0226-AC", "ZN-0226-NEG", "ZN-0226-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0226"
   },
@@ -5947,16 +4403,8 @@
       }
     ],
     "spec_id": "SPEC-039",
-    "capability_ids": [
-      "C136",
-      "C069",
-      "C070"
-    ],
-    "original_check_ids": [
-      "ZN-0227-AC",
-      "ZN-0227-NEG",
-      "ZN-0227-BOUNDARY"
-    ],
+    "capability_ids": ["C136", "C069", "C070"],
+    "original_check_ids": ["ZN-0227-AC", "ZN-0227-NEG", "ZN-0227-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0227"
   },
@@ -5973,16 +4421,8 @@
       }
     ],
     "spec_id": "SPEC-039",
-    "capability_ids": [
-      "C135",
-      "C137",
-      "C085"
-    ],
-    "original_check_ids": [
-      "ZN-0228-AC",
-      "ZN-0228-NEG",
-      "ZN-0228-BOUNDARY"
-    ],
+    "capability_ids": ["C135", "C137", "C085"],
+    "original_check_ids": ["ZN-0228-AC", "ZN-0228-NEG", "ZN-0228-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0228"
   },
@@ -5999,15 +4439,8 @@
       }
     ],
     "spec_id": "SPEC-039",
-    "capability_ids": [
-      "C136",
-      "C064"
-    ],
-    "original_check_ids": [
-      "ZN-0229-AC",
-      "ZN-0229-NEG",
-      "ZN-0229-BOUNDARY"
-    ],
+    "capability_ids": ["C136", "C064"],
+    "original_check_ids": ["ZN-0229-AC", "ZN-0229-NEG", "ZN-0229-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0229"
   },
@@ -6024,17 +4457,8 @@
       }
     ],
     "spec_id": "SPEC-039",
-    "capability_ids": [
-      "C133",
-      "C135",
-      "C136",
-      "C137"
-    ],
-    "original_check_ids": [
-      "ZN-0230-AC",
-      "ZN-0230-NEG",
-      "ZN-0230-BOUNDARY"
-    ],
+    "capability_ids": ["C133", "C135", "C136", "C137"],
+    "original_check_ids": ["ZN-0230-AC", "ZN-0230-NEG", "ZN-0230-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0230"
   },
@@ -6063,14 +4487,8 @@
       }
     ],
     "spec_id": "SPEC-040",
-    "capability_ids": [
-      "C140"
-    ],
-    "original_check_ids": [
-      "ZN-0231-AC",
-      "ZN-0231-NEG",
-      "ZN-0231-BOUNDARY"
-    ],
+    "capability_ids": ["C140"],
+    "original_check_ids": ["ZN-0231-AC", "ZN-0231-NEG", "ZN-0231-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0231"
   },
@@ -6087,15 +4505,8 @@
       }
     ],
     "spec_id": "SPEC-040",
-    "capability_ids": [
-      "C140",
-      "C073"
-    ],
-    "original_check_ids": [
-      "ZN-0232-AC",
-      "ZN-0232-NEG",
-      "ZN-0232-BOUNDARY"
-    ],
+    "capability_ids": ["C140", "C073"],
+    "original_check_ids": ["ZN-0232-AC", "ZN-0232-NEG", "ZN-0232-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0232"
   },
@@ -6112,14 +4523,8 @@
       }
     ],
     "spec_id": "SPEC-040",
-    "capability_ids": [
-      "C138"
-    ],
-    "original_check_ids": [
-      "ZN-0233-AC",
-      "ZN-0233-NEG",
-      "ZN-0233-BOUNDARY"
-    ],
+    "capability_ids": ["C138"],
+    "original_check_ids": ["ZN-0233-AC", "ZN-0233-NEG", "ZN-0233-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0233"
   },
@@ -6136,15 +4541,8 @@
       }
     ],
     "spec_id": "SPEC-040",
-    "capability_ids": [
-      "C138",
-      "C136"
-    ],
-    "original_check_ids": [
-      "ZN-0234-AC",
-      "ZN-0234-NEG",
-      "ZN-0234-BOUNDARY"
-    ],
+    "capability_ids": ["C138", "C136"],
+    "original_check_ids": ["ZN-0234-AC", "ZN-0234-NEG", "ZN-0234-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0234"
   },
@@ -6161,15 +4559,8 @@
       }
     ],
     "spec_id": "SPEC-040",
-    "capability_ids": [
-      "C139",
-      "C140"
-    ],
-    "original_check_ids": [
-      "ZN-0235-AC",
-      "ZN-0235-NEG",
-      "ZN-0235-BOUNDARY"
-    ],
+    "capability_ids": ["C139", "C140"],
+    "original_check_ids": ["ZN-0235-AC", "ZN-0235-NEG", "ZN-0235-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0235"
   },
@@ -6186,15 +4577,8 @@
       }
     ],
     "spec_id": "SPEC-040",
-    "capability_ids": [
-      "C139",
-      "C140"
-    ],
-    "original_check_ids": [
-      "ZN-0236-AC",
-      "ZN-0236-NEG",
-      "ZN-0236-BOUNDARY"
-    ],
+    "capability_ids": ["C139", "C140"],
+    "original_check_ids": ["ZN-0236-AC", "ZN-0236-NEG", "ZN-0236-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0236"
   },
@@ -6227,17 +4611,8 @@
       }
     ],
     "spec_id": "SPEC-041",
-    "capability_ids": [
-      "C044",
-      "C048",
-      "C049",
-      "C051"
-    ],
-    "original_check_ids": [
-      "ZN-0237-AC",
-      "ZN-0237-NEG",
-      "ZN-0237-BOUNDARY"
-    ],
+    "capability_ids": ["C044", "C048", "C049", "C051"],
+    "original_check_ids": ["ZN-0237-AC", "ZN-0237-NEG", "ZN-0237-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0237"
   },
@@ -6254,17 +4629,8 @@
       }
     ],
     "spec_id": "SPEC-041",
-    "capability_ids": [
-      "C044",
-      "C048",
-      "C049",
-      "C051"
-    ],
-    "original_check_ids": [
-      "ZN-0238-AC",
-      "ZN-0238-NEG",
-      "ZN-0238-BOUNDARY"
-    ],
+    "capability_ids": ["C044", "C048", "C049", "C051"],
+    "original_check_ids": ["ZN-0238-AC", "ZN-0238-NEG", "ZN-0238-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0238"
   },
@@ -6281,17 +4647,8 @@
       }
     ],
     "spec_id": "SPEC-041",
-    "capability_ids": [
-      "C044",
-      "C049",
-      "C050",
-      "C109"
-    ],
-    "original_check_ids": [
-      "ZN-0239-AC",
-      "ZN-0239-NEG",
-      "ZN-0239-BOUNDARY"
-    ],
+    "capability_ids": ["C044", "C049", "C050", "C109"],
+    "original_check_ids": ["ZN-0239-AC", "ZN-0239-NEG", "ZN-0239-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0239"
   },
@@ -6308,17 +4665,8 @@
       }
     ],
     "spec_id": "SPEC-041",
-    "capability_ids": [
-      "C044",
-      "C050",
-      "C026",
-      "C109"
-    ],
-    "original_check_ids": [
-      "ZN-0240-AC",
-      "ZN-0240-NEG",
-      "ZN-0240-BOUNDARY"
-    ],
+    "capability_ids": ["C044", "C050", "C026", "C109"],
+    "original_check_ids": ["ZN-0240-AC", "ZN-0240-NEG", "ZN-0240-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0240"
   },
@@ -6335,16 +4683,8 @@
       }
     ],
     "spec_id": "SPEC-041",
-    "capability_ids": [
-      "C106",
-      "C107",
-      "C048"
-    ],
-    "original_check_ids": [
-      "ZN-0241-AC",
-      "ZN-0241-NEG",
-      "ZN-0241-BOUNDARY"
-    ],
+    "capability_ids": ["C106", "C107", "C048"],
+    "original_check_ids": ["ZN-0241-AC", "ZN-0241-NEG", "ZN-0241-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0241"
   },
@@ -6361,15 +4701,8 @@
       }
     ],
     "spec_id": "SPEC-041",
-    "capability_ids": [
-      "C108",
-      "C044"
-    ],
-    "original_check_ids": [
-      "ZN-0242-AC",
-      "ZN-0242-NEG",
-      "ZN-0242-BOUNDARY"
-    ],
+    "capability_ids": ["C108", "C044"],
+    "original_check_ids": ["ZN-0242-AC", "ZN-0242-NEG", "ZN-0242-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0242"
   },
@@ -6386,19 +4719,8 @@
       }
     ],
     "spec_id": "SPEC-041",
-    "capability_ids": [
-      "C044",
-      "C045",
-      "C048",
-      "C049",
-      "C050",
-      "C051"
-    ],
-    "original_check_ids": [
-      "ZN-0243-AC",
-      "ZN-0243-NEG",
-      "ZN-0243-BOUNDARY"
-    ],
+    "capability_ids": ["C044", "C045", "C048", "C049", "C050", "C051"],
+    "original_check_ids": ["ZN-0243-AC", "ZN-0243-NEG", "ZN-0243-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0243"
   },
@@ -6415,19 +4737,8 @@
       }
     ],
     "spec_id": "SPEC-041",
-    "capability_ids": [
-      "C015",
-      "C016",
-      "C022",
-      "C036",
-      "C044",
-      "C109"
-    ],
-    "original_check_ids": [
-      "ZN-0244-AC",
-      "ZN-0244-NEG",
-      "ZN-0244-BOUNDARY"
-    ],
+    "capability_ids": ["C015", "C016", "C022", "C036", "C044", "C109"],
+    "original_check_ids": ["ZN-0244-AC", "ZN-0244-NEG", "ZN-0244-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0244"
   },
@@ -6448,14 +4759,8 @@
       }
     ],
     "spec_id": "SPEC-042",
-    "capability_ids": [
-      "C141"
-    ],
-    "original_check_ids": [
-      "ZN-0245-AC",
-      "ZN-0245-NEG",
-      "ZN-0245-BOUNDARY"
-    ],
+    "capability_ids": ["C141"],
+    "original_check_ids": ["ZN-0245-AC", "ZN-0245-NEG", "ZN-0245-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0245"
   },
@@ -6472,14 +4777,8 @@
       }
     ],
     "spec_id": "SPEC-042",
-    "capability_ids": [
-      "C141"
-    ],
-    "original_check_ids": [
-      "ZN-0246-AC",
-      "ZN-0246-NEG",
-      "ZN-0246-BOUNDARY"
-    ],
+    "capability_ids": ["C141"],
+    "original_check_ids": ["ZN-0246-AC", "ZN-0246-NEG", "ZN-0246-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0246"
   },
@@ -6496,14 +4795,8 @@
       }
     ],
     "spec_id": "SPEC-042",
-    "capability_ids": [
-      "C141"
-    ],
-    "original_check_ids": [
-      "ZN-0247-AC",
-      "ZN-0247-NEG",
-      "ZN-0247-BOUNDARY"
-    ],
+    "capability_ids": ["C141"],
+    "original_check_ids": ["ZN-0247-AC", "ZN-0247-NEG", "ZN-0247-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0247"
   },
@@ -6520,14 +4813,8 @@
       }
     ],
     "spec_id": "SPEC-042",
-    "capability_ids": [
-      "C141"
-    ],
-    "original_check_ids": [
-      "ZN-0248-AC",
-      "ZN-0248-NEG",
-      "ZN-0248-BOUNDARY"
-    ],
+    "capability_ids": ["C141"],
+    "original_check_ids": ["ZN-0248-AC", "ZN-0248-NEG", "ZN-0248-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0248"
   },
@@ -6544,15 +4831,8 @@
       }
     ],
     "spec_id": "SPEC-042",
-    "capability_ids": [
-      "C141",
-      "C070"
-    ],
-    "original_check_ids": [
-      "ZN-0249-AC",
-      "ZN-0249-NEG",
-      "ZN-0249-BOUNDARY"
-    ],
+    "capability_ids": ["C141", "C070"],
+    "original_check_ids": ["ZN-0249-AC", "ZN-0249-NEG", "ZN-0249-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0249"
   },
@@ -6581,15 +4861,8 @@
       }
     ],
     "spec_id": "SPEC-043",
-    "capability_ids": [
-      "C142",
-      "C056"
-    ],
-    "original_check_ids": [
-      "ZN-0250-AC",
-      "ZN-0250-NEG",
-      "ZN-0250-BOUNDARY"
-    ],
+    "capability_ids": ["C142", "C056"],
+    "original_check_ids": ["ZN-0250-AC", "ZN-0250-NEG", "ZN-0250-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0250"
   },
@@ -6606,14 +4879,8 @@
       }
     ],
     "spec_id": "SPEC-043",
-    "capability_ids": [
-      "C142"
-    ],
-    "original_check_ids": [
-      "ZN-0251-AC",
-      "ZN-0251-NEG",
-      "ZN-0251-BOUNDARY"
-    ],
+    "capability_ids": ["C142"],
+    "original_check_ids": ["ZN-0251-AC", "ZN-0251-NEG", "ZN-0251-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0251"
   },
@@ -6630,15 +4897,8 @@
       }
     ],
     "spec_id": "SPEC-043",
-    "capability_ids": [
-      "C143",
-      "C144"
-    ],
-    "original_check_ids": [
-      "ZN-0252-AC",
-      "ZN-0252-NEG",
-      "ZN-0252-BOUNDARY"
-    ],
+    "capability_ids": ["C143", "C144"],
+    "original_check_ids": ["ZN-0252-AC", "ZN-0252-NEG", "ZN-0252-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0252"
   },
@@ -6655,15 +4915,8 @@
       }
     ],
     "spec_id": "SPEC-043",
-    "capability_ids": [
-      "C143",
-      "C144"
-    ],
-    "original_check_ids": [
-      "ZN-0253-AC",
-      "ZN-0253-NEG",
-      "ZN-0253-BOUNDARY"
-    ],
+    "capability_ids": ["C143", "C144"],
+    "original_check_ids": ["ZN-0253-AC", "ZN-0253-NEG", "ZN-0253-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0253"
   },
@@ -6680,16 +4933,8 @@
       }
     ],
     "spec_id": "SPEC-043",
-    "capability_ids": [
-      "C142",
-      "C143",
-      "C144"
-    ],
-    "original_check_ids": [
-      "ZN-0254-AC",
-      "ZN-0254-NEG",
-      "ZN-0254-BOUNDARY"
-    ],
+    "capability_ids": ["C142", "C143", "C144"],
+    "original_check_ids": ["ZN-0254-AC", "ZN-0254-NEG", "ZN-0254-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0254"
   },
@@ -6714,14 +4959,8 @@
       }
     ],
     "spec_id": "SPEC-044",
-    "capability_ids": [
-      "C145"
-    ],
-    "original_check_ids": [
-      "ZN-0255-AC",
-      "ZN-0255-NEG",
-      "ZN-0255-BOUNDARY"
-    ],
+    "capability_ids": ["C145"],
+    "original_check_ids": ["ZN-0255-AC", "ZN-0255-NEG", "ZN-0255-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0255"
   },
@@ -6738,14 +4977,8 @@
       }
     ],
     "spec_id": "SPEC-044",
-    "capability_ids": [
-      "C145"
-    ],
-    "original_check_ids": [
-      "ZN-0256-AC",
-      "ZN-0256-NEG",
-      "ZN-0256-BOUNDARY"
-    ],
+    "capability_ids": ["C145"],
+    "original_check_ids": ["ZN-0256-AC", "ZN-0256-NEG", "ZN-0256-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0256"
   },
@@ -6762,15 +4995,8 @@
       }
     ],
     "spec_id": "SPEC-044",
-    "capability_ids": [
-      "C145",
-      "C015"
-    ],
-    "original_check_ids": [
-      "ZN-0257-AC",
-      "ZN-0257-NEG",
-      "ZN-0257-BOUNDARY"
-    ],
+    "capability_ids": ["C145", "C015"],
+    "original_check_ids": ["ZN-0257-AC", "ZN-0257-NEG", "ZN-0257-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0257"
   },
@@ -6787,14 +5013,8 @@
       }
     ],
     "spec_id": "SPEC-044",
-    "capability_ids": [
-      "C146"
-    ],
-    "original_check_ids": [
-      "ZN-0258-AC",
-      "ZN-0258-NEG",
-      "ZN-0258-BOUNDARY"
-    ],
+    "capability_ids": ["C146"],
+    "original_check_ids": ["ZN-0258-AC", "ZN-0258-NEG", "ZN-0258-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0258"
   },
@@ -6811,14 +5031,8 @@
       }
     ],
     "spec_id": "SPEC-044",
-    "capability_ids": [
-      "C147"
-    ],
-    "original_check_ids": [
-      "ZN-0259-AC",
-      "ZN-0259-NEG",
-      "ZN-0259-BOUNDARY"
-    ],
+    "capability_ids": ["C147"],
+    "original_check_ids": ["ZN-0259-AC", "ZN-0259-NEG", "ZN-0259-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0259"
   },
@@ -6835,16 +5049,8 @@
       }
     ],
     "spec_id": "SPEC-044",
-    "capability_ids": [
-      "C145",
-      "C146",
-      "C147"
-    ],
-    "original_check_ids": [
-      "ZN-0260-AC",
-      "ZN-0260-NEG",
-      "ZN-0260-BOUNDARY"
-    ],
+    "capability_ids": ["C145", "C146", "C147"],
+    "original_check_ids": ["ZN-0260-AC", "ZN-0260-NEG", "ZN-0260-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0260"
   },
@@ -6869,14 +5075,8 @@
       }
     ],
     "spec_id": "SPEC-045",
-    "capability_ids": [
-      "C148"
-    ],
-    "original_check_ids": [
-      "ZN-0261-AC",
-      "ZN-0261-NEG",
-      "ZN-0261-BOUNDARY"
-    ],
+    "capability_ids": ["C148"],
+    "original_check_ids": ["ZN-0261-AC", "ZN-0261-NEG", "ZN-0261-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0261"
   },
@@ -6893,14 +5093,8 @@
       }
     ],
     "spec_id": "SPEC-045",
-    "capability_ids": [
-      "C149"
-    ],
-    "original_check_ids": [
-      "ZN-0262-AC",
-      "ZN-0262-NEG",
-      "ZN-0262-BOUNDARY"
-    ],
+    "capability_ids": ["C149"],
+    "original_check_ids": ["ZN-0262-AC", "ZN-0262-NEG", "ZN-0262-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0262"
   },
@@ -6917,15 +5111,8 @@
       }
     ],
     "spec_id": "SPEC-045",
-    "capability_ids": [
-      "C150",
-      "C028"
-    ],
-    "original_check_ids": [
-      "ZN-0263-AC",
-      "ZN-0263-NEG",
-      "ZN-0263-BOUNDARY"
-    ],
+    "capability_ids": ["C150", "C028"],
+    "original_check_ids": ["ZN-0263-AC", "ZN-0263-NEG", "ZN-0263-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0263"
   },
@@ -6942,15 +5129,8 @@
       }
     ],
     "spec_id": "SPEC-045",
-    "capability_ids": [
-      "C150",
-      "C085"
-    ],
-    "original_check_ids": [
-      "ZN-0264-AC",
-      "ZN-0264-NEG",
-      "ZN-0264-BOUNDARY"
-    ],
+    "capability_ids": ["C150", "C085"],
+    "original_check_ids": ["ZN-0264-AC", "ZN-0264-NEG", "ZN-0264-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0264"
   },
@@ -6967,16 +5147,8 @@
       }
     ],
     "spec_id": "SPEC-045",
-    "capability_ids": [
-      "C148",
-      "C149",
-      "C150"
-    ],
-    "original_check_ids": [
-      "ZN-0265-AC",
-      "ZN-0265-NEG",
-      "ZN-0265-BOUNDARY"
-    ],
+    "capability_ids": ["C148", "C149", "C150"],
+    "original_check_ids": ["ZN-0265-AC", "ZN-0265-NEG", "ZN-0265-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0265"
   },
@@ -6993,15 +5165,8 @@
       }
     ],
     "spec_id": "SPEC-045",
-    "capability_ids": [
-      "C150",
-      "C157"
-    ],
-    "original_check_ids": [
-      "ZN-0266-AC",
-      "ZN-0266-NEG",
-      "ZN-0266-BOUNDARY"
-    ],
+    "capability_ids": ["C150", "C157"],
+    "original_check_ids": ["ZN-0266-AC", "ZN-0266-NEG", "ZN-0266-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0266"
   },
@@ -7030,14 +5195,8 @@
       }
     ],
     "spec_id": "SPEC-046",
-    "capability_ids": [
-      "C151"
-    ],
-    "original_check_ids": [
-      "ZN-0267-AC",
-      "ZN-0267-NEG",
-      "ZN-0267-BOUNDARY"
-    ],
+    "capability_ids": ["C151"],
+    "original_check_ids": ["ZN-0267-AC", "ZN-0267-NEG", "ZN-0267-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0267"
   },
@@ -7054,14 +5213,8 @@
       }
     ],
     "spec_id": "SPEC-046",
-    "capability_ids": [
-      "C152"
-    ],
-    "original_check_ids": [
-      "ZN-0268-AC",
-      "ZN-0268-NEG",
-      "ZN-0268-BOUNDARY"
-    ],
+    "capability_ids": ["C152"],
+    "original_check_ids": ["ZN-0268-AC", "ZN-0268-NEG", "ZN-0268-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0268"
   },
@@ -7078,14 +5231,8 @@
       }
     ],
     "spec_id": "SPEC-046",
-    "capability_ids": [
-      "C152"
-    ],
-    "original_check_ids": [
-      "ZN-0269-AC",
-      "ZN-0269-NEG",
-      "ZN-0269-BOUNDARY"
-    ],
+    "capability_ids": ["C152"],
+    "original_check_ids": ["ZN-0269-AC", "ZN-0269-NEG", "ZN-0269-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0269"
   },
@@ -7102,15 +5249,8 @@
       }
     ],
     "spec_id": "SPEC-046",
-    "capability_ids": [
-      "C152",
-      "C068"
-    ],
-    "original_check_ids": [
-      "ZN-0270-AC",
-      "ZN-0270-NEG",
-      "ZN-0270-BOUNDARY"
-    ],
+    "capability_ids": ["C152", "C068"],
+    "original_check_ids": ["ZN-0270-AC", "ZN-0270-NEG", "ZN-0270-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0270"
   },
@@ -7127,15 +5267,8 @@
       }
     ],
     "spec_id": "SPEC-046",
-    "capability_ids": [
-      "C152",
-      "C129"
-    ],
-    "original_check_ids": [
-      "ZN-0271-AC",
-      "ZN-0271-NEG",
-      "ZN-0271-BOUNDARY"
-    ],
+    "capability_ids": ["C152", "C129"],
+    "original_check_ids": ["ZN-0271-AC", "ZN-0271-NEG", "ZN-0271-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0271"
   },
@@ -7152,16 +5285,8 @@
       }
     ],
     "spec_id": "SPEC-046",
-    "capability_ids": [
-      "C151",
-      "C152",
-      "C157"
-    ],
-    "original_check_ids": [
-      "ZN-0272-AC",
-      "ZN-0272-NEG",
-      "ZN-0272-BOUNDARY"
-    ],
+    "capability_ids": ["C151", "C152", "C157"],
+    "original_check_ids": ["ZN-0272-AC", "ZN-0272-NEG", "ZN-0272-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0272"
   },
@@ -7190,15 +5315,8 @@
       }
     ],
     "spec_id": "SPEC-047",
-    "capability_ids": [
-      "C153",
-      "C154"
-    ],
-    "original_check_ids": [
-      "ZN-0273-AC",
-      "ZN-0273-NEG",
-      "ZN-0273-BOUNDARY"
-    ],
+    "capability_ids": ["C153", "C154"],
+    "original_check_ids": ["ZN-0273-AC", "ZN-0273-NEG", "ZN-0273-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0273"
   },
@@ -7215,15 +5333,8 @@
       }
     ],
     "spec_id": "SPEC-047",
-    "capability_ids": [
-      "C153",
-      "C154"
-    ],
-    "original_check_ids": [
-      "ZN-0274-AC",
-      "ZN-0274-NEG",
-      "ZN-0274-BOUNDARY"
-    ],
+    "capability_ids": ["C153", "C154"],
+    "original_check_ids": ["ZN-0274-AC", "ZN-0274-NEG", "ZN-0274-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0274"
   },
@@ -7240,14 +5351,8 @@
       }
     ],
     "spec_id": "SPEC-047",
-    "capability_ids": [
-      "C154"
-    ],
-    "original_check_ids": [
-      "ZN-0275-AC",
-      "ZN-0275-NEG",
-      "ZN-0275-BOUNDARY"
-    ],
+    "capability_ids": ["C154"],
+    "original_check_ids": ["ZN-0275-AC", "ZN-0275-NEG", "ZN-0275-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0275"
   },
@@ -7264,15 +5369,8 @@
       }
     ],
     "spec_id": "SPEC-047",
-    "capability_ids": [
-      "C153",
-      "C155"
-    ],
-    "original_check_ids": [
-      "ZN-0276-AC",
-      "ZN-0276-NEG",
-      "ZN-0276-BOUNDARY"
-    ],
+    "capability_ids": ["C153", "C155"],
+    "original_check_ids": ["ZN-0276-AC", "ZN-0276-NEG", "ZN-0276-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0276"
   },
@@ -7289,14 +5387,8 @@
       }
     ],
     "spec_id": "SPEC-047",
-    "capability_ids": [
-      "C155"
-    ],
-    "original_check_ids": [
-      "ZN-0277-AC",
-      "ZN-0277-NEG",
-      "ZN-0277-BOUNDARY"
-    ],
+    "capability_ids": ["C155"],
+    "original_check_ids": ["ZN-0277-AC", "ZN-0277-NEG", "ZN-0277-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0277"
   },
@@ -7313,14 +5405,8 @@
       }
     ],
     "spec_id": "SPEC-047",
-    "capability_ids": [
-      "C156"
-    ],
-    "original_check_ids": [
-      "ZN-0278-AC",
-      "ZN-0278-NEG",
-      "ZN-0278-BOUNDARY"
-    ],
+    "capability_ids": ["C156"],
+    "original_check_ids": ["ZN-0278-AC", "ZN-0278-NEG", "ZN-0278-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0278"
   },
@@ -7337,17 +5423,8 @@
       }
     ],
     "spec_id": "SPEC-047",
-    "capability_ids": [
-      "C153",
-      "C154",
-      "C155",
-      "C156"
-    ],
-    "original_check_ids": [
-      "ZN-0279-AC",
-      "ZN-0279-NEG",
-      "ZN-0279-BOUNDARY"
-    ],
+    "capability_ids": ["C153", "C154", "C155", "C156"],
+    "original_check_ids": ["ZN-0279-AC", "ZN-0279-NEG", "ZN-0279-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0279"
   },
@@ -7364,14 +5441,8 @@
       }
     ],
     "spec_id": "SPEC-047",
-    "capability_ids": [
-      "C157"
-    ],
-    "original_check_ids": [
-      "ZN-0280-AC",
-      "ZN-0280-NEG",
-      "ZN-0280-BOUNDARY"
-    ],
+    "capability_ids": ["C157"],
+    "original_check_ids": ["ZN-0280-AC", "ZN-0280-NEG", "ZN-0280-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0280"
   },
@@ -7404,18 +5475,8 @@
       }
     ],
     "spec_id": "SPEC-048",
-    "capability_ids": [
-      "C001",
-      "C003",
-      "C009",
-      "C060",
-      "C130"
-    ],
-    "original_check_ids": [
-      "ZN-0281-AC",
-      "ZN-0281-NEG",
-      "ZN-0281-BOUNDARY"
-    ],
+    "capability_ids": ["C001", "C003", "C009", "C060", "C130"],
+    "original_check_ids": ["ZN-0281-AC", "ZN-0281-NEG", "ZN-0281-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0281"
   },
@@ -7432,17 +5493,8 @@
       }
     ],
     "spec_id": "SPEC-048",
-    "capability_ids": [
-      "C029",
-      "C036",
-      "C131",
-      "C132"
-    ],
-    "original_check_ids": [
-      "ZN-0282-AC",
-      "ZN-0282-NEG",
-      "ZN-0282-BOUNDARY"
-    ],
+    "capability_ids": ["C029", "C036", "C131", "C132"],
+    "original_check_ids": ["ZN-0282-AC", "ZN-0282-NEG", "ZN-0282-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0282"
   },
@@ -7459,20 +5511,8 @@
       }
     ],
     "spec_id": "SPEC-048",
-    "capability_ids": [
-      "C133",
-      "C139",
-      "C141",
-      "C142",
-      "C153",
-      "C155",
-      "C157"
-    ],
-    "original_check_ids": [
-      "ZN-0283-AC",
-      "ZN-0283-NEG",
-      "ZN-0283-BOUNDARY"
-    ],
+    "capability_ids": ["C133", "C139", "C141", "C142", "C153", "C155", "C157"],
+    "original_check_ids": ["ZN-0283-AC", "ZN-0283-NEG", "ZN-0283-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0283"
   },
@@ -7489,19 +5529,8 @@
       }
     ],
     "spec_id": "SPEC-048",
-    "capability_ids": [
-      "C034",
-      "C058",
-      "C064",
-      "C084",
-      "C103",
-      "C138"
-    ],
-    "original_check_ids": [
-      "ZN-0284-AC",
-      "ZN-0284-NEG",
-      "ZN-0284-BOUNDARY"
-    ],
+    "capability_ids": ["C034", "C058", "C064", "C084", "C103", "C138"],
+    "original_check_ids": ["ZN-0284-AC", "ZN-0284-NEG", "ZN-0284-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0284"
   },
@@ -7622,14 +5651,8 @@
       }
     ],
     "spec_id": "SPEC-048",
-    "capability_ids": [
-      "C157"
-    ],
-    "original_check_ids": [
-      "ZN-0285-AC",
-      "ZN-0285-NEG",
-      "ZN-0285-BOUNDARY"
-    ],
+    "capability_ids": ["C157"],
+    "original_check_ids": ["ZN-0285-AC", "ZN-0285-NEG", "ZN-0285-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0285"
   },
@@ -7646,15 +5669,8 @@
       }
     ],
     "spec_id": "SPEC-048",
-    "capability_ids": [
-      "C157",
-      "C139"
-    ],
-    "original_check_ids": [
-      "ZN-0286-AC",
-      "ZN-0286-NEG",
-      "ZN-0286-BOUNDARY"
-    ],
+    "capability_ids": ["C157", "C139"],
+    "original_check_ids": ["ZN-0286-AC", "ZN-0286-NEG", "ZN-0286-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0286"
   },
@@ -7675,14 +5691,8 @@
       }
     ],
     "spec_id": "SPEC-049",
-    "capability_ids": [
-      "C133"
-    ],
-    "original_check_ids": [
-      "ZN-0287-AC",
-      "ZN-0287-NEG",
-      "ZN-0287-BOUNDARY"
-    ],
+    "capability_ids": ["C133"],
+    "original_check_ids": ["ZN-0287-AC", "ZN-0287-NEG", "ZN-0287-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0287"
   },
@@ -7699,15 +5709,8 @@
       }
     ],
     "spec_id": "SPEC-049",
-    "capability_ids": [
-      "C087",
-      "C157"
-    ],
-    "original_check_ids": [
-      "ZN-0288-AC",
-      "ZN-0288-NEG",
-      "ZN-0288-BOUNDARY"
-    ],
+    "capability_ids": ["C087", "C157"],
+    "original_check_ids": ["ZN-0288-AC", "ZN-0288-NEG", "ZN-0288-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0288"
   },
@@ -7724,14 +5727,8 @@
       }
     ],
     "spec_id": "SPEC-049",
-    "capability_ids": [
-      "C136"
-    ],
-    "original_check_ids": [
-      "ZN-0289-AC",
-      "ZN-0289-NEG",
-      "ZN-0289-BOUNDARY"
-    ],
+    "capability_ids": ["C136"],
+    "original_check_ids": ["ZN-0289-AC", "ZN-0289-NEG", "ZN-0289-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0289"
   },
@@ -7748,16 +5745,8 @@
       }
     ],
     "spec_id": "SPEC-049",
-    "capability_ids": [
-      "C136",
-      "C137",
-      "C139"
-    ],
-    "original_check_ids": [
-      "ZN-0290-AC",
-      "ZN-0290-NEG",
-      "ZN-0290-BOUNDARY"
-    ],
+    "capability_ids": ["C136", "C137", "C139"],
+    "original_check_ids": ["ZN-0290-AC", "ZN-0290-NEG", "ZN-0290-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0290"
   },
@@ -7778,16 +5767,8 @@
       }
     ],
     "spec_id": "SPEC-050",
-    "capability_ids": [
-      "C094",
-      "C097",
-      "C013"
-    ],
-    "original_check_ids": [
-      "ZN-0291-AC",
-      "ZN-0291-NEG",
-      "ZN-0291-BOUNDARY"
-    ],
+    "capability_ids": ["C094", "C097", "C013"],
+    "original_check_ids": ["ZN-0291-AC", "ZN-0291-NEG", "ZN-0291-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0291"
   },
@@ -7808,15 +5789,8 @@
       }
     ],
     "spec_id": "SPEC-050",
-    "capability_ids": [
-      "C094",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0292-AC",
-      "ZN-0292-NEG",
-      "ZN-0292-BOUNDARY"
-    ],
+    "capability_ids": ["C094", "C103"],
+    "original_check_ids": ["ZN-0292-AC", "ZN-0292-NEG", "ZN-0292-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0292"
   },
@@ -7837,16 +5811,8 @@
       }
     ],
     "spec_id": "SPEC-050",
-    "capability_ids": [
-      "C054",
-      "C082",
-      "C124"
-    ],
-    "original_check_ids": [
-      "ZN-0293-AC",
-      "ZN-0293-NEG",
-      "ZN-0293-BOUNDARY"
-    ],
+    "capability_ids": ["C054", "C082", "C124"],
+    "original_check_ids": ["ZN-0293-AC", "ZN-0293-NEG", "ZN-0293-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0293"
   },
@@ -7871,16 +5837,8 @@
       }
     ],
     "spec_id": "SPEC-050",
-    "capability_ids": [
-      "C094",
-      "C097",
-      "C082"
-    ],
-    "original_check_ids": [
-      "ZN-0294-AC",
-      "ZN-0294-NEG",
-      "ZN-0294-BOUNDARY"
-    ],
+    "capability_ids": ["C094", "C097", "C082"],
+    "original_check_ids": ["ZN-0294-AC", "ZN-0294-NEG", "ZN-0294-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0294"
   },
@@ -7905,16 +5863,8 @@
       }
     ],
     "spec_id": "SPEC-050",
-    "capability_ids": [
-      "C094",
-      "C109",
-      "C110"
-    ],
-    "original_check_ids": [
-      "ZN-0295-AC",
-      "ZN-0295-NEG",
-      "ZN-0295-BOUNDARY"
-    ],
+    "capability_ids": ["C094", "C109", "C110"],
+    "original_check_ids": ["ZN-0295-AC", "ZN-0295-NEG", "ZN-0295-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0295"
   },
@@ -7935,15 +5885,8 @@
       }
     ],
     "spec_id": "SPEC-051",
-    "capability_ids": [
-      "C013",
-      "C052"
-    ],
-    "original_check_ids": [
-      "ZN-0296-AC",
-      "ZN-0296-NEG",
-      "ZN-0296-BOUNDARY"
-    ],
+    "capability_ids": ["C013", "C052"],
+    "original_check_ids": ["ZN-0296-AC", "ZN-0296-NEG", "ZN-0296-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0296"
   },
@@ -7964,15 +5907,8 @@
       }
     ],
     "spec_id": "SPEC-051",
-    "capability_ids": [
-      "C013",
-      "C052"
-    ],
-    "original_check_ids": [
-      "ZN-0297-AC",
-      "ZN-0297-NEG",
-      "ZN-0297-BOUNDARY"
-    ],
+    "capability_ids": ["C013", "C052"],
+    "original_check_ids": ["ZN-0297-AC", "ZN-0297-NEG", "ZN-0297-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0297"
   },
@@ -7993,15 +5929,8 @@
       }
     ],
     "spec_id": "SPEC-051",
-    "capability_ids": [
-      "C013",
-      "C060"
-    ],
-    "original_check_ids": [
-      "ZN-0298-AC",
-      "ZN-0298-NEG",
-      "ZN-0298-BOUNDARY"
-    ],
+    "capability_ids": ["C013", "C060"],
+    "original_check_ids": ["ZN-0298-AC", "ZN-0298-NEG", "ZN-0298-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0298"
   },
@@ -8026,15 +5955,8 @@
       }
     ],
     "spec_id": "SPEC-051",
-    "capability_ids": [
-      "C124",
-      "C054"
-    ],
-    "original_check_ids": [
-      "ZN-0299-AC",
-      "ZN-0299-NEG",
-      "ZN-0299-BOUNDARY"
-    ],
+    "capability_ids": ["C124", "C054"],
+    "original_check_ids": ["ZN-0299-AC", "ZN-0299-NEG", "ZN-0299-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0299"
   },
@@ -8055,16 +5977,8 @@
       }
     ],
     "spec_id": "SPEC-051",
-    "capability_ids": [
-      "C054",
-      "C060",
-      "C124"
-    ],
-    "original_check_ids": [
-      "ZN-0300-AC",
-      "ZN-0300-NEG",
-      "ZN-0300-BOUNDARY"
-    ],
+    "capability_ids": ["C054", "C060", "C124"],
+    "original_check_ids": ["ZN-0300-AC", "ZN-0300-NEG", "ZN-0300-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0300"
   },
@@ -8089,15 +6003,8 @@
       }
     ],
     "spec_id": "SPEC-051",
-    "capability_ids": [
-      "C124",
-      "C052"
-    ],
-    "original_check_ids": [
-      "ZN-0301-AC",
-      "ZN-0301-NEG",
-      "ZN-0301-BOUNDARY"
-    ],
+    "capability_ids": ["C124", "C052"],
+    "original_check_ids": ["ZN-0301-AC", "ZN-0301-NEG", "ZN-0301-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0301"
   },
@@ -8118,15 +6025,8 @@
       }
     ],
     "spec_id": "SPEC-052",
-    "capability_ids": [
-      "C030",
-      "C124"
-    ],
-    "original_check_ids": [
-      "ZN-0302-AC",
-      "ZN-0302-NEG",
-      "ZN-0302-BOUNDARY"
-    ],
+    "capability_ids": ["C030", "C124"],
+    "original_check_ids": ["ZN-0302-AC", "ZN-0302-NEG", "ZN-0302-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0302"
   },
@@ -8147,15 +6047,8 @@
       }
     ],
     "spec_id": "SPEC-052",
-    "capability_ids": [
-      "C124",
-      "C097"
-    ],
-    "original_check_ids": [
-      "ZN-0303-AC",
-      "ZN-0303-NEG",
-      "ZN-0303-BOUNDARY"
-    ],
+    "capability_ids": ["C124", "C097"],
+    "original_check_ids": ["ZN-0303-AC", "ZN-0303-NEG", "ZN-0303-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0303"
   },
@@ -8176,15 +6069,8 @@
       }
     ],
     "spec_id": "SPEC-052",
-    "capability_ids": [
-      "C034",
-      "C124"
-    ],
-    "original_check_ids": [
-      "ZN-0304-AC",
-      "ZN-0304-NEG",
-      "ZN-0304-BOUNDARY"
-    ],
+    "capability_ids": ["C034", "C124"],
+    "original_check_ids": ["ZN-0304-AC", "ZN-0304-NEG", "ZN-0304-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0304"
   },
@@ -8213,15 +6099,8 @@
       }
     ],
     "spec_id": "SPEC-052",
-    "capability_ids": [
-      "C124",
-      "C013"
-    ],
-    "original_check_ids": [
-      "ZN-0305-AC",
-      "ZN-0305-NEG",
-      "ZN-0305-BOUNDARY"
-    ],
+    "capability_ids": ["C124", "C013"],
+    "original_check_ids": ["ZN-0305-AC", "ZN-0305-NEG", "ZN-0305-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0305"
   },
@@ -8250,15 +6129,8 @@
       }
     ],
     "spec_id": "SPEC-052",
-    "capability_ids": [
-      "C066",
-      "C124"
-    ],
-    "original_check_ids": [
-      "ZN-0306-AC",
-      "ZN-0306-NEG",
-      "ZN-0306-BOUNDARY"
-    ],
+    "capability_ids": ["C066", "C124"],
+    "original_check_ids": ["ZN-0306-AC", "ZN-0306-NEG", "ZN-0306-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0306"
   },
@@ -8283,16 +6155,8 @@
       }
     ],
     "spec_id": "SPEC-052",
-    "capability_ids": [
-      "C124",
-      "C125",
-      "C128"
-    ],
-    "original_check_ids": [
-      "ZN-0307-AC",
-      "ZN-0307-NEG",
-      "ZN-0307-BOUNDARY"
-    ],
+    "capability_ids": ["C124", "C125", "C128"],
+    "original_check_ids": ["ZN-0307-AC", "ZN-0307-NEG", "ZN-0307-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0307"
   },
@@ -8317,15 +6181,8 @@
       }
     ],
     "spec_id": "SPEC-053",
-    "capability_ids": [
-      "C125",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0308-AC",
-      "ZN-0308-NEG",
-      "ZN-0308-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C103"],
+    "original_check_ids": ["ZN-0308-AC", "ZN-0308-NEG", "ZN-0308-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0308"
   },
@@ -8346,15 +6203,8 @@
       }
     ],
     "spec_id": "SPEC-053",
-    "capability_ids": [
-      "C125",
-      "C094"
-    ],
-    "original_check_ids": [
-      "ZN-0309-AC",
-      "ZN-0309-NEG",
-      "ZN-0309-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C094"],
+    "original_check_ids": ["ZN-0309-AC", "ZN-0309-NEG", "ZN-0309-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0309"
   },
@@ -8379,16 +6229,8 @@
       }
     ],
     "spec_id": "SPEC-053",
-    "capability_ids": [
-      "C125",
-      "C102",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0310-AC",
-      "ZN-0310-NEG",
-      "ZN-0310-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C102", "C103"],
+    "original_check_ids": ["ZN-0310-AC", "ZN-0310-NEG", "ZN-0310-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0310"
   },
@@ -8413,16 +6255,8 @@
       }
     ],
     "spec_id": "SPEC-053",
-    "capability_ids": [
-      "C125",
-      "C054",
-      "C066"
-    ],
-    "original_check_ids": [
-      "ZN-0311-AC",
-      "ZN-0311-NEG",
-      "ZN-0311-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C054", "C066"],
+    "original_check_ids": ["ZN-0311-AC", "ZN-0311-NEG", "ZN-0311-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0311"
   },
@@ -8447,15 +6281,8 @@
       }
     ],
     "spec_id": "SPEC-053",
-    "capability_ids": [
-      "C125",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0312-AC",
-      "ZN-0312-NEG",
-      "ZN-0312-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C103"],
+    "original_check_ids": ["ZN-0312-AC", "ZN-0312-NEG", "ZN-0312-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0312"
   },
@@ -8476,14 +6303,8 @@
       }
     ],
     "spec_id": "SPEC-053",
-    "capability_ids": [
-      "C126"
-    ],
-    "original_check_ids": [
-      "ZN-0313-AC",
-      "ZN-0313-NEG",
-      "ZN-0313-BOUNDARY"
-    ],
+    "capability_ids": ["C126"],
+    "original_check_ids": ["ZN-0313-AC", "ZN-0313-NEG", "ZN-0313-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0313"
   },
@@ -8504,15 +6325,8 @@
       }
     ],
     "spec_id": "SPEC-054",
-    "capability_ids": [
-      "C125",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0314-AC",
-      "ZN-0314-NEG",
-      "ZN-0314-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C103"],
+    "original_check_ids": ["ZN-0314-AC", "ZN-0314-NEG", "ZN-0314-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0314"
   },
@@ -8537,15 +6351,8 @@
       }
     ],
     "spec_id": "SPEC-054",
-    "capability_ids": [
-      "C125",
-      "C034"
-    ],
-    "original_check_ids": [
-      "ZN-0315-AC",
-      "ZN-0315-NEG",
-      "ZN-0315-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C034"],
+    "original_check_ids": ["ZN-0315-AC", "ZN-0315-NEG", "ZN-0315-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0315"
   },
@@ -8570,15 +6377,8 @@
       }
     ],
     "spec_id": "SPEC-054",
-    "capability_ids": [
-      "C125",
-      "C034"
-    ],
-    "original_check_ids": [
-      "ZN-0316-AC",
-      "ZN-0316-NEG",
-      "ZN-0316-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C034"],
+    "original_check_ids": ["ZN-0316-AC", "ZN-0316-NEG", "ZN-0316-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0316"
   },
@@ -8603,16 +6403,8 @@
       }
     ],
     "spec_id": "SPEC-054",
-    "capability_ids": [
-      "C125",
-      "C102",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0317-AC",
-      "ZN-0317-NEG",
-      "ZN-0317-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C102", "C103"],
+    "original_check_ids": ["ZN-0317-AC", "ZN-0317-NEG", "ZN-0317-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0317"
   },
@@ -8633,15 +6425,8 @@
       }
     ],
     "spec_id": "SPEC-054",
-    "capability_ids": [
-      "C125",
-      "C104"
-    ],
-    "original_check_ids": [
-      "ZN-0318-AC",
-      "ZN-0318-NEG",
-      "ZN-0318-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C104"],
+    "original_check_ids": ["ZN-0318-AC", "ZN-0318-NEG", "ZN-0318-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0318"
   },
@@ -8662,15 +6447,8 @@
       }
     ],
     "spec_id": "SPEC-054",
-    "capability_ids": [
-      "C125",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0319-AC",
-      "ZN-0319-NEG",
-      "ZN-0319-BOUNDARY"
-    ],
+    "capability_ids": ["C125", "C103"],
+    "original_check_ids": ["ZN-0319-AC", "ZN-0319-NEG", "ZN-0319-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0319"
   },
@@ -8695,16 +6473,8 @@
       }
     ],
     "spec_id": "SPEC-055",
-    "capability_ids": [
-      "C124",
-      "C013",
-      "C082"
-    ],
-    "original_check_ids": [
-      "ZN-0320-AC",
-      "ZN-0320-NEG",
-      "ZN-0320-BOUNDARY"
-    ],
+    "capability_ids": ["C124", "C013", "C082"],
+    "original_check_ids": ["ZN-0320-AC", "ZN-0320-NEG", "ZN-0320-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0320"
   },
@@ -8729,15 +6499,8 @@
       }
     ],
     "spec_id": "SPEC-055",
-    "capability_ids": [
-      "C066",
-      "C124"
-    ],
-    "original_check_ids": [
-      "ZN-0321-AC",
-      "ZN-0321-NEG",
-      "ZN-0321-BOUNDARY"
-    ],
+    "capability_ids": ["C066", "C124"],
+    "original_check_ids": ["ZN-0321-AC", "ZN-0321-NEG", "ZN-0321-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0321"
   },
@@ -8766,16 +6529,8 @@
       }
     ],
     "spec_id": "SPEC-055",
-    "capability_ids": [
-      "C124",
-      "C125",
-      "C103"
-    ],
-    "original_check_ids": [
-      "ZN-0322-AC",
-      "ZN-0322-NEG",
-      "ZN-0322-BOUNDARY"
-    ],
+    "capability_ids": ["C124", "C125", "C103"],
+    "original_check_ids": ["ZN-0322-AC", "ZN-0322-NEG", "ZN-0322-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0322"
   },
@@ -8796,16 +6551,8 @@
       }
     ],
     "spec_id": "SPEC-055",
-    "capability_ids": [
-      "C124",
-      "C125",
-      "C139"
-    ],
-    "original_check_ids": [
-      "ZN-0323-AC",
-      "ZN-0323-NEG",
-      "ZN-0323-BOUNDARY"
-    ],
+    "capability_ids": ["C124", "C125", "C139"],
+    "original_check_ids": ["ZN-0323-AC", "ZN-0323-NEG", "ZN-0323-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0323"
   },
@@ -8838,17 +6585,8 @@
       }
     ],
     "spec_id": "SPEC-055",
-    "capability_ids": [
-      "C123",
-      "C124",
-      "C125",
-      "C126"
-    ],
-    "original_check_ids": [
-      "ZN-0324-AC",
-      "ZN-0324-NEG",
-      "ZN-0324-BOUNDARY"
-    ],
+    "capability_ids": ["C123", "C124", "C125", "C126"],
+    "original_check_ids": ["ZN-0324-AC", "ZN-0324-NEG", "ZN-0324-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0324"
   },
@@ -8869,16 +6607,8 @@
       }
     ],
     "spec_id": "SPEC-055",
-    "capability_ids": [
-      "C157",
-      "C124",
-      "C125"
-    ],
-    "original_check_ids": [
-      "ZN-0325-AC",
-      "ZN-0325-NEG",
-      "ZN-0325-BOUNDARY"
-    ],
+    "capability_ids": ["C157", "C124", "C125"],
+    "original_check_ids": ["ZN-0325-AC", "ZN-0325-NEG", "ZN-0325-BOUNDARY"],
     "status": "planned",
     "source": "reference/2026-09-05/catalog.json#tickets/ZN-0325"
   }
