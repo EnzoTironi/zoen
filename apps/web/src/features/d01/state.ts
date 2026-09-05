@@ -3,8 +3,9 @@ import type { D01Error } from "@zoen/contracts/d01/errors";
 import { Inspect, OpenEvidence } from "@zoen/contracts/d01/operations";
 import type {
   CorrectionRequest,
+  CorrectionSuccess,
+  D01Success,
   SemanticRequest,
-  SemanticSuccess,
 } from "@zoen/contracts/d01/operations";
 import { WorldRef } from "@zoen/contracts/d01/values";
 import { Effect, Exit, ManagedRuntime, Result, Schema } from "effect";
@@ -100,7 +101,7 @@ export const createWorkspaceController = (origin: string) => {
       signal: active.signal,
     });
   };
-  const consume = (result: SemanticSuccess) => {
+  const consume = (result: D01Success | CorrectionSuccess) => {
     const patch = successPatch(state, result);
     if (result._tag === "WorldCreated") {
       invalidate(patch);

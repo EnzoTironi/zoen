@@ -1,4 +1,5 @@
 import { ApplicationApi } from "@zoen/contracts/d01/api";
+import { Unsupported } from "@zoen/contracts/d01/errors";
 import type { SemanticRequest } from "@zoen/contracts/d01/operations";
 import { Effect, Redacted } from "effect";
 import { Cookies, HttpClient, HttpClientRequest } from "effect/unstable/http";
@@ -41,6 +42,11 @@ export const execute = Effect.fn(function* execute(
     }
     case "UndoCorrection": {
       return yield* client.corrections.execute({ payload });
+    }
+    case "GrantWorldReadAccess":
+    case "InspectWorldAccess":
+    case "RevokeWorldReadAccess": {
+      return yield* new Unsupported({ code: "UNSUPPORTED" });
     }
     default: {
       return yield* new CliFailure("CLI_INPUT");

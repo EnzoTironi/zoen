@@ -1,6 +1,6 @@
 # D01 — candidato de importação CSV v1
 
-Estado: **contrato congelado para implementação por root em 2026-09-05, após revisão independente do worker 1; ainda não implementado nem ativado**. A execução depende dos pacotes EX16–EX19 e de seus donos em `planning/execution.json`. Este incremento acrescenta uma representação de entrada para `ImportEvidence`. Não cria operação, executor, autoridade, reconciliação, settlement, qualificação de fonte ou perfil sensível. CSV não conclui todo D01. O formato abaixo é o dialeto Zoen definido aqui; não promete aceitar qualquer arquivo produzido por uma planilha.
+Estado: **contrato congelado para implementação por root em 2026-09-05, após revisão independente do worker 1; implementado no perfil local; alcance e gates remanescentes em [csv-local.md](../verification/csv-local.md)**. A execução depende dos pacotes EX16–EX19 e de seus donos em `planning/execution.json`. Este incremento acrescenta uma representação de entrada para `ImportEvidence`. Não cria operação, executor, autoridade, reconciliação, settlement, qualificação de fonte ou perfil sensível. CSV não conclui todo D01. O formato abaixo é o dialeto Zoen definido aqui; não promete aceitar qualquer arquivo produzido por uma planilha.
 
 ## Base observada e decisões propostas
 
@@ -103,7 +103,7 @@ A classificação e retenção do perfil `d01-local-retained-v1` continuam as at
 
 ## Allowlist proposta e sequência de integração
 
-**Agora:** somente este documento. Paths abaixo são candidatos para divisão de ownership por root após congelamento; não são autorização para editar arquivos reservados.
+A implementação segue EX16–EX19 e as provas estão em [csv-local.md](../verification/csv-local.md). A tabela registra a divisão do handoff; arquivos reservados continuam com root.
 
 | Camada / responsável a designar | Paths delimitados | Resultado necessário |
 | --- | --- | --- |
@@ -121,7 +121,7 @@ Sequência proposta: (1) root congela dialeto, união de envelope, metadados fí
 
 ## Oráculos exigidos, sem resultados antecipados
 
-Todos abaixo estão **não executados para CSV**. Dados sintéticos alimentam parsers e infraestrutura reais; não há provider falso ou identidade privilegiada. Root deve preservar baseline, tratamento e artefatos com versão do código/perfil.
+A tabela abaixo define os oráculos exigidos. Os resultados executados e os limites de CSV-09/CSV-12 estão em [csv-local.md](../verification/csv-local.md); não inferir conclusão integral desta lista. Dados sintéticos alimentam parsers e infraestrutura reais; não há provider falso ou identidade privilegiada. Root deve preservar baseline, tratamento e artefatos com versão do código/perfil.
 
 | ID | Camada e testemunha concreta |
 | --- | --- |

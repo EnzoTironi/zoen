@@ -5,7 +5,7 @@
   "workers": [
     {
       "agent": "architecture_redesign",
-      "task": "EX17",
+      "task": "EX21",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex02",
@@ -13,7 +13,7 @@
     },
     {
       "agent": "roadmap_redesign",
-      "task": "EX19-web",
+      "task": "EX22",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex03",
@@ -21,7 +21,7 @@
     },
     {
       "agent": "tickets_redesign",
-      "task": "EX16-independent-migration-review",
+      "task": "EX20-independent-migration-review",
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex01-proof",
@@ -119,6 +119,13 @@
       "owner": "worker-3",
       "integration_owner": "root",
       "reason": "Contraprova real da migração004 e preservação JSON histórica."
+    },
+    {
+      "task": "EX22",
+      "path": "apps/server/test/identity/d01/**",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "Compor a cerca real do banco de autoridade nos fixtures standalone de identidade; sem adapter opcional ou falso."
     }
   ],
   "checkpoints": [
@@ -218,6 +225,17 @@
       "browser_acceptance_tests": 4,
       "tooling_tests": 6,
       "scope": "Primeiro incremento JSOND01/D02 com revisão cruzada e imagemreal; não concluiD01/D02integrais, apagamento, cloud ou22entregas. CSV/logoutevoluçõesposteriores ainda possuemseusgates."
+    },
+    {
+      "date": "2026-09-05",
+      "commit": "048d937",
+      "packages": ["EX16", "EX17", "EX18", "EX19"],
+      "state": "local_csv_journey_verified_container_pending",
+      "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
+      "evidence": "docs/verification/csv-local.md",
+      "browser_acceptance_tests": 7,
+      "browser_component_tests": 7,
+      "scope": "CSV explícito, bytes/intent/replay, retenção e SIGKILL com revisão independente; migração histórica SQL/S3 parcial. A CI da imagem nova ainda está pendente. Compartilhamento segue em implementação sem ativação."
     }
   ],
   "verified_deliveries": [],

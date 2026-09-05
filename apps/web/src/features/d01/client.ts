@@ -1,5 +1,5 @@
 import { ApplicationApi } from "@zoen/contracts/d01/api";
-import { D01Error, Unavailable } from "@zoen/contracts/d01/errors";
+import { D01Error, Unavailable, Unsupported } from "@zoen/contracts/d01/errors";
 import type { SemanticRequest } from "@zoen/contracts/d01/operations";
 import { Context, Effect, Layer, Option, Schema } from "effect";
 import {
@@ -97,6 +97,11 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
         }
         case "UndoCorrection": {
           return yield* api.corrections.execute({ payload });
+        }
+        case "GrantWorldReadAccess":
+        case "InspectWorldAccess":
+        case "RevokeWorldReadAccess": {
+          return yield* new Unsupported({ code: "UNSUPPORTED" });
         }
         default: {
           return yield* new Unavailable({ code: "UNAVAILABLE" });

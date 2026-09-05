@@ -1,5 +1,8 @@
 import type { VisibleFrame } from "@zoen/contracts/d01/evidence";
-import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
+import type {
+  CorrectionSuccess,
+  D01Success,
+} from "@zoen/contracts/d01/operations";
 import type { WorldRef } from "@zoen/contracts/d01/values";
 
 import type { WorkspaceView } from "../../components/d01/presentation.ts";
@@ -35,7 +38,7 @@ export const initialState: WorkspaceState = {
 
 export const successPatch = (
   state: WorkspaceState,
-  result: SemanticSuccess
+  result: D01Success | CorrectionSuccess
 ): Partial<WorkspaceState> => {
   switch (result._tag) {
     case "WorldCreated": {
