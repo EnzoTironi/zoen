@@ -59,9 +59,14 @@ it.live(
         const release = yield* Deferred.make<null>();
         const reader = yield* Effect.scoped(
           Effect.gen(function* hold() {
-            yield* fence.shared(viewer, target, yield* deadline());
+            const permit = yield* fence.shared(
+              viewer,
+              target,
+              yield* deadline()
+            );
             yield* Deferred.succeed(ready, null);
             yield* Deferred.await(release);
+            return permit;
           })
         ).pipe(Effect.forkChild);
         yield* Deferred.await(ready);
@@ -76,7 +81,15 @@ it.live(
           ).toStrictEqual([{ acquired: false }]);
         }
         yield* Deferred.succeed(release, null);
-        yield* Fiber.join(reader);
+        const permit = yield* Fiber.join(reader);
+        expect(
+          yield* sql`SELECT count(*)::int AS count FROM jobs.disclosure_pending`
+        ).toStrictEqual([{ count: 1 }]);
+        yield* permit.acknowledge;
+        yield* permit.acknowledge;
+        expect(
+          yield* sql`SELECT count(*)::int AS count FROM jobs.disclosure_pending`
+        ).toStrictEqual([{ count: 0 }]);
         for (const key of [
           sessionDisclosureKey(viewer),
           membershipDisclosureKey(target, viewer.principalId),
@@ -132,17 +145,23 @@ it.live(
         );
         yield* Deferred.succeed(release, null);
         yield* Fiber.join(writer);
+        expect(
+          yield* Effect.scoped(
+            fence.shared(viewer, target, yield* deadline())
+          ).pipe(Effect.flip)
+        ).toMatchObject({ _tag: "Unavailable" });
+        const nextSession = yield* presence();
         const readerReady = yield* Deferred.make<null>();
         const reader = yield* Effect.scoped(
           Effect.gen(function* holdReader() {
-            yield* fence.shared(viewer, target, yield* deadline());
+            yield* fence.shared(nextSession, target, yield* deadline());
             yield* Deferred.succeed(readerReady, null);
             return yield* Effect.never;
           })
         ).pipe(Effect.forkChild);
         yield* Deferred.await(readerReady);
         yield* Fiber.interrupt(reader);
-        const key = sessionDisclosureKey(viewer);
+        const key = sessionDisclosureKey(nextSession);
         expect(
           yield* sql.withTransaction(
             sql`SELECT pg_try_advisory_xact_lock(hashtextextended(${key}, 0)) AS acquired`

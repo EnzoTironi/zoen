@@ -32,9 +32,10 @@ it.live(
         const release = yield* Deferred.make<null>();
         const reader = yield* Effect.scoped(
           Effect.gen(function* heldReader() {
-            yield* fence.shared(verified, world, deadline);
+            const permit = yield* fence.shared(verified, world, deadline);
             yield* Deferred.succeed(ready, null);
             yield* Deferred.await(release);
+            yield* permit.acknowledge;
           })
         ).pipe(Effect.forkChild);
         yield* Deferred.await(ready);
