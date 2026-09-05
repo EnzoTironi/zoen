@@ -1,4 +1,5 @@
-import { PgClient } from "@effect/sql-pg";
+import { randomUUID } from "node:crypto";
+
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import {
   membershipDisclosureKey,
@@ -8,10 +9,12 @@ import { Expired, Unavailable } from "@zoen/contracts/d01/errors";
 import type { Instant } from "@zoen/contracts/d01/values";
 import { Clock, Effect, Layer, Redacted } from "effect";
 import { Pool } from "pg";
-import type { PoolClient } from "pg";
 
-import { checkD01RuntimeRole } from "../d01/postgres.ts";
 import type { D01PostgresConfig } from "../d01/postgres.ts";
+import { reserve } from "./connection.ts";
+import type { Lock } from "./connection.ts";
+import { checkDisclosurePool } from "./health.ts";
+import { registerPending, startSessionClosing } from "./state.ts";
 
 const unavailable = () => new Unavailable({ code: "UNAVAILABLE" });
 const expired = () => new Expired({ code: "EXPIRED" });
@@ -20,134 +23,6 @@ const remaining = (deadline: typeof Instant.Type) =>
     Effect.flatMap((now) => {
       const millis = Date.parse(deadline) - now;
       return millis > 0 ? Effect.succeed(millis) : Effect.fail(expired());
-    })
-  );
-
-interface Lock {
-  readonly key: string;
-  readonly shared: boolean;
-}
-
-/** A reservation is never returned while a query or a session lock is uncertain. */
-class Reservation {
-  readonly locks: Lock[] = [];
-  readonly client: PoolClient;
-  released = false;
-  onLost: (() => void) | null = null;
-  constructor(client: PoolClient) {
-    this.client = client;
-    client.on("error", this.connectionLost);
-    client.on("end", this.connectionLost);
-  }
-  readonly connectionLost = () => {
-    const notify = this.onLost;
-    this.onLost = null;
-    this.destroy();
-    notify?.();
-  };
-  readonly destroy = () => {
-    if (!this.released) {
-      this.released = true;
-      this.client.release(true);
-    }
-  };
-  readonly query = (operation: string, key: string, acquired?: Lock) =>
-    Effect.callback<boolean, Unavailable>((resume) => {
-      if (this.released) {
-        resume(Effect.fail(unavailable()));
-      } else {
-        // Native callbacks bind cancellation to physical client disposal.
-        this.client.query<{ confirmed: boolean }>(
-          `SELECT ${operation}(hashtextextended($1, 0)) AS confirmed`,
-          [key],
-          // oxlint-disable-next-line promise/prefer-await-to-callbacks
-          (error, result) => {
-            const confirmed = result?.rows[0]?.confirmed;
-            if (
-              error !== null ||
-              this.released ||
-              result?.rows.length !== 1 ||
-              typeof confirmed !== "boolean"
-            ) {
-              this.destroy();
-              resume(Effect.fail(unavailable()));
-            } else {
-              if (confirmed && acquired !== undefined) {
-                this.locks.push(acquired);
-              }
-              resume(Effect.succeed(confirmed));
-            }
-          }
-        );
-      }
-      return Effect.sync(this.destroy);
-    });
-  readonly close = () =>
-    Effect.gen({ self: this }, function* closeReservation() {
-      this.onLost = null;
-      if (this.released) {
-        return;
-      }
-      for (const lock of this.locks.toReversed()) {
-        const unlocked = yield* this.query(
-          lock.shared ? "pg_advisory_unlock_shared" : "pg_advisory_unlock",
-          lock.key
-        ).pipe(
-          Effect.interruptible,
-          Effect.timeout("3 seconds"),
-          Effect.catch(() =>
-            Effect.sync(() => {
-              this.destroy();
-              return false;
-            })
-          )
-        );
-        if (!unlocked) {
-          this.destroy();
-          return;
-        }
-      }
-      if (!this.released) {
-        this.released = true;
-        this.client.removeListener("error", this.connectionLost);
-        this.client.removeListener("end", this.connectionLost);
-        this.client.release();
-      }
-    });
-  readonly attempt = (lock: Lock, millis: number) =>
-    this.query(
-      lock.shared ? "pg_try_advisory_lock_shared" : "pg_try_advisory_lock",
-      lock.key,
-      lock
-    ).pipe(
-      Effect.timeoutOrElse({
-        duration: millis,
-        orElse: () => Effect.fail(expired()),
-      })
-    );
-}
-
-const reserve = (pool: Pool, millis: number) =>
-  Effect.callback<Reservation, Unavailable>((resume) => {
-    let cancelled = false;
-    // The callback must dispose a connection delivered after interruption.
-    // oxlint-disable-next-line promise/prefer-await-to-callbacks
-    pool.connect((error, client) => {
-      if (error !== undefined || client === undefined) {
-        resume(Effect.fail(unavailable()));
-      } else if (cancelled) {
-        client.release(true);
-      } else {
-        resume(Effect.succeed(new Reservation(client)));
-      }
-    });
-    return Effect.sync(() => {
-      cancelled = true;
-    });
-  }).pipe(
-    Effect.timeoutOrElse({
-      duration: millis,
-      orElse: () => Effect.fail(expired()),
     })
   );
 
@@ -180,14 +55,7 @@ export const makeDisclosureFenceLayer = (config: D01PostgresConfig) =>
         }),
         (created) => Effect.promise(() => created.end())
       );
-      const checkHealth = checkD01RuntimeRole.pipe(
-        Effect.provide(
-          PgClient.layerFrom(
-            PgClient.fromPool({ acquire: Effect.succeed(pool) })
-          )
-        ),
-        Effect.mapError(unavailable)
-      );
+      const checkHealth = checkDisclosurePool(pool);
       yield* checkHealth;
       const acquire = (locks: readonly Lock[], deadline: typeof Instant.Type) =>
         Effect.gen(function* acquireLocks() {
@@ -216,26 +84,80 @@ export const makeDisclosureFenceLayer = (config: D01PostgresConfig) =>
           reservation.onLost = () => {
             owner.interruptUnsafe();
           };
-          return yield* Effect.void;
+          return reservation;
         });
       return DisclosureFence.of({
         checkHealth,
         exclusiveSession: (presence, deadline) =>
-          acquire(
-            [{ key: sessionDisclosureKey(presence), shared: false }],
-            deadline
-          ),
+          Effect.gen(function* closeSession() {
+            const key = sessionDisclosureKey(presence);
+            const reservation = yield* acquire(
+              [{ key, shared: false }],
+              deadline
+            );
+            const budget = yield* remaining(deadline);
+            yield* startSessionClosing(reservation, key).pipe(
+              Effect.interruptible,
+              Effect.timeoutOrElse({
+                duration: budget,
+                orElse: () => Effect.fail(expired()),
+              })
+            );
+          }),
         shared: (presence, world, deadline) =>
-          acquire(
-            [
-              { key: sessionDisclosureKey(presence), shared: true },
-              {
-                key: membershipDisclosureKey(world, presence.principalId),
-                shared: true,
-              },
-            ],
-            deadline
-          ),
+          Effect.gen(function* registerDisclosure() {
+            const sessionKey = sessionDisclosureKey(presence);
+            const membershipKey = membershipDisclosureKey(
+              world,
+              presence.principalId
+            );
+            const reservation = yield* acquire(
+              [
+                { key: sessionKey, shared: true },
+                { key: membershipKey, shared: true },
+              ],
+              deadline
+            );
+            const permitId = randomUUID();
+            const budget = yield* remaining(deadline);
+            yield* registerPending(
+              reservation,
+              permitId,
+              sessionKey,
+              membershipKey
+            ).pipe(
+              Effect.interruptible,
+              Effect.timeoutOrElse({
+                duration: budget,
+                orElse: () => Effect.fail(expired()),
+              })
+            );
+            yield* remaining(deadline);
+            // ACK follows trusted end/cancellation proof. Releasing this reservation first
+            // avoids starving a saturated pool; the durable row still blocks writers.
+            const acknowledge = reservation.close().pipe(
+              Effect.andThen(
+                Effect.scoped(
+                  Effect.gen(function* acknowledgeAttempt() {
+                    const current = yield* Effect.acquireRelease(
+                      reserve(pool, 3000),
+                      (held) => held.close(),
+                      { interruptible: true }
+                    );
+                    yield* current.statement(
+                      "DELETE FROM jobs.disclosure_pending WHERE permit_id = $1",
+                      [permitId]
+                    );
+                  })
+                ).pipe(
+                  Effect.interruptible,
+                  Effect.timeout("3 seconds"),
+                  Effect.mapError(unavailable)
+                )
+              )
+            );
+            return { acknowledge };
+          }),
       });
     })
   );
