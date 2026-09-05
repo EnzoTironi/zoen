@@ -275,6 +275,7 @@ describe("EX24 closed subject identity schemas", () => {
       expect(Schema.is(IdentityPartitions)(partitions)).toBeFalsy();
     }
   });
+
   it("rejects aggregate overflow, overlapping components and unknown invalidation", () => {
     const members = Array.from({ length: 33 }, (_, index) => `A${index}`);
     expect(

@@ -114,12 +114,12 @@ export const IdentityComparison = Schema.Union([
 export type IdentityComparison = typeof IdentityComparison.Type;
 export const IdentityComparisonCell = Schema.Struct({
   ...IdentityCellStructure.fields,
+  comparisons: Schema.Array(IdentityComparison).check(
+    Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.comparisonPairsPerCell)
+  ),
   coveredClaimRefs: Schema.Array(ClaimRef).check(
     Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.claims),
     Schema.makeFilter((refs) => new Set(refs).size === refs.length)
-  ),
-  comparisons: Schema.Array(IdentityComparison).check(
-    Schema.isMaxLength(SUBJECT_IDENTITY_LIMITS.comparisonPairsPerCell)
   ),
 }).annotate(exact);
 export type IdentityComparisonCell = typeof IdentityComparisonCell.Type;
