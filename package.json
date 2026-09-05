@@ -10,6 +10,9 @@
     "lint": "oxlint",
     "typecheck": "tsc --noEmit",
     "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/authority/tsconfig.build.json",
+    "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json && python3 tooling/build_release.py",
+    "start:server": "node --env-file=.env.application apps/server/dist/main.js",
+    "cli": "node apps/cli/dist/main.js",
     "test:unit": "vitest run --project unit",
     "test:integration": "node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration",
     "test:components": "playwright test"

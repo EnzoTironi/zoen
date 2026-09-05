@@ -1,0 +1,40 @@
+import { Effect, Layer } from "effect";
+import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
+import { SqlClient } from "effect/unstable/sql";
+
+import { S3Health } from "../adapters/object-storage/d01/health.ts";
+import { checkD01AuthorityRole } from "../adapters/postgres/d01/authority-role.ts";
+import { D01Auth } from "../identity/d01/identity.ts";
+
+export const readinessRoutes = Layer.effectDiscard(
+  Effect.gen(function* buildReadinessRoutes() {
+    const router = yield* HttpRouter.HttpRouter;
+    const sql = yield* SqlClient.SqlClient;
+    const identity = yield* D01Auth;
+    const storage = yield* S3Health;
+    const check = Effect.all(
+      [
+        checkD01AuthorityRole.pipe(
+          Effect.provideService(SqlClient.SqlClient, sql)
+        ),
+        identity.checkHealth,
+        storage.check,
+      ],
+      { concurrency: 3, discard: true }
+    ).pipe(Effect.timeout("3 seconds"));
+    yield* check;
+    yield* router.add(
+      "GET",
+      "/ready",
+      check.pipe(
+        Effect.as(HttpServerResponse.jsonUnsafe({ status: "ready" })),
+        Effect.orElseSucceed(() =>
+          HttpServerResponse.jsonUnsafe(
+            { status: "unavailable" },
+            { status: 503 }
+          )
+        )
+      )
+    );
+  })
+);

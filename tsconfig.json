@@ -28,6 +28,7 @@
     "packages/**/*.ts",
     "tests/**/*.ts",
     "tooling/**/*.ts",
+    "ops/**/*.ts",
     "*.config.ts"
   ],
   "exclude": [

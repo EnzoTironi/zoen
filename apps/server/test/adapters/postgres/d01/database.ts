@@ -15,15 +15,22 @@ const profile = (url: Redacted.Redacted, name: string) => ({
   url,
 });
 
+type DatabaseRole = "authority" | "identity" | "migration" | "progress";
+
+export interface D01TestDatabase {
+  readonly authority: ReturnType<typeof makeD01PostgresLayer>;
+  readonly identity: ReturnType<typeof makeD01PostgresLayer>;
+  readonly progress: ReturnType<typeof makeD01PostgresLayer>;
+  readonly migration: ReturnType<typeof PgClient.layer>;
+  readonly names: Readonly<Record<DatabaseRole, string>>;
+  readonly urls: Readonly<Record<DatabaseRole, Redacted.Redacted>>;
+}
+
 /** Real dedicated PostgreSQL database. Only this invocation's resources are removed. */
-export const withD01Database = <A, E, R>(
-  run: (database: {
-    readonly authority: ReturnType<typeof makeD01PostgresLayer>;
-    readonly identity: ReturnType<typeof makeD01PostgresLayer>;
-    readonly progress: ReturnType<typeof makeD01PostgresLayer>;
-    readonly migration: ReturnType<typeof PgClient.layer>;
-  }) => Effect.Effect<A, E, R>,
-  misconfiguration?: "public-create" | "replication"
+export const withD01Database = <A, E, R, E2 = never, R2 = never>(
+  run: (database: D01TestDatabase) => Effect.Effect<A, E, R>,
+  misconfiguration?: "public-create" | "replication",
+  install?: (database: D01TestDatabase) => Effect.Effect<unknown, E2, R2>
 ) =>
   Effect.gen(function* configureDatabase() {
     const adminUrl = yield* Config.redacted("ZOEN_TEST_DATABASE_URL");
@@ -51,13 +58,21 @@ export const withD01Database = <A, E, R>(
     const migration = PgClient.layer(
       profile(roleUrl("migration"), "migration")
     );
-    const schema = yield* FileSystem.FileSystem.use((fs) =>
-      fs.readFileString(
-        fileURLToPath(
-          new URL("../../../../sql/proposals/d01/schema.sql", import.meta.url)
-        )
-      )
-    ).pipe(Effect.provide(NodeFileSystem.layer));
+    const database: D01TestDatabase = {
+      authority: makeD01PostgresLayer(
+        profile(roleUrl("authority"), "authority")
+      ),
+      identity: makeD01PostgresLayer(profile(roleUrl("identity"), "identity")),
+      migration,
+      names,
+      progress: makeD01PostgresLayer(profile(roleUrl("progress"), "progress")),
+      urls: {
+        authority: roleUrl("authority"),
+        identity: roleUrl("identity"),
+        migration: roleUrl("migration"),
+        progress: roleUrl("progress"),
+      },
+    };
     return yield* Effect.scoped(
       Effect.gen(function* ownDatabase() {
         const admin = yield* SqlClient.SqlClient;
@@ -90,7 +105,17 @@ export const withD01Database = <A, E, R>(
               Effect.orDie
             )
         );
-        yield* Effect.gen(function* migrate() {
+        const installCandidate = Effect.gen(function* migrate() {
+          const schema = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../sql/proposals/d01/schema.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
           const sql = yield* SqlClient.SqlClient;
           yield* sql.withTransaction(sql.unsafe(schema));
           yield* grantD01Roles(names);
@@ -98,18 +123,8 @@ export const withD01Database = <A, E, R>(
             yield* sql`GRANT CREATE ON SCHEMA public TO ${sql(names.authority)}`;
           }
         }).pipe(Effect.provide(migration));
-        return yield* run({
-          authority: makeD01PostgresLayer(
-            profile(roleUrl("authority"), "authority")
-          ),
-          identity: makeD01PostgresLayer(
-            profile(roleUrl("identity"), "identity")
-          ),
-          migration,
-          progress: makeD01PostgresLayer(
-            profile(roleUrl("progress"), "progress")
-          ),
-        });
+        yield* install === undefined ? installCandidate : install(database);
+        return yield* run(database);
       })
     ).pipe(Effect.provide(PgClient.layer(profile(adminUrl, "test-admin"))));
   });

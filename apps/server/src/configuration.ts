@@ -1,0 +1,69 @@
+import { fileURLToPath } from "node:url";
+
+import { AuthorityInstallationSchema } from "@zoen/authority/commit/configuration";
+import { DataPolicySchema } from "@zoen/authority/ports/d01/context";
+import { digestBytes } from "@zoen/authority/values/canonical";
+import { parseJsonBytes } from "@zoen/authority/values/json";
+import { exact } from "@zoen/contracts/d01/values";
+import { Config, Effect, FileSystem, Schema } from "effect";
+
+import type { D01ApplicationConfig } from "./composition.ts";
+
+const InstallationFile = Schema.Struct({
+  installation: AuthorityInstallationSchema,
+  policy: DataPolicySchema,
+}).annotate(exact);
+
+export class ServerConfigurationError extends Schema.TaggedError<ServerConfigurationError>()(
+  "ServerConfigurationError",
+  { code: Schema.Literals(["INVALID_CONFIGURATION", "RELEASE_MISMATCH"]) }
+) {}
+
+export const loadConfiguration = Effect.gen(function* serverConfiguration() {
+  const fs = yield* FileSystem.FileSystem;
+  const installationPath = yield* Config.string("ZOEN_INSTALLATION_FILE");
+  const installationBytes = yield* fs.readFile(installationPath);
+  const installed = yield* parseJsonBytes(installationBytes, 65_536).pipe(
+    Effect.flatMap(Schema.decodeUnknownEffect(InstallationFile))
+  );
+  const releaseBytes = yield* fs.readFile(
+    fileURLToPath(new URL("release.json", import.meta.url))
+  );
+  if (digestBytes(releaseBytes) !== installed.installation.releaseDigest) {
+    return yield* new ServerConfigurationError({ code: "RELEASE_MISMATCH" });
+  }
+  const listenPort = yield* Config.int("ZOEN_PORT");
+  const listenHost = yield* Config.string("ZOEN_LISTEN_HOST").pipe(
+    Config.withDefault("127.0.0.1")
+  );
+  if (listenPort < 1 || listenPort > 65_535 || listenHost.length === 0) {
+    return yield* new ServerConfigurationError({
+      code: "INVALID_CONFIGURATION",
+    });
+  }
+  const application: D01ApplicationConfig = {
+    authorityDatabaseUrl: yield* Config.redacted("ZOEN_AUTHORITY_DATABASE_URL"),
+    identity: {
+      baseUrl: yield* Config.string("ZOEN_PUBLIC_URL"),
+      databaseUrl: yield* Config.redacted("ZOEN_IDENTITY_DATABASE_URL"),
+      secret: yield* Config.redacted("ZOEN_AUTH_SECRET"),
+      sessionSeconds: 3600,
+    },
+    installation: installed.installation,
+    policy: installed.policy,
+    storage: {
+      bucket: yield* Config.string("ZOEN_S3_BUCKET"),
+      connectionTimeoutMillis: 3000,
+      credentials: {
+        accessKeyId: yield* Config.redacted("ZOEN_S3_ACCESS_KEY"),
+        secretAccessKey: yield* Config.redacted("ZOEN_S3_SECRET_KEY"),
+      },
+      endpoint: yield* Config.url("ZOEN_S3_ENDPOINT"),
+      forcePathStyle: true,
+      realm: "live",
+      region: yield* Config.string("ZOEN_S3_REGION"),
+      requestTimeoutMillis: 5000,
+    },
+  };
+  return { application, listenHost, listenPort };
+});

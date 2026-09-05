@@ -48,6 +48,10 @@ export default defineConfig({
   },
   overrides: [
     {
+      files: ["**/adapters/http.ts"],
+      rules: { "effecttsgo/node-builtin-import": "off" },
+    },
+    {
       files: ["**/*.integration.test.ts", "**/*.integration.test.tsx"],
       plugins: ["vitest"],
       rules: { "vitest/max-expects": "off" },

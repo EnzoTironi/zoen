@@ -1,6 +1,8 @@
 import {
   DeleteObjectCommand,
+  GetBucketVersioningCommand,
   GetObjectCommand,
+  HeadBucketCommand,
   PutObjectCommand,
   S3Client,
   S3ServiceException,
@@ -18,11 +20,12 @@ import {
   WorldRef,
   exact,
 } from "@zoen/contracts/d01/values";
-import { Data, Effect, Layer, Redacted, Schema, Stream } from "effect";
+import { Context, Data, Effect, Layer, Redacted, Schema, Stream } from "effect";
 
 import { collectExactBytes } from "./bytes.js";
 import { decodeConfig } from "./config.js";
 import type { S3EvidenceConfig } from "./config.js";
+import { S3Health } from "./health.ts";
 
 export type { S3EvidenceConfig } from "./config.js";
 
@@ -72,9 +75,8 @@ const validateLocation = (location: ObjectLocation) =>
 /** Real S3 only. The bucket must already exist; the layer never creates infrastructure. */
 export const layer = (
   configuration: S3EvidenceConfig
-): Layer.Layer<EvidenceObjectStore, StorageFailure> =>
-  Layer.effect(
-    EvidenceObjectStore,
+): Layer.Layer<EvidenceObjectStore | S3Health, StorageFailure> =>
+  Layer.effectContext(
     Effect.gen(function* s3EvidenceLayer() {
       const config = yield* decodeConfig(configuration);
       const client = yield* Effect.acquireRelease(
@@ -194,7 +196,7 @@ export const layer = (
         worldRef: metadata.worldRef,
       });
 
-      return EvidenceObjectStore.of({
+      const store = EvidenceObjectStore.of({
         locate: (input) =>
           Effect.gen(function* locateUnconfirmedCapture() {
             const metadata = yield* validateExpectation(input);
@@ -278,5 +280,29 @@ export const layer = (
             }).pipe(Effect.mapError(unavailable));
           }),
       });
+      const check = Effect.gen(function* checkVersionedBucket() {
+        yield* Effect.tryPromise({
+          catch: unavailable,
+          try: (signal) =>
+            client.send(new HeadBucketCommand({ Bucket: config.bucket }), {
+              abortSignal: signal,
+            }),
+        });
+        const versioning = yield* Effect.tryPromise({
+          catch: unavailable,
+          try: (signal) =>
+            client.send(
+              new GetBucketVersioningCommand({ Bucket: config.bucket }),
+              { abortSignal: signal }
+            ),
+        });
+        if (versioning.Status !== "Enabled") {
+          return yield* unavailable();
+        }
+        return null;
+      }).pipe(Effect.asVoid);
+      return Context.make(EvidenceObjectStore, store).pipe(
+        Context.add(S3Health, S3Health.of({ check }))
+      );
     })
   );
