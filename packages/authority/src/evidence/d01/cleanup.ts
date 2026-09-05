@@ -1,6 +1,7 @@
 import { Blocked, Unavailable } from "@zoen/contracts/d01/errors";
 import {
   Digest,
+  DocumentFormat,
   Instant,
   Revision,
   WorldRef,
@@ -21,6 +22,7 @@ export type CaptureSweepCursor = typeof CaptureSweepCursor.Type;
 const Candidate = Schema.Struct({
   byte_length: Schema.Int,
   capture_id: CaptureId,
+  document_format: DocumentFormat,
   expected_digest: Digest,
   expires_at: Instant,
   fence: Revision,
@@ -59,7 +61,7 @@ export const sweepExpiredCaptures = Effect.fn(
       ? sql`true`
       : sql`(expires_at, capture_id) > (${cursor.expiresAt}::timestamptz, ${cursor.captureId}::uuid)`;
   const rows = yield* sql`
-      SELECT byte_length, capture_id, expected_digest, fence::text,
+      SELECT byte_length, capture_id, document_format, expected_digest, fence::text,
         to_char(expires_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS expires_at
       FROM jobs.captures
       WHERE world_id = ${world.worldId} AND realm = ${world.realm}
@@ -101,8 +103,9 @@ export const sweepExpiredCaptures = Effect.fn(
       continue;
     }
     const location = yield* store
-      .locate({
+      .locateDocument({
         captureId: candidate.capture_id,
+        documentFormat: candidate.document_format,
         expectedBytes: candidate.byte_length,
         expectedDigest: candidate.expected_digest,
         worldRef: world,

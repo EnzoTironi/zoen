@@ -4,6 +4,7 @@ import { Expired, InvalidInput, Unavailable } from "@zoen/contracts/d01/errors";
 import {
   D01_LIMITS,
   Digest,
+  DocumentFormat,
   Instant,
   Revision,
   WorldRef,
@@ -29,6 +30,7 @@ import { requireImportPolicy } from "./policy.js";
 
 export const CaptureReservation = Schema.Struct({
   captureId: CaptureId,
+  documentFormat: DocumentFormat,
   expectedBytes: Schema.Int.check(
     Schema.isGreaterThan(0),
     Schema.isLessThanOrEqualTo(D01_LIMITS.documentBytes)
@@ -42,6 +44,7 @@ export type CaptureReservation = typeof CaptureReservation.Type;
 
 const CaptureRow = Schema.Struct({
   byte_length: CaptureReservation.fields.expectedBytes,
+  document_format: DocumentFormat,
   expected_digest: Digest,
   expired: Schema.Boolean,
   fence: Revision,
@@ -53,12 +56,16 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
   function* reserveCapture(
     context: VerifiedRequestContext,
     world: WorldRef,
-    bytes: Uint8Array
+    bytes: Uint8Array,
+    format: DocumentFormat = "d01.json.v1"
   ) {
     yield* requireImportPolicy(context, world);
     if (bytes.byteLength === 0 || bytes.byteLength > D01_LIMITS.documentBytes) {
       return yield* new InvalidInput({ code: "INVALID_INPUT" });
     }
+    const documentFormat = yield* Schema.decodeEffect(DocumentFormat)(
+      format
+    ).pipe(Effect.mapError(() => new InvalidInput({ code: "INVALID_INPUT" })));
     const captureId = yield* Schema.decodeEffect(CaptureId)(randomUUID()).pipe(
       Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
     );
@@ -70,9 +77,9 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
         const [row] = yield* sql`
         INSERT INTO jobs.captures
           (world_id, realm, capture_id, principal_id, state, object_location,
-           expected_digest, byte_length, expires_at, fence)
+           expected_digest, byte_length, expires_at, fence, document_format)
         VALUES (${world.worldId}, ${world.realm}, ${captureId}, ${context.presence.principalId},
-          'reserved', NULL, ${digest}, ${bytes.byteLength}, clock_timestamp() + ${D01_LIMITS.stagingSeconds} * interval '1 second', 0)
+          'reserved', NULL, ${digest}, ${bytes.byteLength}, clock_timestamp() + ${D01_LIMITS.stagingSeconds} * interval '1 second', 0, ${documentFormat})
         RETURNING to_char(expires_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS expires_at
       `;
         const deadline = yield* Schema.decodeUnknownEffect(
@@ -82,6 +89,7 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
         );
         return yield* Schema.decodeEffect(CaptureReservation)({
           captureId,
+          documentFormat,
           expectedBytes: bytes.byteLength,
           expectedDigest: digest,
           expiresAt: deadline.expires_at,
@@ -105,7 +113,7 @@ export const lockCapture = Effect.fn("authority.evidence.lockCapture")(
   ) {
     const sql = yield* SqlClient.SqlClient;
     const [row] = yield* sql`
-      SELECT byte_length, expected_digest, expires_at <= clock_timestamp() AS expired,
+      SELECT byte_length, document_format, expected_digest, expires_at <= clock_timestamp() AS expired,
         fence::text, object_location, state
       FROM jobs.captures
       WHERE world_id = ${reservation.worldRef.worldId} AND realm = ${reservation.worldRef.realm}
@@ -125,9 +133,24 @@ export const lockCapture = Effect.fn("authority.evidence.lockCapture")(
     }
     if (
       capture.byte_length !== reservation.expectedBytes ||
-      capture.expected_digest !== reservation.expectedDigest
+      capture.expected_digest !== reservation.expectedDigest ||
+      capture.document_format !== reservation.documentFormat
     ) {
       return yield* new Unavailable({ code: "UNAVAILABLE" });
+    }
+    if (capture.object_location !== null) {
+      const location = capture.object_location;
+      if (
+        location.captureId !== reservation.captureId ||
+        location.worldRef.worldId !== reservation.worldRef.worldId ||
+        location.worldRef.realm !== reservation.worldRef.realm ||
+        location.digest !== reservation.expectedDigest ||
+        location.byteLength !== reservation.expectedBytes ||
+        (location.documentFormat ?? "d01.json.v1") !==
+          reservation.documentFormat
+      ) {
+        return yield* new Unavailable({ code: "UNAVAILABLE" });
+      }
     }
     return capture;
   }
@@ -148,9 +171,10 @@ export const stageCapture = Effect.fn("authority.evidence.stageCapture")(
     }
     const store = yield* EvidenceObjectStore;
     const location = yield* store
-      .stage({
+      .stageDocument({
         captureId: reservation.captureId,
         content: Stream.make(bytes),
+        documentFormat: reservation.documentFormat,
         expectedBytes: reservation.expectedBytes,
         expectedDigest: reservation.expectedDigest,
         worldRef: reservation.worldRef,
@@ -164,7 +188,8 @@ export const stageCapture = Effect.fn("authority.evidence.stageCapture")(
       checked.worldRef.worldId !== reservation.worldRef.worldId ||
       checked.worldRef.realm !== reservation.worldRef.realm ||
       checked.digest !== reservation.expectedDigest ||
-      checked.byteLength !== reservation.expectedBytes
+      checked.byteLength !== reservation.expectedBytes ||
+      checked.documentFormat !== reservation.documentFormat
     ) {
       return yield* new Unavailable({ code: "UNAVAILABLE" });
     }

@@ -29,7 +29,7 @@ import { commitMutation } from "../../commit/mutation.js";
 import type { MutationOutcome } from "../../commit/mutation.js";
 import type { VerifiedRequestContext } from "../../ports/d01/context.js";
 import { EvidenceState } from "../../ports/d01/persistence.js";
-import { parseDocumentText } from "../../values/json.js";
+import { parseImportDocument } from "../../values/document.js";
 import { lockCapture, reserveCapture, stageCapture } from "./capture.js";
 import type { CaptureReservation } from "./capture.js";
 import { requireImportPolicy } from "./policy.js";
@@ -141,16 +141,15 @@ export const importEvidence = Effect.fn("authority.evidence.importEvidence")(
       Effect.mapError(() => new InvalidInput({ code: "INVALID_INPUT" }))
     );
     yield* requireImportPolicy(context, request.worldRef);
-    const document = yield* parseDocumentText(request.input.document);
-    if (
-      new Set(document.records.map((record) => record.externalId)).size !==
-      document.records.length
-    ) {
-      return yield* new InvalidInput({ code: "INVALID_INPUT" });
-    }
+    const document = yield* parseImportDocument(request.input);
     const bound = yield* bindWorldIntent(request);
     const bytes = new TextEncoder().encode(request.input.document);
-    const reservation = yield* reserveCapture(context, request.worldRef, bytes);
+    const reservation = yield* reserveCapture(
+      context,
+      request.worldRef,
+      bytes,
+      "format" in request.input ? request.input.format : "d01.json.v1"
+    );
     yield* stageCapture(context, reservation, bytes);
     const result = yield* commitMutation(context, bound, {
       apply: (receiptRef) =>
