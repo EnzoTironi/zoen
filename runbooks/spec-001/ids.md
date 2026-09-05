@@ -1,47 +1,34 @@
-# File plan — `runbooks/spec-001/ids.md`
+# Runbook — branded IDs and realm-safe boundary parsers (ZN-0007)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not accepted. Law-layer only.
 
-Target: `runbooks/spec-001/ids.md`. Representation: **markdown-plan**. Allocation: **required**.
+## Scope
 
-Specs: [SPEC-001](../../docs/specs/spec-001.md).
-Tickets: [ZN-0007](../../docs/tickets/zn-0007.md).
+Opaque UUID / Digest / Revision / SemanticId / Counter branding, `WorldRef` with live|evaluation realm, and live-only Action boundary parsing under SPEC-001.
 
-## Responsibility and reuse
+## Preconditions
 
-## ZN-0007 operational/repair procedure
+- Exact ticket ZN-0007; dependency ZN-0006 stacked (unaccepted).
+- Toolchain: Node 24 + pnpm 11.25 from `.toolchain-env.sh`.
+- No repository / provider I/O in this boundary.
 
-Scope: Define branded IDs and realm-safe boundary parsers. This is a plan; deployments and commands not yet qualified remain blocked.
+## Observe
 
-```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-Types are checked and the same payload is submitted through the runtime parser
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: untrusted bytes or scalar plus explicit schema, precision, unit and temporal policy.
-CHECK byte/depth/entry limits before recursive parsing; reject duplicate keys, invalid Unicode and remote schema references.
-PARSE IDs before branding; bind World and realm, never treat an opaque ID as authorization.
-NORMALIZE decimals with exact arithmetic, explicit rounding and checked scale/overflow; zero and missing remain different.
-COMPARE units only with equal dimensions/currency or a released evidenced conversion; never guess locale.
-PARSE Instant, LocalDate and wall time as different types; require an explicit choice for ambiguous wall time.
-CANONICALIZE admitted values deterministically and hash actual canonical bytes; no network or environment access.
-RETURN tagged errors without partial branding; preserve counterexamples for generated-law tests.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-Compilation rejects the mix and runtime returns InvalidInput before any repository call
-RESUME only with current approval and intact unrelated tenant scopes.
+1. Capture the untrusted payload and declared realm.
+2. Run the pure parsers (`parseWorldRef`, `parseLiveOnlyActionInput`, …).
+3. Record tagged `InvalidInput` codes (`LIVE_REALM_REQUIRED`, `CROSS_WORLD_OR_REALM`, `INVALID_*`) without branding partial values.
+
+## Repair
+
+1. Do not coerce realm, UUID case beyond lowercase normalization, or counter overflow.
+2. Reject evaluation `WorldRef` on live-only Action inputs before any repository call.
+3. Preserve fixture seed `zn-0007-ids-seed-v1` and failing counterexamples.
+4. Re-run law checks:
+
+```sh
+node --experimental-strip-types --test tests/law/spec-001/ids.test.ts
 ```
 
-## Owning state / operation contracts
+## Resume
 
-### SPEC-001
-parseEnvelope(bytes) -> ValidEnvelope | InvalidInput; normalizeDecimal(text, scalePolicy) -> Decimal | InvalidScalar; compareIntervals(a,b) -> ComparableInterval | NonComparable; canonicalDigest(value) -> sha256.
-
-No tables. Normative JSON schemas live under contracts/kernel. IDs are opaque UUID values tagged at runtime with world/realm; counters and monetary values cross JSON as decimal strings. Database identifiers must not be guessable credentials.
-
-[algorithm SPEC-001](../../docs/algorithms/spec-001.md)
-
-## Acceptance boundary
-
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+Resume only after AC / NEG / BOUNDARY pass and independent review. Do not mark the ticket accepted from this runbook.
