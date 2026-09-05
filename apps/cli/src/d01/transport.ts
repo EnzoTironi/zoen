@@ -1,5 +1,5 @@
 import { D01Api } from "@zoen/contracts/d01/api";
-import type { D01Request } from "@zoen/contracts/d01/operations";
+import type { SemanticRequest } from "@zoen/contracts/d01/operations";
 import { Effect, Redacted } from "effect";
 import { Cookies, HttpClient, HttpClientRequest } from "effect/unstable/http";
 import { HttpApiClient } from "effect/unstable/httpapi";
@@ -9,7 +9,7 @@ import { CliFailure } from "./output.js";
 export const execute = Effect.fn(function* execute(
   baseUrl: string,
   cookie: Redacted.Redacted,
-  payload: D01Request
+  payload: SemanticRequest
 ) {
   const client = yield* HttpApiClient.make(D01Api, {
     baseUrl,
@@ -32,6 +32,15 @@ export const execute = Effect.fn(function* execute(
     }
     case "OpenEvidence": {
       return yield* client.d01.execute({ payload });
+    }
+    case "ProposeCorrection": {
+      return yield* client.corrections.execute({ payload });
+    }
+    case "AnswerQuestion": {
+      return yield* client.corrections.execute({ payload });
+    }
+    case "UndoCorrection": {
+      return yield* client.corrections.execute({ payload });
     }
     default: {
       return yield* new CliFailure("CLI_INPUT");

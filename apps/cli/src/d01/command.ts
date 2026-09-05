@@ -1,6 +1,6 @@
 import { homedir } from "node:os";
 
-import { decodeD01Request } from "@zoen/contracts/d01/operations";
+import { decodeSemanticRequest } from "@zoen/contracts/d01/operations";
 import {
   D01_LIMITS,
   EvidenceRef,
@@ -13,6 +13,7 @@ import { Console, Effect, Option, Path, Redacted } from "effect";
 import { Command, Flag } from "effect/unstable/cli";
 import { FetchHttpClient } from "effect/unstable/http";
 
+import { makeCorrectionCommands } from "../integration/d02/command.js";
 import { readInput, validateBaseUrl } from "./input.js";
 import { CliFailure, formatFailure, formatSuccess } from "./output.js";
 import { readSession, removeSession, saveSession } from "./session.js";
@@ -79,7 +80,7 @@ const realm = Flag.choice("realm", ["live", "evaluation"]).pipe(
 
 const send = Effect.fn(function* send(request: unknown) {
   const config = yield* settings;
-  const payload = yield* decodeD01Request(request).pipe(
+  const payload = yield* decodeSemanticRequest(request).pipe(
     Effect.mapError(() => new CliFailure("CLI_INPUT"))
   );
   const cookie = yield* readSession(config.sessionDir, config.baseUrl);
@@ -284,6 +285,7 @@ export const d01Command = root.pipe(
     importEvidence,
     inspect,
     openEvidence,
+    ...makeCorrectionCommands({ operationId, realm, worldId }, send, report),
   ]),
   Command.withExamples([
     {

@@ -1,5 +1,5 @@
 import { D01Error } from "@zoen/contracts/d01/errors";
-import type { D01Success } from "@zoen/contracts/d01/operations";
+import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
 import { Data, Schema } from "effect";
 
 export type CliFailureCode =
@@ -35,5 +35,5 @@ export const formatFailure = (
   };
 };
 
-export const formatSuccess = (result: D01Success): string =>
+export const formatSuccess = (result: SemanticSuccess): string =>
   JSON.stringify(result);
