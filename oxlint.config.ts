@@ -48,7 +48,8 @@ export default defineConfig({
   },
   overrides: [
     {
-      files: ["**/*.integration.test.{ts,tsx}"],
+      files: ["**/*.integration.test.ts", "**/*.integration.test.tsx"],
+      plugins: ["vitest"],
       rules: { "vitest/max-expects": "off" },
     },
     {
