@@ -17,7 +17,7 @@ const choiceLabel = (frame: VisibleFrame, claimRef: string) => {
     claim.value._tag === "Known"
       ? `${claim.value.amount} ${claim.value.currency}`
       : "Valor desconhecido";
-  return `${claim.source.label} · ${value} · ${intervalLabel(claim.validTime)}`;
+  return `${claim.source.label} · ${value} · ${intervalLabel(claim.validTime)} · ${claim.source.namespace}/${claim.source.externalId} · revisão ${claim.source.revision} · registro ${claim.recordId}`;
 };
 
 export const CorrectionPanel = ({

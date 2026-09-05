@@ -124,6 +124,41 @@ export const createWorkspaceController = (origin: string) => {
     if (Result.isFailure(result)) {
       failed(result.failure);
     } else {
+      if (
+        result.success._tag === "CorrectionProposed" &&
+        state.frame === null
+      ) {
+        if (request.operation !== "ProposeCorrection") {
+          failed(new Unavailable({ code: "UNAVAILABLE" }));
+          return;
+        }
+        const { subjectKey } = result.success.consequence;
+        const recovered = yield* BrowserApi.pipe(
+          Effect.flatMap((api) =>
+            api.execute(
+              Schema.decodeSync(Inspect)({
+                ...envelope,
+                input: { atFrame: request.input.frameRef, subjectKey },
+                operation: "Inspect",
+                worldRef: request.worldRef,
+              })
+            )
+          ),
+          Effect.result
+        );
+        if (started !== epoch || disposed) {
+          return;
+        }
+        if (Result.isFailure(recovered)) {
+          failed(recovered.failure);
+          return;
+        }
+        if (recovered.success._tag !== "FrameInspected") {
+          failed(new Unavailable({ code: "UNAVAILABLE" }));
+          return;
+        }
+        consume(recovered.success);
+      }
       retry = null;
       consume(result.success);
     }
