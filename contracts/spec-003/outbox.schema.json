@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-003/outbox.schema.json",
+  "title": "ZN-0023 outbox fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "domain", "streamOwner", "consumer"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0023-outbox-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "domain": { "type": "string" },
+    "streamOwner": { "type": "string", "pattern": "^[a-z][a-z0-9_.:-]{0,63}$" },
+    "consumer": { "type": "string", "pattern": "^[a-z][a-z0-9_.:-]{0,63}$" }
+  }
+}

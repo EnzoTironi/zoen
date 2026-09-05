@@ -1,6 +1,6 @@
 # File plan — `packages/ontology/src/authority/outbox.ts`
 
-**Status:** candidate-unaccepted; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `packages/ontology/src/authority/outbox.ts`. Representation: **existing-with-sidecar**. Allocation: **required**.
 

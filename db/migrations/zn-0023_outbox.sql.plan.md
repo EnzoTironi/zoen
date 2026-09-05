@@ -1,6 +1,6 @@
 # File plan — `db/migrations/zn-0023_outbox.sql`
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `db/migrations/zn-0023_outbox.sql`. Representation: **sidecar-only**. Allocation: **conditional-support**.
 

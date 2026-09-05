@@ -1,0 +1,8 @@
+{
+  "seed": "zn-0023-outbox-seed-v1",
+  "seedDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "purpose": "operations",
+  "domain": "ledger",
+  "streamOwner": "authority",
+  "consumer": "effect-handoff"
+}

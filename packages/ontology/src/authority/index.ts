@@ -35,3 +35,14 @@ export {
   type StoredOperation,
   type IdempotencyDecision,
 } from './idempotency.js';
+
+export {
+  OutboxQueue,
+  eventIdentity,
+  eventKey,
+  type OutboxLease,
+  type OutboxEventIdentity,
+  type ConsumerAdmitResult,
+  type ProgressRecord,
+} from './outbox.js';
+

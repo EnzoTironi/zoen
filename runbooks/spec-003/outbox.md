@@ -1,48 +1,29 @@
-# File plan — `runbooks/spec-003/outbox.md`
+# Outbox lease and consumer handoff repair — ZN-0023
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; deployments not yet qualified. Ticket unaccepted.
 
-Target: `runbooks/spec-003/outbox.md`. Representation: **markdown-plan**. Allocation: **required**.
-
-Specs: [SPEC-003](../../docs/specs/spec-003.md).
-Tickets: [ZN-0023](../../docs/tickets/zn-0023.md).
-
-## Responsibility and reuse
-
-## ZN-0023 operational/repair procedure
-
-Scope: Implement fenced outbox leases and idempotent consumer handoff. This is a plan; deployments and commands not yet qualified remain blocked.
+Scope: fenced outbox leases and idempotent consumer handoff.
 
 ```text
 PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
 STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-A successor retries the same event and the old worker resumes
+OBSERVE jobs.outbox (state, lease_owner, fence, lease_until), jobs.consumer_admissions, jobs.consumer_cursors.
 PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: verified context, unchanged operation ID/intent, expected head, read guards and a typed local plan.
-BEGIN SERIALIZABLE; acquire head share lock; check cell epoch, release/generation and current security state.
-AUTHORIZE current principal/purpose before looking up or disclosing idempotent results.
-LOOK UP scoped operation key; changed digest => Conflict; same intent => reauthorize stored result before return.
-LOCK affected domains in sorted order; validate predicate/absence, identity, source watermark, time and policy guards.
-IF relevant dependency changed: Stale; do not recompute an approved intent or partially write a receipt.
-COMMIT local writes, domain counters, operation result, receipt and stable outbox identities together; no model/provider I/O inside transaction.
-RETRY only admitted serialization/deadlock failures, at most three attempts, with same intent; ambiguous commit acknowledgement => Unknown and reconcile.
-CLAIM outbox in bounded fenced leases; consumer records deduplication before acknowledgement; reject obsolete workers.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-The consumer has one admitted event; the successor can finish; the old fence cannot mark progress or settle work
+REPAIR under ClaimOutbox → admitConsumer (dedup) → ProgressCommit / acknowledge:
+  - Successor takeover: expire/steal lease with fence+1; re-admit is idempotent (firstAdmission=false).
+  - Zombie fence: LostLease on progress/ack; no delivered mutation.
+  - Owner-specific cursors: jobs.consumer_cursors keyed by stream_owner only.
+VERIFY ZN-0023-AC/NEG/BOUNDARY on real PostgreSQL with disposable namespace.
 RESUME only with current approval and intact unrelated tenant scopes.
 ```
 
-## Owning state / operation contracts
+## Operations
 
-### SPEC-003
-AuthorityCommit(context, expectedHead, guards, operationKey, typedPlan) -> Receipt | Stale | Conflict; ProgressCommit(leaseToken,progress) -> Progress | LostLease; ClaimOutbox(owner,limit) -> FencedBatch.
-
-ontology.domains(world_id,domain_id PK,version bigint>=0); ontology.operations(world_id,principal_id,semantic_op,operation_id PK,intent_digest,result_ref,commit_id); ontology.commits(commit_id PK,world_id,head_digest,touched_domains jsonb,recorded_at); ontology.receipts(receipt_id PK,world_id,commit_id,kind,payload_digest,payload_json); jobs.outbox(outbox_id PK,owner,world_id,commit_id,event_ordinal,payload_ref,status,lease_owner,fence,lease_until,UNIQUE(owner,commit_id,event_ordinal)). All world references include realm and ownership checks.
-
-[algorithm SPEC-003](../../docs/algorithms/spec-003.md)
+- `ClaimOutbox(owner,limit) -> FencedBatch`
+- `admitConsumer(lease,consumer) -> ConsumerAdmitResult` (dedup before ack)
+- `ProgressCommit(leaseToken,progress) -> Progress | LostLease`
+- `acknowledge(lease) -> void | LostLease`
 
 ## Acceptance boundary
 
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+Services are not mocked. Missing credentials/dependencies remain blockers. Do not mark accepted without independent review.
