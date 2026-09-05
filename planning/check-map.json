@@ -304,7 +304,7 @@
     "ticket_id": "ZN-0010",
     "spec_id": "SPEC-001",
     "test_file": "tests/law/spec-001/canonical.test.ts",
-    "plan_path": "tests/law/spec-001/canonical.test.ts",
+    "plan_path": "tests/law/spec-001/canonical.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -315,7 +315,7 @@
     "ticket_id": "ZN-0010",
     "spec_id": "SPEC-001",
     "test_file": "tests/law/spec-001/canonical.test.ts",
-    "plan_path": "tests/law/spec-001/canonical.test.ts",
+    "plan_path": "tests/law/spec-001/canonical.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -326,7 +326,7 @@
     "ticket_id": "ZN-0010",
     "spec_id": "SPEC-001",
     "test_file": "tests/law/spec-001/canonical.test.ts",
-    "plan_path": "tests/law/spec-001/canonical.test.ts",
+    "plan_path": "tests/law/spec-001/canonical.test.ts.plan.md",
     "status": "not-executed"
   },
   {

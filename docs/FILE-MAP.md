@@ -133,7 +133,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `contracts/spec-000/test-harness.schema.json` | [existing-with-sidecar](../contracts/spec-000/test-harness.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `contracts/spec-000/verify-ticket.schema.json` | [existing-with-sidecar](../contracts/spec-000/verify-ticket.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `contracts/spec-000/workspace.schema.json` | [existing-with-sidecar](../contracts/spec-000/workspace.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
-| `contracts/spec-001/canonical.schema.json` | [sidecar-only](../contracts/spec-001/canonical.schema.json.plan.md) | planned | SPEC-001 |
+| `contracts/spec-001/canonical.schema.json` | [existing-with-sidecar](../contracts/spec-001/canonical.schema.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `contracts/spec-001/ids.schema.json` | [existing-with-sidecar](../contracts/spec-001/ids.schema.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `contracts/spec-001/laws.schema.json` | [sidecar-only](../contracts/spec-001/laws.schema.json.plan.md) | planned | SPEC-001 |
 | `contracts/spec-001/outcomes.schema.json` | [sidecar-only](../contracts/spec-001/outcomes.schema.json.plan.md) | planned | SPEC-001 |
@@ -796,7 +796,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `packages/kernel/src/graph.ts` | [existing-with-sidecar](../packages/kernel/src/graph.ts.plan.md) | candidate-unaccepted | SPEC-001 |
 | `packages/kernel/src/ids.ts` | [existing-with-sidecar](../packages/kernel/src/ids.ts.plan.md) | implementation-in-progress | SPEC-001 |
 | `packages/kernel/src/index.ts` | [existing-with-sidecar](../packages/kernel/src/index.ts.plan.md) | implementation-in-progress | SPEC-000, SPEC-001 |
-| `packages/kernel/src/json.ts` | [existing-with-sidecar](../packages/kernel/src/json.ts.plan.md) | candidate-unaccepted | SPEC-001 |
+| `packages/kernel/src/json.ts` | [existing-with-sidecar](../packages/kernel/src/json.ts.plan.md) | implementation-in-progress | SPEC-001 |
 | `packages/kernel/src/laws.ts` | [comment-only-source](../packages/kernel/src/laws.ts) | planned | SPEC-001 |
 | `packages/kernel/src/ports.ts` | [comment-only-source](../packages/kernel/src/ports.ts) | planned | SPEC-001 |
 | `packages/kernel/src/result.ts` | [existing-with-sidecar](../packages/kernel/src/result.ts.plan.md) | candidate-unaccepted | SPEC-001 |
@@ -1104,7 +1104,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `runbooks/spec-000/test-harness.md` | [existing-with-sidecar](../runbooks/spec-000/test-harness.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-000/verify-ticket.md` | [existing-with-sidecar](../runbooks/spec-000/verify-ticket.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-000/workspace.md` | [existing-with-sidecar](../runbooks/spec-000/workspace.md.plan.md) | implementation-in-progress | SPEC-000 |
-| `runbooks/spec-001/canonical.md` | [markdown-plan](../runbooks/spec-001/canonical.md) | planned | SPEC-001 |
+| `runbooks/spec-001/canonical.md` | [existing-with-sidecar](../runbooks/spec-001/canonical.md.plan.md) | implementation-in-progress | SPEC-001 |
 | `runbooks/spec-001/ids.md` | [existing-with-sidecar](../runbooks/spec-001/ids.md.plan.md) | implementation-in-progress | SPEC-001 |
 | `runbooks/spec-001/laws.md` | [markdown-plan](../runbooks/spec-001/laws.md) | planned | SPEC-001 |
 | `runbooks/spec-001/outcomes.md` | [markdown-plan](../runbooks/spec-001/outcomes.md) | planned | SPEC-001 |
@@ -1721,7 +1721,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/fixtures/spec-000/test-harness.json` | [existing-with-sidecar](../tests/fixtures/spec-000/test-harness.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/fixtures/spec-000/verify-ticket.json` | [existing-with-sidecar](../tests/fixtures/spec-000/verify-ticket.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/fixtures/spec-000/workspace.json` | [existing-with-sidecar](../tests/fixtures/spec-000/workspace.json.plan.md) | implementation-in-progress | SPEC-000 |
-| `tests/fixtures/spec-001/canonical.json` | [sidecar-only](../tests/fixtures/spec-001/canonical.json.plan.md) | planned | SPEC-001 |
+| `tests/fixtures/spec-001/canonical.json` | [existing-with-sidecar](../tests/fixtures/spec-001/canonical.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `tests/fixtures/spec-001/ids.json` | [existing-with-sidecar](../tests/fixtures/spec-001/ids.json.plan.md) | implementation-in-progress | SPEC-001 |
 | `tests/fixtures/spec-001/laws.json` | [sidecar-only](../tests/fixtures/spec-001/laws.json.plan.md) | planned | SPEC-001 |
 | `tests/fixtures/spec-001/outcomes.json` | [sidecar-only](../tests/fixtures/spec-001/outcomes.json.plan.md) | planned | SPEC-001 |
@@ -2078,7 +2078,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/journey/spec-052/private-app-journey.test.ts` | [comment-only-source](../tests/journey/spec-052/private-app-journey.test.ts) | planned | SPEC-052 |
 | `tests/journey/spec-055/early-parity.test.ts` | [comment-only-source](../tests/journey/spec-055/early-parity.test.ts) | planned | SPEC-055 |
 | `tests/journey/spec-055/three-audience-apps.test.ts` | [comment-only-source](../tests/journey/spec-055/three-audience-apps.test.ts) | planned | SPEC-055 |
-| `tests/law/spec-001/canonical.test.ts` | [comment-only-source](../tests/law/spec-001/canonical.test.ts) | planned | SPEC-001 |
+| `tests/law/spec-001/canonical.test.ts` | [existing-with-sidecar](../tests/law/spec-001/canonical.test.ts.plan.md) | implementation-in-progress | SPEC-001 |
 | `tests/law/spec-001/ids.test.ts` | [existing-with-sidecar](../tests/law/spec-001/ids.test.ts.plan.md) | implementation-in-progress | SPEC-001 |
 | `tests/law/spec-001/laws.test.ts` | [comment-only-source](../tests/law/spec-001/laws.test.ts) | planned | SPEC-001 |
 | `tests/law/spec-001/outcomes.test.ts` | [comment-only-source](../tests/law/spec-001/outcomes.test.ts) | planned | SPEC-001 |

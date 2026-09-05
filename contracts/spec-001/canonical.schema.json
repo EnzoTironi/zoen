@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-001/canonical.schema.json",
+  "title": "SPEC-001 bounded canonical JSON and digest",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "schemaVersion": {
+      "type": "string",
+      "maxLength": 32
+    },
+    "operation": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "bytes": { "type": "integer", "maximum": 1048576 },
+        "depth": { "type": "integer", "maximum": 32 },
+        "entries": { "type": "integer", "maximum": 10000 }
+      }
+    }
+  }
+}

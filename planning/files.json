@@ -2636,9 +2636,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "contracts/spec-001/canonical.schema.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -14166,7 +14166,7 @@
       "allocation": "required",
       "representation": "existing-with-sidecar",
       "plan_path": "packages/kernel/src/json.ts.plan.md",
-      "status": "candidate-unaccepted",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -20199,9 +20199,9 @@
         "ZN-0010"
       ],
       "allocation": "required",
-      "representation": "markdown-plan",
-      "plan_path": "runbooks/spec-001/canonical.md",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "runbooks/spec-001/canonical.md.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -31944,9 +31944,9 @@
       "test_for": [],
       "runbook_for": [],
       "allocation": "conditional-support",
-      "representation": "sidecar-only",
+      "representation": "existing-with-sidecar",
       "plan_path": "tests/fixtures/spec-001/canonical.json.plan.md",
-      "status": "planned",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {
@@ -38167,9 +38167,9 @@
       ],
       "runbook_for": [],
       "allocation": "required",
-      "representation": "comment-only-source",
-      "plan_path": "tests/law/spec-001/canonical.test.ts",
-      "status": "planned",
+      "representation": "existing-with-sidecar",
+      "plan_path": "tests/law/spec-001/canonical.test.ts.plan.md",
+      "status": "implementation-in-progress",
       "review_required": true
     },
     {

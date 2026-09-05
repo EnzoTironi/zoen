@@ -1,47 +1,21 @@
-# File plan — `runbooks/spec-001/canonical.md`
+# Runbook — bounded canonical parsing and hashing (ZN-0010)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not accepted. Law-layer only.
 
-Target: `runbooks/spec-001/canonical.md`. Representation: **markdown-plan**. Allocation: **required**.
+## Scope
 
-Specs: [SPEC-001](../../docs/specs/spec-001.md).
-Tickets: [ZN-0010](../../docs/tickets/zn-0010.md).
+Authority JSON parse with 1 MiB / depth 32 / 10_000 entry limits, duplicate-key rejection, RFC 8785-subset canonicalization, SHA-256 digests, and `parseEnvelope`.
 
-## Responsibility and reuse
+## Observe
 
-## ZN-0010 operational/repair procedure
+1. Duplicate keys => `JSON_DUPLICATE_KEY` (never last-write-wins).
+2. Equivalent objects with different insertion order share one digest.
+3. Remote `$ref` / `$schema` / `$id` with URI scheme => `JSON_REMOTE_REFERENCE`.
 
-Scope: Implement bounded canonical parsing and hashing. This is a plan; deployments and commands not yet qualified remain blocked.
+## Repair
 
-```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-They are parsed and canonicalized
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: untrusted bytes or scalar plus explicit schema, precision, unit and temporal policy.
-CHECK byte/depth/entry limits before recursive parsing; reject duplicate keys, invalid Unicode and remote schema references.
-PARSE IDs before branding; bind World and realm, never treat an opaque ID as authorization.
-NORMALIZE decimals with exact arithmetic, explicit rounding and checked scale/overflow; zero and missing remain different.
-COMPARE units only with equal dimensions/currency or a released evidenced conversion; never guess locale.
-PARSE Instant, LocalDate and wall time as different types; require an explicit choice for ambiguous wall time.
-CANONICALIZE admitted values deterministically and hash actual canonical bytes; no network or environment access.
-RETURN tagged errors without partial branding; preserve counterexamples for generated-law tests.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-Equivalent values produce the same digest; malformed input is rejected and cannot be silently last-write-wins
-RESUME only with current approval and intact unrelated tenant scopes.
+```sh
+node --experimental-strip-types --test tests/law/spec-001/canonical.test.ts
 ```
 
-## Owning state / operation contracts
-
-### SPEC-001
-parseEnvelope(bytes) -> ValidEnvelope | InvalidInput; normalizeDecimal(text, scalePolicy) -> Decimal | InvalidScalar; compareIntervals(a,b) -> ComparableInterval | NonComparable; canonicalDigest(value) -> sha256.
-
-No tables. Normative JSON schemas live under contracts/kernel. IDs are opaque UUID values tagged at runtime with world/realm; counters and monetary values cross JSON as decimal strings. Database identifiers must not be guessable credentials.
-
-[algorithm SPEC-001](../../docs/algorithms/spec-001.md)
-
-## Acceptance boundary
-
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+Do not fabricate digests. Ticket remains unaccepted until independent review.

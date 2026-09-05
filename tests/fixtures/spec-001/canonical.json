@@ -1,0 +1,35 @@
+{
+  "seed": "zn-0010-canonical-seed-v1",
+  "note": "Synthetic canonical JSON fixtures for ZN-0010. Digests from RFC8785-subset bytes. Not provider evidence.",
+  "objectA": {
+    "b": 2,
+    "a": 1,
+    "nested": {
+      "y": true,
+      "x": null
+    }
+  },
+  "objectB": {
+    "a": 1,
+    "nested": {
+      "x": null,
+      "y": true
+    },
+    "b": 2
+  },
+  "duplicateKeyJson": "{\"a\":1,\"a\":2}",
+  "expectedDigest": "7ede561111757a86c38c0b4c3debfda93022db9b9e114a40260889a22adceb4c",
+  "envelope": {
+    "schemaVersion": "1.0",
+    "operation": "action.demo",
+    "operationId": "33333333-3333-4333-8333-333333333333",
+    "worldRef": {
+      "worldId": "22222222-2222-4222-8222-222222222222",
+      "realm": "live"
+    },
+    "purpose": "test",
+    "input": {
+      "ok": true
+    }
+  }
+}
