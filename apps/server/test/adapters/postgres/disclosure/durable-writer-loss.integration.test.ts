@@ -125,7 +125,7 @@ it.live(
             Effect.flip
           )
         ).toMatchObject({ _tag: "Unavailable" });
-        events.push("guarded.logout.unavailable");
+        events.push("guarded.closing.unavailable");
         expect(
           yield* sql`SELECT count(*)::int AS pending FROM jobs.disclosure_pending`
         ).toStrictEqual([{ pending: 1 }]);
@@ -140,7 +140,7 @@ it.live(
           yield* sql`SELECT count(*)::int AS pending FROM jobs.disclosure_pending`
         ).toStrictEqual([{ pending: 0 }]);
         yield* Effect.scoped(fence.exclusiveSession(presence, deadline));
-        events.push("guarded.logout.confirmed");
+        events.push("guarded.closing.confirmed");
         const denied = yield* client.get("/probe");
         expect(denied.status).toBe(503);
         expect(yield* denied.text).not.toContain(privateBody);
@@ -148,12 +148,12 @@ it.live(
           "writer.pause",
           "coordinator.terminated",
           "physical.gate.free",
-          "guarded.logout.unavailable",
+          "guarded.closing.unavailable",
           "node.end.enter",
           "node.end.return",
           "ack.start",
           "ack.return",
-          "guarded.logout.confirmed",
+          "guarded.closing.confirmed",
           "reader.denied",
         ]);
         yield* Effect.logInfo({ events: [...events] });
