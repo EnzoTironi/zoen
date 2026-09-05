@@ -997,7 +997,7 @@
     "ticket_id": "ZN-0031",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/comparability.test.ts",
-    "plan_path": "tests/component/spec-005/comparability.test.ts",
+    "plan_path": "tests/component/spec-005/comparability.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1008,7 +1008,7 @@
     "ticket_id": "ZN-0031",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/comparability.test.ts",
-    "plan_path": "tests/component/spec-005/comparability.test.ts",
+    "plan_path": "tests/component/spec-005/comparability.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1019,7 +1019,7 @@
     "ticket_id": "ZN-0031",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/comparability.test.ts",
-    "plan_path": "tests/component/spec-005/comparability.test.ts",
+    "plan_path": "tests/component/spec-005/comparability.test.ts.plan.md",
     "status": "not-executed"
   },
   {

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-005/comparability.schema.json",
+  "title": "ZN-0031 comparability fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "seedDigest", "purpose", "profileId", "knowledgeVersion", "releaseDigest", "companyId", "bookings", "invoiced", "received", "currency"],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0031-comparability-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "profileId": { "type": "string" },
+    "knowledgeVersion": { "type": "integer", "minimum": 1 },
+    "releaseDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "companyId": { "type": "string", "pattern": "^[0-9a-f-]{36}$" },
+    "bookings": { "type": "string" },
+    "invoiced": { "type": "string" },
+    "received": { "type": "string" },
+    "currency": { "type": "string", "pattern": "^[A-Z]{3}$" }
+  }
+}
