@@ -39,7 +39,7 @@ const readLocation = Effect.fn("authority.evidence.readLocation")(
     context: VerifiedRequestContext,
     request: typeof OpenEvidence.Type
   ) {
-    yield* authorizeWorld(context, request.worldRef);
+    yield* authorizeWorld(context, request.worldRef, "read");
     const sql = yield* SqlClient.SqlClient;
     const [row] =
       yield* sql`SELECT e.byte_digest, e.state, c.state AS capture_state, c.object_location,

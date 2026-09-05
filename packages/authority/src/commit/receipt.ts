@@ -14,10 +14,10 @@ import { canonicalJson } from "../values/canonical.js";
 const resultTags = {
   AnswerQuestion: "CorrectionApplied",
   CreatePersonalWorld: "WorldCreated",
-  ImportEvidence: "EvidenceImported",
   GrantWorldReadAccess: "WorldReadAccessGranted",
-  RevokeWorldReadAccess: "WorldReadAccessRevoked",
+  ImportEvidence: "EvidenceImported",
   ProposeCorrection: "CorrectionProposed",
+  RevokeWorldReadAccess: "WorldReadAccessRevoked",
   UndoCorrection: "CorrectionUndone",
 } as const;
 type MutationOperation = keyof typeof resultTags;

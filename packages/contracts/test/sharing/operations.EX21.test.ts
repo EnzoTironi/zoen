@@ -1,4 +1,4 @@
-import { expect, it } from "@effect/vitest";
+import { describe, expect, it } from "@effect/vitest";
 import { Schema } from "effect";
 
 import {
@@ -18,17 +18,19 @@ const grant = {
   schemaVersion: "d03.sharing.v1",
   worldRef: { realm: "live", worldId: "33333333-3333-4333-8333-333333333333" },
 };
-it("SH schemas admit exact sharing requests without widening legacy families", () => {
-  expect(Schema.is(SemanticRequest)(grant)).toBe(true);
-  expect(Schema.is(D01Request)(grant)).toBe(false);
-  expect(Schema.is(CorrectionRequest)(grant)).toBe(false);
-  for (const input of [
-    { principalRef: grant.input.principalRef },
-    { ...grant.input, role: "owner" },
-    { ...grant.input, expectedRevision: 0 },
-    { ...grant.input, expectedRevision: "00" },
-    { ...grant.input, principalRef: "person@example.com" },
-  ]) {
-    expect(Schema.is(SemanticRequest)({ ...grant, input })).toBe(false);
-  }
+describe("SH schemas", () => {
+  it("SH schemas admit exact sharing requests without widening legacy families", () => {
+    expect(Schema.is(SemanticRequest)(grant)).toBeTruthy();
+    expect(Schema.is(D01Request)(grant)).toBeFalsy();
+    expect(Schema.is(CorrectionRequest)(grant)).toBeFalsy();
+    for (const input of [
+      { principalRef: grant.input.principalRef },
+      { ...grant.input, role: "owner" },
+      { ...grant.input, expectedRevision: 0 },
+      { ...grant.input, expectedRevision: "00" },
+      { ...grant.input, principalRef: "person@example.com" },
+    ]) {
+      expect(Schema.is(SemanticRequest)({ ...grant, input })).toBeFalsy();
+    }
+  });
 });

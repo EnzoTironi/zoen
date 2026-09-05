@@ -11,7 +11,7 @@ import { SqlClient } from "effect/unstable/sql";
 import type { SqlError } from "effect/unstable/sql";
 
 import { validateContext, withinRequestDeadline } from "../access/context.js";
-import { authorizeWorld } from "../access/world.js";
+import { authorizeWorld, operationCapability } from "../access/world.js";
 import { DomainKey } from "../ports/d01/basis.js";
 import type { DomainCut, InternalBasis } from "../ports/d01/basis.js";
 import type { VerifiedRequestContext } from "../ports/d01/context.js";
@@ -46,6 +46,46 @@ export interface MutationPlan {
   >;
 }
 
+/** Current authority precedes replay; callers may use absence to prepare external input. */
+export const readMutationReplay = Effect.fn(
+  "authority.commit.readMutationReplay"
+)(function* readMutationReplay(
+  context: VerifiedRequestContext,
+  bound: BoundWorldIntent
+) {
+  const { request } = bound;
+  const { worldRef } = request;
+  const capability = operationCapability(request.operation);
+  yield* authorizeWorld(context, worldRef, capability);
+  if ((yield* intentDigest(request)) !== bound.digest) {
+    return yield* new Conflict({ code: "CONFLICT" });
+  }
+  const sql = yield* SqlClient.SqlClient;
+  const [existing] = yield* sql`
+      SELECT intent_digest, receipt_id FROM authority.operations
+      WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
+        AND principal_id = ${context.presence.principalId}
+        AND semantic_operation = ${request.operation} AND operation_id = ${request.operationId}
+    `;
+  if (existing === undefined) {
+    return null;
+  }
+  const row = yield* Schema.decodeUnknownEffect(OperationRow)(existing).pipe(
+    Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+  );
+  if (row.intent_digest !== bound.digest) {
+    return yield* new Conflict({ code: "CONFLICT" });
+  }
+  const result = yield* readReceipt(
+    context,
+    worldRef,
+    row.receipt_id,
+    request.operation
+  );
+  yield* authorizeWorld(context, worldRef, capability);
+  return result;
+});
+
 /** A semantic SQL mutation. Captures and all provider calls precede this boundary. */
 export const commitMutation = Effect.fn("authority.commit.commitMutation")(
   function* commitMutation(
@@ -71,7 +111,11 @@ export const commitMutation = Effect.fn("authority.commit.commitMutation")(
         SELECT world_id FROM authority.worlds
         WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm} FOR SHARE
       `;
-        const access = yield* authorizeWorld(context, worldRef);
+        const access = yield* authorizeWorld(
+          context,
+          worldRef,
+          operationCapability(request.operation)
+        );
         if (
           access.cell_id !== installation.cellId ||
           access.cell_epoch !== installation.cellEpoch ||
@@ -94,28 +138,14 @@ export const commitMutation = Effect.fn("authority.commit.commitMutation")(
         WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
           AND principal_id = ${context.presence.principalId} FOR SHARE
       `;
-        yield* authorizeWorld(context, worldRef);
-        const [existing] = yield* sql`
-        SELECT intent_digest, receipt_id FROM authority.operations
-        WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
-          AND principal_id = ${context.presence.principalId}
-          AND semantic_operation = ${request.operation} AND operation_id = ${request.operationId}
-      `;
-        if (existing !== undefined) {
-          const row = yield* Schema.decodeUnknownEffect(OperationRow)(
-            existing
-          ).pipe(
-            Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
-          );
-          if (row.intent_digest !== bound.digest) {
-            return yield* new Conflict({ code: "CONFLICT" });
-          }
-          return yield* readReceipt(
-            context,
-            worldRef,
-            row.receipt_id,
-            request.operation
-          );
+        yield* authorizeWorld(
+          context,
+          worldRef,
+          operationCapability(request.operation)
+        );
+        const replay = yield* readMutationReplay(context, bound);
+        if (replay !== null) {
+          return replay;
         }
         const cut = yield* readCut(worldRef);
         if (plan.basis !== null) {
@@ -159,7 +189,11 @@ export const commitMutation = Effect.fn("authority.commit.commitMutation")(
           `;
           nextCut[domain] = version;
         }
-        yield* authorizeWorld(context, worldRef);
+        yield* authorizeWorld(
+          context,
+          worldRef,
+          operationCapability(request.operation)
+        );
         const receipt = yield* persistReceipt({
           context,
           cut: nextCut,
@@ -172,7 +206,11 @@ export const commitMutation = Effect.fn("authority.commit.commitMutation")(
         return receipt;
       }).pipe(withinRequestDeadline(context))
     );
-    yield* authorizeWorld(context, worldRef);
+    yield* authorizeWorld(
+      context,
+      worldRef,
+      operationCapability(request.operation)
+    );
     return result;
   }
 );

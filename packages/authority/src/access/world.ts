@@ -3,6 +3,7 @@ import {
   NotFoundOrDenied,
   Unavailable,
 } from "@zoen/contracts/d01/errors";
+import type { SemanticRequest } from "@zoen/contracts/d01/operations";
 import { Revision, exact } from "@zoen/contracts/d01/values";
 import type { WorldRef } from "@zoen/contracts/d01/values";
 import { Effect, Schema } from "effect";
@@ -21,13 +22,35 @@ const AccessRow = Schema.Struct({
   generation_id: Schema.String.check(Schema.isUUID()),
   membership_revision: Revision,
   release_digest: Head.fields.releaseDigest,
-  role: Schema.Literal("owner"),
+  role: Schema.Literals(["owner", "viewer"]),
   security_revision: Revision,
   state: Schema.Literals(["active", "revoked"]),
 }).annotate(exact);
 
+const Capability = Schema.Literals(["read", "manage", "mutate"]);
+export type WorldCapability = typeof Capability.Type;
+const capabilities = {
+  AnswerQuestion: "mutate",
+  CreatePersonalWorld: "mutate",
+  GrantWorldReadAccess: "manage",
+  ImportEvidence: "mutate",
+  Inspect: "read",
+  InspectWorldAccess: "read",
+  OpenEvidence: "read",
+  ProposeCorrection: "mutate",
+  RevokeWorldReadAccess: "manage",
+  UndoCorrection: "mutate",
+} as const satisfies Record<SemanticRequest["operation"], WorldCapability>;
+export const operationCapability = (
+  operation: SemanticRequest["operation"]
+): WorldCapability => capabilities[operation];
+
 export const authorizeWorld = Effect.fn("authority.access.authorizeWorld")(
-  function* authorizeWorld(context: VerifiedRequestContext, world: WorldRef) {
+  function* authorizeWorld(
+    context: VerifiedRequestContext,
+    world: WorldRef,
+    capability: WorldCapability = "mutate"
+  ) {
     yield* validateContext(context);
     if (world.realm !== context.presence.realm) {
       return yield* new NotFoundOrDenied({ code: "NOT_FOUND_OR_DENIED" });
@@ -49,7 +72,12 @@ export const authorizeWorld = Effect.fn("authority.access.authorizeWorld")(
     const access = yield* Schema.decodeUnknownEffect(AccessRow)(row).pipe(
       Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
     );
-    if (access.state !== "active" || access.emergency_deny) {
+    if (
+      !Schema.is(Capability)(capability) ||
+      access.state !== "active" ||
+      access.emergency_deny ||
+      (access.role !== "owner" && capability !== "read")
+    ) {
       return yield* new NotFoundOrDenied({ code: "NOT_FOUND_OR_DENIED" });
     }
     const policy = yield* DataPolicy;

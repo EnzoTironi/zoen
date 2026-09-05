@@ -44,7 +44,11 @@ export const inspect = Effect.fn("authority.knowledge.inspect")(
       .withTransaction(
         Effect.gen(function* frameSnapshot() {
           yield* sql`SET TRANSACTION ISOLATION LEVEL REPEATABLE READ`;
-          const access = yield* authorizeWorld(context, request.worldRef);
+          const access = yield* authorizeWorld(
+            context,
+            request.worldRef,
+            "read"
+          );
           if (
             access.cell_id !== installation.cellId ||
             access.cell_epoch !== installation.cellEpoch ||
@@ -90,11 +94,14 @@ export const inspect = Effect.fn("authority.knowledge.inspect")(
             contested: selection.contested,
             coverage: { _tag: claims.length === 0 ? "Unknown" : "Partial" },
             frameRef,
-            scopedCorrections: yield* readScopedCorrections(
-              context,
-              request.worldRef,
-              request.input.subjectKey
-            ),
+            scopedCorrections:
+              access.role === "viewer"
+                ? []
+                : yield* readScopedCorrections(
+                    context,
+                    request.worldRef,
+                    request.input.subjectKey
+                  ),
             selection: selection.selection,
             subjectKey: request.input.subjectKey,
             verification: "unverified",
@@ -157,7 +164,7 @@ export const inspect = Effect.fn("authority.knowledge.inspect")(
         )
       )
       .pipe(restoreSqlDefect, sanitizeSqlFailure);
-    yield* authorizeWorld(context, request.worldRef);
+    yield* authorizeWorld(context, request.worldRef, "read");
     return yield* Schema.decodeEffect(FrameInspected)({
       _tag: "FrameInspected",
       frame,
