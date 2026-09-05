@@ -1,6 +1,6 @@
 # D03.1 — leitura compartilhada de um World e revogação
 
-**Contrato candidato para revisão, não congelado e não implementado.** Referência de código examinada: `e81b95a` na branch integrada `codex/rebuild`, em 2026-09-05. Este documento não autoriza implementação, migração, ativação ou compartilhamento real. O integrador precisa congelar as decisões abaixo antes de despachar consumidores.
+**Contrato semântico congelado por root em 2026-09-05 para EX20–EX23; implementação e aceitação pendentes.** A investigação partiu de `e81b95a` e foi confrontada com a composição CSV em `fe86850`. Os donos e gates estão em `planning/execution.json`. A ativação exige composição real, cerca de divulgação e revisão independente; este documento não é prova de acesso concedido.
 
 O recorte proposto permite que o owner de um World existente conceda leitura a outro principal de uma conta local existente e revogue esse acesso. Usa o mesmo executor semântico, autoridade PostgreSQL, identidade Better Auth e storage S3 já compostos. Não cria convite, envio de mensagem, descoberta de usuário por email, conta automática ou integração de provider.
 
@@ -45,7 +45,7 @@ Não há promoção de viewer, co-owner, transferência de ownership, exclusão/
 
 Não é necessário que o destinatário mantenha uma sessão aberta enquanto o owner concede leitura. Ao ler, ele precisa de sua própria sessão válida atual. O incremento não admite exclusão/reutilização de contas como operação de produto.
 
-**Decisão de privacidade que precisa de confirmação no congelamento:** propõe-se permitir ao owner endereçar um `PrincipalRef` exato e observar apenas se a concessão foi possível. Isso revela a elegibilidade mínima desse ID pelo sucesso da operação; não equivale a um diretório. Se a revisão não admitir essa observação, `GrantWorldReadAccess` permanece bloqueada até existir um protocolo de identificação/consentimento do destinatário aprovado separadamente. Não inventar convite, token ou envio de email para contornar esse gate.
+**Decisão congelada de audiência:** o owner pode endereçar um `PrincipalRef` exato e observar somente se a concessão foi possível. A concessão solicitada exige essa observação mínima de elegibilidade do ID fornecido; ela não admite busca, enumeração, nome ou email. O ID vem da própria sessão autenticada do destinatário e é compartilhado fora do produto. A revisão independente deve verificar os limites dessa observação e a autorização anterior à consulta; achado incompatível bloqueia ativação. Não criar convite, token ou envio de email neste recorte.
 
 Com essa decisão admitida, o adapter de identidade verifica somente a existência do ID exato na base Better Auth atual, usando o pool identity. Não retorna nome, email, estado de sessão, lista ou sugestões. O executor faz essa consulta apenas depois de autorizar o owner e apenas para uma concessão nova; a consulta não fica dentro do commit de autoridade. A inexistência usa `NotFoundOrDenied`, sem explicar qual predicado falhou. Revogar uma membership existente não depende de a conta ainda existir. Replay de uma concessão já registrada reautoriza o owner e lê seu receipt, sem exigir uma nova consulta de elegibilidade nem reativar acesso.
 
@@ -53,7 +53,7 @@ Esse adapter e sua porta estreita ainda não existem: precisam ser implementados
 
 ## Operações públicas mínimas
 
-Nomes e shapes abaixo são candidatos de contrato, não APIs já disponíveis. Reusar `WorldRef`, `OperationId`, `Revision` decimal textual, erros fechados e parsing de bytes estrito. Proposta de família: `schemaVersion: d03.sharing.v1`, mesmo propósito `personal-records`, transporte HTTP `POST /api/d03/sharing` e grupo tipado no mesmo `HttpApi`. Acrescentar a família ao mesmo `SemanticExecutor`; nenhuma rota executa SQL ou regras de membership diretamente.
+Nomes e shapes abaixo são o contrato congelado a implementar, ainda não APIs disponíveis. Reusar `WorldRef`, `OperationId`, `Revision` decimal textual, erros fechados e parsing de bytes estrito. Proposta de família: `schemaVersion: d03.sharing.v1`, mesmo propósito `personal-records`, transporte HTTP `POST /api/d03/sharing` e grupo tipado no mesmo `HttpApi`. Acrescentar a família ao mesmo `SemanticExecutor`; nenhuma rota executa SQL ou regras de membership diretamente.
 
 Todas as respostas abaixo incluem `worldRef`. `Membership` contém somente `{ principalRef, role: owner | viewer, state: active | revoked, revision }`. Nenhuma resposta pública inclui cut global, security revision, principal de terceiros não solicitado ou dados do storage.
 
@@ -131,7 +131,7 @@ Estes são checks a implementar, **não resultados executados**. Reusar os fixtu
 
 ## Consumidores e allowlist sugerida após congelamento
 
-Apenas este documento foi delegado nesta tarefa. Os caminhos abaixo são proposta para atribuição futura; não autorizam edição agora. Arquivos compartilhados recebem um único dono e integração coordenada antes de workers começarem.
+A atribuição executável está em EX20–EX23 de `planning/execution.json`; a tabela abaixo descreve a divisão. A cerca tem handoff privado próprio, congelado antes de seu adapter; o núcleo de membership não pode ser ativado sem ela. Arquivos compartilhados recebem um único dono.
 
 | Segmento/dono sugerido | Caminhos a atribuir | Contrato consumido |
 | --- | --- | --- |
@@ -142,4 +142,4 @@ Apenas este documento foi delegado nesta tarefa. Os caminhos abaixo são propost
 | Web — worker-2, revisão por outro agente | Novo `apps/web/src/features/sharing/**` e composição delimitada de estado/transportes existentes; testes de componentes e browser | Papéis para apresentação, confirmação da audiência completa, destinatário exato, revisão e recuperação de Stale. |
 | Prova independente — worker distinto dos autores | `tests/integration/d03-sharing/**`, `tests/security/d03-sharing/**`, `tests/acceptance/d03-sharing/**` | SH-01–12 com componentes reais; falha volta ao dono, sem editar resultados esperados para aprovar. |
 
-Antes de implementação, root precisa registrar: aceitação ou rejeição da observação mínima de elegibilidade; audiência world-wide e exclusão das correções privadas; apenas viewer; mecanismo e fronteira verificável de divulgação; atribuição exclusiva dos arquivos compartilhados; perfil e comandos de prova. O contrato não marca esses gates, D03, apagamento ou restore como concluídos.
+Decisões de execução: audiência de evidências/claims de todo o World, somente viewer, exclusão de correções/Questions/Frames privados do owner e elegibilidade mínima por UUID estão congeladas. Reusar o mesmo executor, o commit e o perfil retido; nenhuma operação de apagamento está admitida. A ordem de revogação será coordenada por chave de membership no mesmo PostgreSQL, usando a cerca descrita em `disclosure-fence.md` e seu handoff revisado. Os gates de composição, emissão, SQL e prova continuam pendentes até execução independente; D03, apagamento e restore não estão concluídos.

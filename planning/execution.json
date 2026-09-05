@@ -1283,6 +1283,273 @@
         "docs/contracts/d01-csv.md",
         "planning/execution.json#packages/EX19"
       ]
+    },
+    {
+      "depends_on": {
+        "hard": ["EX19"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": null,
+      "reasoning_effort": null,
+      "verification_state": "not_run",
+      "commands_status": "Comandos existentes; novos cenários ainda precisam ser implementados e executados.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0106",
+        "ZN-0108",
+        "ZN-0109",
+        "ZN-0110",
+        "ZN-0111",
+        "ZN-0112",
+        "ZN-0298"
+      ],
+      "source_semantics": "Recorte local owner/viewer e cerca de divulgação; não conclui Cedar genérico, apagamento, restore, sessões de app ou D03 completo.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-sharing.md",
+        "docs/contracts/disclosure-fence.md",
+        "docs/contracts/disclosure-handoff-review.md"
+      ],
+      "contracts_consumed": [
+        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado."
+      ],
+      "id": "EX20",
+      "title": "Congelar compartilhamento, cerca e migração aditiva de memberships",
+      "owner": "root",
+      "scope": "Contrato mínimo owner/viewer, elegibilidade exata, coordenação física e SQL aditivo sem rebind de release.",
+      "acceptance": [
+        "Handoff privado de cerca e elegibilidade usa APIs reais; autorização permanece no executor.",
+        "Nova migração valida exatamente um owner e preserva histórico; roles de componentes continuam distintos."
+      ],
+      "planned_direct_checks": [
+        "SH-10 migração/grants/owners ambíguos com PostgreSQL real.",
+        "Contratos novos compilam com consumidores atribuídos; nenhum resultado de runtime antecipado."
+      ],
+      "owns": [
+        "docs/contracts/d03-sharing.md",
+        "docs/contracts/disclosure-fence.md",
+        "packages/authority/src/ports/disclosure/**",
+        "packages/authority/src/ports/sharing/**",
+        "ops/migrations/**",
+        "apps/server/test/adapters/postgres/d01/database.ts"
+      ]
+    },
+    {
+      "depends_on": {
+        "hard": ["EX20"],
+        "optional": []
+      },
+      "acceptance_requires": ["EX22"],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "Comandos existentes; novos cenários ainda precisam ser implementados e executados.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0106",
+        "ZN-0108",
+        "ZN-0109",
+        "ZN-0110",
+        "ZN-0111",
+        "ZN-0112",
+        "ZN-0298"
+      ],
+      "source_semantics": "Recorte local owner/viewer e cerca de divulgação; não conclui Cedar genérico, apagamento, restore, sessões de app ou D03 completo.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-sharing.md",
+        "docs/contracts/disclosure-fence.md",
+        "docs/contracts/disclosure-handoff-review.md"
+      ],
+      "contracts_consumed": [
+        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado."
+      ],
+      "id": "EX21",
+      "title": "Executar grant, revoke e leitura viewer no núcleo comum",
+      "owner": "worker-1",
+      "scope": "Schemas compartilhados e handlers SQL com audiência explícita, revisões, replay e permissão fechada por operação. Root compõe rotas e executor; não ativar sem EX23.",
+      "acceptance": [
+        "Viewer lê evidências/claims e próprios Frames; não recebe correções privadas nem executa mutações.",
+        "Grant/revoke usam revisão monotônica e commit único; replay de grant revogado não reativa.",
+        "Writers de membership usam chave exclusiva de transação do handoff; identidade I/O precede commit somente para grant novo."
+      ],
+      "planned_direct_checks": [
+        "SH-01–06 contra PostgreSQL/S3/Better Auth reais e projeções puras.",
+        "SH-09 processo real interrompido antes/depois do commit; nenhum receipt parcial."
+      ],
+      "owns": [
+        "packages/contracts/src/sharing/**",
+        "packages/contracts/test/sharing/**",
+        "packages/contracts/src/d01/operations.ts",
+        "packages/authority/src/access/world.ts",
+        "packages/authority/src/access/sharing/**",
+        "packages/authority/src/commit/intent.ts",
+        "packages/authority/src/commit/mutation.ts",
+        "packages/authority/src/commit/receipt.ts",
+        "packages/authority/src/ports/d01/persistence.ts",
+        "packages/authority/src/values/canonical.ts",
+        "packages/authority/src/knowledge/d01/inspect.ts",
+        "packages/authority/src/knowledge/corrections/frame.ts",
+        "packages/authority/src/knowledge/corrections/answer.ts",
+        "packages/authority/src/evidence/d01/policy.ts",
+        "packages/authority/src/evidence/d01/open.ts",
+        "tests/integration/d03-sharing/core/**"
+      ]
+    },
+    {
+      "depends_on": {
+        "hard": ["EX20"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "verification_state": "not_run",
+      "commands_status": "Comandos existentes; novos cenários ainda precisam ser implementados e executados.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0106",
+        "ZN-0108",
+        "ZN-0109",
+        "ZN-0110",
+        "ZN-0111",
+        "ZN-0112",
+        "ZN-0298"
+      ],
+      "source_semantics": "Recorte local owner/viewer e cerca de divulgação; não conclui Cedar genérico, apagamento, restore, sessões de app ou D03 completo.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-sharing.md",
+        "docs/contracts/disclosure-fence.md",
+        "docs/contracts/disclosure-handoff-review.md"
+      ],
+      "contracts_consumed": [
+        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado."
+      ],
+      "id": "EX22",
+      "title": "Implementar cerca PostgreSQL e elegibilidade no adapter real",
+      "owner": "worker-2",
+      "scope": "Pool de cerca separado e limitado no mesmo banco de autoridade, chaves compartilhadas, cleanup/descarte; logout real coordenado e lookup exato no pool identity.",
+      "acceptance": [
+        "Sessão física nunca retorna ao pool com aquisição/unlock ambíguo; prazo original limita novas aquisições.",
+        "Logout adquire exclusivo antes de invalidar e conserva até pós-verificação; 503 não confirma revogação.",
+        "PrincipalDirectory lê somente existência do UUID exato; credencial identity não muda."
+      ],
+      "planned_direct_checks": [
+        "Dois clientes PostgreSQL reais provam compartilhados/exclusivo/ordem/cleanup; matar conexão não polui pool.",
+        "Logout real e membership gate coordenam com outro processo, sem mocks; check posterior anterior preservado."
+      ],
+      "owns": [
+        "apps/server/src/adapters/postgres/disclosure/**",
+        "apps/server/test/adapters/postgres/disclosure/**",
+        "apps/server/src/identity/d01/**",
+        "apps/server/test/identity/sharing/**"
+      ]
+    },
+    {
+      "depends_on": {
+        "hard": ["EX21", "EX22"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "reviewer": "worker-3",
+      "model": null,
+      "reasoning_effort": null,
+      "verification_state": "not_run",
+      "commands_status": "Comandos existentes; novos cenários ainda precisam ser implementados e executados.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0106",
+        "ZN-0108",
+        "ZN-0109",
+        "ZN-0110",
+        "ZN-0111",
+        "ZN-0112",
+        "ZN-0298"
+      ],
+      "source_semantics": "Recorte local owner/viewer e cerca de divulgação; não conclui Cedar genérico, apagamento, restore, sessões de app ou D03 completo.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-sharing.md",
+        "docs/contracts/disclosure-fence.md",
+        "docs/contracts/disclosure-handoff-review.md"
+      ],
+      "contracts_consumed": [
+        "D03 sharing semântico congelado; ports/disclosure e ports/sharing privados de root; handoff executor/HTTP revisado."
+      ],
+      "id": "EX23",
+      "title": "Compor compartilhamento e emissão e verificar web/CLI",
+      "owner": "root",
+      "scope": "Mesmo executor compõe família sharing e buffers sob Scope real HTTP; superfícies enviam intenções explícitas e provam revogação em voo.",
+      "acceptance": [
+        "Bytes só chegam ao emitter depois de codificação, gate e revalidação; Scope dura até writer Node concluir.",
+        "Duas ordens reais de grant/revoke/logout e emissão observadas em processos distintos.",
+        "Web e CLI exibem audiência/estado atual, conservam operationId/revisão no retry e negam viewer sem controles privilegiados."
+      ],
+      "planned_direct_checks": [
+        "SH-07/08/11/12 com HTTP/CLI/browser/PG/S3 reais, incluindo prova de Scope e ausência de bytes após revoke vencedor.",
+        "Build/container e revisões independentes no commit combinado; ativação local somente após provas."
+      ],
+      "owns": [
+        "packages/authority/src/semantic/executor.ts",
+        "packages/contracts/src/d01/api.ts",
+        "apps/server/src/composition.ts",
+        "apps/server/src/http/**",
+        "apps/server/src/adapters/postgres/d01/authority-role.ts",
+        "apps/server/src/adapters/postgres/d01/postgres.ts",
+        "apps/web/src/features/sharing/**",
+        "apps/web/src/features/d01/**",
+        "apps/web/test/integration/d03-sharing/**",
+        "apps/cli/src/sharing/**",
+        "apps/cli/src/d01/**",
+        "apps/cli/test/sharing/**",
+        "tests/integration/d03-sharing/independent/**",
+        "apps/server/test/composition/disclosure/**"
+      ]
     }
   ],
   "suggested_schedule": [

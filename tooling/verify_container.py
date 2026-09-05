@@ -62,6 +62,7 @@ def main():
         "ZOEN_LOCAL_PUBLIC_URL": origin,
         "ZOEN_LOCAL_RELEASE_FILE": str(release),
         "ZOEN_TEST_WEB_URL": origin,
+        "ZOEN_TEST_CSV_WEB_URL": origin,
     }
     run(["pnpm", "provision:local"], env=environment)
     # Provision writes JSON-compatible quoted values and refuses embedded control/escape bytes.

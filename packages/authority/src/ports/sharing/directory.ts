@@ -1,0 +1,15 @@
+import type { Unavailable } from "@zoen/contracts/d01/errors";
+import { Context } from "effect";
+import type { Effect } from "effect";
+
+import type { PrincipalId } from "../d01/context.js";
+
+/** Exact account eligibility; no directory, session or identity metadata. */
+export class PrincipalDirectory extends Context.Service<
+  PrincipalDirectory,
+  {
+    readonly exists: (
+      principalId: typeof PrincipalId.Type
+    ) => Effect.Effect<boolean, Unavailable>;
+  }
+>()("zoen/authority/ports/sharing/PrincipalDirectory") {}
