@@ -26,6 +26,10 @@ export const checkD01RuntimeRole = Effect.gen(function* checkD01DatabaseRole() {
       WHERE (rolname = current_user OR pg_has_role(current_user, oid, 'SET'))
       AND (
       rolsuper OR rolcreaterole OR rolcreatedb OR rolbypassrls OR rolreplication
+      OR EXISTS (
+        SELECT FROM pg_auth_members
+        WHERE member = pg_roles.oid AND admin_option
+      )
       OR has_database_privilege(oid, current_database(), 'CREATE')
       OR has_database_privilege(oid, current_database(), 'TEMPORARY')
       OR has_schema_privilege(oid, 'authority', 'CREATE')
