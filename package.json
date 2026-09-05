@@ -11,14 +11,17 @@
     "typecheck": "tsc --noEmit",
     "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/authority/tsconfig.build.json",
     "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json",
-    "start:server": "node --env-file=.env.application apps/server/dist/main.js",
+    "start:server": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" apps/server/dist/main.js",
     "cli": "node apps/cli/dist/main.js",
     "test:unit": "vitest run --project unit",
     "test:integration": "node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration",
     "test:components": "playwright test",
     "build:web": "vite build --config vite.application.config.ts",
-    "build": "pnpm build:apps && pnpm build:web && python3 tooling/build_release.py",
-    "provision:local": "node --env-file=.env.infra ops/local/provision.ts"
+    "build": "python3 tooling/clean_build.py && pnpm build:apps && pnpm build:web && python3 tooling/build_release.py",
+    "provision:local": "node --env-file=.env.infra ops/local/provision.ts",
+    "test:acceptance": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" node_modules/@playwright/test/cli.js test --config playwright.acceptance.config.ts",
+    "build:container": "docker build -f ops/containers/application.Dockerfile -t zoen-local:current .",
+    "test:container": "python3 tooling/verify_container.py"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "3.1127.0",

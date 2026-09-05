@@ -32,6 +32,7 @@ jobs:
           node packages/contracts/dist/d01/api.js
           node packages/authority/dist/semantic/executor.js
       - run: python3 tooling/verify_plan.py
+      - run: python3 -m unittest discover -s tooling -p 'test_*.py'
 
   unit:
     runs-on: ubuntu-24.04
@@ -57,27 +58,22 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Configure disposable services
         id: services-config
-        run: |
-          python3 - <<'PY'
-          import os, secrets
-          from pathlib import Path
-          admin, runtime = secrets.token_hex(24), secrets.token_hex(24)
-          values = {
-              "ZOEN_TEST_DB_ADMIN_PASSWORD": admin,
-              "ZOEN_TEST_DB_RUNTIME_PASSWORD": runtime,
-              "ZOEN_TEST_DATABASE_URL": f"postgresql://zoen_infra:{admin}@127.0.0.1:55434/zoen_test",
-              "ZOEN_TEST_RUNTIME_DATABASE_URL": f"postgresql://zoen_runtime:{runtime}@127.0.0.1:55434/zoen_test",
-              "ZOEN_TEST_S3_ENDPOINT": "http://127.0.0.1:59004",
-              "ZOEN_TEST_S3_ACCESS_KEY": secrets.token_hex(12),
-              "ZOEN_TEST_S3_SECRET_KEY": secrets.token_hex(32),
-          }
-          target = Path(".env.infra")
-          target.write_text("".join(f"{key}={value}\n" for key, value in values.items()))
-          os.chmod(target, 0o600)
-          PY
+        run: python3 tooling/prepare_infra.py
       - run: docker compose --env-file .env.infra -f ops/compose.yaml up -d --wait
       - run: pnpm build
       - run: pnpm test:integration
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:container
+      - if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: integration-and-container-failure
+          path: |
+            test-results
+            .local/*-proof/build.log
+            .local/*-proof/container.log
+          include-hidden-files: true
+          if-no-files-found: ignore
       - if: always() && steps.services-config.outcome == 'success'
         run: docker compose --env-file .env.infra -f ops/compose.yaml down --volumes
 

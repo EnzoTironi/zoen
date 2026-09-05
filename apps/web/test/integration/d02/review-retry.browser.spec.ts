@@ -1,11 +1,21 @@
 import { randomBytes, randomUUID } from "node:crypto";
+import { setTimeout } from "node:timers/promises";
 
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
 import { Config, Effect } from "effect";
 
-const baseURL = Effect.runSync(Config.string("ZOEN_TEST_WEB_URL"));
+const baseURL = Effect.runSync(
+  Config.string("ZOEN_TEST_WEB_URL").pipe(
+    Config.orElse(() => Config.string("ZOEN_PUBLIC_URL"))
+  )
+);
 test.use({ baseURL });
+
+// Keep Better Auth's real 3-signup/10-second guard enabled across the serial suite.
+test.beforeEach(async () => {
+  await setTimeout(10_100);
+});
 
 const signUp = async (page: Page) => {
   await page.goto("/");

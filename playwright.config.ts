@@ -1,7 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
+import { Clock, Effect } from "effect";
 
 export default defineConfig({
   forbidOnly: true,
+  outputDir: `test-results/components-${Effect.runSync(Clock.currentTimeMillis)}`,
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   retries: 0,
   testDir: "apps/web/test/components/d01",

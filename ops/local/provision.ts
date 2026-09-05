@@ -37,7 +37,15 @@ const program = Effect.gen(function* provisionLocalApplication() {
   ) {
     return yield* new ProvisionError({ code: "INVALID_LOCAL_ORIGIN" });
   }
-  if (yield* fs.exists(`${root}.env.application`)) {
+  const profile = yield* Config.string("ZOEN_LOCAL_PROFILE").pipe(
+    Config.withDefault("application")
+  );
+  if (!/^[a-z][a-z0-9-]{0,31}$/u.test(profile)) {
+    return yield* new ProvisionError({ code: "INVALID_LOCAL_PROFILE" });
+  }
+  const environmentPath = `${root}.env.${profile}`;
+  const directory = `${root}.local/${profile}`;
+  if (yield* fs.exists(environmentPath)) {
     return yield* new ProvisionError({ code: "CONFIGURATION_EXISTS" });
   }
   const suffix = randomBytes(12).toString("hex");
@@ -62,7 +70,10 @@ const program = Effect.gen(function* provisionLocalApplication() {
     url.password = passwords[role];
     return url.href;
   };
-  const release = yield* fs.readFile(`${root}apps/server/dist/release.json`);
+  const releaseFile = yield* Config.string("ZOEN_LOCAL_RELEASE_FILE").pipe(
+    Config.withDefault(`${root}apps/server/dist/release.json`)
+  );
+  const release = yield* fs.readFile(releaseFile);
   const installation = {
     cellEpoch: "1",
     cellId: randomUUID(),
@@ -79,8 +90,8 @@ const program = Effect.gen(function* provisionLocalApplication() {
     restoreAfterErasure: false,
     retention: "while-pinned",
   };
-  yield* fs.makeDirectory(`${root}.local`, { mode: 448, recursive: true });
-  const installationPath = `${root}.local/installation.json`;
+  yield* fs.makeDirectory(directory, { mode: 448, recursive: true });
+  const installationPath = `${directory}/installation.json`;
   yield* fs.writeFileString(
     installationPath,
     yield* encodeJson({ installation, policy }),
@@ -88,7 +99,7 @@ const program = Effect.gen(function* provisionLocalApplication() {
   );
   // Record generated resources before creation. Interrupted setup never deletes or silently replaces them.
   yield* fs.writeFileString(
-    `${root}.local/provision.json`,
+    `${directory}/provision.json`,
     yield* encodeJson({
       bucket,
       databaseName,
@@ -120,11 +131,10 @@ const program = Effect.gen(function* provisionLocalApplication() {
     }
     lines.push(`${key}="${value}"`);
   }
-  yield* fs.writeFileString(
-    `${root}.env.application`,
-    `${lines.join("\n")}\n`,
-    { flag: "wx", mode: 384 }
-  );
+  yield* fs.writeFileString(environmentPath, `${lines.join("\n")}\n`, {
+    flag: "wx",
+    mode: 384,
+  });
   yield* Effect.gen(function* createIsolatedDatabase() {
     const sql = yield* SqlClient.SqlClient;
     for (const role of [

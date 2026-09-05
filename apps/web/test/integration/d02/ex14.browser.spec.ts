@@ -1,4 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
+import { setTimeout } from "node:timers/promises";
 
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
@@ -24,6 +25,11 @@ const baseURL = Effect.runSync(
   )
 );
 test.use({ baseURL });
+
+// Keep Better Auth's real 3-signup/10-second guard enabled across the serial suite.
+test.beforeEach(async () => {
+  await setTimeout(10_100);
+});
 const parseSuccess = Schema.decodeUnknownSync(SemanticSuccess);
 const validTime = {
   _tag: "DateInterval",
