@@ -63,3 +63,7 @@ Classificação atual de Q1: **resolvido no desenho candidato, condicionado à a
 Limite preservado: isso garante que o excesso de claims sozinho não torna a identidade irrecuperável. Não garante undo arbitrário de qualquer decisão antiga após outras mudanças de grafo. Limites estruturais atuais/prospectivos precisam ser impostos por todos os writers, e inversões que excedam esses limites ou conflitem com distinções posteriores permanecem bloqueadas. A jornada deve explicar o impedimento real sem prometer reversão automática.
 
 Oráculo ainda a executar depois de implementação autorizada: exceder os limites comparativos por imports reais, observar QuotaExceeded normal, obter recuperação completa sob base atual e confirmar undo; repetir com períodos desconhecidos, revalidação concorrente e viewer negado. Não foram executados testes de identidade nesta revisão documental.
+
+## Reavaliação da precisão temporal — c2d2b70
+
+Foi lido o diff `c2d2b70`: coalescência de células adjacentes com assinatura idêntica agora é obrigatória, até obter células maximais únicas; contagem, cellRef e digest ocorrem depois. Recuperação usa somente assinatura estrutural. Isso resolve a ambiguidade documental registrada acima. Continua necessária a prova futura de canonicidade no mesmo cut, inclusive ordem/orientação das arestas e fronteiras redundantes.
