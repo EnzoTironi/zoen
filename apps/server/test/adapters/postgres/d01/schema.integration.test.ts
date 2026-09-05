@@ -1,6 +1,6 @@
-import { NodeFileSystem } from "@effect/platform-node";
+import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { Effect } from "effect";
+import { Effect, Layer } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { applyApplicationMigrations } from "../../../../../../ops/migrations/run.ts";
@@ -53,8 +53,7 @@ it.live(
       // Keep this pre-sharing schema oracle on its explicit, retained migration baseline.
       (database) =>
         applyApplicationMigrations(database.names).pipe(
-          Effect.provide(database.migration),
-          Effect.provide(NodeFileSystem.layer)
+          Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
         )
     )
 );
