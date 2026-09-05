@@ -51,6 +51,9 @@ export const canonicalJson = (input: unknown) =>
         descend: (value: unknown, depth: number) => void
       ): void => {
         if (Array.isArray(value)) {
+          if (Object.getPrototypeOf(value) !== Array.prototype) {
+            invalid();
+          }
           if (Reflect.ownKeys(value).length !== value.length + 1) {
             invalid();
           }

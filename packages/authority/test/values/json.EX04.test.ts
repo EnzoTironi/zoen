@@ -294,4 +294,11 @@ describe("EX04 canonical bytes and domain-separated digests", () => {
       "InvalidInput"
     );
   });
+
+  it("rejects array prototypes that carry metadata outside canonical JSON", () => {
+    const altered = [1, 2];
+    Object.setPrototypeOf(altered, { custom: true });
+    expect(failure(canonicalJson(altered))._tag).toBe("InvalidInput");
+    expect(Effect.runSync(canonicalJson([1, 2]))).toBe("[1,2]");
+  });
 });
