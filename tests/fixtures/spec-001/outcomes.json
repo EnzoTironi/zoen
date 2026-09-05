@@ -1,0 +1,26 @@
+{
+  "seed": "zn-0011-outcomes-seed-v1",
+  "note": "Synthetic outcome axes fixtures for ZN-0011. Not provider evidence.",
+  "selectedContestedUnverifiedZero": {
+    "interpretation": {
+      "status": "selected",
+      "verification": "unverified",
+      "contested": true
+    },
+    "amount": {
+      "tag": "Zero",
+      "amount": "0"
+    }
+  },
+  "distinctPresence": {
+    "missing": { "tag": "Missing" },
+    "zero": { "tag": "Zero", "amount": "0.0" },
+    "false": { "tag": "False" },
+    "deleted": { "tag": "Deleted" },
+    "present": { "tag": "Present", "value": "1.00" }
+  },
+  "failureSample": {
+    "tag": "InvalidInput",
+    "code": "RESULT_UNKNOWN_DISCRIMINANT"
+  }
+}

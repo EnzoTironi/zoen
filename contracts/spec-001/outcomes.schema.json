@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-001/outcomes.schema.json",
+  "title": "SPEC-001 stable outcomes, state axes and presence",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["interpretation", "amount"],
+  "properties": {
+    "interpretation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "verification", "contested"],
+      "properties": {
+        "status": { "enum": ["unknown", "unresolved", "selected", "set-valued"] },
+        "verification": { "enum": ["unverified", "verified"] },
+        "contested": { "type": "boolean" }
+      }
+    },
+    "amount": {
+      "oneOf": [
+        { "type": "object", "additionalProperties": false, "required": ["tag"], "properties": { "tag": { "const": "Missing" } } },
+        { "type": "object", "additionalProperties": false, "required": ["tag", "amount"], "properties": { "tag": { "const": "Zero" }, "amount": { "type": "string", "pattern": "^-?0+(\\.0+)?$" } } },
+        { "type": "object", "additionalProperties": false, "required": ["tag"], "properties": { "tag": { "const": "False" } } },
+        { "type": "object", "additionalProperties": false, "required": ["tag"], "properties": { "tag": { "const": "Deleted" } } },
+        { "type": "object", "additionalProperties": false, "required": ["tag", "value"], "properties": { "tag": { "const": "Present" }, "value": { "type": "string", "maxLength": 4096 } } }
+      ]
+    }
+  }
+}

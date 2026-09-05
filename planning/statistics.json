@@ -5,10 +5,10 @@
   "capabilities": 157,
   "planned_file_records": 2320,
   "representations": {
-    "existing-with-sidecar": 139,
-    "sidecar-only": 943,
-    "comment-only-source": 923,
-    "markdown-plan": 315
+    "existing-with-sidecar": 143,
+    "sidecar-only": 941,
+    "comment-only-source": 922,
+    "markdown-plan": 314
   },
   "allocations": {
     "conditional-support": 1399,
