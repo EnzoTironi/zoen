@@ -1,6 +1,6 @@
 # File plan — `packages/kernel/src/decimal.ts`
 
-**Status:** candidate-unaccepted; no product acceptance implied.
+**Status:** implementation-in-progress; no product acceptance implied.
 
 Target: `packages/kernel/src/decimal.ts`. Representation: **existing-with-sidecar**. Allocation: **required**.
 

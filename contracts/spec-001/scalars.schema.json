@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-001/scalars.schema.json",
+  "title": "SPEC-001 decimal money and unit scalar records",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["amount", "currency"],
+  "properties": {
+    "amount": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]{1,18})?$",
+      "maxLength": 41
+    },
+    "currency": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "unit": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]{0,15}$"
+    },
+    "factor": {
+      "type": "string",
+      "pattern": "^(?:0|[1-9][0-9]*)(?:\\.[0-9]{1,18})?$"
+    },
+    "evidenceId": {
+      "type": "string",
+      "maxLength": 128
+    }
+  }
+}

@@ -1,47 +1,28 @@
-# File plan — `runbooks/spec-001/scalars.md`
+# Runbook — decimal, money and unit algebra (ZN-0008)
 
-**Status:** planned; no product acceptance implied.
+**Status:** implementation-in-progress; not accepted. Law-layer only.
 
-Target: `runbooks/spec-001/scalars.md`. Representation: **markdown-plan**. Allocation: **required**.
+## Scope
 
-Specs: [SPEC-001](../../docs/specs/spec-001.md).
-Tickets: [ZN-0008](../../docs/tickets/zn-0008.md).
+Exact decimal arithmetic (precision 38 / scale ≤ 18), money with currency equality, and quantity comparison only with equal units or an explicit released conversion factor.
 
-## Responsibility and reuse
+## Observe
 
-## ZN-0008 operational/repair procedure
+1. Capture amount strings, currencies/units and any conversion evidence IDs.
+2. Prefer Result parsers (`normalizeDecimal`, `parseMoney`, `compareMoney`, `compareQuantities`).
+3. Mixed currencies or missing conversion yield `NonComparable` / `InvalidInput` — never locale or float coercion.
 
-Scope: Implement decimal, money and unit algebra. This is a plan; deployments and commands not yet qualified remain blocked.
+## Repair
 
-```text
-PRECHECK exact environment/profile, operator authority, ticket evidence and affected World/realm.
-STOP new admissions/dispatch for the affected scope before destructive or ambiguous repair.
-OBSERVE actual durable state and raw error at this ticket boundary:
-The scalar operators add and compare the values
-PRESERVE original intent/receipt/provider identities and evidence; never reset a tenant to get a green run.
-REPAIR under the owning module protocol:
-INPUT: untrusted bytes or scalar plus explicit schema, precision, unit and temporal policy.
-CHECK byte/depth/entry limits before recursive parsing; reject duplicate keys, invalid Unicode and remote schema references.
-PARSE IDs before branding; bind World and realm, never treat an opaque ID as authorization.
-NORMALIZE decimals with exact arithmetic, explicit rounding and checked scale/overflow; zero and missing remain different.
-COMPARE units only with equal dimensions/currency or a released evidenced conversion; never guess locale.
-PARSE Instant, LocalDate and wall time as different types; require an explicit choice for ambiguous wall time.
-CANONICALIZE admitted values deterministically and hash actual canonical bytes; no network or environment access.
-RETURN tagged errors without partial branding; preserve counterexamples for generated-law tests.
-VERIFY the original oracle plus negative and boundary cases on real admitted components:
-The sum is exactly 0.30 BRL; quantities compare equal only with the factor; mixed currencies return NonComparable
-RESUME only with current approval and intact unrelated tenant scopes.
+1. Do not invent conversion factors; require released evidence + effective date.
+2. Overflow and required rounding are explicit errors, not truncation.
+3. Re-run:
+
+```sh
+pnpm exec tsc --ignoreConfig --target ES2022 --module NodeNext --moduleResolution NodeNext --lib ES2023,DOM --strict --declaration --outDir .core-build --rootDir . packages/kernel/src/decimal.ts packages/kernel/src/result.ts
+node --experimental-strip-types --test tests/law/spec-001/scalars.test.ts
 ```
 
-## Owning state / operation contracts
+## Resume
 
-### SPEC-001
-parseEnvelope(bytes) -> ValidEnvelope | InvalidInput; normalizeDecimal(text, scalePolicy) -> Decimal | InvalidScalar; compareIntervals(a,b) -> ComparableInterval | NonComparable; canonicalDigest(value) -> sha256.
-
-No tables. Normative JSON schemas live under contracts/kernel. IDs are opaque UUID values tagged at runtime with world/realm; counters and monetary values cross JSON as decimal strings. Database identifiers must not be guessable credentials.
-
-[algorithm SPEC-001](../../docs/algorithms/spec-001.md)
-
-## Acceptance boundary
-
-A plan is not implementation, and a compile of comment-only files proves no behavior. All relevant ticket check IDs must execute at their required layer with independent evidence. Services are not mocked; missing credentials/dependencies remain blockers.
+Independent review required before acceptance. Do not mark ZN-0008 accepted from this runbook.

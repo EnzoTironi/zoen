@@ -1,0 +1,11 @@
+{
+  "seed": "zn-0008-scalars-seed-v1",
+  "note": "Synthetic decimal/money/unit records for ZN-0008. Not observed provider evidence.",
+  "brlA": "0.10",
+  "brlB": "0.20",
+  "brlSum": "0.30",
+  "grams": "1000",
+  "kilograms": "1",
+  "kgToGFactor": "1000",
+  "usd": "1.00"
+}
