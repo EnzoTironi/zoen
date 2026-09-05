@@ -6,6 +6,8 @@ Commands: `sign-up`, `sign-in`, `sign-out`, `create-world`, `import`, `inspect`,
 
 Import reads unchanged UTF-8 document text through `--file` or stdin, including BOM, whitespace, and duplicate keys. The server owns document interpretation. Mutation commands require explicit operation UUIDs, which callers reuse for retries. Results preserve the public response and are JSON on stdout. Failures are sanitized JSON on stderr and set a nonzero exit status. Fetch redirects are disabled so credentials cannot follow a different destination.
 
+`import --format json` is the default and preserves the legacy `{document}` input. `import --format csv` sends `{document, format: "d01.csv.v1"}` to the same executor. CSV must follow [the Zoen dialect](../../../../../docs/contracts/d01-csv.md); file extensions and content never select a parser. The original CRLF/LF, quoting, Unicode and final newline pass through unchanged. Repeating an import across CLI and web requires the same format, original text, World and operation UUID.
+
 The HTTP transport uses `HttpApiClient.make(ApplicationApi)` and the real EX09 identity endpoints. There are no authority, SQL, or storage imports. Four local tests exercise result/error formatting, URL validation, raw input boundaries, and session permissions/origin binding. They do not prove server behavior.
 
 Acceptance remains pending real process integration against EX10 and independent review by worker-2/root. The installed Effect CLI declaration references a stripped internal type; the separately reviewed root dependency patch is also required for strict compilation.

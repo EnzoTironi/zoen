@@ -118,6 +118,12 @@ const importEvidence = Command.make(
         "Raw document file, or - for stdin; bytes are not parsed or normalized"
       )
     ),
+    format: Flag.choice("format", ["json", "csv"]).pipe(
+      Flag.withDefault("json"),
+      Flag.withDescription(
+        "Document format: json (legacy D01) or csv (Zoen d01.csv.v1 dialect)"
+      )
+    ),
     operationId,
     realm,
     worldId,
@@ -128,7 +134,10 @@ const importEvidence = Command.make(
         const document = yield* readInput(flags.file, D01_LIMITS.documentBytes);
         yield* send({
           ...envelope,
-          input: { document },
+          input:
+            flags.format === "csv"
+              ? { document, format: "d01.csv.v1" }
+              : { document },
           operation: "ImportEvidence",
           operationId: flags.operationId,
           worldRef: { realm: flags.realm, worldId: flags.worldId },
@@ -142,8 +151,18 @@ const importEvidence = Command.make(
   Command.withExamples([
     {
       command:
-        "zoen --base-url http://localhost:3000 import --world-id <uuid> --operation-id <uuid> --file document.json",
+        "zoen --base-url http://127.0.0.1:4310 import --world-id <uuid> --operation-id <uuid> --file document.json",
       description: "Send the original document using a stable operation UUID",
+    },
+    {
+      command:
+        "zoen --base-url http://127.0.0.1:4310 import --world-id <uuid> --operation-id <uuid> --format csv --file document.csv",
+      description: "Import the Zoen CSV dialect with its explicit selector",
+    },
+    {
+      command:
+        "cat document.csv | zoen --base-url http://127.0.0.1:4310 import --world-id <uuid> --operation-id <uuid> --format csv --file -",
+      description: "Read the same original UTF-8 document from stdin",
     },
   ])
 );
