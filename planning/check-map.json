@@ -139,7 +139,7 @@
     "ticket_id": "ZN-0005",
     "spec_id": "SPEC-000",
     "test_file": "tests/static/spec-000/verify-ticket.test.ts",
-    "plan_path": "tests/static/spec-000/verify-ticket.test.ts",
+    "plan_path": "tests/static/spec-000/verify-ticket.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -150,7 +150,7 @@
     "ticket_id": "ZN-0005",
     "spec_id": "SPEC-000",
     "test_file": "tests/static/spec-000/verify-ticket.test.ts",
-    "plan_path": "tests/static/spec-000/verify-ticket.test.ts",
+    "plan_path": "tests/static/spec-000/verify-ticket.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -161,7 +161,7 @@
     "ticket_id": "ZN-0005",
     "spec_id": "SPEC-000",
     "test_file": "tests/static/spec-000/verify-ticket.test.ts",
-    "plan_path": "tests/static/spec-000/verify-ticket.test.ts",
+    "plan_path": "tests/static/spec-000/verify-ticket.test.ts.plan.md",
     "status": "not-executed"
   },
   {

@@ -6,7 +6,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 |---|---|---|---|
 | `.dependency-cruiser.cjs` | [existing-with-sidecar](../.dependency-cruiser.cjs.plan.md) | implementation-in-progress | SPEC-000, SPEC-050 |
 | `.github/workflows/release.yml` | [sidecar-only](../.github/workflows/release.yml.plan.md) | planned | SPEC-000 |
-| `.github/workflows/verify.yml` | [sidecar-only](../.github/workflows/verify.yml.plan.md) | planned | SPEC-000 |
+| `.github/workflows/verify.yml` | [existing-with-sidecar](../.github/workflows/verify.yml.plan.md) | implementation-in-progress | SPEC-000 |
 | `.npmrc` | [existing-with-sidecar](../.npmrc.plan.md) | candidate-unaccepted | SPEC-000 |
 | `CODEOWNERS` | [sidecar-only](../CODEOWNERS.plan.md) | planned | SPEC-000 |
 | `admissions/baseline-inventory.json` | [sidecar-only](../admissions/baseline-inventory.json.plan.md) | planned | SPEC-000 |
@@ -131,7 +131,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `contracts/spec-000/execution-lock.schema.json` | [existing-with-sidecar](../contracts/spec-000/execution-lock.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `contracts/spec-000/supply-chain.schema.json` | [sidecar-only](../contracts/spec-000/supply-chain.schema.json.plan.md) | planned | SPEC-000 |
 | `contracts/spec-000/test-harness.schema.json` | [existing-with-sidecar](../contracts/spec-000/test-harness.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
-| `contracts/spec-000/verify-ticket.schema.json` | [sidecar-only](../contracts/spec-000/verify-ticket.schema.json.plan.md) | planned | SPEC-000 |
+| `contracts/spec-000/verify-ticket.schema.json` | [existing-with-sidecar](../contracts/spec-000/verify-ticket.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `contracts/spec-000/workspace.schema.json` | [existing-with-sidecar](../contracts/spec-000/workspace.schema.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `contracts/spec-001/canonical.schema.json` | [sidecar-only](../contracts/spec-001/canonical.schema.json.plan.md) | planned | SPEC-001 |
 | `contracts/spec-001/ids.schema.json` | [sidecar-only](../contracts/spec-001/ids.schema.json.plan.md) | planned | SPEC-001 |
@@ -1102,7 +1102,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `runbooks/spec-000/execution-lock.md` | [existing-with-sidecar](../runbooks/spec-000/execution-lock.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-000/supply-chain.md` | [markdown-plan](../runbooks/spec-000/supply-chain.md) | planned | SPEC-000 |
 | `runbooks/spec-000/test-harness.md` | [existing-with-sidecar](../runbooks/spec-000/test-harness.md.plan.md) | implementation-in-progress | SPEC-000 |
-| `runbooks/spec-000/verify-ticket.md` | [markdown-plan](../runbooks/spec-000/verify-ticket.md) | planned | SPEC-000 |
+| `runbooks/spec-000/verify-ticket.md` | [existing-with-sidecar](../runbooks/spec-000/verify-ticket.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-000/workspace.md` | [existing-with-sidecar](../runbooks/spec-000/workspace.md.plan.md) | implementation-in-progress | SPEC-000 |
 | `runbooks/spec-001/canonical.md` | [markdown-plan](../runbooks/spec-001/canonical.md) | planned | SPEC-001 |
 | `runbooks/spec-001/ids.md` | [markdown-plan](../runbooks/spec-001/ids.md) | planned | SPEC-001 |
@@ -1719,7 +1719,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/fixtures/spec-000/execution-lock.json` | [existing-with-sidecar](../tests/fixtures/spec-000/execution-lock.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/fixtures/spec-000/supply-chain.json` | [sidecar-only](../tests/fixtures/spec-000/supply-chain.json.plan.md) | planned | SPEC-000 |
 | `tests/fixtures/spec-000/test-harness.json` | [existing-with-sidecar](../tests/fixtures/spec-000/test-harness.json.plan.md) | implementation-in-progress | SPEC-000 |
-| `tests/fixtures/spec-000/verify-ticket.json` | [sidecar-only](../tests/fixtures/spec-000/verify-ticket.json.plan.md) | planned | SPEC-000 |
+| `tests/fixtures/spec-000/verify-ticket.json` | [existing-with-sidecar](../tests/fixtures/spec-000/verify-ticket.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/fixtures/spec-000/workspace.json` | [existing-with-sidecar](../tests/fixtures/spec-000/workspace.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/fixtures/spec-001/canonical.json` | [sidecar-only](../tests/fixtures/spec-001/canonical.json.plan.md) | planned | SPEC-001 |
 | `tests/fixtures/spec-001/ids.json` | [sidecar-only](../tests/fixtures/spec-001/ids.json.plan.md) | planned | SPEC-001 |
@@ -2311,7 +2311,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tests/performance/spec-055/app-workload.test.ts` | [comment-only-source](../tests/performance/spec-055/app-workload.test.ts) | planned | SPEC-055 |
 | `tests/real/vertical-slice.test.mjs` | [existing-with-sidecar](../tests/real/vertical-slice.test.mjs.plan.md) | candidate-unaccepted | SPEC-000 |
 | `tests/security/boundaries.test.mjs` | [existing-with-sidecar](../tests/security/boundaries.test.mjs.plan.md) | candidate-unaccepted | SPEC-000 |
-| `tests/static/spec-000/verify-ticket.test.ts` | [comment-only-source](../tests/static/spec-000/verify-ticket.test.ts) | planned | SPEC-000 |
+| `tests/static/spec-000/verify-ticket.test.ts` | [existing-with-sidecar](../tests/static/spec-000/verify-ticket.test.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/static/spec-000/workspace.test.ts` | [existing-with-sidecar](../tests/static/spec-000/workspace.test.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `tests/static/spec-050/no-bypass-graph.test.ts` | [comment-only-source](../tests/static/spec-050/no-bypass-graph.test.ts) | planned | SPEC-050 |
 | `tooling/semantic-boundaries/index.ts` | [comment-only-source](../tooling/semantic-boundaries/index.ts) | planned | SPEC-050 |
@@ -2320,7 +2320,7 @@ All explicit active-v4 write paths plus inherited candidate files. **Conditional
 | `tooling/semantic-boundaries/types.ts` | [comment-only-source](../tooling/semantic-boundaries/types.ts) | planned | SPEC-050 |
 | `tooling/supply-chain.ts` | [comment-only-source](../tooling/supply-chain.ts) | planned | SPEC-000 |
 | `tooling/test-harness.ts` | [existing-with-sidecar](../tooling/test-harness.ts.plan.md) | implementation-in-progress | SPEC-000 |
-| `tooling/verify-ticket.ts` | [comment-only-source](../tooling/verify-ticket.ts) | planned | SPEC-000 |
+| `tooling/verify-ticket.ts` | [existing-with-sidecar](../tooling/verify-ticket.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `tooling/workspace.ts` | [existing-with-sidecar](../tooling/workspace.ts.plan.md) | implementation-in-progress | SPEC-000 |
 | `tsconfig.json` | [existing-with-sidecar](../tsconfig.json.plan.md) | implementation-in-progress | SPEC-000 |
 | `vitest.config.ts` | [existing-with-sidecar](../vitest.config.ts.plan.md) | implementation-in-progress | SPEC-000 |

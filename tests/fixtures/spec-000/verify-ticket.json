@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "spec-000.verify-ticket.v1-incomplete",
+  "ticketId": "ZN-0005",
+  "sourceCommit": "0000000000000000000000000000000000000000",
+  "lockDigest": "0000000000000000000000000000000000000000000000000000000000000000",
+  "profile": "admitted-static-profile",
+  "outcome": "passed",
+  "author": "synthetic",
+  "review": {
+    "reviewer": "synthetic",
+    "decision": "approved",
+    "sourceCommit": "0000000000000000000000000000000000000000",
+    "lockDigest": "0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "checks": [],
+  "fixtureSeed": "zn-0005-neg-incomplete",
+  "commands": ["synthetic"],
+  "note": "Synthetic incomplete evidence for ZN-0005-NEG. Zero checks with passed outcome must be rejected."
+}

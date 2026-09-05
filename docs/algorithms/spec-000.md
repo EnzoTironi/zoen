@@ -39,7 +39,7 @@ REQUIRE independent review and current external gate when applicable; keep all o
 | [ZN-0002](../tickets/zn-0002.md) | Admit the exact core toolchain | [admissions/spec-000/execution-lock.json](../../admissions/spec-000/execution-lock.json.plan.md) |
 | [ZN-0003](../tickets/zn-0003.md) | Create workspace, strict build and dependency boundaries | [tooling/workspace.ts](../../tooling/workspace.ts.plan.md) |
 | [ZN-0004](../tickets/zn-0004.md) | Create real dependency test harness with explicit clocks and barriers | [tooling/test-harness.ts](../../tooling/test-harness.ts.plan.md) |
-| [ZN-0005](../tickets/zn-0005.md) | Enforce evidence-bound pull-request completion | [tooling/verify-ticket.ts](../../tooling/verify-ticket.ts) |
+| [ZN-0005](../tickets/zn-0005.md) | Enforce evidence-bound pull-request completion | [tooling/verify-ticket.ts](../../tooling/verify-ticket.ts.plan.md) |
 | [ZN-0006](../tickets/zn-0006.md) | Protect secrets, artifacts and merge policy | [tooling/supply-chain.ts](../../tooling/supply-chain.ts) |
 
 ## Required proof boundaries

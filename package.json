@@ -25,7 +25,7 @@
     "test:law": "node --test tests/laws/*.test.mjs",
     "test:component": "node --experimental-strip-types --test tests/component/**/*.test.ts tests/static/**/*.test.ts",
     "test:journey": "node --experimental-strip-types tooling/workspace.ts journey-gate",
-    "verify:ticket": "node --experimental-strip-types tooling/workspace.ts verify-ticket-gate",
+    "verify:ticket": "node --experimental-strip-types tooling/verify-ticket.ts",
     "test:harness": "node --experimental-strip-types --test tests/component/spec-000/test-harness.test.ts"
   },
   "dependencies": {

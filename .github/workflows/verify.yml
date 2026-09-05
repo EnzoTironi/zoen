@@ -1,0 +1,41 @@
+# ZN-0005 — evidence-bound verification workflow (not a blank-success job).
+name: verify-ticket
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      ticket:
+        description: Ticket ID (e.g. ZN-0005)
+        required: true
+        type: string
+      profile:
+        description: Admitted profile name
+        required: true
+        default: admitted-static-profile
+        type: string
+
+jobs:
+  verify-ticket:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Enable corepack pnpm
+        run: corepack enable && corepack prepare pnpm@11.25.0 --activate
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Fail-closed verify without fabricated evidence
+        env:
+          TICKET: ${{ inputs.ticket || github.event.pull_request.title }}
+          PROFILE: ${{ inputs.profile || 'admitted-static-profile' }}
+        run: |
+          set -euo pipefail
+          # Extract ZN-XXXX if present; otherwise fail closed.
+          TID=$(printf '%s' "$TICKET" | grep -oE 'ZN-[0-9]{4}' | head -n1 || true)
+          if [ -z "${TID}" ]; then
+            echo "MissingPrerequisite: no ticket ID in context; refusing acceptance"
+            exit 1
+          fi
+          node --experimental-strip-types tooling/verify-ticket.ts --ticket "$TID" --profile "$PROFILE"

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://zoen.local/contracts/spec-000/verify-ticket.schema.json",
+  "title": "SPEC-000 verify-ticket evidence report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "ticketId",
+    "sourceCommit",
+    "lockDigest",
+    "profile",
+    "outcome",
+    "author",
+    "review",
+    "checks",
+    "fixtureSeed",
+    "commands"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "spec-000.verify-ticket.v1" },
+    "ticketId": { "type": "string", "pattern": "^ZN-[0-9]{4}$" },
+    "sourceCommit": { "type": "string", "minLength": 40, "maxLength": 64 },
+    "lockDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+    "profile": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "outcome": { "type": "string", "enum": ["passed", "rejected", "MissingPrerequisite"] },
+    "author": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewer", "decision", "sourceCommit", "lockDigest"],
+      "properties": {
+        "reviewer": { "type": "string", "maxLength": 128 },
+        "decision": { "type": "string", "enum": ["approved", "rejected", "pending"] },
+        "sourceCommit": { "type": "string", "minLength": 40, "maxLength": 64 },
+        "lockDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "checks": {
+      "type": "array",
+      "maxItems": 64,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "layer", "status", "executedCount", "skippedCount", "sourceCommit", "lockDigest"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "layer": { "type": "string", "minLength": 1, "maxLength": 64 },
+          "status": { "type": "string", "enum": ["passed", "failed", "skipped", "missing"] },
+          "executedCount": { "type": "integer", "minimum": 0 },
+          "skippedCount": { "type": "integer", "minimum": 0 },
+          "sourceCommit": { "type": "string", "minLength": 40, "maxLength": 64 },
+          "lockDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "artifact": { "type": "string", "maxLength": 512 },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "observations": { "type": "array", "items": { "type": "string" }, "maxItems": 32 }
+        }
+      }
+    },
+    "fixtureSeed": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "commands": { "type": "array", "items": { "type": "string" }, "maxItems": 32 },
+    "genericBuildGreen": { "type": "boolean" }
+  }
+}
