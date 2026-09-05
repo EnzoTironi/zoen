@@ -53,6 +53,14 @@ const mutateMembership = Effect.fn("authority.sharing.mutateMembership")(
           const sql = yield* SqlClient.SqlClient;
           const key = membershipDisclosureKey(world, target);
           yield* sql`SELECT pg_advisory_xact_lock(hashtextextended(${key}, 0))`;
+          // Detect permits committed after this SERIALIZABLE transaction took its snapshot.
+          yield* sql`INSERT INTO jobs.disclosure_subjects (subject_key, revision) VALUES (${key}, 0)
+            ON CONFLICT (subject_key) DO UPDATE SET revision = jobs.disclosure_subjects.revision + 1`;
+          const pending =
+            yield* sql`SELECT permit_id FROM jobs.disclosure_pending WHERE membership_key = ${key} LIMIT 1`;
+          if (pending.length !== 0) {
+            return yield* new Unavailable({ code: "UNAVAILABLE" });
+          }
           const current = yield* readMembership(world, target);
           if (current?.role === "owner") {
             return yield* new InvalidInput({ code: "INVALID_INPUT" });
