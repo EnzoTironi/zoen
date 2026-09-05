@@ -5,7 +5,7 @@ import {
   PutBucketVersioningCommand,
 } from "@aws-sdk/client-s3";
 import { expect, it } from "@effect/vitest";
-import { Effect, Layer, Schema } from "effect";
+import { DateTime, Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import {
@@ -14,7 +14,19 @@ import {
 } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
 import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/d01/database.js";
 import { createAccount } from "../../../../apps/server/test/identity/d01/http.js";
-import { ObjectLocation } from "../../../../packages/authority/src/ports/d01/storage.js";
+import {
+  reserveCapture,
+  stageCapture,
+} from "../../../../packages/authority/src/evidence/d01/capture.js";
+import { sweepExpiredCaptures } from "../../../../packages/authority/src/evidence/d01/cleanup.js";
+import {
+  Presence,
+  VerifiedRequestContext,
+} from "../../../../packages/authority/src/ports/d01/context.js";
+import {
+  EvidenceObjectStore,
+  ObjectLocation,
+} from "../../../../packages/authority/src/ports/d01/storage.js";
 import { SemanticExecutor } from "../../../../packages/authority/src/semantic/executor.js";
 import {
   canonicalJson,
@@ -38,7 +50,7 @@ const document =
   'schemaVersion,sourceNamespace,sourceExternalId,sourceRevision,sourceLabel,recordExternalId,subjectKey,predicate,valueTag,amount,currency,validTimeTag,validFrom,validTo\r\nd01.csv.v1,manual,billing,1,"Fatura, ""setembro""\r\noriginal",row-1,invoice-1,obligation.amount,Known,100.00,BRL,DateInterval,2026-09-01,2026-10-01\r\nd01.csv.v1,manual,billing,1,"Fatura, ""setembro""\r\noriginal",row-2,invoice-1,obligation.amount,Unknown,,,Unknown,,\r\n';
 
 it.live(
-  "CSV-07–09 real signup retains versioned CSV bytes, logical records and replay under current authority",
+  "CSV-07–10 real signup retains versioned CSV bytes, logical records and replay under current authority",
   () =>
     withD01IdentityDatabase((fixture) =>
       withStorage(({ client, config }) =>
@@ -175,6 +187,73 @@ it.live(
             length: new TextEncoder().encode(document).byteLength,
             mime: "text/csv",
           });
+          // SQL and the retained object must agree on the original representation.
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET document_format = 'd01.json.v1' WHERE capture_id = ${stored.object_location.captureId}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          expect(
+            yield* executor
+              .execute(account.credential, yield* bytes(open))
+              .pipe(Effect.flip)
+          ).toMatchObject({ _tag: "Unavailable" });
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET document_format = 'd01.csv.v1' WHERE capture_id = ${stored.object_location.captureId}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET object_location = object_location - 'documentFormat' WHERE capture_id = ${stored.object_location.captureId}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          expect(
+            yield* executor
+              .execute(account.credential, yield* bytes(open))
+              .pipe(Effect.flip)
+          ).toMatchObject({ _tag: "Unavailable" });
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET object_location = object_location || '{"documentFormat":"d01.csv.v1"}'::jsonb WHERE capture_id = ${stored.object_location.captureId}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          const presence = yield* Presence;
+          const now = yield* DateTime.now;
+          const context = yield* Schema.decodeUnknownEffect(
+            VerifiedRequestContext
+          )({
+            deadline: DateTime.formatIso(DateTime.add(now, { seconds: 30 })),
+            presence: yield* presence.verify(account.credential),
+            purpose: envelope.purpose,
+          });
+          const store = yield* EvidenceObjectStore;
+          const orphans: ObjectLocation[] = [];
+          for (const format of ["d01.csv.v1", "d01.json.v1"] as const) {
+            const raw = new TextEncoder().encode(
+              format === "d01.csv.v1" ? document : '{"orphan":true}'
+            );
+            const reservation = yield* reserveCapture(
+              context,
+              worldRef,
+              raw,
+              format
+            );
+            orphans.push(yield* stageCapture(context, reservation, raw));
+          }
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET expires_at = clock_timestamp() - interval '1 second' WHERE capture_id IN ${migration.in([stored.object_location.captureId, ...orphans.map((orphan) => orphan.captureId)])}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          expect(yield* sweepExpiredCaptures(worldRef, null)).toStrictEqual({
+            nextCursor: null,
+            visited: 2,
+          });
+          for (const orphan of orphans) {
+            expect(yield* store.read(orphan).pipe(Effect.flip)).toMatchObject({
+              _tag: "StorageFailure",
+              reason: "NotFound",
+            });
+          }
+          expect(
+            yield* executor.execute(account.credential, yield* bytes(open))
+          ).toStrictEqual(opened);
           const duplicate = yield* executor
             .execute(
               account.credential,
