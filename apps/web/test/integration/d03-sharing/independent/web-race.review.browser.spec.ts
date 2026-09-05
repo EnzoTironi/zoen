@@ -1,4 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
+import { setTimeout } from "node:timers/promises";
 
 import { expect, test } from "@playwright/test";
 import type { APIRequestContext, Page } from "@playwright/test";
@@ -59,6 +60,10 @@ const operation = (page: Page, name: string) =>
 
 test.use({ baseURL });
 test.setTimeout(40_000);
+// Preserve the real provider signup guard across serial scenarios.
+test.beforeEach(async () => {
+  await setTimeout(10_100);
+});
 test("independent EX23 denial during another read clears data immediately and ignores the delayed real success", async ({
   page,
   browser,
@@ -222,6 +227,12 @@ test("independent EX23 denial during another read clears data immediately and ig
       )
       .toHaveCount(0, { timeout: 1000 });
     allowEvidence.release();
+    await evidenceDelivered.promise;
+    await reader.waitForFunction(
+      () =>
+        globalThis.document.querySelector(".d01-world-id") === null ||
+        globalThis.document.querySelector("blockquote") !== null
+    );
     await expect
       .soft(
         reader.locator("blockquote"),
@@ -238,6 +249,348 @@ test("independent EX23 denial during another read clears data immediately and ig
   } finally {
     allowAccess.release();
     allowEvidence.release();
+    await readerContext.close();
+  }
+});
+
+test("independent EX23 Stale requires a new confirmation and a replayed grant receipt never claims current access", async ({
+  page,
+  browser,
+}, testInfo) => {
+  const recipient = await browser.newContext({ baseURL });
+  const deliverReceipt = gate();
+  try {
+    await signup(page.request);
+    const principalRef = await signup(recipient.request);
+    const { worldRef } = Schema.decodeUnknownSync(WorldCreated)(
+      await send(page.request, "/api/d01/execute", {
+        ...d01,
+        input: {},
+        operation: "CreatePersonalWorld",
+        operationId: randomUUID(),
+      })
+    );
+    await page.goto("/");
+    await page
+      .getByLabel("Abrir espaço pelo identificador", { exact: true })
+      .fill(worldRef.worldId);
+    await page
+      .getByRole("button", { exact: true, name: "Abrir espaço" })
+      .click();
+    await expect(
+      page.getByText("Seu papel: proprietário", { exact: true })
+    ).toBeVisible();
+    const inspectRecipient = async () => {
+      await page
+        .getByLabel("Identificador exato do destinatário", { exact: true })
+        .fill(principalRef);
+      await page
+        .getByRole("button", { name: "Consultar acesso do destinatário" })
+        .click();
+      await expect(
+        page.getByRole("region", { exact: true, name: "Acesso consultado" })
+      ).toContainText(principalRef);
+    };
+    await inspectRecipient();
+    await expect(
+      page.getByRole("region", { exact: true, name: "Acesso consultado" })
+    ).toContainText("sem membership");
+    await page
+      .getByRole("button", { name: "Revisar concessão de leitura" })
+      .click();
+    await send(page.request, "/api/d03/sharing", {
+      ...sharing,
+      input: { expectedRevision: null, principalRef },
+      operation: "GrantWorldReadAccess",
+      operationId: randomUUID(),
+      worldRef,
+    });
+    const stale = operation(page, "GrantWorldReadAccess");
+    await page
+      .getByRole("button", { name: "Conceder leitura de todo o espaço" })
+      .click();
+    const staleResponse = await stale;
+    expect(staleResponse.status()).toBe(409);
+    expect(await staleResponse.json()).toMatchObject({ _tag: "Stale" });
+    const staleRequest = Schema.decodeUnknownSync(SemanticRequest)(
+      staleResponse.request().postDataJSON()
+    );
+    if (staleRequest.operation !== "GrantWorldReadAccess") {
+      throw new Error("Expected actual stale grant request");
+    }
+    expect(staleRequest.input.expectedRevision).toBe(null);
+    await expect(
+      page.getByRole("region", { exact: true, name: "Acesso consultado" })
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("region", { name: "Confirmar alteração de acesso" })
+    ).toHaveCount(0);
+    await expect(
+      page.getByRole("button", { exact: true, name: "Tentar novamente" })
+    ).toHaveCount(0);
+    await expect(page.getByRole("alert")).toContainText(
+      "Consulte o destinatário novamente"
+    );
+    await inspectRecipient();
+    await expect(
+      page.getByRole("region", { exact: true, name: "Acesso consultado" })
+    ).toContainText("ativo · revisão 0");
+    await expect(
+      page.getByRole("region", { name: "Confirmar alteração de acesso" })
+    ).toHaveCount(0);
+    await page
+      .getByRole("button", { name: "Revisar concessão de leitura" })
+      .click();
+    const receiptCaptured = gate();
+    let confirmedRequest: SemanticRequest | null = null;
+    let originalReceipt: unknown = null;
+    await page.route("**/api/d03/sharing", async (route) => {
+      const request = Schema.decodeUnknownSync(SemanticRequest)(
+        route.request().postDataJSON()
+      );
+      if (request.operation !== "GrantWorldReadAccess") {
+        await route.continue();
+        return;
+      }
+      confirmedRequest = request;
+      const response = await route.fetch();
+      expect(response.status()).toBe(200);
+      originalReceipt = Schema.decodeUnknownSync(Schema.Unknown)(
+        await response.json()
+      );
+      receiptCaptured.release();
+      await deliverReceipt.promise;
+      await route.fulfill({ response });
+    });
+    await page
+      .getByRole("button", { name: "Conceder leitura de todo o espaço" })
+      .click();
+    await receiptCaptured.promise;
+    const reconfirmed =
+      Schema.decodeUnknownSync(SemanticRequest)(confirmedRequest);
+    if (reconfirmed.operation !== "GrantWorldReadAccess") {
+      throw new Error("Expected actual reconfirmed grant request");
+    }
+    expect(reconfirmed.operationId).not.toBe(staleRequest.operationId);
+    expect(reconfirmed.input).toStrictEqual({
+      expectedRevision: "0",
+      principalRef,
+    });
+    await send(page.request, "/api/d03/sharing", {
+      ...sharing,
+      input: { expectedRevision: "0", principalRef },
+      operation: "RevokeWorldReadAccess",
+      operationId: randomUUID(),
+      worldRef,
+    });
+    // The same real request replays after revoke; the result remains the original historical receipt.
+    const replay = await send(page.request, "/api/d03/sharing", reconfirmed);
+    expect(replay).toStrictEqual(originalReceipt);
+    const current = await send(page.request, "/api/d03/sharing", {
+      ...sharing,
+      input: { principalRef },
+      operation: "InspectWorldAccess",
+      worldRef,
+    });
+    expect(current).toMatchObject({
+      _tag: "WorldAccessInspected",
+      membership: { revision: "1", state: "revoked" },
+    });
+    const inspectedCurrent = page.waitForResponse((response) => {
+      if (!response.url().endsWith("/api/d03/sharing")) {
+        return false;
+      }
+      const request = Schema.decodeUnknownSync(SemanticRequest)(
+        response.request().postDataJSON()
+      );
+      return (
+        request.operation === "InspectWorldAccess" &&
+        request.input.principalRef === principalRef
+      );
+    });
+    deliverReceipt.release();
+    const currentResponse = await inspectedCurrent;
+    expect(await currentResponse.json()).toStrictEqual(current);
+    await expect(
+      page.getByRole("region", { exact: true, name: "Acesso consultado" })
+    ).toContainText("leitor · revogado · revisão 1");
+    const panel = page.getByRole("region", {
+      exact: true,
+      name: "Compartilhar leitura",
+    });
+    await expect(panel).toContainText("Recibo histórico");
+    await expect(panel).toContainText("não comprova acesso atual");
+    await expect(panel).not.toContainText("leitor · ativo · revisão 0");
+    await testInfo.attach("real-stale-replay", {
+      body: JSON.stringify(
+        { current, originalReceipt, reconfirmed, staleRequest },
+        null,
+        2
+      ),
+      contentType: "application/json",
+    });
+  } finally {
+    deliverReceipt.release();
+    await recipient.close();
+  }
+});
+
+test("independent EX23 denial of a prior retained Frame clears a newer Frame in the same World", async ({
+  page,
+  browser,
+}, testInfo) => {
+  const readerContext = await browser.newContext({ baseURL });
+  const releaseHistory = gate();
+  try {
+    await signup(page.request);
+    const principalRef = await signup(readerContext.request);
+    const created = Schema.decodeUnknownSync(WorldCreated)(
+      await send(page.request, "/api/d01/execute", {
+        ...d01,
+        input: {},
+        operation: "CreatePersonalWorld",
+        operationId: randomUUID(),
+      })
+    );
+    const { worldRef } = created;
+    const subject = `denial-race-${randomUUID()}`;
+    const sourceLabel = `Private race source ${randomUUID()}`;
+    const document = JSON.stringify({
+      records: [
+        {
+          externalId: "r1",
+          predicate: "obligation.amount",
+          subjectKey: subject,
+          validTime: {
+            _tag: "DateInterval",
+            from: "2026-09-01",
+            to: "2026-10-01",
+          },
+          value: { _tag: "Known", amount: "712.45", currency: "BRL" },
+        },
+      ],
+      schemaVersion: "d01.v1",
+      source: {
+        externalId: randomUUID(),
+        label: sourceLabel,
+        namespace: "independent-web",
+        revision: "1",
+      },
+    });
+    await send(page.request, "/api/d01/execute", {
+      ...d01,
+      input: { document },
+      operation: "ImportEvidence",
+      operationId: randomUUID(),
+      worldRef,
+    });
+    await send(page.request, "/api/d03/sharing", {
+      ...sharing,
+      input: { expectedRevision: null, principalRef },
+      operation: "GrantWorldReadAccess",
+      operationId: randomUUID(),
+      worldRef,
+    });
+    const reader = await readerContext.newPage();
+    await reader.goto("/");
+    await reader
+      .getByLabel("Abrir espaço pelo identificador", { exact: true })
+      .fill(worldRef.worldId);
+    await reader
+      .getByRole("button", { exact: true, name: "Abrir espaço" })
+      .click();
+    await expect(
+      reader.getByText("Seu papel: leitor", { exact: true })
+    ).toBeVisible();
+    await reader
+      .getByLabel("Identificador da obrigação", { exact: true })
+      .fill(subject);
+    const inspected = operation(reader, "Inspect");
+    await reader
+      .getByRole("button", { exact: true, name: "Consultar fontes" })
+      .click();
+    const inspectedResponse = await inspected;
+    expect(inspectedResponse.status()).toBe(200);
+    await expect(
+      reader.getByRole("button", {
+        exact: true,
+        name: `Inspecionar evidência de ${sourceLabel}`,
+      })
+    ).toBeVisible();
+
+    const waiting = gate();
+    let heldHistory = false;
+    let priorFrame: string | null = null;
+    await reader.route("**/api/d01/execute", async (route) => {
+      const request = Schema.decodeUnknownSync(SemanticRequest)(
+        route.request().postDataJSON()
+      );
+      if (
+        !heldHistory &&
+        request.operation === "Inspect" &&
+        request.input.atFrame !== null
+      ) {
+        heldHistory = true;
+        priorFrame = request.input.atFrame;
+        waiting.release();
+        await releaseHistory.promise;
+      }
+      await route.continue();
+    });
+    // Ordinary periodic refresh first confirms membership, then revalidates the retained Frame.
+    await waiting.promise;
+    const fresh = operation(reader, "Inspect");
+    await reader
+      .getByRole("button", { exact: true, name: "Consultar fontes" })
+      .click();
+    const freshResponse = await fresh;
+    expect(freshResponse.status()).toBe(200);
+    const newest = Schema.decodeUnknownSync(
+      Schema.Struct({ frame: Schema.Struct({ frameRef: Schema.String }) })
+    )(await freshResponse.json());
+    expect(newest.frame.frameRef).not.toBe(priorFrame);
+    await expect(
+      reader.getByText(`Leitura ${newest.frame.frameRef}`, { exact: true })
+    ).toBeVisible();
+    await send(page.request, "/api/d03/sharing", {
+      ...sharing,
+      input: { expectedRevision: "0", principalRef },
+      operation: "RevokeWorldReadAccess",
+      operationId: randomUUID(),
+      worldRef,
+    });
+    const denied = operation(reader, "Inspect");
+    releaseHistory.release();
+    const denial = await denied;
+    expect(denial.status()).toBe(404);
+    expect(await denial.json()).toStrictEqual({
+      _tag: "NotFoundOrDenied",
+      code: "NOT_FOUND_OR_DENIED",
+    });
+    await expect
+      .soft(
+        reader.locator(".d01-world-id"),
+        "A real denial in the same World and epoch must invalidate even when the displayed Frame changed"
+      )
+      .toHaveCount(0, { timeout: 1000 });
+    await expect
+      .soft(
+        reader.getByRole("button", {
+          exact: true,
+          name: `Inspecionar evidência de ${sourceLabel}`,
+        })
+      )
+      .toHaveCount(0, { timeout: 1000 });
+    await testInfo.attach("real-frame-denial-order", {
+      body: JSON.stringify(
+        { newest: newest.frame.frameRef, priorFrame, worldRef },
+        null,
+        2
+      ),
+      contentType: "application/json",
+    });
+  } finally {
+    releaseHistory.release();
     await readerContext.close();
   }
 });

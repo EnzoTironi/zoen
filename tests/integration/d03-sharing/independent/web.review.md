@@ -30,3 +30,30 @@ The initial late-success assertion could observe absence before the delivered re
 - Session/World invalidation aborts active effects, advances epoch and clears Frame, view, proposal, sharing target and receipt. The confirmed busy-response exception above prevents calling this complete.
 
 This review does not accept the backend disclosure fence, D03 erasure/restore, or the full product. The EX23 packet command could not run in this reconstruction worktree because `tooling/workspace.py` is absent; review authority came from the explicit root assignment and the frozen contract, not historical planning files.
+
+## WEB-01 treatment and live revision/replay proof
+
+Root served build `a236ebb`, Web `4198f01` (W1 `4ace1e4`), at isolated profile `http://127.0.0.1:4315`. The same denial assertion now passes. The late-success check was strengthened to wait until the real buffered delivery finishes and the browser reaches either an invalidated World or rendered evidence, then require absence of both the World and evidence. Both independent scenarios passed in 26.8 seconds on 2026-09-05 around 17:52:
+
+- Busy-denial treatment: real 404 invalidates the epoch immediately and the earlier real 200 cannot repopulate the evidence.
+- Revision/replay: a real external grant makes the UI's confirmed absence stale. HTTP 409 Stale removes target, confirmation and retry; a fresh inspection plus explicit new confirmation sends a different operation ID and exact revision 0. While its real grant response is held, a real revoke commits. Replaying the exact grant request returns its original receipt without changing revoked revision 1. Delivering the original response makes the UI query fresh current access and display revoked revision 1, with the receipt expressly labeled historical.
+
+The latter scenario also passed on uncorrected `956998c` at 4314 in 11.5 seconds. Seven W1 request/render unit tests were independently rerun and passed; their synthetic component inputs are not counted as live transport evidence.
+
+## WEB-02 — confirmed: a late denial is ignored after the displayed Frame changes
+
+The historical Frame branch in `revalidateContent` has the same ordering problem: it compares `state.frame?.frameRef` with the requested Frame before processing `Result.isFailure(revalidated)`. A new Frame in the same World/session/epoch is not a reason to ignore an actual denial.
+
+Independent baseline against `956998c`/4314 on 2026-09-05 around 17:53:
+
+1. An authenticated viewer opens and inspects real imported evidence.
+2. Hold the normal periodic historical Inspect request before it reaches the server; membership refresh has already succeeded.
+3. Complete a fresh UI Inspect. Its real successful response contains a different Frame reference, and the browser displays it.
+4. Commit real owner revoke, then release the earlier historical Inspect. The server returns the exact HTTP 404 NotFoundOrDenied body.
+5. Require immediate absence of the World and its private source/evidence control. Both checks fail: expected 0, received 1.
+
+The test failed in 18.0 seconds. Artifacts remain under `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788641583749/integration-d03-sharing-in-3098d-wer-Frame-in-the-same-World-chromium/` (`error-context.md`, both screenshots). W1 received the reproducible finding and owns the correction; no production source was edited by the reviewer.
+
+An earlier attempt against 4315 stopped at a real signup HTTP 429 while root's acceptance suite authenticated concurrently. It never reached the Frame test and is not counted as product evidence. The provider guard was not changed; the completed baseline used the separate 4314 profile.
+
+Current review gate: WEB-01 fixed and independently verified; Stale/replay flow verified; WEB-02 awaits correction and independent treatment. Source-level session/World discard paths remain subject to that unresolved denial path. These findings do not alter the backend fence contract or establish D03 erasure/restore acceptance.
