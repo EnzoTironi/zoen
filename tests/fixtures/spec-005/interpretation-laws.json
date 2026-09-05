@@ -1,0 +1,12 @@
+{
+  "seed": "zn-0036-laws-seed-v1",
+  "seedDigest": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "purpose": "operations",
+  "queryDigest": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "releaseDigest": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "cutDigest": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "priorCutDigest": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+  "perspective": "owner-visible",
+  "amountAuthorized": "100",
+  "amountRivalHidden": "999"
+}

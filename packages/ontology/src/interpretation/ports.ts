@@ -77,3 +77,16 @@ export interface ImpactPort {
   registerEdge(input: RegisterImpactEdgeInput): Promise<ImpactOutcome>;
   consumeCorrection(input: ConsumeCorrectionImpactInput): Promise<ImpactOutcome>;
 }
+
+import type {
+  VisibleEquivalenceInput,
+  CutReplayInput,
+  LawsOutcome,
+} from './interpretation-laws.js';
+
+export type { VisibleEquivalenceInput, CutReplayInput, LawsOutcome };
+
+export interface InterpretationLawsPort {
+  proveVisibleEquivalence(input: VisibleEquivalenceInput): Promise<LawsOutcome>;
+  replayCuts(input: CutReplayInput): Promise<LawsOutcome>;
+}

@@ -1162,7 +1162,7 @@
     "ticket_id": "ZN-0036",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/interpretation-laws.test.ts",
-    "plan_path": "tests/component/spec-005/interpretation-laws.test.ts",
+    "plan_path": "tests/component/spec-005/interpretation-laws.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1173,7 +1173,7 @@
     "ticket_id": "ZN-0036",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/interpretation-laws.test.ts",
-    "plan_path": "tests/component/spec-005/interpretation-laws.test.ts",
+    "plan_path": "tests/component/spec-005/interpretation-laws.test.ts.plan.md",
     "status": "not-executed"
   },
   {
@@ -1184,7 +1184,7 @@
     "ticket_id": "ZN-0036",
     "spec_id": "SPEC-005",
     "test_file": "tests/component/spec-005/interpretation-laws.test.ts",
-    "plan_path": "tests/component/spec-005/interpretation-laws.test.ts",
+    "plan_path": "tests/component/spec-005/interpretation-laws.test.ts.plan.md",
     "status": "not-executed"
   },
   {

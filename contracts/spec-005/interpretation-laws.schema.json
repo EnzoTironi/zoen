@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "zoen://contracts/spec-005/interpretation-laws.schema.json",
+  "title": "ZN-0036 interpretation-laws fixture",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "seed",
+    "seedDigest",
+    "purpose",
+    "queryDigest",
+    "releaseDigest",
+    "cutDigest",
+    "priorCutDigest",
+    "perspective",
+    "amountAuthorized",
+    "amountRivalHidden"
+  ],
+  "properties": {
+    "seed": { "type": "string", "const": "zn-0036-laws-seed-v1" },
+    "seedDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "purpose": { "type": "string" },
+    "queryDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "releaseDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "cutDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "priorCutDigest": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "perspective": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "amountAuthorized": { "type": "string" },
+    "amountRivalHidden": { "type": "string" }
+  }
+}

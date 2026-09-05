@@ -76,3 +76,16 @@ export type {
   ImpactOutcome,
 } from './impact.js';
 export type { ImpactPort } from './ports.js';
+export { InterpretationLaws, LAWS_IMPL } from './interpretation-laws.js';
+export type {
+  DeclassificationRule,
+  VisibleEquivalenceInput,
+  CutReplayInput,
+  ObservableProjection,
+  LawsProof,
+  LawsOk,
+  LawsStale,
+  LawsDenied,
+  LawsOutcome,
+} from './interpretation-laws.js';
+export type { InterpretationLawsPort } from './ports.js';
