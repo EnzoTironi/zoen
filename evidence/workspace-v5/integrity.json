@@ -1,0 +1,5 @@
+{
+  "status": "passed",
+  "static_files": 2990,
+  "scope": "Static delivery integrity only; Git and mutable evidence/acceptance are checked separately."
+}

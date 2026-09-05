@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "runtime": {
+    "node": "22.16.0",
+    "compiler": "Version 5.8.3"
+  },
+  "steps": [
+    {
+      "name": "typecheck-core",
+      "command": [
+        "tsc",
+        "-p",
+        "tsconfig.core.json"
+      ],
+      "exitCode": 0,
+      "status": "passed"
+    },
+    {
+      "name": "core-tests",
+      "command": [
+        "/opt/nvm/versions/node/v22.16.0/bin/node",
+        "--test",
+        "tests/laws/definitions.test.mjs",
+        "tests/laws/interpretation.test.mjs",
+        "tests/laws/kernel.test.mjs",
+        "tests/laws/protocol.test.mjs",
+        "tests/security/boundaries.test.mjs"
+      ],
+      "exitCode": 0,
+      "status": "passed",
+      "executed": 72,
+      "skipped": 0,
+      "failed": 0
+    },
+    {
+      "name": "architecture",
+      "command": [
+        "/opt/nvm/versions/node/v22.16.0/bin/node",
+        "tooling/architecture.mjs"
+      ],
+      "exitCode": 0,
+      "status": "passed"
+    },
+    {
+      "name": "syntax",
+      "command": [
+        "/opt/nvm/versions/node/v22.16.0/bin/node",
+        "tooling/syntax.mjs"
+      ],
+      "exitCode": 0,
+      "status": "passed"
+    }
+  ],
+  "limits": "Local core/grammar/static validation only. Not the complete v4 application and not production qualification."
+}

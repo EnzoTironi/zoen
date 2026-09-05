@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "delivery": "Zoen Workspace v5",
+  "product_architecture": "v4 with organization amendment 066",
+  "source_commit": "90f404ef5e25f988d7970cdf62c4a8c8cb687714",
+  "source_worktree_clean_at_core_test": true,
+  "purpose": "Organized execution workspace, local linked pseudocode, current documentation and preserved candidate code; not a complete product implementation.",
+  "coverage": {
+    "specs": 56,
+    "tickets": 325,
+    "required_product_checks": 975,
+    "capabilities": 157,
+    "planned_file_records": 2320,
+    "representations": {
+      "sidecar-only": 1002,
+      "existing-with-sidecar": 43,
+      "comment-only-source": 950,
+      "markdown-plan": 325
+    },
+    "allocations": {
+      "conditional-support": 1399,
+      "required": 921
+    },
+    "generated_outputs": 2819,
+    "module_algorithms": 56,
+    "product_accepted_tickets": 0,
+    "runtime_mocks_added": 0
+  },
+  "checks": {
+    "workspace_structure": {
+      "status": "passed",
+      "details": "structure.json"
+    },
+    "deterministic_generation": {
+      "status": "passed",
+      "generated_outputs": 2819,
+      "changed": 0,
+      "scope": "documentation and non-executable plans; not product tests"
+    },
+    "static_integrity": {
+      "status": "passed",
+      "static_files": 2990,
+      "scope": "Static delivery integrity only; Git and mutable evidence/acceptance are checked separately."
+    },
+    "python_control_tests": {
+      "status": "passed",
+      "executed": 89,
+      "failed": 0,
+      "skipped": 0
+    },
+    "inherited_core_tests": {
+      "status": "passed",
+      "executed": 72,
+      "failed": 0,
+      "skipped": 0,
+      "runtime": {
+        "node": "22.16.0",
+        "compiler": "Version 5.8.3"
+      }
+    },
+    "selected_mutations": {
+      "status": "passed",
+      "introduced": 9,
+      "detected": 9,
+      "not_a_full_mutation_score": true
+    },
+    "document_contracts": {
+      "status": "passed",
+      "schemas": 12,
+      "record_validations": 72
+    },
+    "static_document_javascript": {
+      "status": "parsed",
+      "not_browser_qualification": true
+    },
+    "real_service_preflight": {
+      "status": "blocked",
+      "exit_code": 2,
+      "product_tests_executed": 0,
+      "details": "real-preflight.json"
+    }
+  },
+  "preserved_candidate_files": 40,
+  "original_product_check_oracles_preserved": 975,
+  "input_architecture_archive_sha256": "a373b45fc488df178707d0e25b5685b1071039172fc357c3bda16af347a4fbd8",
+  "limitations": [
+    "All 325 product tickets remain unaccepted and all 975 required product check records remain not-executed.",
+    "950 comment-only source files are plans, not runtime implementations. Config/data/migration/credential plans do not create fake executable artifacts.",
+    "1399 file allocations are conditional support and must not be implemented merely to fill the tree.",
+    "No services have been replaced by mocks or an application offline mode. Missing real dependencies and credentials remain blockers.",
+    "Local Node 22.16.0 / TypeScript 5.8.3 validate the existing core only; the target toolchain is not admitted.",
+    "File hashes establish integrity, not correctness, evidence authenticity, browser behavior, or independent review.",
+    "The explicit v4 file inventory is covered; generated artifacts and future engineering discoveries cannot be predetermined honestly."
+  ],
+  "report_hashes": {
+    "backlog-syntax.json": "0c8d2ce677b3c4714d8b64e7ada883b5738f29dd2dba92c726371539303742b4",
+    "control-tests.stderr": "f04e2fcb1544757f14590844879151feebba9fb9db9e656c3029d99f037134aa",
+    "control-tests.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "core-command.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "core-command.stdout": "f701e146e14223826802ee1cb07fdf4db3a8b73912a5e1a785d28b20db9da464",
+    "core-report.json": "6b890567a3ed8b6aa98a450dfe82bb503ab82999a7a7ab034d12da6364ab9357",
+    "core-tests.stdout": "8f363862a3acce0f56e0aaa01c0057f652d7fa8d1fabba583358cf14f6b782b7",
+    "document-contracts.json": "ddc6f9e135855458689b81d576128234087d33e5caa17a769df55e88b0d57ce3",
+    "generation.json": "1ddc522df83e876d995f1d6b76c77dbb559a6ff6a6a662780228752f2cfe16b7",
+    "integrity.json": "6b9c5483f76852f77103ec565200b715d5512081c77bb3c49fe5bf9c7e507d43",
+    "mutations-command.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mutations-command.stdout": "08bf70bcedb2892272c9f0efea813d47bab57dcbaf831bea9961175b3b32d402",
+    "mutations.json": "08bf70bcedb2892272c9f0efea813d47bab57dcbaf831bea9961175b3b32d402",
+    "real-preflight.json": "2f37dba636d1ff2db4dd8f767439aa914f04f0c81baf8a09195b617fc660b62b",
+    "real-preflight.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "structure.json": "527f3c7992d0ccbded68d02584d3460e7baab3a1f5a91781ca79233151c97e46"
+  }
+}

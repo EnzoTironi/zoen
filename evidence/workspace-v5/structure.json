@@ -1,0 +1,110 @@
+{
+  "status": "passed",
+  "checks": [
+    {
+      "name": "ticket-catalog-and-dependency-DAG",
+      "status": "passed",
+      "result": null
+    },
+    {
+      "name": "all-157-capabilities",
+      "status": "passed",
+      "result": null
+    },
+    {
+      "name": "evidence-bound-acceptance-state",
+      "status": "passed",
+      "result": null
+    },
+    {
+      "name": "file-plan-and-check-ownership",
+      "status": "passed",
+      "result": {
+        "records": 2320,
+        "ticket_paths": 2291,
+        "representations": {
+          "sidecar-only": 1002,
+          "existing-with-sidecar": 43,
+          "comment-only-source": 950,
+          "markdown-plan": 325
+        }
+      }
+    },
+    {
+      "name": "stable-v4-product-scope",
+      "status": "passed",
+      "result": {
+        "spec_ids": 56,
+        "ticket_ids": 325,
+        "unchanged_check_oracles": 975
+      }
+    },
+    {
+      "name": "delivery-candidate-preservation",
+      "status": "passed",
+      "result": {
+        "byte_identical_candidate_files": 40
+      }
+    },
+    {
+      "name": "plans-excluded-from-live-build",
+      "status": "passed",
+      "result": {
+        "explicit_sources": 31,
+        "planned_sources_not_counted": 950
+      }
+    },
+    {
+      "name": "test-plan-not-test-result",
+      "status": "passed",
+      "result": {
+        "required_product_checks": 975,
+        "claimed_executed": 0
+      }
+    },
+    {
+      "name": "active-document-and-source-links",
+      "status": "passed",
+      "result": {
+        "local_links": 21070,
+        "scope": "file targets, not Markdown anchor spelling"
+      }
+    },
+    {
+      "name": "actual-JSON-files-parse",
+      "status": "passed",
+      "result": {
+        "json_files": 42
+      }
+    },
+    {
+      "name": "all-module-algorithms",
+      "status": "passed",
+      "result": {
+        "algorithms": 56,
+        "pseudocode_steps": 455
+      }
+    },
+    {
+      "name": "bounded-complete-context-packets",
+      "status": "passed",
+      "result": {
+        "packets_constructed": 325,
+        "max_bytes": 106641,
+        "min_bytes": 60601,
+        "silent_truncation": false
+      }
+    },
+    {
+      "name": "historical-source-integrity",
+      "status": "passed",
+      "result": {
+        "v4_archive_sha256": "a373b45fc488df178707d0e25b5685b1071039172fc357c3bda16af347a4fbd8"
+      }
+    }
+  ],
+  "errors": [],
+  "product_qualification": false,
+  "accepted_product_tickets": 0,
+  "scope": "workspace organization/traceability; candidate-code and real-service results are separate"
+}
