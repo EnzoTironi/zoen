@@ -24,5 +24,5 @@ export const makeHttpProcessConfiguration = (
 
 export const Barrier = Schema.Struct({
   key: Schema.String,
-  kind: Schema.Literals(["before-shared", "before-end"]),
+  kind: Schema.Literals(["before-shared", "before-end", "observe-exclusive"]),
 });

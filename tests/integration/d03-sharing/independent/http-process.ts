@@ -1,3 +1,5 @@
+// Native APIs are the observed boundary: the barrier must block synchronously without an Effect yield.
+/* oxlint-disable effecttsgo/node-builtin-import */
 import {
   appendFileSync,
   existsSync,
@@ -60,16 +62,52 @@ const installObservers = (prefix: string) => {
   pg.Client.prototype.query = new Proxy(pg.Client.prototype.query, {
     apply(target, receiver, args: unknown[]) {
       const gate = armed();
-      const [, values] = args;
+      const [operation, values, callback] = args;
       if (
         !paused &&
         gate?.kind === "before-shared" &&
-        args[0] ===
+        operation ===
           "SELECT pg_try_advisory_lock_shared(hashtextextended($1, 0)) AS confirmed" &&
         Array.isArray(values) &&
         values[0] === gate.key
       ) {
         pause("before-shared");
+      }
+      if (
+        gate?.kind === "observe-exclusive" &&
+        operation ===
+          "SELECT pg_try_advisory_lock(hashtextextended($1, 0)) AS confirmed" &&
+        Array.isArray(values) &&
+        values[0] === gate.key &&
+        typeof callback === "function"
+      ) {
+        args[2] = new Proxy(callback, {
+          apply(original, callbackReceiver, returned: unknown[]) {
+            const [error, response] = returned;
+            if (
+              error === null &&
+              Schema.is(
+                Schema.Struct({
+                  rows: Schema.Tuple([
+                    Schema.Struct({ confirmed: Schema.Literal(false) }),
+                  ]),
+                })
+              )(response)
+            ) {
+              writeFileSync(
+                `${prefix}.exclusive-waiting`,
+                "real-exclusive-try-returned-false\n",
+                { mode: 0o600 }
+              );
+            }
+            const result: unknown = Reflect.apply(
+              original,
+              callbackReceiver,
+              returned
+            );
+            return result;
+          },
+        });
       }
       const result: unknown = Reflect.apply(target, receiver, args);
       return result;
