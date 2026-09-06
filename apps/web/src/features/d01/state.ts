@@ -82,6 +82,7 @@ export const createWorkspaceController = (origin: string) => {
     });
   };
   const failed = (error: D01Error) => {
+    const failedRequest = retry;
     if (
       error._tag !== "Unavailable" &&
       error._tag !== "RetryableInfrastructureFailure"
@@ -103,11 +104,29 @@ export const createWorkspaceController = (origin: string) => {
         world: null,
       });
     } else {
+      const operation = failedRequest?.operation;
+      const identityStale =
+        error._tag === "Stale" &&
+        (operation === "InspectSubjectIdentity" ||
+          operation === "InspectIdentityRecovery" ||
+          operation === "ProposeIdentityResolution" ||
+          operation === "ProposeIdentitySplit" ||
+          operation === "ProposeIdentityUndo" ||
+          operation === "ResolveIdentity");
+      const sharingStale =
+        error._tag === "Stale" &&
+        (operation === "InspectWorldAccess" ||
+          operation === "GrantWorldReadAccess" ||
+          operation === "RevokeWorldReadAccess");
       publish({
         ...(error._tag === "Stale"
           ? {
-              identity: { ...emptySubjectIdentity, stale: true },
-              sharing: { ...emptySharing, stale: true },
+              identity: identityStale
+                ? { ...emptySubjectIdentity, stale: true }
+                : emptySubjectIdentity,
+              sharing: sharingStale
+                ? { ...emptySharing, stale: true }
+                : emptySharing,
             }
           : {
               identity: {

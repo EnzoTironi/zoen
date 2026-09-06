@@ -32,7 +32,7 @@ const validTime = {
   to: "2026-10-01",
 };
 const csvDocument =
-  'schemaVersion,sourceNamespace,sourceExternalId,sourceRevision,sourceLabel,recordExternalId,subjectKey,predicate,valueTag,amount,currency,validTimeTag,validFrom,validTo\r\nd01.csv.v1,manual,billing-csv,1,CSV source,row-1,invoice-a,obligation.amount,Known,50.00,BRL,DateInterval,2026-09-01,2026-10-01\r\n';
+  "schemaVersion,sourceNamespace,sourceExternalId,sourceRevision,sourceLabel,recordExternalId,subjectKey,predicate,valueTag,amount,currency,validTimeTag,validFrom,validTo\r\nd01.csv.v1,manual,billing-csv,1,CSV source,row-1,invoice-a,obligation.amount,Known,50.00,BRL,DateInterval,2026-09-01,2026-10-01\r\n";
 
 const jsonDocument = (revision: string, amount: string) =>
   json({
@@ -279,7 +279,9 @@ it.live(
           SELECT state
           FROM authority.cases
           WHERE world_id = ${worldRef.worldId}::uuid`;
-        expect(beforeCases.some((row) => row.state === "proposed")).toBeTruthy();
+        expect(
+          beforeCases.some((row) => row.state === "proposed")
+        ).toBeTruthy();
         expect(beforeCases.some((row) => row.state === "applied")).toBeTruthy();
         const frameSnapshots = [];
         for (const frame of beforeFrames) {

@@ -144,7 +144,7 @@ export const SubjectIdentityPanel = ({
         <h2>Identidade privada entre assuntos</h2>
         <p>{privateAudience}</p>
         {stale ? (
-          <p role="alert">
+          <p aria-label="Identidade obsoleta" role="alert">
             A base de identidade mudou (Stale). Inspecione novamente e confirme
             uma nova intenção com novo operationId; não reutilize a confirmação
             anterior.

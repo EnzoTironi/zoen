@@ -40,7 +40,9 @@ import { verifyLegacyBuild } from "./legacy-build.ts";
 import type { LegacyBuild } from "./legacy-build.ts";
 
 const encodeJson = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const repoLocal = fileURLToPath(new URL("../../../../.local/", import.meta.url));
+const repoLocal = fileURLToPath(
+  new URL("../../../../.local/", import.meta.url)
+);
 const reservePort = Effect.sync(
   () => 45_000 + Math.floor(Math.random() * 10_000)
 );
@@ -197,7 +199,9 @@ export const withLegacyBasisHarness = <A, E, R>(
                 );
               }
               const ok = yield* Effect.tryPromise(() =>
-                fetch(`${origin}/ready`).then((response) => response.status === 200)
+                fetch(`${origin}/ready`).then(
+                  (response) => response.status === 200
+                )
               ).pipe(Effect.orElseSucceed(() => false));
               if (ok) {
                 return;

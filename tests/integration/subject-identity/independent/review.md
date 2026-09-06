@@ -18,11 +18,7 @@
 
 Update 2026-09-06: EX27 vertical slice writers exist (`handlers.EX27`); core proves Resolve Stale after identity bump and recovery undo. Full redundant-edge/phantom oracles still open under independent/.
 
-Update 2026-09-06 (EX27 split): `ProposeIdentitySplit` is real; independent `split-writers.review.integration.test.ts` adversarially exercises InvalidPartition/smuggled member, stranger denial, opId intent Conflict, and recovery-split blocked without identity writes.
-2. **Limites de bytes/entries da Question de recuperação:** dependem dos handlers EX27 e da garantia prospectiva do contrato.
-3. **Web/CLI de identidade (EX28):** fora de escopo; audiência aqui é executor+fence D01/sharing.
-4. **Fence concorrente SH07/08 pós-identity:** não reexecutado; herda EX23.
-5. **EX26 `acceptance_requires: EX27`:** pacote não pode ser `verified_for_profile` completo até EX27.
+Update 2026-09-06 (EX27 split): `ProposeIdentitySplit` is real; independent `split-writers.review.integration.test.ts` adversarially exercises InvalidPartition/smuggled member, stranger denial, opId intent Conflict, and recovery-split blocked without identity writes. 2. **Limites de bytes/entries da Question de recuperação:** dependem dos handlers EX27 e da garantia prospectiva do contrato. 3. **Web/CLI de identidade (EX28):** fora de escopo; audiência aqui é executor+fence D01/sharing. 4. **Fence concorrente SH07/08 pós-identity:** não reexecutado; herda EX23. 5. **EX26 `acceptance_requires: EX27`:** pacote não pode ser `verified_for_profile` completo até EX27.
 
 ## Comandos
 

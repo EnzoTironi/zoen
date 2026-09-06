@@ -64,7 +64,12 @@ const documentFor = (subjects: readonly string[]) =>
   });
 
 const partitionAway = (
-  frame: { cells: readonly { cellRef: string; components: readonly { members: readonly string[] }[] }[] },
+  frame: {
+    cells: readonly {
+      cellRef: string;
+      components: readonly { members: readonly string[] }[];
+    }[];
+  },
   anchor: string
 ) =>
   frame.cells.map((cell) => {
@@ -74,7 +79,8 @@ const partitionAway = (
     const members = component?.members ?? [anchor];
     const others = members.filter((member) => member !== anchor);
     return {
-      blocks: others.length === 0 ? [members.slice()] : [[anchor], others.slice()],
+      blocks:
+        others.length === 0 ? [members.slice()] : [[anchor], others.slice()],
       cellRef: cell.cellRef,
     };
   });
@@ -368,9 +374,7 @@ it.live(
               })
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(IdentityProposed)));
-          expect(recoveryBlocked.question.kind).toBe(
-            "identity-recovery-split"
-          );
+          expect(recoveryBlocked.question.kind).toBe("identity-recovery-split");
           expect(recoveryBlocked.question.blockedAlternatives).toEqual(
             expect.arrayContaining([
               expect.objectContaining({

@@ -9,7 +9,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex24-subject-identity",
-      "state": "in_progress"
+      "state": "partial_schemas_landed_not_verified_for_profile",
+      "notes": "Schemas/pure laws on tip and in unit suite. Not independently verified_for_profile; quality typecheck still red on later identity suites."
     },
     {
       "agent": "roadmap_redesign",
@@ -17,8 +18,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "independently_reviewed_component_pending_ex27_ex28_gaps",
-      "notes": "EX28 vertical slice on rebuild: subject-identity Web+CLI over real HTTP (inspect/propose/resolve/split/recovery). Help+request+CLI journey green. Remaining: browser ID-15, viewer-control denial browser proof, undo polish; EX29 not started."
+      "state": "independently_reviewed_component_partial",
+      "notes": "BC-01..09 component green on rebuild. Gaps remain for full graph/absence/recovery; not verified_for_profile."
     },
     {
       "agent": "tickets_redesign",
@@ -26,8 +27,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "basis_compatibility_independent_proofs_green_ex27_blocked",
-      "notes": "Independent oracles green. EX27 vertical slice unblocks graph/absence/recovery after claims on rebuild; remaining EX27 items: split planner, ID-01/08–14 full suite, independent review. Owns tests/integration/subject-identity/independent/**."
+      "state": "independent_proofs_green_partial",
+      "notes": "Independent oracles green (legacy/audience/concurrency/SIGKILL-007 + split writers). Full ID suite and quality typecheck debt remain; not verified_for_profile."
     },
     {
       "agent": "architecture_redesign",
@@ -36,7 +37,25 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "vertical_slice_verified_pending_review",
-      "notes": "Vertical slice green on real PG/S3/Better Auth: InspectSubjectIdentity snapshot+pins+basis v2 identity dep; Propose/Resolve same-as; InspectIdentityRecovery; Propose/Resolve undo; Resolve Stale after identity domain bump. Split proposal still Unavailable stub. Remaining: full split planner, ID-08 concurrency/SIGKILL atomicity suite, prospective serialization edge cases, worker-3 review. Not verified_for_profile."
+      "notes": "Core handlers+split vertical slice green on real PG/S3/Better Auth. Remaining: ID-08 concurrency/SIGKILL full suite, recovery Question limits, worker-3 review. Not verified_for_profile."
+    },
+    {
+      "agent": "roadmap_redesign",
+      "task": "EX28-subject-identity-web-cli",
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "partial_surfaces_id15_browser_green",
+      "notes": "HTTP/CLI/Web + ID-15 Playwright green on subject-identity-v2. Remaining: viewer denial browser, undo polish."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX29-compose-verify-subject-identity",
+      "model": null,
+      "effort": null,
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "local_and_container_partial_not_verified_for_profile",
+      "notes": "subject-identity-v2 + container-bfd0485f1d994118: 13/13 acceptance incl. ID-15. Quality lint/typecheck debt remains; not verified_for_profile."
     }
   ],
   "temporary_ownership": [
@@ -199,11 +218,7 @@
     {
       "date": "2026-09-05",
       "commit": "6241437",
-      "packages": [
-        "EX01",
-        "EX02",
-        "EX03"
-      ],
+      "packages": ["EX01", "EX02", "EX03"],
       "state": "reviewed_and_verified_locally",
       "evidence": "docs/verification/bootstrap.md",
       "remote_ci": {
@@ -219,12 +234,7 @@
     {
       "date": "2026-09-05",
       "commit": "40e0e7e",
-      "packages": [
-        "EX04",
-        "EX05",
-        "EX06",
-        "EX07"
-      ],
+      "packages": ["EX04", "EX05", "EX06", "EX07"],
       "state": "combined_checks_passed_with_review_followups",
       "unit_tests": 152,
       "integration_tests": 36,
@@ -234,17 +244,10 @@
     {
       "date": "2026-09-05",
       "commit": "6b7f6c6",
-      "packages": [
-        "EX05",
-        "EX06"
-      ],
+      "packages": ["EX05", "EX06"],
       "state": "independently_reviewed_and_verified_locally",
       "reviewer": "worker-3",
-      "witness_commits": [
-        "0dd65c8",
-        "70d0cbd",
-        "a0955d0"
-      ],
+      "witness_commits": ["0dd65c8", "70d0cbd", "a0955d0"],
       "scope": "Prazo interrompe lock SQL sem persistência; runtime não escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem alteração de UI posterior.",
       "unit_tests": 152,
       "integration_tests": 41
@@ -312,12 +315,7 @@
     {
       "date": "2026-09-05",
       "commit": "048d937",
-      "packages": [
-        "EX16",
-        "EX17",
-        "EX18",
-        "EX19"
-      ],
+      "packages": ["EX16", "EX17", "EX18", "EX19"],
       "state": "local_csv_journey_verified_container_pending",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
       "evidence": "docs/verification/csv-local.md",
@@ -328,12 +326,7 @@
     {
       "date": "2026-09-05",
       "commit": "92c26a73549a9bb3f92b48b82d23a66ac1d4f864",
-      "packages": [
-        "EX16",
-        "EX17",
-        "EX18",
-        "EX19"
-      ],
+      "packages": ["EX16", "EX17", "EX18", "EX19"],
       "state": "verified_for_profile",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
       "evidence": "docs/verification/csv-local.md",
@@ -351,12 +344,7 @@
     {
       "date": "2026-09-05",
       "commit": "d7941bb",
-      "packages": [
-        "EX20",
-        "EX21",
-        "EX22",
-        "EX23"
-      ],
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
       "state": "candidate_with_reproduced_disclosure_failure",
       "witness_commits": [
         "420fc38",
@@ -373,12 +361,7 @@
     {
       "date": "2026-09-05",
       "commit": "dd4f781",
-      "packages": [
-        "EX20",
-        "EX21",
-        "EX22",
-        "EX23"
-      ],
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
       "state": "independently_reviewed_and_verified_locally_ci_pending",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
       "evidence": "docs/verification/sharing-local.md",
@@ -393,12 +376,7 @@
     {
       "date": "2026-09-05",
       "commit": "40ab4db5411535bf17212072a903dad2039e09d2",
-      "packages": [
-        "EX20",
-        "EX21",
-        "EX22",
-        "EX23"
-      ],
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
       "state": "remote_ci_failed_browser_logout_history",
       "evidence": "docs/verification/sharing-local.md",
       "remote_ci": {
@@ -416,12 +394,7 @@
     {
       "date": "2026-09-05",
       "commit": "06535bdcec668f62ba6d91d8ebb17e0235ed568b",
-      "packages": [
-        "EX20",
-        "EX21",
-        "EX22",
-        "EX23"
-      ],
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
       "state": "remote_behavior_passed_report_format_failed",
       "remote_ci": {
         "commit": "06535bdcec668f62ba6d91d8ebb17e0235ed568b",
@@ -437,12 +410,7 @@
     {
       "date": "2026-09-05",
       "commit": "aaa30db2aeac2e4b6abf96569f6efca236147c69",
-      "packages": [
-        "EX20",
-        "EX21",
-        "EX22",
-        "EX23"
-      ],
+      "packages": ["EX20", "EX21", "EX22", "EX23"],
       "state": "verified_for_profile",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
       "evidence": "docs/verification/sharing-local.md",
@@ -460,10 +428,7 @@
     {
       "date": "2026-09-06",
       "commit": "1fb5adb",
-      "packages": [
-        "EX25",
-        "EX26"
-      ],
+      "packages": ["EX25", "EX26"],
       "state": "independently_reviewed_locally_partial",
       "reviewer": "worker-3",
       "evidence": "docs/verification/identity-basis.md",
@@ -473,6 +438,20 @@
       "at": "2026-09-06T15:36:00Z",
       "note": "EX27 vertical slice: handlers+persistence+core integration test green; push pending on codex/rebuild.",
       "sha": "pending"
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "9910a4d5a6e53f29e75c9a8a978abb1589e82979",
+      "packages": ["EX24", "EX25", "EX26", "EX27", "EX28", "EX29"],
+      "state": "local_and_container_partial_quality_ci_pending",
+      "profile": "d01-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
+      "evidence": "docs/verification/subject-identity-local.md",
+      "unit_tests": 241,
+      "identity_integration_files": 12,
+      "browser_acceptance_identity_id15": 1,
+      "scope": "Compose+verify identity increment on subject-identity-v2 without rebinding old Worlds. Same executor+fence; ID-15 + full 13 acceptance scenarios green on image container-bfd0485f1d994118. Stale alert cross-talk fixed. Not verified_for_profile: pnpm lint/typecheck still fail on pre-existing identity suites; remote CI aggregator not yet green.",
+      "container_image": "zoen-local:container-bfd0485f1d994118",
+      "container_acceptance_tests": 13
     }
   ],
   "verified_deliveries": [],

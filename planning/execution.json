@@ -1735,7 +1735,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "commands_status": "Vertical slice + real ProposeIdentitySplit green on rebuild. Remaining: ID-08 full suite, recovery limits, worker-3 review; not verified_for_profile.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1800,7 +1800,7 @@
       "acceptance_requires": ["EX27"],
       "status": "in_progress",
       "verification_state": "partial",
-      "commands_status": "Vertical slice: HTTP /api/d02/subject-identity, CLI inspect/propose/resolve/split/recovery, Web owner panel. Help+request+CLI HTTP journey green. Gaps: browser ID-15, viewer denial browser proof, undo polish; EX29 not started.",
+      "commands_status": "Vertical slice + ID-15 Playwright inspect/propose/confirm green on subject-identity-v1. Gaps: viewer denial browser, undo polish; quality typecheck debt on older identity suites.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1849,9 +1849,9 @@
         "optional": []
       },
       "acceptance_requires": [],
-      "status": "planned",
-      "verification_state": "not_run",
-      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "status": "in_progress",
+      "verification_state": "partial",
+      "commands_status": "Profile subject-identity-v1 provisioned; composition+fence wired; unit+identity suites+ID-15 local green. Not verified_for_profile: quality lint/typecheck debt; container/CI pending.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

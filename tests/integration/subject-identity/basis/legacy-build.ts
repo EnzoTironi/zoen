@@ -12,7 +12,10 @@ export async function verifyLegacyBuild() {
   const fallback =
     "/Users/enzotironi/zoen-rebuild/.local/identity-baseline-20260905-2203/source";
   const supplied = process.env.ZOEN_TEST_LEGACY_ROOT ?? fallback;
-  assert(supplied, "ZOEN_TEST_LEGACY_ROOT must identify a prepared legacy build");
+  assert(
+    supplied,
+    "ZOEN_TEST_LEGACY_ROOT must identify a prepared legacy build"
+  );
   assert(isAbsolute(supplied), "Legacy root must be absolute");
   const root = await realpath(supplied);
   const proof = JSON.parse(

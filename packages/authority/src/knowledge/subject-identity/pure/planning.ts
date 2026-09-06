@@ -185,7 +185,6 @@ export const planResolutionEffects = Effect.fn(
   return result;
 });
 
-
 const blockedPlan = (
   reason: typeof IdentityBlockedReason.Type,
   supportingRefs: BlockedIdentityPlan["supportingRefs"] = []
@@ -238,7 +237,10 @@ const connectedWithin = (
 const coalesceDrafts = (
   drafts: readonly IdentityEffectDraft[]
 ): IdentityEffectDraft[] => {
-  type WithdrawDraft = Extract<IdentityEffectDraft, { readonly _tag: "Withdraw" }>;
+  type WithdrawDraft = Extract<
+    IdentityEffectDraft,
+    { readonly _tag: "Withdraw" }
+  >;
   type AssertDraft = Extract<IdentityEffectDraft, { readonly _tag: "Assert" }>;
   const withdrawals = new Map<
     WithdrawDraft["assertionRef"],
@@ -275,7 +277,9 @@ const coalesceDrafts = (
   }
   const result: IdentityEffectDraft[] = [];
   for (const assertionRef of [...withdrawals.keys()].toSorted()) {
-    for (const interval of unionIntervals(withdrawals.get(assertionRef) ?? [])) {
+    for (const interval of unionIntervals(
+      withdrawals.get(assertionRef) ?? []
+    )) {
       result.push({ _tag: "Withdraw", assertionRef, interval });
     }
   }
@@ -388,7 +392,11 @@ export const planSplitEffects = Effect.fn("subjectIdentity.planSplitEffects")(
           );
         }
       }
-      for (let leftIndex = 0; leftIndex < partition.blocks.length; leftIndex++) {
+      for (
+        let leftIndex = 0;
+        leftIndex < partition.blocks.length;
+        leftIndex++
+      ) {
         const leftBlock = partition.blocks[leftIndex];
         if (leftBlock === undefined) {
           continue;

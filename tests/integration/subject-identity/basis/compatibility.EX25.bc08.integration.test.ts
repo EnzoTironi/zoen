@@ -89,7 +89,9 @@ it.live(
             .withTransaction(
               Effect.gen(function* injectFailure() {
                 yield* sql.unsafe(identitySql);
-                return yield* Effect.fail("injected-identity-migration-failure");
+                return yield* Effect.fail(
+                  "injected-identity-migration-failure"
+                );
               })
             )
             .pipe(Effect.flip);

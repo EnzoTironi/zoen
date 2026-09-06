@@ -374,9 +374,7 @@ export const proposeIdentitySplit = Effect.fn("subjectIdentity.proposeSplit")(
         revision: nextRevision(projection.decisions),
         targetDecisionRef: null,
         worldRef: request.worldRef,
-      }).pipe(
-        Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
-      );
+      }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
       const next = yield* projectIdentity(scope, [
         ...projection.decisions,
         provisional,

@@ -180,9 +180,7 @@ it.live(
           SELECT operation
           FROM authority.receipts
           WHERE world_id = ${worldRef.worldId}::uuid`;
-        expect(
-          legacyOps.map((row) => row.operation).sort()
-        ).toEqual(
+        expect(legacyOps.map((row) => row.operation).sort()).toEqual(
           expect.arrayContaining([
             "CreatePersonalWorld",
             "GrantWorldReadAccess",
@@ -547,7 +545,9 @@ it.live(
               }
               yield* Effect.sleep("20 millis");
             }
-            return yield* Effect.die("disclosure_pending did not clear after emission");
+            return yield* Effect.die(
+              "disclosure_pending did not clear after emission"
+            );
           });
 
           const won = yield* executor
