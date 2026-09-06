@@ -87,4 +87,3 @@ Final disposition: no open findings in this reviewed Web EX23 scope after indepe
 ## CI busy-guard flake on owner revoke (tip `419ea90`)
 
 Container acceptance on [CI run 34049794018](https://github.com/EnzoTironi/zoen/actions/runs/34049794018) failed only the third race scenario when owner `RevokeWorldReadAccess` returned HTTP 503 Unavailable immediately after the viewer's fresh Inspect 200. That envelope is the documented membership mutator refusal while `jobs.disclosure_pending` still holds the viewer's membership key (ACK window after emission). Identity Stale-flag scoping did not participate: the failure was API-side before denial delivery. The harness `send()` helper now retries the same operationId/intention on Unavailable, matching disclosure busy semantics; expected denial outcomes are unchanged.
-
