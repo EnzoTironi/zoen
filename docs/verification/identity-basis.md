@@ -21,6 +21,8 @@ Execução local concluída por root com Node `v24.20.0` e pnpm `11.25.0`:
 
 O manifesto resultante coincide com o build anterior `767f757` observado no perfil de compartilhamento. O nome do diretório é um identificador da tentativa, não um carimbo de início. Uma segunda chamada com o mesmo destino retornou erro antes de sobrescrever arquivos. Esta é prova do preparador, ainda não de BC-01.
 
+Na CI, o job `integration` de `.github/workflows/verify.yml` prepara `.local/identity-baseline-ci` (com cache por SHA do preparador) e exporta `ZOEN_TEST_LEGACY_ROOT` absoluto; o harness falha fechado se a variável estiver ausente (sem fallback de caminho de máquina local).
+
 ## Fronteiras da transição
 
 A migração 007 é uma extensão explícita de 001–006. Ela bloqueia as tabelas de Worlds/domínios durante a transação, admite o novo nome de domínio e registra identidade inicialmente vazia para cada World existente. Não modifica as bases salvas, receipts, Frames, Cases, eventos ou vínculos de instalação dos Worlds. O executor anterior precisa estar parado antes dessa transição; seu reader de cinco domínios não é compatível com o estado novo.

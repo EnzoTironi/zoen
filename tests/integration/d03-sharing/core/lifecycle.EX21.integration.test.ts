@@ -151,6 +151,7 @@ it.live(
           { domain_key: "cases", version: "0" },
           { domain_key: "claims", version: "0" },
           { domain_key: "evidence", version: "0" },
+          { domain_key: "identity", version: "0" },
           { domain_key: "membership", version: "3" },
           { domain_key: "sources", version: "0" },
         ]);

@@ -32,7 +32,7 @@ it.live(
     `;
         expect(rows).toStrictEqual([
           {
-            domains: 5,
+            domains: 6,
             memberships: 1,
             operations: 1,
             outbox: 1,

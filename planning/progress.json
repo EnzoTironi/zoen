@@ -10,7 +10,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex24-subject-identity",
       "state": "partial_schemas_landed_not_verified_for_profile",
-      "notes": "Schemas/pure laws on tip and in unit suite. Not independently verified_for_profile; quality typecheck still red on later identity suites. Lint/typecheck quality debt cleared on 5da8582 (format/lint/typecheck green in CI); verify_plan still fails Unproved EX28; integration still not green (legacy baseline path on CI + unrelated domain asserts). Not verified_for_profile."
+      "notes": "Schemas/pure laws on tip and in unit suite. Not independently verified_for_profile; quality typecheck still red on later identity suites. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
     },
     {
       "agent": "roadmap_redesign",
@@ -19,7 +19,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "independently_reviewed_component_partial",
-      "notes": "BC-01..09 component green on rebuild. Gaps remain for full graph/absence/recovery; not verified_for_profile. Lint/typecheck quality debt cleared on 5da8582 (format/lint/typecheck green in CI); verify_plan still fails Unproved EX28; integration still not green (legacy baseline path on CI + unrelated domain asserts). Not verified_for_profile."
+      "notes": "BC-01..09 component green on rebuild. Gaps remain for full graph/absence/recovery; not verified_for_profile. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
     },
     {
       "agent": "tickets_redesign",
@@ -28,7 +28,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "independent_proofs_green_partial",
-      "notes": "Independent oracles green (legacy/audience/concurrency/SIGKILL-007 + split writers). Full ID suite and quality typecheck debt remain; not verified_for_profile. Lint/typecheck quality debt cleared on 5da8582 (format/lint/typecheck green in CI); verify_plan still fails Unproved EX28; integration still not green (legacy baseline path on CI + unrelated domain asserts). Not verified_for_profile."
+      "notes": "Independent oracles green (legacy/audience/concurrency/SIGKILL-007 + split writers). Full ID suite and quality typecheck debt remain; not verified_for_profile. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
     },
     {
       "agent": "architecture_redesign",
@@ -37,7 +37,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "vertical_slice_verified_pending_review",
-      "notes": "Core handlers+split vertical slice green on real PG/S3/Better Auth. Remaining: ID-08 concurrency/SIGKILL full suite, recovery Question limits, worker-3 review. Not verified_for_profile. Lint/typecheck quality debt cleared on 5da8582 (format/lint/typecheck green in CI); verify_plan still fails Unproved EX28; integration still not green (legacy baseline path on CI + unrelated domain asserts). Not verified_for_profile."
+      "notes": "Core handlers+split vertical slice green on real PG/S3/Better Auth. Remaining: ID-08 concurrency/SIGKILL full suite, recovery Question limits, worker-3 review. Not verified_for_profile. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
     },
     {
       "agent": "roadmap_redesign",
@@ -46,7 +46,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "partial_surfaces_id15_browser_green",
-      "notes": "HTTP/CLI/Web + ID-15 Playwright green on subject-identity-v2. Remaining: viewer denial browser, undo polish. Lint/typecheck quality debt cleared on 5da8582 (format/lint/typecheck green in CI); verify_plan still fails Unproved EX28; integration still not green (legacy baseline path on CI + unrelated domain asserts). Not verified_for_profile."
+      "notes": "HTTP/CLI/Web + ID-15 Playwright green on subject-identity-v2. Remaining: viewer denial browser, undo polish. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
     },
     {
       "agent": "architecture_redesign",
@@ -55,7 +55,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "local_and_container_partial_not_verified_for_profile",
-      "notes": "subject-identity-v2 + container-bfd0485f1d994118: 13/13 acceptance incl. ID-15. Quality lint/typecheck debt remains; not verified_for_profile. Lint/typecheck quality debt cleared on 5da8582 (format/lint/typecheck green in CI); verify_plan still fails Unproved EX28; integration still not green (legacy baseline path on CI + unrelated domain asserts). Not verified_for_profile."
+      "notes": "subject-identity-v2 + container-bfd0485f1d994118: 13/13 acceptance incl. ID-15. Quality lint/typecheck debt remains; not verified_for_profile. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
     }
   ],
   "temporary_ownership": [

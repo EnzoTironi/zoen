@@ -1798,9 +1798,9 @@
         "optional": []
       },
       "acceptance_requires": ["EX27"],
-      "status": "in_progress",
-      "verification_state": "partial",
-      "commands_status": "Vertical slice + ID-15 Playwright inspect/propose/confirm green on subject-identity-v1. Gaps: viewer denial browser, undo polish; quality typecheck debt on older identity suites.",
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Vertical slice + ID-15 Playwright green locally; lint/typecheck cleared on tip. Not verified_for_profile: viewer denial browser, undo polish, combined CI/profile proof.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1849,9 +1849,9 @@
         "optional": []
       },
       "acceptance_requires": [],
-      "status": "in_progress",
-      "verification_state": "partial",
-      "commands_status": "Profile subject-identity-v1 provisioned; composition+fence wired; unit+identity suites+ID-15 local green. Not verified_for_profile: quality lint/typecheck debt; container/CI pending.",
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "subject-identity-v2 composition + ID-15 local/container partial. Not verified_for_profile: CI quality+integration must settle; independent review still open.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

@@ -61,6 +61,17 @@ jobs:
         run: python3 tooling/prepare_infra.py
       - run: docker compose --env-file .env.infra -f ops/compose.yaml up -d --wait
       - run: pnpm build
+      - name: Restore identity legacy baseline
+        id: identity-baseline-cache
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        with:
+          path: .local/identity-baseline-ci
+          key: identity-baseline-06535bdcec668f62ba6d91d8ebb17e0235ed568b-v1-${{ hashFiles('tooling/prepare_identity_baseline.py') }}
+      - name: Prepare identity legacy baseline
+        if: steps.identity-baseline-cache.outputs.cache-hit != 'true'
+        run: python3 tooling/prepare_identity_baseline.py --out .local/identity-baseline-ci
+      - name: Export ZOEN_TEST_LEGACY_ROOT
+        run: echo "ZOEN_TEST_LEGACY_ROOT=${GITHUB_WORKSPACE}/.local/identity-baseline-ci/source" >> "$GITHUB_ENV"
       - run: pnpm test:integration
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:container
