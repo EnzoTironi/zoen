@@ -64,7 +64,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Freeze+schemas part of local Closing/register surface verified_for_profile with EX30–EX34. NOT full D03 (no purge/Erased/restore). Tip 66b958b."
+      "notes": "Freeze+schemas part of local Closing/register surface verified_for_profile with EX30–EX34. NOT full D03 (no purge/Erased/restore). execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "roadmap_redesign",
@@ -73,7 +73,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Web/CLI Closing surfaces verified_for_profile with EX30–EX34 local Closing/register only. Default retained compose preserved; erasable via ZOEN_LOCAL_WORLD_POLICY. NOT full D03. Tip 66b958b."
+      "notes": "Web/CLI Closing surfaces verified_for_profile with EX30–EX34 local Closing/register only. Default retained compose preserved; erasable via ZOEN_LOCAL_WORLD_POLICY. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -82,7 +82,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Compose+verify d03-local-erasable-v1 for NEW Worlds only; numbered migrations 009/010; independent Closing/retained oracles; executor fixture ErasureAttemptRegister debt cleared. verified_for_profile ONLY for local Closing/register surface — NOT full D03 (no purge/Erased/restore). Tip 66b958b."
+      "notes": "Compose+verify d03-local-erasable-v1 for NEW Worlds only; numbered migrations 009/010; independent Closing/retained oracles; executor fixture ErasureAttemptRegister debt cleared. verified_for_profile ONLY for local Closing/register surface — NOT full D03 (no purge/Erased/restore). execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -91,7 +91,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Register port part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. Tip 66b958b."
+      "notes": "Register port part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -100,7 +100,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Closing handlers part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. Tip 66b958b."
+      "notes": "Closing handlers part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     }
   ],
   "temporary_ownership": [
@@ -635,7 +635,7 @@
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds only) / Closing+register local surface; d01-local-retained-v1 default preserved",
       "evidence": "docs/verification/erasure-local.md",
-      "scope": "Local Closing/register surface verified_for_profile for EX30–EX34: numbered migrations 009/010, erasable provision for NEW Worlds only, independent Closing/retained oracles, Web/CLI confirmation. Does NOT conclude full D03: purge/Erased, qualified controller, Object Lock, backup catalog, World fence ER-R02, restoreAfterErasure remain blocked.",
+      "scope": "Local Closing/register surface verified_for_profile for EX30–EX34: numbered migrations 009/010, erasable provision for NEW Worlds only, independent Closing/retained oracles, Web/CLI confirmation. Does NOT conclude full D03: purge/Erased, qualified controller, Object Lock, backup catalog, World fence ER-R02, restoreAfterErasure remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
       "tests": {
         "unit_ex30": "pass",
         "integration_local_register_ex31": "pass",

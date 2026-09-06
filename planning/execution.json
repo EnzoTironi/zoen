@@ -1909,8 +1909,8 @@
       },
       "acceptance_requires": [],
       "status": "planned",
-      "verification_state": "verified_for_profile_local_closing_register",
-      "commands_status": "Freeze + schemas stubs landed with EX30 docs; product purge not authorized.",
+      "verification_state": "not_run",
+      "commands_status": "Freeze+schemas part of local Closing/register surface (with EX31–EX34). execution status remains planned/not_run for verify_plan; progress in progress.json. Not full D03 (no purge/Erased/restore).",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1969,9 +1969,9 @@
         "optional": []
       },
       "acceptance_requires": [],
-      "status": "implemented",
-      "verification_state": "verified_for_profile_local_closing_register",
-      "commands_status": "Local PG register under erasure_attempt schema; unit+integration green; controller topology still unqualified for production Closing.",
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Local ErasureAttemptRegister on isolated schema; unit+integration green. execution status remains planned/not_run for verify_plan; progress in progress.json. Not full D03 (controller/purge still blocked).",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -2028,9 +2028,9 @@
         "optional": []
       },
       "acceptance_requires": [],
-      "status": "implemented",
-      "verification_state": "verified_for_profile_local_closing_register",
-      "commands_status": "Closing handlers + dedicated register pool; integration green on real PG; no purge; profile compose default still retained until EX34.",
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Local Closing after register; integration green on real PG; no purge. execution status remains planned/not_run for verify_plan; progress in progress.json. Not full D03.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -2101,9 +2101,9 @@
         "optional": []
       },
       "acceptance_requires": ["EX32"],
-      "status": "implemented",
-      "verification_state": "verified_for_profile_local_closing_register",
-      "commands_status": "HTTP/CLI/Web Closing surfaces; verified_for_profile with EX34 local Closing/register only. No purge/Erased/restore. Default compose retained; erasable via explicit world policy.",
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "HTTP/CLI/Web Closing surfaces with EX30–EX34 local Closing/register only. execution status remains planned/not_run for verify_plan; progress in progress.json. Not full D03 (no purge/Erased/restore).",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -2162,9 +2162,9 @@
         "optional": []
       },
       "acceptance_requires": [],
-      "status": "implemented",
-      "verification_state": "verified_for_profile_local_closing_register",
-      "commands_status": "Compose+verify local erasable profile (new Worlds); numbered 009/010; independent oracles; quality green. verified_for_profile Closing/register ONLY — not full D03.",
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Compose+verify d03-local-erasable-v1 (new Worlds); numbered 009/010; independent oracles. execution status remains planned/not_run for verify_plan; progress in progress.json. verified_for_profile Closing/register ONLY — not full D03.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
