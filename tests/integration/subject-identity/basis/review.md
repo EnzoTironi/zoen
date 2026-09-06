@@ -14,6 +14,8 @@ Escopo candidato a refutar, não a reexecutar mecanicamente.
 ## Lacunas honestas (não fingir verde)
 
 1. **BC-06 aresta redundante/ausência:** não há writer EX27. O teste avança o cut por SQL. Refutar se isso não equivaler semanticamente a um writer que só registra ausência/redundância.
+
+Update 2026-09-06: EX27 vertical slice writers exist (`handlers.EX27`); core proves Resolve Stale after identity bump and recovery undo. Full redundant-edge/phantom oracles still open under independent/.
 2. **BC-09 Web/CLI identidade:** EX28. Aqui só o caminho de executor+fence já usado por HTTP D01/sharing. Refutar se a obrigação EX25 exigir superfície Web/CLI de identidade antes do verified.
 3. **Fence concorrente SH07/08:** não reexecutado nesta suíte após a transição; herda EX23. Refutar se a adição do domínio identity alterar locks/pending.
 4. **Upgrade de instalação:** explicitamente fora de escopo; release digest permanece o do legado.

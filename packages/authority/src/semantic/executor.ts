@@ -14,6 +14,7 @@ import {
 import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
 import { D01_LIMITS, Instant } from "@zoen/contracts/d01/values";
 import { SharingSuccess } from "@zoen/contracts/sharing/operations";
+import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
 import type { Redacted } from "effect";
 import { Clock, Context, DateTime, Effect, Layer, Schema, Scope } from "effect";
 
@@ -33,12 +34,23 @@ import { proposeCorrection } from "../knowledge/corrections/propose.js";
 import { parseCorrectionBytes } from "../knowledge/corrections/request.js";
 import { undoCorrection } from "../knowledge/corrections/undo.js";
 import { inspect } from "../knowledge/d01/inspect.js";
+import {
+  inspectIdentityRecovery,
+  inspectSubjectIdentity,
+} from "../knowledge/subject-identity/handlers/inspect.js";
+import {
+  proposeIdentityResolution,
+  proposeIdentitySplit,
+  proposeIdentityUndo,
+} from "../knowledge/subject-identity/handlers/propose.js";
+import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.js";
+import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
 import { Presence } from "../ports/d01/context.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
 import { canonicalJson } from "../values/canonical.js";
 import { parseEnvelopeBytes } from "../values/json.js";
 
-type Family = "d01" | "correction" | "sharing";
+type Family = "d01" | "correction" | "sharing" | "subject-identity";
 type Emit = (jsonBytes: Uint8Array) => "submitted";
 type ExecuteWithEmission = (
   credential: Redacted.Redacted,
@@ -56,6 +68,9 @@ const parseRequest = (family: Family, bytes: Uint8Array) => {
     }
     case "sharing": {
       return parseSharingBytes(bytes);
+    }
+    case "subject-identity": {
+      return parseSubjectIdentityBytes(bytes);
     }
     default: {
       return Effect.fail(new Unsupported({ code: "UNSUPPORTED" }));
@@ -75,6 +90,9 @@ const decodeSuccess = (
     }
     case "sharing": {
       return Schema.decodeUnknownEffect(SharingSuccess)(result);
+    }
+    case "subject-identity": {
+      return Schema.decodeUnknownEffect(SubjectIdentitySuccess)(result);
     }
     default: {
       return Effect.fail(new Unsupported({ code: "UNSUPPORTED" }));
@@ -99,9 +117,14 @@ export class SemanticExecutor extends Context.Service<
       credential: Redacted.Redacted,
       bytes: Uint8Array
     ) => Effect.Effect<SharingSuccess, D01Error>;
+    readonly executeSubjectIdentity: (
+      credential: Redacted.Redacted,
+      bytes: Uint8Array
+    ) => Effect.Effect<SubjectIdentitySuccess, D01Error>;
     readonly executeWithEmission: ExecuteWithEmission;
     readonly executeCorrectionWithEmission: ExecuteWithEmission;
     readonly executeSharingWithEmission: ExecuteWithEmission;
+    readonly executeSubjectIdentityWithEmission: ExecuteWithEmission;
   }
 >()("zoen/authority/semantic/SemanticExecutor") {
   static readonly layer = Layer.effect(
@@ -122,6 +145,12 @@ export class SemanticExecutor extends Context.Service<
             | ReturnType<typeof inspectWorldAccess>
             | ReturnType<typeof grantWorldReadAccess>
             | ReturnType<typeof revokeWorldReadAccess>
+            | ReturnType<typeof inspectSubjectIdentity>
+            | ReturnType<typeof inspectIdentityRecovery>
+            | ReturnType<typeof proposeIdentityResolution>
+            | ReturnType<typeof proposeIdentitySplit>
+            | ReturnType<typeof proposeIdentityUndo>
+            | ReturnType<typeof resolveIdentity>
           >
         >()
       );
@@ -177,6 +206,24 @@ export class SemanticExecutor extends Context.Service<
               }
               case "RevokeWorldReadAccess": {
                 return yield* revokeWorldReadAccess(context, request);
+              }
+              case "InspectSubjectIdentity": {
+                return yield* inspectSubjectIdentity(context, request);
+              }
+              case "InspectIdentityRecovery": {
+                return yield* inspectIdentityRecovery(context, request);
+              }
+              case "ProposeIdentityResolution": {
+                return yield* proposeIdentityResolution(context, request);
+              }
+              case "ProposeIdentitySplit": {
+                return yield* proposeIdentitySplit(context, request);
+              }
+              case "ProposeIdentityUndo": {
+                return yield* proposeIdentityUndo(context, request);
+              }
+              case "ResolveIdentity": {
+                return yield* resolveIdentity(context, request);
               }
               default: {
                 return yield* new Unsupported({ code: "UNSUPPORTED" });
@@ -331,6 +378,13 @@ export class SemanticExecutor extends Context.Service<
           ),
         executeSharingWithEmission: (credential, bytes, emit) =>
           withEmission("sharing", credential, bytes, emit),
+        executeSubjectIdentity: (credential, bytes) =>
+          execute("subject-identity", credential, bytes).pipe(
+            Effect.flatMap(Schema.decodeUnknownEffect(SubjectIdentitySuccess)),
+            Effect.catchTag("SchemaError", schemaUnavailable)
+          ),
+        executeSubjectIdentityWithEmission: (credential, bytes, emit) =>
+          withEmission("subject-identity", credential, bytes, emit),
         executeWithEmission: (credential, bytes, emit) =>
           withEmission("d01", credential, bytes, emit),
       });

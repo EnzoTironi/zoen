@@ -7,6 +7,7 @@ import { SqlClient } from "effect/unstable/sql";
 import { grantD01Roles } from "../../apps/server/sql/proposals/d01/grants.ts";
 import type { D01DatabaseRoles } from "../../apps/server/sql/proposals/d01/grants.ts";
 import { grantDisclosureRole } from "../../apps/server/sql/proposals/disclosure/grants.ts";
+import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantD01IdentityRole } from "../../apps/server/src/identity/d01/grants.ts";
 
 /** Called only by the migration owner, never by the server's runtime pool. */
@@ -105,10 +106,15 @@ export const applyIdentityBasisMigrations = Effect.fn(
   const identity = yield* fs.readFileString(
     fileURLToPath(new URL("007_subject_identity_domain.sql", import.meta.url))
   );
+  const events = yield* fs.readFileString(
+    fileURLToPath(new URL("008_subject_identity_events.sql", import.meta.url))
+  );
   const extension = yield* PgMigrator.run({
     loader: PgMigrator.fromRecord({
       "7_subject_identity_domain": sql.unsafe(identity).pipe(Effect.asVoid),
+      "8_subject_identity_events": sql.unsafe(events).pipe(Effect.asVoid),
     }),
   });
+  yield* sql.withTransaction(grantSubjectIdentityRole(roles.authority));
   return [...base, ...extension];
 });

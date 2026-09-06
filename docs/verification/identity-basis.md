@@ -46,7 +46,7 @@ ZOEN_TEST_LEGACY_ROOT=.../identity-baseline-20260905-2203/source \
 | BC-03 | Passou: replay exacto de Propose/Answer/Undo legados devolveu os receipts originais |
 | BC-04 | Passou: mesmo opID com intenção diferente → Conflict; terceiro → NotFoundOrDenied; logout → Unauthenticated |
 | BC-05 | Passou: novos opIDs sobre base/Question legada → Stale sem novos cases/receipts/corrections/outbox |
-| BC-06 | Passou: inspeção nova emite `authority.basis.v2` com cut de seis domínios; Propose/Answer ajustam só `cases`; avanço concorrente de `identity` deixa Case literal `Stale`. Writers EX27 de aresta redundante/ausência ainda não existem; o bump de cut cobre o mecanismo de invalidação |
+| BC-06 | Passou: inspeção nova emite `authority.basis.v2` com cut de seis domínios; Propose/Answer ajustam só `cases`; avanço concorrente de `identity` deixa Case literal `Stale`. EX27 vertical slice: writer ResolveIdentity avança `identity`; Resolve de Case retido fica `Stale` após bump de `identity` (handlers.EX27). Aresta redundante / phantom full suite ainda parcial |
 | BC-07 | Passou: replay de CreatePersonalWorld/ImportEvidence/Grant/Revoke legados preserva receipts; novos writes `basis:null` gravam cut/receipt com `identity` sem Frame |
 | BC-08 | Passou: falha injetada no meio do SQL 007 faz rollback sem registrar migração 7; CHECK parcial sem linha `identity` deixa `readCut` em Unavailable preservando worlds/evidence/receipts; `applyIdentityBasisMigrations` recupera |
 | BC-09 | Passou (componente): `executeWithEmission` emite DTO literal `FrameInspected` após a transição; revogação vencedora impede emissão (`NotFoundOrDenied`, emit não chamado). UI Web/CLI de identidade é EX28 e permanece bloqueada; ordenações concorrentes SH07/08 do fence continuam evidência EX23 |
@@ -72,4 +72,4 @@ ZOEN_TEST_LEGACY_ROOT=.../identity-baseline-20260905-2203/source \
   --no-file-parallelism tests/integration/subject-identity/independent/
 ```
 
-Lacunas restantes para EX26 completo: grafo/ausência/recuperação (EX27), limites de Question de recuperação, Web/CLI de identidade (EX28). EX25 componente BC-01..09 permanece coberto; `verified_for_profile` ainda exige essas lacunas honestas.
+Lacunas restantes para EX26 completo: suite completa grafo/ausência/recuperação (EX27 ainda vertical slice), limites de Question de recuperação, Web/CLI de identidade (EX28). EX25 componente BC-01..09 permanece coberto; `verified_for_profile` ainda exige essas lacunas honestas.

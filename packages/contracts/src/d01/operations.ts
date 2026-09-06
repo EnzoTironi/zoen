@@ -1,6 +1,10 @@
 import { Schema } from "effect";
 
 import { SharingRequest, SharingSuccess } from "../sharing/operations.js";
+import {
+  SubjectIdentityRequest,
+  SubjectIdentitySuccess,
+} from "../subject-identity/operations.js";
 import { D01Error } from "./errors.js";
 import { CorrectionConsequence, VisibleFrame } from "./evidence.js";
 import {
@@ -104,6 +108,7 @@ export const SemanticRequest = Schema.Union([
   D01Request,
   CorrectionRequest,
   SharingRequest,
+  SubjectIdentityRequest,
 ]);
 export type SemanticRequest = typeof SemanticRequest.Type;
 export const decodeD01Request = Schema.decodeUnknownEffect(D01Request);
@@ -160,6 +165,7 @@ export const SemanticSuccess = Schema.Union([
   D01Success,
   CorrectionSuccess,
   SharingSuccess,
+  SubjectIdentitySuccess,
 ]);
 export type SemanticSuccess = typeof SemanticSuccess.Type;
 export const SemanticResult = Schema.Union([SemanticSuccess, D01Error]);

@@ -12,6 +12,7 @@ import {
   exact,
 } from "@zoen/contracts/d01/values";
 import { SharingMutationSuccess } from "@zoen/contracts/sharing/operations";
+import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
 import { Schema } from "effect";
 
 export const StoredOperationResult = Schema.Union([
@@ -19,6 +20,7 @@ export const StoredOperationResult = Schema.Union([
   EvidenceImported,
   CorrectionSuccess,
   SharingMutationSuccess,
+  SubjectIdentitySuccess,
 ]);
 export const StoredQuestion = Schema.Struct({
   allowedAnswers: Schema.Array(QuestionAnswer).check(

@@ -17,6 +17,10 @@ const resultTags = {
   GrantWorldReadAccess: "WorldReadAccessGranted",
   ImportEvidence: "EvidenceImported",
   ProposeCorrection: "CorrectionProposed",
+  ProposeIdentityResolution: "IdentityProposed",
+  ProposeIdentitySplit: "IdentityProposed",
+  ProposeIdentityUndo: "IdentityProposed",
+  ResolveIdentity: "IdentityResolved",
   RevokeWorldReadAccess: "WorldReadAccessRevoked",
   UndoCorrection: "CorrectionUndone",
 } as const;

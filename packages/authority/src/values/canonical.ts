@@ -145,7 +145,10 @@ export const canonicalJson = (input: unknown) =>
     },
   });
 
-export type DigestDomain = "read-set" | "correction-consequence";
+export type DigestDomain =
+  | "read-set"
+  | "correction-consequence"
+  | "identity-consequence";
 
 const domainDigest = (domain: DigestDomain | "intent", value: unknown) =>
   canonicalJson(value).pipe(

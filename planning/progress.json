@@ -18,7 +18,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "independently_reviewed_component_pending_ex27_ex28_gaps",
-      "notes": "EX25 BC-01..09 component green; worker-3 independent counterproofs under tests/integration/subject-identity/independent green (legacy integrity, audience, concurrency, SIGKILL-007). verified_for_profile still open: BC-06 identity-edge writers=EX27; BC-09 identity Web/CLI=EX28; EX26 full acceptance_requires EX27."
+      "notes": "EX25 BC-01..09 component green; EX26 independent green. BC-06 identity-edge writers: EX27 vertical slice landed (inspect/propose/resolve/undo + absence Stale). BC-09 Web/CLI still EX28. verified_for_profile still open."
     },
     {
       "agent": "tickets_redesign",
@@ -27,7 +27,16 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "basis_compatibility_independent_proofs_green_ex27_blocked",
-      "notes": "Independent oracles green for legacy bases, audience, concurrency, SIGKILL migration. Graph/absence/recovery after new claims blocked until EX27 writers exist. Owns domain path tests/integration/subject-identity/independent/** (plan JSON still lists d02-identity/independent; mass rename later)."
+      "notes": "Independent oracles green. EX27 vertical slice unblocks graph/absence/recovery after claims on rebuild; remaining EX27 items: split planner, ID-01/08–14 full suite, independent review. Owns tests/integration/subject-identity/independent/**."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX27-subject-identity-semantic-handlers",
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "vertical_slice_verified_pending_review",
+      "notes": "Vertical slice green on real PG/S3/Better Auth: InspectSubjectIdentity snapshot+pins+basis v2 identity dep; Propose/Resolve same-as; InspectIdentityRecovery; Propose/Resolve undo; Resolve Stale after identity domain bump. Split proposal still Unavailable stub. Remaining: full split planner, ID-08 concurrency/SIGKILL atomicity suite, prospective serialization edge cases, worker-3 review. Not verified_for_profile."
     }
   ],
   "temporary_ownership": [
@@ -36,42 +45,42 @@
       "path": "tests/integration/d01/commit/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em su\u00edte transversal, sem import de servidor nas fontes authority."
+      "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em suíte transversal, sem import de servidor nas fontes authority."
     },
     {
       "task": "EX08",
       "path": "packages/authority/src/semantic/executor.ts",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Registrar opera\u00e7\u00f5es reais e prazo comum no dispatcher existente."
+      "reason": "Registrar operações reais e prazo comum no dispatcher existente."
     },
     {
       "task": "EX08",
       "path": "tests/integration/d01/evidence/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Provar publica\u00e7\u00e3o, leitura e GC com PostgreSQL e S3 reais."
+      "reason": "Provar publicação, leitura e GC com PostgreSQL e S3 reais."
     },
     {
       "task": "EX08",
       "path": "packages/authority/src/commit/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Refinar changedDomains e valida\u00e7\u00e3o de prazo mantendo a primitiva \u00fanica."
+      "reason": "Refinar changedDomains e validação de prazo mantendo a primitiva única."
     },
     {
       "task": "EX09",
       "path": "apps/server/src/adapters/postgres/d01/postgres.ts",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Compartilhar admiss\u00e3o com a conex\u00e3o real de identidade e corrigir escalada por roles."
+      "reason": "Compartilhar admissão com a conexão real de identidade e corrigir escalada por roles."
     },
     {
       "task": "EX10",
       "path": "apps/server/test/adapters/postgres/d01/database.ts",
       "owner": "root",
       "integration_owner": "root",
-      "reason": "Permitir instala\u00e7\u00e3o numerada em banco vazio reutilizando provisionamento isolado."
+      "reason": "Permitir instalação numerada em banco vazio reutilizando provisionamento isolado."
     },
     {
       "task": "EX05-EX06-review",
@@ -92,35 +101,35 @@
       "path": "tooling/test_prepare_infra.py",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Contraprova independente de cria\u00e7\u00e3o exclusiva, modo0600 e recusa de symlinks."
+      "reason": "Contraprova independente de criação exclusiva, modo0600 e recusa de symlinks."
     },
     {
       "task": "D03-sharing-contract",
       "path": "docs/contracts/d03-sharing.md",
       "owner": "worker-3",
       "integration_owner": "root",
-      "reason": "Contrato candidato do pr\u00f3ximo incremento; implementa\u00e7\u00e3o depende de congelamento e revis\u00e3o."
+      "reason": "Contrato candidato do próximo incremento; implementação depende de congelamento e revisão."
     },
     {
       "task": "D01-CSV-contract",
       "path": "docs/contracts/d01-csv.md",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Contrato candidato de importa\u00e7\u00e3o CSV pelo mesmo executor; n\u00e3o autoriza parser heur\u00edstico."
+      "reason": "Contrato candidato de importação CSV pelo mesmo executor; não autoriza parser heurístico."
     },
     {
       "task": "EX19-web",
       "path": "apps/web/src/features/d01/**",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "SeletorCSV expl\u00edcito no mesmo cliente; entrypoints/config permanecem root."
+      "reason": "SeletorCSV explícito no mesmo cliente; entrypoints/config permanecem root."
     },
     {
       "task": "EX16-independent-migration-review",
       "path": "tests/integration/d01/independent/document-format-migration.review.integration.test.ts",
       "owner": "worker-3",
       "integration_owner": "root",
-      "reason": "Contraprova real da migra\u00e7\u00e3o004 e preserva\u00e7\u00e3o JSON hist\u00f3rica."
+      "reason": "Contraprova real da migração004 e preservação JSON histórica."
     },
     {
       "task": "EX22",
@@ -134,35 +143,56 @@
       "path": "packages/authority/src/ports/disclosure/fence.ts",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Aplicar somente DisclosurePermit/retorno shared congelados por root junto ao adapter compil\u00e1vel; n\u00e3o ampliar o port."
+      "reason": "Aplicar somente DisclosurePermit/retorno shared congelados por root junto ao adapter compilável; não ampliar o port."
     },
     {
       "task": "EX23-cli",
       "path": "apps/cli/src/sharing/**",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "CLI compartilhamento implementada e revisada por worker-3; integra\u00e7\u00e3o HTTP viva depende do profile novo."
+      "reason": "CLI compartilhamento implementada e revisada por worker-3; integração HTTP viva depende do profile novo."
     },
     {
       "task": "EX23-web",
       "path": "apps/web/src/components/d01/{d01-workspace.tsx,presentation.ts}",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Permitir readOnly no componente existente e ocultar importa\u00e7\u00e3o e ajustes para viewer; extens\u00e3o autorizada antes da implementa\u00e7\u00e3o."
+      "reason": "Permitir readOnly no componente existente e ocultar importação e ajustes para viewer; extensão autorizada antes da implementação."
     },
     {
       "task": "EX23-independent-web-review",
       "path": "apps/web/test/integration/d03-sharing/independent/**",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Reproduzir descarte de nega\u00e7\u00e3o com leitura concorrente no navegador real; n\u00e3o fabricar respostas."
+      "reason": "Reproduzir descarte de negação com leitura concorrente no navegador real; não fabricar respostas."
     },
     {
       "task": "EX26-independent-basis-review",
       "path": "tests/integration/subject-identity/independent/**",
       "owner": "worker-3",
       "integration_owner": "root",
-      "reason": "Contraprovas independentes de compatibilidade de base e identidade; path de dom\u00ednio (n\u00e3o d02-*)."
+      "reason": "Contraprovas independentes de compatibilidade de base e identidade; path de domínio (não d02-*)."
+    },
+    {
+      "task": "EX27",
+      "path": "packages/authority/src/knowledge/subject-identity/handlers/**",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Handlers de identidade no commit semântico."
+    },
+    {
+      "task": "EX27",
+      "path": "packages/authority/src/knowledge/subject-identity/persistence/**",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "SQL privado e projeção de decisões de identidade."
+    },
+    {
+      "task": "EX27",
+      "path": "tests/integration/subject-identity/core/**",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Provas de integração EX27 core."
     }
   ],
   "checkpoints": [
@@ -184,7 +214,7 @@
       "unit_tests": 67,
       "infrastructure_tests": 4,
       "browser_component_tests": 7,
-      "scope": "Bootstrap, contratos e componentes puros; n\u00e3o conclui D01 ou D02."
+      "scope": "Bootstrap, contratos e componentes puros; não conclui D01 ou D02."
     },
     {
       "date": "2026-09-05",
@@ -199,7 +229,7 @@
       "unit_tests": 152,
       "integration_tests": 36,
       "browser_component_tests": 7,
-      "scope": "Componentes de dom\u00ednio e adapters reais; EX05/EX06 receberam corre\u00e7\u00f5es posteriores com contraprovas independentes. EX07 ainda requer revis\u00e3o cruzada; EX08/EX09/EX10 em composi\u00e7\u00e3o."
+      "scope": "Componentes de domínio e adapters reais; EX05/EX06 receberam correções posteriores com contraprovas independentes. EX07 ainda requer revisão cruzada; EX08/EX09/EX10 em composição."
     },
     {
       "date": "2026-09-05",
@@ -215,7 +245,7 @@
         "70d0cbd",
         "a0955d0"
       ],
-      "scope": "Prazo interrompe lock SQL sem persist\u00eancia; runtime n\u00e3o escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem altera\u00e7\u00e3o de UI posterior.",
+      "scope": "Prazo interrompe lock SQL sem persistência; runtime não escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem alteração de UI posterior.",
       "unit_tests": 152,
       "integration_tests": 41
     },
@@ -243,7 +273,7 @@
       "browser_component_tests": 7,
       "browser_acceptance_tests": 4,
       "tooling_tests": 6,
-      "scope": "Jornada JSON, identidade real, PostgreSQL/S3, corre\u00e7\u00e3o/unknown/undo, replay e revoga\u00e7\u00e3o com revis\u00e3o cruzada. Build, typecheck e lint passaram. Aceita\u00e7\u00e3o combinada atual51.9s; cont\u00eainer/CI nova ainda n\u00e3o executados. N\u00e3o conclui D01/D02 completos nem 22 entregas."
+      "scope": "Jornada JSON, identidade real, PostgreSQL/S3, correção/unknown/undo, replay e revogação com revisão cruzada. Build, typecheck e lint passaram. Aceitação combinada atual51.9s; contêiner/CI nova ainda não executados. Não conclui D01/D02 completos nem 22 entregas."
     },
     {
       "date": "2026-09-05",
@@ -277,7 +307,7 @@
       "browser_component_tests": 7,
       "browser_acceptance_tests": 4,
       "tooling_tests": 6,
-      "scope": "Primeiro incremento JSOND01/D02 com revis\u00e3o cruzada e imagemreal; n\u00e3o concluiD01/D02integrais, apagamento, cloud ou22entregas. CSV/logoutevolu\u00e7\u00f5esposteriores ainda possuemseusgates."
+      "scope": "Primeiro incremento JSOND01/D02 com revisão cruzada e imagemreal; não concluiD01/D02integrais, apagamento, cloud ou22entregas. CSV/logoutevoluçõesposteriores ainda possuemseusgates."
     },
     {
       "date": "2026-09-05",
@@ -293,7 +323,7 @@
       "evidence": "docs/verification/csv-local.md",
       "browser_acceptance_tests": 7,
       "browser_component_tests": 7,
-      "scope": "CSV expl\u00edcito, bytes/intent/replay, reten\u00e7\u00e3o e SIGKILL com revis\u00e3o independente; migra\u00e7\u00e3o hist\u00f3rica SQL/S3 parcial. A CI da imagem nova ainda est\u00e1 pendente. Compartilhamento segue em implementa\u00e7\u00e3o sem ativa\u00e7\u00e3o."
+      "scope": "CSV explícito, bytes/intent/replay, retenção e SIGKILL com revisão independente; migração histórica SQL/S3 parcial. A CI da imagem nova ainda está pendente. Compartilhamento segue em implementação sem ativação."
     },
     {
       "date": "2026-09-05",
@@ -316,7 +346,7 @@
       "integration_tests": 110,
       "browser_component_tests": 7,
       "browser_acceptance_tests": 7,
-      "scope": "Imagem nova constru\u00edda e provisionada no CI; sete cen\u00e1rios de aceita\u00e7\u00e3o passaram. N\u00e3o prova upgrade de instala\u00e7\u00e3o antiga, cerca de emiss\u00e3o, D03 ou as entregas integrais."
+      "scope": "Imagem nova construída e provisionada no CI; sete cenários de aceitação passaram. Não prova upgrade de instalação antiga, cerca de emissão, D03 ou as entregas integrais."
     },
     {
       "date": "2026-09-05",
@@ -338,7 +368,7 @@
         "2487c65"
       ],
       "evidence": "docs/contracts/disclosure-durable.md",
-      "scope": "Membership, audience privada, guards de replay, SIGKILL e migra\u00e7\u00f5es possuem provas reais por recorte. CLI revisada sem HTTP vivo. Perda do coordenador reproduziu emiss\u00e3o tardia; snapshot antigo tamb\u00e9m foi refutado. Contrato dur\u00e1vel revisado, SQL006 e tratamento do snapshot provados; adapter, executor, writer e ordena\u00e7\u00f5es HTTP seguem em integra\u00e7\u00e3o sem ativa\u00e7\u00e3o."
+      "scope": "Membership, audience privada, guards de replay, SIGKILL e migrações possuem provas reais por recorte. CLI revisada sem HTTP vivo. Perda do coordenador reproduziu emissão tardia; snapshot antigo também foi refutado. Contrato durável revisado, SQL006 e tratamento do snapshot provados; adapter, executor, writer e ordenações HTTP seguem em integração sem ativação."
     },
     {
       "date": "2026-09-05",
@@ -358,7 +388,7 @@
       "browser_component_tests": 7,
       "browser_acceptance_tests": 12,
       "container_acceptance_tests": 12,
-      "scope": "Migra\u00e7\u00f5es005/006, core, emiss\u00e3o nativa dur\u00e1vel, 12 ordena\u00e7\u00f5es de leitura/revoke/logout e 2 concorr\u00eancias de grant em processos reais, Web/CLI e imagem nova com revis\u00e3o independente. CI remota pendente; n\u00e3o conclui D03 integral, apagamento, restore, cloud ou 22entregas."
+      "scope": "Migrações005/006, core, emissão nativa durável, 12 ordenações de leitura/revoke/logout e 2 concorrências de grant em processos reais, Web/CLI e imagem nova com revisão independente. CI remota pendente; não conclui D03 integral, apagamento, restore, cloud ou 22entregas."
     },
     {
       "date": "2026-09-05",
@@ -381,7 +411,7 @@
       "browser_component_tests": 7,
       "container_acceptance_passed": 11,
       "container_acceptance_failed": 1,
-      "scope": "Qualidade e integra\u00e7\u00e3o passaram; EX12 falhou no retorno ap\u00f3s logout, sem Frame/evid\u00eancia restaurados. Causa sob revis\u00e3o independente; n\u00e3o contar CI como verde."
+      "scope": "Qualidade e integração passaram; EX12 falhou no retorno após logout, sem Frame/evidência restaurados. Causa sob revisão independente; não contar CI como verde."
     },
     {
       "date": "2026-09-05",
@@ -402,7 +432,7 @@
       "integration_tests": 168,
       "browser_component_tests": 7,
       "container_acceptance_tests": 12,
-      "scope": "Logout confirmado corrigiu a testemunha; todas as provas comportamentais passaram. Qualidade reprovou somente tabela n\u00e3o formatada no relat\u00f3rio; corre\u00e7\u00e3o preserva os bytes da fonte diagn\u00f3stica. Agregador n\u00e3o foi verde."
+      "scope": "Logout confirmado corrigiu a testemunha; todas as provas comportamentais passaram. Qualidade reprovou somente tabela não formatada no relatório; correção preserva os bytes da fonte diagnóstica. Agregador não foi verde."
     },
     {
       "date": "2026-09-05",
@@ -425,7 +455,7 @@
       "integration_tests": 168,
       "browser_component_tests": 7,
       "container_acceptance_tests": 12,
-      "scope": "Qualidade, build, unidade, integra\u00e7\u00e3o real, componentes e imagem nova passaram no CI com revis\u00e3o independente. As duas falhas remotas anteriores e sua contraprova est\u00e3o preservadas. N\u00e3o conclui D03 integral, erasure, restore, upgrade, cloud ou as22entregas."
+      "scope": "Qualidade, build, unidade, integração real, componentes e imagem nova passaram no CI com revisão independente. As duas falhas remotas anteriores e sua contraprova estão preservadas. Não conclui D03 integral, erasure, restore, upgrade, cloud ou as22entregas."
     },
     {
       "date": "2026-09-06",
@@ -438,6 +468,11 @@
       "reviewer": "worker-3",
       "evidence": "docs/verification/identity-basis.md",
       "scope": "EX25 BC-01..09 component + EX26 independent counterproofs of basis compatibility (legacy integrity, audience, concurrency, SIGKILL-007) on real PG/S3. Graph/absence/recovery and identity Web/CLI remain EX27/EX28. Not verified_for_profile."
+    },
+    {
+      "at": "2026-09-06T15:36:00Z",
+      "note": "EX27 vertical slice: handlers+persistence+core integration test green; push pending on codex/rebuild.",
+      "sha": "pending"
     }
   ],
   "verified_deliveries": [],
