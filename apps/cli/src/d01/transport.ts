@@ -69,6 +69,12 @@ export const execute = Effect.fn(function* execute(
     case "ResolveIdentity": {
       return yield* client.subjectIdentity.execute({ payload });
     }
+    case "InspectWorldErasure": {
+      return yield* client.erasure.execute({ payload });
+    }
+    case "RequestWorldErasure": {
+      return yield* client.erasure.execute({ payload });
+    }
     default: {
       return yield* new CliFailure("CLI_INPUT");
     }

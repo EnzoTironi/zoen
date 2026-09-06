@@ -6,7 +6,6 @@ import {
   DataPolicy,
   DataPolicySchema,
 } from "@zoen/authority/ports/d01/context";
-import { ErasureAttemptRegister } from "@zoen/authority/ports/erasure/attempt-register";
 import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { ApplicationApi } from "@zoen/contracts/d01/api";
@@ -21,6 +20,7 @@ import { makeD01PostgresLayer } from "./adapters/postgres/d01/postgres.ts";
 import { makeDisclosureFenceLayer } from "./adapters/postgres/disclosure/fence.ts";
 import { makeCorrectionHttpGroup } from "./http/corrections.ts";
 import { makeD01HttpGroup } from "./http/d01.ts";
+import { makeErasureHttpGroup } from "./http/erasure.ts";
 import { makeIdentityRoutes } from "./http/identity.ts";
 import { readinessRoutes } from "./http/readiness.ts";
 import { responseSecurity } from "./http/security.ts";
@@ -93,6 +93,7 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         Layer.provide(makeCorrectionHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeSharingHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeSubjectIdentityHttpGroup(identityConfig.baseUrl)),
+        Layer.provide(makeErasureHttpGroup(identityConfig.baseUrl)),
         Layer.provide(executor)
       );
       return Layer.mergeAll(

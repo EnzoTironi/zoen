@@ -3,7 +3,9 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { PutBucketVersioningCommand } from "@aws-sdk/client-s3";
 import { NodeHttpServer, NodeServices } from "@effect/platform-node";
 import { AuthorityInstallationSchema } from "@zoen/authority/commit/configuration";
+import { applyWorldErasureSchema } from "@zoen/authority/knowledge/erasure/schema";
 import { DataPolicySchema } from "@zoen/authority/ports/d01/context";
+import { applyErasureAttemptSchema } from "@zoen/authority/ports/erasure/local-pg";
 import { digestBytes } from "@zoen/authority/values/canonical";
 import { Effect, Layer, Redacted, Schema } from "effect";
 import type { Scope } from "effect";
@@ -15,6 +17,7 @@ import {
   HttpServer,
 } from "effect/unstable/http";
 import type { HttpClientResponse } from "effect/unstable/http";
+import { SqlClient } from "effect/unstable/sql";
 
 import { applyIdentityBasisMigrations } from "../../../../../ops/migrations/run.ts";
 import { makeD01Application } from "../../../src/composition.ts";
@@ -26,6 +29,39 @@ export interface HttpFixture {
   readonly database: D01TestDatabase;
   readonly origin: string;
 }
+
+const retainedPolicy = {
+  dataScope: "admitted-non-sensitive",
+  enabledRealm: "live",
+  erasure: false,
+  legalHold: false,
+  licensedExpiry: false,
+  profileId: "d01-local-retained-v1",
+  restoreAfterErasure: false,
+  retention: "while-pinned",
+} as const;
+
+const erasablePolicy = {
+  dataScope: "admitted-non-sensitive",
+  enabledRealm: "live",
+  erasure: true,
+  legalHold: false,
+  licensedExpiry: false,
+  profileId: "d03-local-erasable-v1",
+  restoreAfterErasure: false,
+  retention: "while-pinned",
+} as const;
+
+const grantErasureSchemas = Effect.fn("test.grantErasure")(
+  function* grantErasureSchemas(authorityRole: string) {
+    const sql = yield* SqlClient.SqlClient;
+    yield* sql.unsafe(
+      `GRANT USAGE ON SCHEMA erasure_attempt TO "${authorityRole}";
+       GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA erasure_attempt TO "${authorityRole}";
+       GRANT SELECT, INSERT, UPDATE ON authority.world_erasure_progress, authority.world_erasure_receipts TO "${authorityRole}"`
+    );
+  }
+);
 
 export const withD01Http = <A, E>(
   run: (
@@ -50,16 +86,8 @@ export const withD01Http = <A, E>(
             throw new Error("HTTP integration requires a TCP listener");
           }
           const origin = `http://127.0.0.1:${server.address.port}`;
-          const policy = yield* Schema.decodeEffect(DataPolicySchema)({
-            dataScope: "admitted-non-sensitive",
-            enabledRealm: "live",
-            erasure: false,
-            legalHold: false,
-            licensedExpiry: false,
-            profileId: "d01-local-retained-v1",
-            restoreAfterErasure: false,
-            retention: "while-pinned",
-          });
+          const policy =
+            yield* Schema.decodeEffect(DataPolicySchema)(retainedPolicy);
           const releaseDescriptor = new TextEncoder().encode(
             yield* Schema.encodeEffect(Schema.fromJsonString(Schema.Unknown))({
               operations: [
@@ -139,3 +167,82 @@ export const jsonBody = (response: HttpClientResponse.HttpClientResponse) =>
 export const responseCookie = (
   response: HttpClientResponse.HttpClientResponse
 ) => Redacted.make(Cookies.toCookieHeader(response.cookies));
+
+/** EX33+: compose candidate erasable profile + Closing DDL for surface journeys. */
+export const withErasableHttp = <A, E>(
+  run: (
+    fixture: HttpFixture
+  ) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>
+) =>
+  withD01Database(
+    (database) =>
+      withStorage(({ client, config: storage }) =>
+        Effect.gen(function* erasableHttpServer() {
+          yield* sdk((signal) =>
+            client.send(
+              new PutBucketVersioningCommand({
+                Bucket: storage.bucket,
+                VersioningConfiguration: { Status: "Enabled" },
+              }),
+              { abortSignal: signal }
+            )
+          );
+          yield* Effect.gen(function* migrateErasure() {
+            yield* applyErasureAttemptSchema();
+            yield* applyWorldErasureSchema();
+            yield* grantErasureSchemas(database.names.authority);
+          }).pipe(Effect.provide(database.migration));
+          const server = yield* HttpServer.HttpServer;
+          if (server.address._tag !== "TcpAddress") {
+            throw new Error("HTTP integration requires a TCP listener");
+          }
+          const origin = `http://127.0.0.1:${server.address.port}`;
+          const policy =
+            yield* Schema.decodeEffect(DataPolicySchema)(erasablePolicy);
+          const releaseDescriptor = new TextEncoder().encode(
+            yield* Schema.encodeEffect(Schema.fromJsonString(Schema.Unknown))({
+              operations: [
+                "CreatePersonalWorld",
+                "InspectWorldErasure",
+                "RequestWorldErasure",
+              ],
+              policy,
+              schemaVersion: "erasure.v1",
+            })
+          );
+          const installation = yield* Schema.decodeEffect(
+            AuthorityInstallationSchema
+          )({
+            cellEpoch: "1",
+            cellId: randomUUID(),
+            generationId: randomUUID(),
+            releaseDigest: digestBytes(releaseDescriptor),
+          });
+          const application = makeD01Application({
+            authorityDatabaseUrl: database.urls.authority,
+            erasureAttemptDatabaseUrl: database.urls.authority,
+            identity: {
+              baseUrl: origin,
+              databaseUrl: database.urls.identity,
+              secret: Redacted.make(randomBytes(32).toString("hex")),
+              sessionSeconds: 3600,
+            },
+            installation,
+            policy,
+            storage,
+          });
+          yield* Layer.build(
+            HttpRouter.serve(application, {
+              disableListenLog: true,
+              disableLogger: true,
+            })
+          );
+          return yield* run({ database, origin });
+        }).pipe(Effect.provide(NodeHttpServer.layerTest))
+      ),
+    undefined,
+    (database) =>
+      applyIdentityBasisMigrations(database.names).pipe(
+        Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
+      )
+  );

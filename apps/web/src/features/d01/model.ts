@@ -9,6 +9,8 @@ import type { Membership } from "@zoen/contracts/sharing/operations";
 import type { WorkspaceView } from "../../components/d01/presentation.ts";
 import { correctionPatch } from "../../integration/d02/model.ts";
 import type { CorrectionContext } from "../../integration/d02/model.ts";
+import { emptyErasure } from "../erasure/model.ts";
+import type { ErasureState } from "../erasure/model.ts";
 import { emptySharing } from "../sharing/model.ts";
 import type { SharingState } from "../sharing/model.ts";
 import { emptySubjectIdentity } from "../subject-identity/model.ts";
@@ -20,6 +22,7 @@ export interface WorkspaceState extends CorrectionContext {
   readonly membership: Membership | null;
   readonly sharing: SharingState;
   readonly identity: SubjectIdentityState;
+  readonly erasure: ErasureState;
   readonly actionError: string | null;
   readonly busy: boolean;
   readonly canRetry: boolean;
@@ -36,6 +39,7 @@ export const initialState: WorkspaceState = {
   busy: false,
   canRetry: false,
   checking: true,
+  erasure: emptyErasure,
   feedback: "",
   frame: null,
   identity: emptySubjectIdentity,

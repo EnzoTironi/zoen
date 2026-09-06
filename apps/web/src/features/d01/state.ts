@@ -14,6 +14,11 @@ import {
   proposeRequest,
   undoRequest,
 } from "../../integration/d02/requests.ts";
+import { emptyErasure, erasurePatch } from "../erasure/model.ts";
+import {
+  confirmWorldErasureRequest,
+  inspectWorldErasureRequest,
+} from "../erasure/requests.ts";
 import { emptySharing } from "../sharing/model.ts";
 import {
   confirmAccessRequest,
@@ -40,6 +45,22 @@ import { errorMessage, errorView } from "./presentation.ts";
 import type { ImportFileFormat } from "./requests.ts";
 import { createWorldRequest, envelope, importRequest } from "./requests.ts";
 import { announceSessionChange } from "./session-events.ts";
+
+const isIdentityOperation = (operation: string | undefined) =>
+  operation === "InspectSubjectIdentity" ||
+  operation === "InspectIdentityRecovery" ||
+  operation === "ProposeIdentityResolution" ||
+  operation === "ProposeIdentitySplit" ||
+  operation === "ProposeIdentityUndo" ||
+  operation === "ResolveIdentity";
+
+const isSharingOperation = (operation: string | undefined) =>
+  operation === "InspectWorldAccess" ||
+  operation === "GrantWorldReadAccess" ||
+  operation === "RevokeWorldReadAccess";
+
+const isErasureOperation = (operation: string | undefined) =>
+  operation === "InspectWorldErasure" || operation === "RequestWorldErasure";
 
 /** Ephemeral presentation state, discarded on every session or World boundary. */
 export const createWorkspaceController = (origin: string) => {
@@ -71,6 +92,7 @@ export const createWorkspaceController = (origin: string) => {
       actionError: null,
       busy: false,
       canRetry: false,
+      erasure: emptyErasure,
       feedback: "",
       frame: null,
       identity: emptySubjectIdentity,
@@ -106,21 +128,17 @@ export const createWorkspaceController = (origin: string) => {
     } else {
       const operation = failedRequest?.operation;
       const identityStale =
-        error._tag === "Stale" &&
-        (operation === "InspectSubjectIdentity" ||
-          operation === "InspectIdentityRecovery" ||
-          operation === "ProposeIdentityResolution" ||
-          operation === "ProposeIdentitySplit" ||
-          operation === "ProposeIdentityUndo" ||
-          operation === "ResolveIdentity");
+        error._tag === "Stale" && isIdentityOperation(operation);
       const sharingStale =
-        error._tag === "Stale" &&
-        (operation === "InspectWorldAccess" ||
-          operation === "GrantWorldReadAccess" ||
-          operation === "RevokeWorldReadAccess");
+        error._tag === "Stale" && isSharingOperation(operation);
+      const erasureStale =
+        error._tag === "Stale" && isErasureOperation(operation);
       publish({
         ...(error._tag === "Stale"
           ? {
+              erasure: erasureStale
+                ? { ...emptyErasure, stale: true }
+                : emptyErasure,
               identity: identityStale
                 ? { ...emptySubjectIdentity, stale: true }
                 : emptySubjectIdentity,
@@ -129,6 +147,7 @@ export const createWorkspaceController = (origin: string) => {
                 : emptySharing,
             }
           : {
+              erasure: { ...state.erasure, confirmation: false },
               identity: {
                 ...state.identity,
                 pendingAnswer: null,
@@ -208,6 +227,22 @@ export const createWorkspaceController = (origin: string) => {
         canRetry: false,
         feedback: "",
         identity: { ...state.identity, ...identityPatch(result) },
+      });
+      return;
+    }
+    if (
+      result._tag === "WorldErasureInspected" ||
+      result._tag === "WorldErasureRequested"
+    ) {
+      publish({
+        actionError: null,
+        busy: false,
+        canRetry: false,
+        erasure: { ...state.erasure, ...erasurePatch(result) },
+        feedback:
+          result._tag === "WorldErasureRequested"
+            ? "Decisão de Closing registrada. Restore após erasure permanece bloqueado."
+            : "",
       });
       return;
     }
@@ -432,6 +467,11 @@ export const createWorkspaceController = (origin: string) => {
         publish({ sharing: { ...state.sharing, confirmation: null } });
       }
     },
+    cancelWorldErasure: () => {
+      if (!state.busy) {
+        publish({ erasure: { ...state.erasure, confirmation: false } });
+      }
+    },
     confirmAccess: () => {
       const { world, sharing } = state;
       if (
@@ -470,6 +510,29 @@ export const createWorkspaceController = (origin: string) => {
           identity.question.consequenceDigest,
           identity.pendingAnswer
         ).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
+    },
+    confirmWorldErasure: () => {
+      const { world, erasure } = state;
+      if (
+        state.busy ||
+        world === null ||
+        erasure.progress === null ||
+        !erasure.confirmation
+      ) {
+        return;
+      }
+      const expected =
+        erasure.progress.revision === "0" ? null : erasure.progress.revision;
+      launch(
+        confirmWorldErasureRequest(world, expected).pipe(
           Effect.flatMap(execute),
           Effect.catchTag("InvalidInput", (failure) =>
             Effect.sync(() => {
@@ -629,6 +692,27 @@ export const createWorkspaceController = (origin: string) => {
         )
       );
     },
+    inspectWorldErasure: () => {
+      if (state.world === null || state.busy) {
+        return;
+      }
+      publish({
+        erasure: {
+          ...emptyErasure,
+          receipt: state.erasure.receipt,
+        },
+      });
+      launch(
+        inspectWorldErasureRequest(state.world).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
+    },
     logout: () => {
       refreshPaused = true;
       announceSessionChange();
@@ -684,6 +768,15 @@ export const createWorkspaceController = (origin: string) => {
       publish({
         identity: { ...state.identity, pendingAnswer: answer },
       });
+    },
+    prepareWorldErasure: () => {
+      if (state.busy || state.erasure.progress === null) {
+        return;
+      }
+      if (state.erasure.progress.phase !== "Active") {
+        return;
+      }
+      publish({ erasure: { ...state.erasure, confirmation: true } });
     },
     proposeCorrection: (from: string, to: string, choice: string) => {
       correct(proposeRequest(state, from, to, choice));

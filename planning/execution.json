@@ -1919,7 +1919,14 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_ticket_ids": [
+        "ZN-0112",
+        "ZN-0113",
+        "ZN-0114",
+        "ZN-0115",
+        "ZN-0116",
+        "ZN-0117"
+      ],
       "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
       "required_read": [
         "docs/invariants.md",
@@ -1973,7 +1980,14 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_ticket_ids": [
+        "ZN-0112",
+        "ZN-0113",
+        "ZN-0114",
+        "ZN-0115",
+        "ZN-0116",
+        "ZN-0117"
+      ],
       "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
       "required_read": [
         "docs/invariants.md",
@@ -2025,7 +2039,14 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_ticket_ids": [
+        "ZN-0112",
+        "ZN-0113",
+        "ZN-0114",
+        "ZN-0115",
+        "ZN-0116",
+        "ZN-0117"
+      ],
       "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
       "required_read": [
         "docs/invariants.md",
@@ -2080,9 +2101,9 @@
         "optional": []
       },
       "acceptance_requires": ["EX32"],
-      "status": "planned",
-      "verification_state": "not_run",
-      "commands_status": "Not started; surfaces wait EX32 handlers.",
+      "status": "implemented",
+      "verification_state": "local_integration_green",
+      "commands_status": "HTTP /api/erasure/execute + CLI/Web confirm Closing; erasable HTTP journey green; no purge/Erased/restore UI.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -2091,7 +2112,14 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_ticket_ids": [
+        "ZN-0112",
+        "ZN-0113",
+        "ZN-0114",
+        "ZN-0115",
+        "ZN-0116",
+        "ZN-0117"
+      ],
       "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
       "required_read": [
         "docs/invariants.md",
@@ -2145,7 +2173,14 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_ticket_ids": [
+        "ZN-0112",
+        "ZN-0113",
+        "ZN-0114",
+        "ZN-0115",
+        "ZN-0116",
+        "ZN-0117"
+      ],
       "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
       "required_read": [
         "docs/invariants.md",
@@ -2244,7 +2279,10 @@
       "worker-1": ["EX31", "EX32"],
       "worker-2": ["EX33 após schemas EX30"],
       "worker-3": ["contraprovas erasure independent quando Closing existir"],
-      "root": ["EX30 freeze/schemas", "EX34 compose quando gates mínimos de Closing"]
+      "root": [
+        "EX30 freeze/schemas",
+        "EX34 compose quando gates mínimos de Closing"
+      ]
     }
   ],
   "preserved_but_not_completed": [

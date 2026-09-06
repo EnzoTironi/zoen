@@ -4,6 +4,10 @@ import {
   HttpApiGroup,
 } from "effect/unstable/httpapi";
 
+import {
+  WorldErasureRequest,
+  WorldErasureSuccess,
+} from "../erasure/operations.js";
 import { SharingRequest, SharingSuccess } from "../sharing/operations.js";
 import {
   SubjectIdentityRequest,
@@ -46,8 +50,17 @@ export const SubjectIdentityApiGroup = HttpApiGroup.make("subjectIdentity").add(
     success: SubjectIdentitySuccess,
   })
 );
+/** Domain path — prefer /api/erasure over a new /api/d03/ segment. */
+export const ErasureApiGroup = HttpApiGroup.make("erasure").add(
+  HttpApiEndpoint.post("execute", "/api/erasure/execute", {
+    error: D01Error.members,
+    payload: WorldErasureRequest,
+    success: WorldErasureSuccess,
+  })
+);
 export const ApplicationApi = D01Api.add(
   CorrectionApiGroup,
   SharingApiGroup,
-  SubjectIdentityApiGroup
+  SubjectIdentityApiGroup,
+  ErasureApiGroup
 );

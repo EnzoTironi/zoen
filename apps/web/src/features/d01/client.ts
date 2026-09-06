@@ -125,6 +125,12 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
         case "ResolveIdentity": {
           return yield* api.subjectIdentity.execute({ payload });
         }
+        case "InspectWorldErasure": {
+          return yield* api.erasure.execute({ payload });
+        }
+        case "RequestWorldErasure": {
+          return yield* api.erasure.execute({ payload });
+        }
         default: {
           return yield* new Unavailable({ code: "UNAVAILABLE" });
         }

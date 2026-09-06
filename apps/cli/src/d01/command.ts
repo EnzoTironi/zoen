@@ -13,6 +13,7 @@ import { Console, Effect, Option, Path, Redacted } from "effect";
 import { Command, Flag } from "effect/unstable/cli";
 import { FetchHttpClient } from "effect/unstable/http";
 
+import { makeErasureCommands } from "../erasure/command.js";
 import { makeCorrectionCommands } from "../integration/d02/command.js";
 import { makeSharingCommands } from "../sharing/command.js";
 import { makeSubjectIdentityCommands } from "../subject-identity/command.js";
@@ -313,6 +314,7 @@ export const d01Command = root.pipe(
       send,
       report
     ),
+    ...makeErasureCommands({ operationId, realm, worldId }, send, report),
   ]),
   Command.withExamples([
     {
