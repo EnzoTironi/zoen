@@ -30,10 +30,11 @@ const ReleaseManifest = Schema.Struct({
 /** Observes the isolated old executable; does not manufacture release admission. */
 export const verifyLegacyBuild = async () => {
   const supplied = process.env.ZOEN_TEST_LEGACY_ROOT;
-  assert.ok(
-    supplied,
-    "ZOEN_TEST_LEGACY_ROOT must identify a prepared legacy build (python3 tooling/prepare_identity_baseline.py --out .local/identity-baseline-…)"
-  );
+  if (typeof supplied !== "string" || supplied.length === 0) {
+    assert.fail(
+      "ZOEN_TEST_LEGACY_ROOT must identify a prepared legacy build (python3 tooling/prepare_identity_baseline.py --out .local/identity-baseline-…)"
+    );
+  }
   assert.ok(path.isAbsolute(supplied), "Legacy root must be absolute");
   const root = await realpath(supplied);
   const proof = Schema.decodeUnknownSync(BuildProof)(
