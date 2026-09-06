@@ -27,4 +27,23 @@ A migração 007 é uma extensão explícita de 001–006. Ela bloqueia as tabel
 
 O futuro harness usa HTTP/Better Auth/PostgreSQL/S3 reais do executável anterior para produzir o histórico. Após parar esse processo e aplicar a transição no banco exclusivo da prova, o executor atual é exercitado como **componente**, com a instalação original observada e Presence do provider real. Ele não chama a admissão de startup do servidor novo e não altera o release ligado ao World. Portanto essa prova não pode ser apresentada como upgrade de uma instalação. Admissão, HTTP e navegador do executável novo exigem perfil novo independente.
 
-BC-01–09 e a revisão independente da migração/preparador ainda estão pendentes. O contrato e os oráculos estão em [d02-basis-compatibility.md](../contracts/d02-basis-compatibility.md).
+## Provas executadas (EX25, componente)
+
+Em 2026-09-06, no checkout `codex/rebuild`, a suíte
+`tests/integration/subject-identity/basis/compatibility.EX25.integration.test.ts`
+produziu histórico real com o executável isolado `06535bd`, parou esse writer,
+aplicou a migração 007 no banco exclusivo da prova e exercitou o
+`SemanticExecutor` atual como componente sobre a mesma instalação/Presence.
+
+| Oráculo | Resultado observado |
+| --- | --- |
+| BC-01 | Passou: World, imports JSON/CSV, Frame, proposta pendente, correção aplicada, undo e receipts com bases legadas sem `schemaVersion`/identity |
+| BC-02 | Passou: `Inspect` com `atFrame` devolveu o payload visível retido byte-a-byte após a transição |
+| BC-03 | Passou: replay exacto de Propose/Answer/Undo legados devolveu os receipts originais |
+| BC-04 | Passou: mesmo opID com intenção diferente → Conflict; terceiro → NotFoundOrDenied; logout → Unauthenticated |
+| BC-05 | Passou: novos opIDs sobre base/Question legada → Stale sem novos cases/receipts/corrections/outbox |
+| BC-06–09 | Ainda não executados nesta suíte |
+
+O pacote EX25 permanece **não** marcado como `verified_for_profile`: faltam
+BC-06–09 e a revisão independente. O contrato completo está em
+[d02-basis-compatibility.md](../contracts/d02-basis-compatibility.md).
