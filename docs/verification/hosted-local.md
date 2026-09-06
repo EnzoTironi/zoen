@@ -1,6 +1,6 @@
 # Hosted retained — evidência local composta (EX35–EX39)
 
-Em 2026-09-06 (PT), o incremento **D04 hosted-retained bootstrap local** (EX35–EX39) está composto e marcado **`verified_for_profile` apenas para bootstrap local hosted-retained** (schemas + restore disposable + admission flags + compose/provision stubs) — **não** operação Fly / D04 ativado.
+Em 2026-09-06 (PT), tip verificado: `7e91940` (`7e9194024a551f2ba99faf00d726b4bb465dc020`). O incremento **D04 hosted-retained bootstrap local** (EX35–EX39) está composto e marcado **`verified_for_profile` apenas para bootstrap local hosted-retained** (schemas + restore disposable + admission flags + compose/provision stubs) — **não** operação Fly / D04 ativado.
 
 ## Estado honesto
 

@@ -756,7 +756,7 @@
     },
     {
       "date": "2026-09-06",
-      "commit": "PENDING_EX39",
+      "commit": "7e9194024a551f2ba99faf00d726b4bb465dc020",
       "packages": ["EX35", "EX36", "EX37", "EX38", "EX39"],
       "state": "verified_for_profile",
       "profile": "d04-hosted-retained-v1 (new Worlds only) / local hosted-retained bootstrap; d01-local-retained-v1 default preserved; ops/fly stubs only",
