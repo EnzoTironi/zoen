@@ -17,9 +17,9 @@ Rotas/arquivos novos preferem `subject-identity`. O endpoint HTTP composto perma
 | Camada | Evidência |
 | --- | --- |
 | Composição | `composition.ts` liga `makeSubjectIdentityHttpGroup` ao mesmo executor/fence. Web + CLI consomem os mesmos schemas. |
-| Qualidade estática | `pnpm format:check` / lint / typecheck cleared on tip `5da8582`+; main CI format/lint/typecheck/build green on later tips. |
-| Unidade | 241+ testes identity-related na suíte unit. |
-| Integração identidade | core/basis/independent + CLI journey + requests EX28; independent agora inclui SIGKILL de `ResolveIdentity` e concorrência Resolve×bump/Import. |
+| Qualidade estática | `pnpm format:check` / lint / typecheck cleared locally after identity writer/viewer lint fixes; CI re-run pending on tip after this increment. |
+| Unidade | 241+ testes identity-related + oráculo EX27 de limites de Question de recuperação (bytes/entries/depth + invariância a claims). |
+| Integração identidade | core/basis/independent + CLI journey + requests EX28; independent inclui SIGKILL de `ResolveIdentity` e concorrência Resolve×bump/Import. |
 | Aceitação ID-15 | Chromium no profile `subject-identity-v2`: inspect → propose same-as → confirm. |
 | Aceitação EX28 viewer | Chromium: leitor com grant não vê região/controles de identidade; `InspectSubjectIdentity` via fetch devolve negação sem Frame privado. |
 | Undo UX | Botão barato «Propor undo da última decisão» quando há `decisionRef` aplicado. |
@@ -50,10 +50,17 @@ node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integrat
   tests/integration/subject-identity/independent/writers-concurrency.review.integration.test.ts
 ```
 
+Oráculo de limites da Question de recuperação (unidade):
+
+```bash
+pnpm exec vitest run --project unit \
+  packages/authority/test/knowledge/subject-identity/recovery-question-limits.EX27.test.ts
+```
+
 ## Lacunas antes de `verified_for_profile`
 
-- Recovery Question limits (bytes/entries prospectivos) ainda não têm oráculo dedicado de quota.
+- Recovery Question byte/entry/depth: oráculo dedicado verde (`recovery-question-limits.EX27.test.ts`); writers usam `canonicalJson` + `ensureQuestionFits` (`QuotaExceeded` / `D01_LIMITS.responseBytes`) em resolução, split e undo.
 - CI remota: `verify_plan` / integração (legacy baseline, SH-04/EX05 drift) podem ainda falhar no agregado; não alegar D02/erasure/cloud.
 - Aceitação completa na imagem nova após este tip (re-run container + CI).
 
-Próximo passo sugerido: fechar oráculo de limites de Question de recuperação **ou** iniciar incremento de **apagamento/erasure (D03)** mantendo EX29 partial até CI/imagem verdes no tip novo.
+Próximo passo sugerido: CI/imagem verdes no tip novo **ou** iniciar incremento de **apagamento/erasure (D03)** mantendo EX29 partial até o agregado remoto fechar.

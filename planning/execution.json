@@ -1735,7 +1735,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "ID-08 ResolveIdentity SIGKILL + concurrency independent proofs green. Remaining: recovery Question limits; not verified_for_profile.",
+      "commands_status": "ID-08 writers + recovery Question byte/entry/depth unit oracle green. Remote CI tip pending; not verified_for_profile.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1800,7 +1800,7 @@
       "acceptance_requires": ["EX27"],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "ID-15 + EX28 viewer-denial Playwright green; undo polish landed. Not verified_for_profile: recovery limits / combined CI tip.",
+      "commands_status": "ID-15 + EX28 viewer-denial Playwright green; undo polish landed. Recovery limits oracle closed in EX27 unit; remote CI tip pending; not verified_for_profile.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1851,7 +1851,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "Local identity writer/viewer gaps closed on subject-identity-v2. Not verified_for_profile: recovery limits + remote CI/image on new tip.",
+      "commands_status": "Local identity writer/viewer + recovery Question limits closed on subject-identity-v2. Not verified_for_profile: remote CI/image on new tip.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

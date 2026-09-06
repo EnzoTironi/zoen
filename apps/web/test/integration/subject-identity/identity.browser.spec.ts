@@ -251,7 +251,8 @@ test("EX28 viewer cannot see private identity controls or drive subject-identity
     await page
       .getByRole("button", { name: "Conceder leitura de todo o espaço" })
       .click();
-    expect((await granted).status()).toBe(200);
+    const grantedResponse = await granted;
+    expect(grantedResponse.status()).toBe(200);
 
     await reader
       .getByLabel("Abrir espaço pelo identificador", { exact: true })
@@ -279,6 +280,8 @@ test("EX28 viewer cannot see private identity controls or drive subject-identity
     ).toHaveCount(0);
 
     const denied = await reader.evaluate(async (worldId) => {
+      // Browser page context: native fetch is the intentional private-control denial probe.
+      // oxlint-disable-next-line effecttsgo/global-fetch -- Playwright page.evaluate runs in Chromium, not Effect HttpClient.
       const response = await fetch("/api/d02/subject-identity", {
         body: JSON.stringify({
           input: {
@@ -299,7 +302,8 @@ test("EX28 viewer cannot see private identity controls or drive subject-identity
         headers: { "content-type": "application/json" },
         method: "POST",
       });
-      return { body: await response.json(), status: response.status };
+      const body: unknown = await response.json();
+      return { body, status: response.status };
     }, world);
     expect(denied.status).toBeGreaterThanOrEqual(400);
     expect(JSON.stringify(denied.body)).not.toMatch(/subject-identity/u);

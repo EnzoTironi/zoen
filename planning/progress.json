@@ -37,7 +37,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "id08_writers_proofs_green_partial",
-      "notes": "Core handlers+split + independent ResolveIdentity SIGKILL and concurrency counterproofs green on real PG/S3. Remaining: recovery Question byte/entry limits. Not verified_for_profile."
+      "notes": "Core handlers+split + independent ResolveIdentity SIGKILL and concurrency counterproofs green on real PG/S3. Recovery Question byte/entry/depth oracle green. Not verified_for_profile pending remote CI/image."
     },
     {
       "agent": "roadmap_redesign",
@@ -46,7 +46,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "viewer_denial_browser_green_partial",
-      "notes": "HTTP/CLI/Web + ID-15 + EX28 viewer-denial Playwright green on subject-identity-v2; light undo UX button for last decisionRef. Remaining: recovery limits / combined CI profile proof. Not verified_for_profile."
+      "notes": "HTTP/CLI/Web + ID-15 + EX28 viewer-denial Playwright green on subject-identity-v2; light undo UX button for last decisionRef. Recovery limits oracle closed. Not verified_for_profile pending remote CI/image."
     },
     {
       "agent": "architecture_redesign",
@@ -55,7 +55,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "local_and_container_partial_not_verified_for_profile",
-      "notes": "Gaps closed locally: ID-08 writer SIGKILL/concurrency + EX28 viewer denial browser + undo polish. Still not verified_for_profile: recovery Question limits; remote CI aggregator/image re-run on new tip."
+      "notes": "Gaps closed locally: ID-08 writer SIGKILL/concurrency + EX28 viewer denial browser + undo polish. Still not verified_for_profile: remote CI aggregator/image re-run on new tip (recovery Question limits oracle closed)."
     }
   ],
   "temporary_ownership": [
@@ -466,6 +466,15 @@
         "writers_concurrency": "pass",
         "acceptance_suite": "14 pass incl. ID-15 and EX28 viewer denial"
       }
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "pending",
+      "packages": ["EX27", "EX28", "EX29"],
+      "state": "recovery_question_limits_oracle_local_green_not_verified_for_profile",
+      "profile": "d01-local-retained-v1 / subject-identity-v2",
+      "evidence": "docs/verification/subject-identity-local.md",
+      "scope": "Fixed CI lint from identity writer/viewer tip; added recovery Question byte/entry/depth unit oracle; ensureQuestionFits QuotaExceeded on propose paths."
     }
   ],
   "verified_deliveries": [],
@@ -489,9 +498,8 @@
         "integration_job": "failure"
       },
       "remaining_for_verified_for_profile": [
-        "Recovery Question byte/entry prospective limits oracle still open",
         "Remote CI: verify_plan / integration legacy baseline / SH-04 EX05 drift as applicable",
-        "Re-run container acceptance + CI on tip after identity writer/viewer proofs",
+        "Re-run container acceptance + CI on tip after recovery Question limits + lint fixes",
         "Do not start D03 in this increment"
       ]
     }

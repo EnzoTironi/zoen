@@ -1,4 +1,4 @@
-/* oxlint-disable unicorn/consistent-function-scoping, eslint/complexity */
+/* oxlint-disable eslint/complexity */
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";

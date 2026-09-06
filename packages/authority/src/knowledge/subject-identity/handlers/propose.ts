@@ -3,11 +3,17 @@ import { randomUUID } from "node:crypto";
 import {
   Conflict,
   InvalidInput,
+  QuotaExceeded,
   Stale,
   Unavailable,
 } from "@zoen/contracts/d01/errors";
 import type { WorldRef } from "@zoen/contracts/d01/values";
-import { CaseRef, QuestionRef, Revision } from "@zoen/contracts/d01/values";
+import {
+  CaseRef,
+  D01_LIMITS,
+  QuestionRef,
+  Revision,
+} from "@zoen/contracts/d01/values";
 import { PrincipalRef } from "@zoen/contracts/sharing/operations";
 import type {
   IdentityFrame,
@@ -54,6 +60,16 @@ import {
   planSplitEffects,
 } from "../pure/planning.js";
 import { loadIdentityFrame } from "./frame.js";
+
+const ensureQuestionFits = Effect.fn("subjectIdentity.ensureQuestionFits")(
+  function* ensureQuestionFits(question: IdentityQuestion) {
+    const encoded = new TextEncoder().encode(yield* canonicalJson(question));
+    if (encoded.byteLength > D01_LIMITS.responseBytes) {
+      return yield* new QuotaExceeded({ code: "QUOTA_EXCEEDED" });
+    }
+    return encoded;
+  }
+);
 
 const impactApplied = {
   appliedCorrections: "preserved-per-literal-anchor" as const,
@@ -288,10 +304,7 @@ export const proposeIdentityResolution = Effect.fn(
       schemaVersion: "subject-identity.v1",
       worldRef: request.worldRef,
     }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
-    const encoded = new TextEncoder().encode(yield* canonicalJson(question));
-    if (encoded.byteLength > 1_048_576) {
-      return yield* new Unavailable({ code: "UNAVAILABLE" });
-    }
+    yield* ensureQuestionFits(question);
     const result = yield* saveProposal({
       bound,
       caseRef,
@@ -451,10 +464,7 @@ export const proposeIdentitySplit = Effect.fn("subjectIdentity.proposeSplit")(
       schemaVersion: "subject-identity.v1",
       worldRef: request.worldRef,
     }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
-    const encoded = new TextEncoder().encode(yield* canonicalJson(question));
-    if (encoded.byteLength > 1_048_576) {
-      return yield* new Unavailable({ code: "UNAVAILABLE" });
-    }
+    yield* ensureQuestionFits(question);
     const result = yield* saveProposal({
       bound,
       caseRef,
@@ -614,6 +624,7 @@ export const proposeIdentityUndo = Effect.fn("subjectIdentity.proposeUndo")(
       schemaVersion: "subject-identity.v1",
       worldRef: request.worldRef,
     }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
+    yield* ensureQuestionFits(question);
     const result = yield* saveProposal({
       bound,
       caseRef,
