@@ -469,7 +469,7 @@
     },
     {
       "date": "2026-09-06",
-      "commit": "pending",
+      "commit": "dc8857b9ac6b57fe2e68733d53dea6a2de5a7463",
       "packages": ["EX27", "EX28", "EX29"],
       "state": "recovery_question_limits_oracle_local_green_not_verified_for_profile",
       "profile": "d01-local-retained-v1 / subject-identity-v2",
