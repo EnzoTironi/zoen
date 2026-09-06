@@ -2,6 +2,8 @@
 
 Em 2026-09-06 (PT), o **congelamento mínimo** de erasure está em [`docs/contracts/d03-erasure-freeze.md`](../contracts/d03-erasure-freeze.md). O incremento **Closing/register local** (EX30–EX34) está composto e marcado **`verified_for_profile` apenas para a superfície local Closing/register** — **não** D03 integral.
 
+- Tip verificado: `66b958b` (`66b958b84684ba080fdaacf2360f05e511d3d68c`).
+
 ## Estado honesto
 
 | Item | Estado |

@@ -64,7 +64,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Freeze+schemas part of local Closing/register surface verified_for_profile with EX30–EX34. NOT full D03 (no purge/Erased/restore)."
+      "notes": "Freeze+schemas part of local Closing/register surface verified_for_profile with EX30–EX34. NOT full D03 (no purge/Erased/restore). Tip 66b958b."
     },
     {
       "agent": "roadmap_redesign",
@@ -73,7 +73,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Web/CLI Closing surfaces verified_for_profile with EX30–EX34 local Closing/register only. Default retained compose preserved; erasable via ZOEN_LOCAL_WORLD_POLICY. NOT full D03."
+      "notes": "Web/CLI Closing surfaces verified_for_profile with EX30–EX34 local Closing/register only. Default retained compose preserved; erasable via ZOEN_LOCAL_WORLD_POLICY. NOT full D03. Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -82,7 +82,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Compose+verify d03-local-erasable-v1 for NEW Worlds only; numbered migrations 009/010; independent Closing/retained oracles; executor fixture ErasureAttemptRegister debt cleared. verified_for_profile ONLY for local Closing/register surface — NOT full D03 (no purge/Erased/restore)."
+      "notes": "Compose+verify d03-local-erasable-v1 for NEW Worlds only; numbered migrations 009/010; independent Closing/retained oracles; executor fixture ErasureAttemptRegister debt cleared. verified_for_profile ONLY for local Closing/register surface — NOT full D03 (no purge/Erased/restore). Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -91,7 +91,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Register port part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03."
+      "notes": "Register port part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -100,7 +100,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Closing handlers part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03."
+      "notes": "Closing handlers part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. Tip 66b958b."
     }
   ],
   "temporary_ownership": [
@@ -630,7 +630,7 @@
     },
     {
       "date": "2026-09-06",
-      "commit": "PENDING_EX34",
+      "commit": "66b958b84684ba080fdaacf2360f05e511d3d68c",
       "packages": ["EX30", "EX31", "EX32", "EX33", "EX34"],
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds only) / Closing+register local surface; d01-local-retained-v1 default preserved",
