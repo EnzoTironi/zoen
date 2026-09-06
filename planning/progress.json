@@ -112,13 +112,13 @@
       "notes": "D04 first increment freeze H01–H08 + ops/fly stubs + inventory. Fly auth present; no apps create/deploy/MPG/Tigris. Legacy zoen not cut over. NOT full D03; NOT D04 activated."
     },
     {
-      "agent": "roadmap_redesign",
+      "agent": "architecture_redesign",
       "task": "EX36-hosted-retained-policy-schemas",
-      "model": "gpt-6-astra",
-      "effort": "low",
+      "model": null,
+      "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "planned",
-      "notes": "Await dispatch after EX35; d04-hosted-retained-v1 schemas for NEW Worlds only."
+      "state": "schemas_landed_unit_green",
+      "notes": "Hosted retained DataPolicy d04-hosted-retained-v1 under hosted/**; union in ports/d01/context.ts; composition/provision still default local retained. Unit proofs green. execution.json kept planned/not_run for verify_plan. NOT D04 activated; no deploy/MPG/Tigris; no World rebind."
     },
     {
       "agent": "tickets_redesign",
@@ -697,9 +697,7 @@
     {
       "date": "2026-09-06",
       "commit": "7964d4dd41f33b5e26cd1e07fd9827f78d420c02",
-      "packages": [
-        "EX35"
-      ],
+      "packages": ["EX35"],
       "state": "d04_freeze_and_stubs_landed",
       "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; no deploy; restore-after-erasure blocked)",
       "evidence": "docs/contracts/d04-hosted-freeze.md",
@@ -713,6 +711,20 @@
         "No Fly Managed Postgres / Tigris in org inventory",
         "Rebuild secrets not provisioned on Fly",
         "D03 purge + restore-after-erasure still blocked for sensitive pilot"
+      ]
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "PENDING",
+      "packages": ["EX36"],
+      "state": "d04_hosted_retained_policy_schemas_landed",
+      "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; composition defaults local retained)",
+      "evidence": "packages/contracts/src/hosted/policy/**; packages/authority/src/ports/hosted/**; packages/authority/src/ports/d01/context.ts",
+      "scope": "EX36 schemas/policy union + unit proofs. erasure:false restoreAfterErasure:false admitted-non-sensitive while-pinned live. No rebind of d01/d03 Worlds; no fly deploy. EX37 restore disposable next. Does NOT conclude D04 or full D03.",
+      "fly_deployed": false,
+      "unit_tests": [
+        "packages/contracts/test/hosted/policy/values.EX36.test.ts",
+        "packages/authority/test/ports/hosted/policy.EX36.test.ts"
       ]
     }
   ],
@@ -752,12 +764,13 @@
     "d04_hosted_bootstrap": {
       "fly_auth": true,
       "fly_legacy_app": "zoen (not cut over)",
-      "stubs": [
-        "ops/fly/fly.toml",
-        "ops/fly/README.md"
-      ],
+      "stubs": ["ops/fly/fly.toml", "ops/fly/README.md"],
       "dockerfile": "ops/containers/application.Dockerfile",
-      "deployed": false
+      "deployed": false,
+      "hosted_retained_policy_schemas": true,
+      "profile_id": "d04-hosted-retained-v1",
+      "data_policy_union": true,
+      "composition_default": "d01-local-retained-v1"
     }
   }
 }

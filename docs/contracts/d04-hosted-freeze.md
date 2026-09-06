@@ -15,7 +15,7 @@ Fonte tip de partida: `bb608c4` (Closing/register local EX30–EX34 verificado e
 | App Fly legado `zoen` | Existe em `gru`; imagem/legado distinto; health check critical; secrets de produto antigo (Restate/WhatsApp/MinIO loopback). **Não é destino de cutover.** |
 | Fly Postgres / Tigris (org) | Nenhum cluster/bucket listado na org. |
 | Secrets do rebuild | Não provisionados (autoridade/identity/S3/Better Auth do monólito modular). |
-| Perfis Worlds | `d01-local-retained-v1` e candidato `d03-local-erasable-v1` (local); hosted ainda sem perfil. |
+| Perfis Worlds | `d01-local-retained-v1` e candidato `d03-local-erasable-v1` (local); candidato hosted `d04-hosted-retained-v1` (EX36 schemas; sem ativação/deploy). |
 
 ## Congelado agora (mínimo executável)
 

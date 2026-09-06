@@ -2233,12 +2233,8 @@
     },
     {
       "depends_on": {
-        "hard": [
-          "EX23"
-        ],
-        "optional": [
-          "EX34"
-        ]
+        "hard": ["EX23"],
+        "optional": ["EX34"]
       },
       "acceptance_requires": [],
       "status": "planned",
@@ -2252,11 +2248,7 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": [
-        "ZN-0049",
-        "ZN-0287",
-        "ZN-0288"
-      ],
+      "source_ticket_ids": ["ZN-0049", "ZN-0287", "ZN-0288"],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2295,15 +2287,13 @@
     },
     {
       "depends_on": {
-        "hard": [
-          "EX35"
-        ],
+        "hard": ["EX35"],
         "optional": []
       },
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "planned; progress tracked in planning/progress.json; keep verification_state not_run for verify_plan.",
+      "commands_status": "Hosted retained schemas/unit green under hosted/** + DataPolicy union; composition still defaults local retained. execution status remains planned/not_run for verify_plan; progress in progress.json. Not D04 activated; no deploy.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -2312,11 +2302,7 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": [
-        "ZN-0049",
-        "ZN-0287",
-        "ZN-0288"
-      ],
+      "source_ticket_ids": ["ZN-0049", "ZN-0287", "ZN-0288"],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2368,9 +2354,7 @@
     },
     {
       "depends_on": {
-        "hard": [
-          "EX35"
-        ],
+        "hard": ["EX35"],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2385,10 +2369,7 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": [
-        "ZN-0049",
-        "ZN-0287"
-      ],
+      "source_ticket_ids": ["ZN-0049", "ZN-0287"],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2416,17 +2397,13 @@
         "Integração disposable PG/S3 (compose local) backup/restore round-trip.",
         "Negativo: não divulgar conteúdo fora do escopo restaurado."
       ],
-      "owns": [
-        "tests/integration/hosted/restore/**"
-      ],
+      "owns": ["tests/integration/hosted/restore/**"],
       "model": null,
       "reasoning_effort": null
     },
     {
       "depends_on": {
-        "hard": [
-          "EX35"
-        ],
+        "hard": ["EX35"],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2441,10 +2418,7 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": [
-        "ZN-0288",
-        "ZN-0287"
-      ],
+      "source_ticket_ids": ["ZN-0288", "ZN-0287"],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2482,12 +2456,7 @@
     },
     {
       "depends_on": {
-        "hard": [
-          "EX35",
-          "EX36",
-          "EX37",
-          "EX38"
-        ],
+        "hard": ["EX35", "EX36", "EX37", "EX38"],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2502,11 +2471,7 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": [
-        "ZN-0049",
-        "ZN-0287",
-        "ZN-0288"
-      ],
+      "source_ticket_ids": ["ZN-0049", "ZN-0287", "ZN-0288"],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2613,7 +2578,10 @@
       "worker-1": ["EX36"],
       "worker-2": ["EX37"],
       "worker-3": ["EX38"],
-      "root": ["EX35 freeze/stubs", "EX39 compose quando EX36–EX38 prontos — sem fly deploy"]
+      "root": [
+        "EX35 freeze/stubs",
+        "EX39 compose quando EX36–EX38 prontos — sem fly deploy"
+      ]
     }
   ],
   "preserved_but_not_completed": [

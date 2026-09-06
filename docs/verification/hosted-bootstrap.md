@@ -19,3 +19,10 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 ## Não alegado
 
 - D03 integral, restore-após-erasure, cutover, D04 `activated` / `verified_for_profile` de operação hosted.
+
+## EX36 schemas
+
+- `packages/contracts/src/hosted/policy/values.ts` — `d04-hosted-retained-v1`
+- `packages/authority/src/ports/hosted/policy.ts` + união em `ports/d01/context.ts`
+- Unidade: `*.EX36.test.ts` sob contracts/authority `hosted/policy`
+- Composition default permanece local retained; sem `fly deploy`
