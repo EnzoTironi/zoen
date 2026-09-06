@@ -29,10 +29,7 @@ O futuro harness usa HTTP/Better Auth/PostgreSQL/S3 reais do executável anterio
 
 ## Provas executadas (EX25, componente)
 
-Em 2026-09-06, no checkout `codex/rebuild`, as suítes sob
-`tests/integration/subject-identity/basis/` produziram histórico real com o
-executável isolado `06535bd`, aplicaram a migração 007 (ou falhas controladas
-dela) e exercitaram o `SemanticExecutor` atual como componente.
+Em 2026-09-06, no checkout `codex/rebuild`, as suítes sob `tests/integration/subject-identity/basis/` produziram histórico real com o executável isolado `06535bd`, aplicaram a migração 007 (ou falhas controladas dela) e exercitaram o `SemanticExecutor` atual como componente.
 
 Comando típico:
 
@@ -54,5 +51,25 @@ ZOEN_TEST_LEGACY_ROOT=.../identity-baseline-20260905-2203/source \
 | BC-08 | Passou: falha injetada no meio do SQL 007 faz rollback sem registrar migração 7; CHECK parcial sem linha `identity` deixa `readCut` em Unavailable preservando worlds/evidence/receipts; `applyIdentityBasisMigrations` recupera |
 | BC-09 | Passou (componente): `executeWithEmission` emite DTO literal `FrameInspected` após a transição; revogação vencedora impede emissão (`NotFoundOrDenied`, emit não chamado). UI Web/CLI de identidade é EX28 e permanece bloqueada; ordenações concorrentes SH07/08 do fence continuam evidência EX23 |
 
-O pacote EX25 permanece **não** marcado como `verified_for_profile`: falta a revisão independente (worker-3). O contrato completo está em
-[d02-basis-compatibility.md](../contracts/d02-basis-compatibility.md).
+O pacote EX25 permanece **não** marcado como `verified_for_profile`: falta a revisão independente (worker-3). O contrato completo está em [d02-basis-compatibility.md](../contracts/d02-basis-compatibility.md).
+
+## Contraprovas independentes (EX26, worker-3)
+
+Em 2026-09-06, sob `tests/integration/subject-identity/independent/`, a revisão independente exercitou ângulos distintos da suíte de autoria EX25:
+
+| Oráculo independente | Resultado |
+| --- | --- |
+| Multi-world 007 + digest legado corrompido | Passou: dois Worlds pré-transição; frames/receipts byte-iguais; migrator idempotente; digest legado errado → `Unavailable`; digest v2 errado → `Stale` |
+| Audiência com grant pré-transição | Passou: Frame do viewer congelado; emissão sem `authority.basis.v2`/grafo; propose do viewer negado; revoke bloqueia emissão |
+| Concorrência Answer×identity / Answer×Import | Passou: sem apply parcial; outcomes `applied` ou `Stale` coerentes com cuts |
+| SIGKILL em transação 007 aberta | Passou: snapshot inalterado; CHECK parcial → `Unavailable`; recovery pelo migrator |
+
+Comando:
+
+```bash
+ZOEN_TEST_LEGACY_ROOT=.../identity-baseline-20260905-2203/source \
+  node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration \
+  --no-file-parallelism tests/integration/subject-identity/independent/
+```
+
+Lacunas restantes para EX26 completo: grafo/ausência/recuperação (EX27), limites de Question de recuperação, Web/CLI de identidade (EX28). EX25 componente BC-01..09 permanece coberto; `verified_for_profile` ainda exige essas lacunas honestas.

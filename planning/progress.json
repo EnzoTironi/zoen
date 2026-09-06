@@ -17,16 +17,17 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "bc01_to_bc09_green_pending_independent_review",
-      "notes": "Real legacy-history + migration-failure suites under tests/integration/subject-identity/basis prove BC-01..09 as component; verified_for_profile still open pending worker-3 review. BC-06 identity-edge writers deferred to EX27; BC-09 identity Web/CLI UI is EX28."
+      "state": "independently_reviewed_component_pending_ex27_ex28_gaps",
+      "notes": "EX25 BC-01..09 component green; worker-3 independent counterproofs under tests/integration/subject-identity/independent green (legacy integrity, audience, concurrency, SIGKILL-007). verified_for_profile still open: BC-06 identity-edge writers=EX27; BC-09 identity Web/CLI=EX28; EX26 full acceptance_requires EX27."
     },
     {
       "agent": "tickets_redesign",
       "task": "EX26-real-legacy-history-and-component-compatibility",
       "model": "gpt-6-astra",
       "effort": "low",
-      "worktree": "/Users/enzotironi/zoen-ex26-compatibility",
-      "state": "in_progress"
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "basis_compatibility_independent_proofs_green_ex27_blocked",
+      "notes": "Independent oracles green for legacy bases, audience, concurrency, SIGKILL migration. Graph/absence/recovery after new claims blocked until EX27 writers exist. Owns domain path tests/integration/subject-identity/independent/** (plan JSON still lists d02-identity/independent; mass rename later)."
     }
   ],
   "temporary_ownership": [
@@ -155,6 +156,13 @@
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "Reproduzir descarte de nega\u00e7\u00e3o com leitura concorrente no navegador real; n\u00e3o fabricar respostas."
+    },
+    {
+      "task": "EX26-independent-basis-review",
+      "path": "tests/integration/subject-identity/independent/**",
+      "owner": "worker-3",
+      "integration_owner": "root",
+      "reason": "Contraprovas independentes de compatibilidade de base e identidade; path de dom\u00ednio (n\u00e3o d02-*)."
     }
   ],
   "checkpoints": [
@@ -418,6 +426,18 @@
       "browser_component_tests": 7,
       "container_acceptance_tests": 12,
       "scope": "Qualidade, build, unidade, integra\u00e7\u00e3o real, componentes e imagem nova passaram no CI com revis\u00e3o independente. As duas falhas remotas anteriores e sua contraprova est\u00e3o preservadas. N\u00e3o conclui D03 integral, erasure, restore, upgrade, cloud ou as22entregas."
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "20fd153",
+      "packages": [
+        "EX25",
+        "EX26"
+      ],
+      "state": "independently_reviewed_locally_partial",
+      "reviewer": "worker-3",
+      "evidence": "docs/verification/identity-basis.md",
+      "scope": "EX25 BC-01..09 component + EX26 independent counterproofs of basis compatibility (legacy integrity, audience, concurrency, SIGKILL-007) on real PG/S3. Graph/absence/recovery and identity Web/CLI remain EX27/EX28. Not verified_for_profile."
     }
   ],
   "verified_deliveries": [],
