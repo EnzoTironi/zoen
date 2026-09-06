@@ -1,6 +1,6 @@
 # Identidade — preparação da prova de compatibilidade
 
-A compatibilidade EX25/EX26 ainda não está verificada. Em 2026-09-05 foi preparado e compilado o executável anterior real que produzirá o histórico pré-transição. Schemas e geração de artefatos não substituem esse histórico, replay autorizado, migração e os testes do executor.
+A compatibilidade EX25 ainda não está marcada como `verified_for_profile`: falta a revisão independente. Em 2026-09-05 foi preparado e compilado o executável anterior real que produz o histórico pré-transição. Em 2026-09-06 a suíte de componente sob `tests/integration/subject-identity/basis/` exercitou BC-01–09 sobre esse histórico e a migração 007.
 
 ## Executável anterior isolado
 
@@ -29,11 +29,18 @@ O futuro harness usa HTTP/Better Auth/PostgreSQL/S3 reais do executável anterio
 
 ## Provas executadas (EX25, componente)
 
-Em 2026-09-06, no checkout `codex/rebuild`, a suíte
-`tests/integration/subject-identity/basis/compatibility.EX25.integration.test.ts`
-produziu histórico real com o executável isolado `06535bd`, parou esse writer,
-aplicou a migração 007 no banco exclusivo da prova e exercitou o
-`SemanticExecutor` atual como componente sobre a mesma instalação/Presence.
+Em 2026-09-06, no checkout `codex/rebuild`, as suítes sob
+`tests/integration/subject-identity/basis/` produziram histórico real com o
+executável isolado `06535bd`, aplicaram a migração 007 (ou falhas controladas
+dela) e exercitaram o `SemanticExecutor` atual como componente.
+
+Comando típico:
+
+```bash
+ZOEN_TEST_LEGACY_ROOT=.../identity-baseline-20260905-2203/source \
+  node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration \
+  tests/integration/subject-identity/basis/
+```
 
 | Oráculo | Resultado observado |
 | --- | --- |
@@ -42,8 +49,10 @@ aplicou a migração 007 no banco exclusivo da prova e exercitou o
 | BC-03 | Passou: replay exacto de Propose/Answer/Undo legados devolveu os receipts originais |
 | BC-04 | Passou: mesmo opID com intenção diferente → Conflict; terceiro → NotFoundOrDenied; logout → Unauthenticated |
 | BC-05 | Passou: novos opIDs sobre base/Question legada → Stale sem novos cases/receipts/corrections/outbox |
-| BC-06–09 | Ainda não executados nesta suíte |
+| BC-06 | Passou: inspeção nova emite `authority.basis.v2` com cut de seis domínios; Propose/Answer ajustam só `cases`; avanço concorrente de `identity` deixa Case literal `Stale`. Writers EX27 de aresta redundante/ausência ainda não existem; o bump de cut cobre o mecanismo de invalidação |
+| BC-07 | Passou: replay de CreatePersonalWorld/ImportEvidence/Grant/Revoke legados preserva receipts; novos writes `basis:null` gravam cut/receipt com `identity` sem Frame |
+| BC-08 | Passou: falha injetada no meio do SQL 007 faz rollback sem registrar migração 7; CHECK parcial sem linha `identity` deixa `readCut` em Unavailable preservando worlds/evidence/receipts; `applyIdentityBasisMigrations` recupera |
+| BC-09 | Passou (componente): `executeWithEmission` emite DTO literal `FrameInspected` após a transição; revogação vencedora impede emissão (`NotFoundOrDenied`, emit não chamado). UI Web/CLI de identidade é EX28 e permanece bloqueada; ordenações concorrentes SH07/08 do fence continuam evidência EX23 |
 
-O pacote EX25 permanece **não** marcado como `verified_for_profile`: faltam
-BC-06–09 e a revisão independente. O contrato completo está em
+O pacote EX25 permanece **não** marcado como `verified_for_profile`: falta a revisão independente (worker-3). O contrato completo está em
 [d02-basis-compatibility.md](../contracts/d02-basis-compatibility.md).
