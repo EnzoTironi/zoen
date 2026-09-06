@@ -2462,7 +2462,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "planned; progress tracked in planning/progress.json; keep verification_state not_run for verify_plan.",
+      "commands_status": "Compose+verify d04-hosted-retained-v1 (new Worlds); provision world-policy; composition HostedAdmissionFlags; independent oracles. execution status remains planned/not_run for verify_plan; progress in progress.json. verified_for_profile local hosted-retained bootstrap ONLY — not production Fly.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

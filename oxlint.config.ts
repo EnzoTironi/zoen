@@ -86,6 +86,20 @@ export default defineConfig({
       },
     },
     {
+      files: [
+        "tests/integration/hosted/**",
+        "packages/authority/test/hosted/**",
+        "packages/authority/test/ports/hosted/**",
+        "packages/contracts/test/hosted/**",
+        "ops/local/**",
+      ],
+      rules: {
+        "effecttsgo/prefer-schema-over-json": "off",
+        "effecttsgo/prefer-typed-schema-decoder": "off",
+        "effecttsgo/schema-sync-in-effect": "off",
+      },
+    },
+    {
       files: ["**/adapters/http.ts"],
       rules: { "effecttsgo/node-builtin-import": "off" },
     },

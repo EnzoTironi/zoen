@@ -12,12 +12,22 @@ import type {
   HostedDisabledReason,
   HostedRetainedAdmissionFlags as HostedRetainedAdmissionFlagsType,
 } from "@zoen/contracts/hosted/admission/values";
-import { Effect, Schema } from "effect";
+import { Context, Effect, Schema } from "effect";
 
 export {
   d04HostedRetainedAdmissionFlags,
   HostedRetainedAdmissionFlags,
 } from "@zoen/contracts/hosted/admission/values";
+
+/**
+ * Optional composition service: present when the install DataPolicy is
+ * d04-hosted-retained-v1 (EX39 local hosted-retained bootstrap). Absent on
+ * default local retained / erasable installs.
+ */
+export class HostedAdmissionFlags extends Context.Service<
+  HostedAdmissionFlags,
+  HostedRetainedAdmissionFlagsType
+>()("zoen/authority/hosted/admission/HostedAdmissionFlags") {}
 
 /**
  * Derived readiness — never uses a "healthy" status (ZN-0288).

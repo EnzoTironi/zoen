@@ -3,6 +3,10 @@ import {
   AuthorityInstallationSchema,
 } from "@zoen/authority/commit/configuration";
 import {
+  HostedAdmissionFlags,
+  d04HostedRetainedAdmissionFlags,
+} from "@zoen/authority/hosted/admission/flags";
+import {
   DataPolicy,
   DataPolicySchema,
 } from "@zoen/authority/ports/d01/context";
@@ -39,6 +43,23 @@ export interface D01ApplicationConfig {
   readonly policy: DataPolicySchema;
   readonly storage: S3EvidenceConfig;
 }
+
+/** Frozen admission flags layer for d04-hosted-retained-v1 installs (EX39). */
+export const hostedAdmissionLayer = Layer.succeed(
+  HostedAdmissionFlags,
+  d04HostedRetainedAdmissionFlags
+);
+
+/**
+ * Hosted retained admission layer for NEW Worlds only (EX39).
+ * Default local retained / erasable installs get Layer.empty — no false channel health.
+ */
+export const hostedAdmissionLayerFor = (
+  policy: DataPolicySchema
+): Layer.Layer<HostedAdmissionFlags> | Layer.Layer<never> =>
+  policy.profileId === "d04-hosted-retained-v1"
+    ? hostedAdmissionLayer
+    : Layer.empty;
 
 /** One explicit composition for every public semantic operation. */
 export const makeD01Application = (config: D01ApplicationConfig) =>
@@ -83,6 +104,7 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         s3EvidenceLayer(config.storage),
         Layer.succeed(AuthorityInstallation, installation),
         Layer.succeed(DataPolicy, policy),
+        hostedAdmissionLayerFor(policy),
         erasureRegister
       );
       const executor = SemanticExecutor.layer.pipe(

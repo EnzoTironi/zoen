@@ -39,3 +39,12 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 - Authority: `packages/authority/src/hosted/admission/flags.ts` — readiness + `requireAdmittedCapability` / channel fail-closed
 - Unidade: `packages/authority/test/hosted/admission/flags.EX38.test.ts`
 - Núcleo web/cli/file ready; canais/providers disabled/Blocked; provider ausente não passa readiness de canal; sem Fly deploy
+
+## EX39 compose/verify (local only)
+
+- Provision: `ops/local/world-policy.ts` + `ZOEN_LOCAL_WORLD_POLICY=d04-hosted-retained-v1` (NEW installs)
+- Composition: `hostedAdmissionLayerFor` → `HostedAdmissionFlags` when hosted policy
+- Doc: `docs/verification/hosted-local.md`
+- Independent: `tests/integration/hosted/independent/**`
+- `ops/fly/**` permanece stub; **sem** Fly deploy/MPG/Tigris
+- `verified_for_profile` **somente** bootstrap local hosted-retained — não produção Fly

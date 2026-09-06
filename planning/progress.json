@@ -753,6 +753,36 @@
         "format_lint_typecheck": "pass"
       },
       "notes": "Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth. NOT D04 activated."
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "PENDING_EX39",
+      "packages": ["EX35", "EX36", "EX37", "EX38", "EX39"],
+      "state": "verified_for_profile",
+      "profile": "d04-hosted-retained-v1 (new Worlds only) / local hosted-retained bootstrap; d01-local-retained-v1 default preserved; ops/fly stubs only",
+      "evidence": "docs/verification/hosted-local.md",
+      "scope": "Local hosted-retained bootstrap verified_for_profile for EX35–EX39: freeze/stubs, DataPolicy schemas, disposable restore, admission flags, provision/composition wiring for NEW Worlds only, independent oracles. Does NOT conclude D04 activated or production Fly: no apps create/deploy/MPG/Tigris/secrets redesign/cutover. D03 purge/restore-after-erasure remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
+      "tests": {
+        "unit_ex36_policy": "pass",
+        "unit_ex38_admission_flags": "pass",
+        "unit_ex39_world_policy": "pass",
+        "integration_ex37_disposable_restore": "pass",
+        "independent_compose_profile_ex39": "pass",
+        "independent_fly_stubs_ex39": "pass",
+        "format_lint_typecheck": "pass"
+      },
+      "fly_deployed": false,
+      "verified_for_profile": true,
+      "not_full_d03": true,
+      "not_full_d04": true,
+      "blockers": [
+        "zoen-rebuild Fly app not created (cost gate — needs user approval)",
+        "No Fly Managed Postgres / Tigris in org inventory",
+        "Rebuild secrets not provisioned on Fly",
+        "D03 purge + restore-after-erasure still blocked for sensitive pilot",
+        "Cutover of legacy zoen / DNS not authorized"
+      ],
+      "notes": "verified_for_profile ONLY for local hosted-retained bootstrap (schemas+restore+flags+compose stubs). NOT production Fly / D04 activated."
     }
   ],
   "verified_deliveries": [],
@@ -800,7 +830,11 @@
       "composition_default": "d01-local-retained-v1",
       "hosted_retained_disposable_restore": true,
       "restore_after_erasure": false,
-      "zn_0116_claimed": false
+      "zn_0116_claimed": false,
+      "hosted_admission_flags": true,
+      "hosted_local_compose": true,
+      "verified_for_profile_local_bootstrap": true,
+      "not_production_fly": true
     }
   }
 }

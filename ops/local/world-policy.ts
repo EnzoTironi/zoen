@@ -1,0 +1,84 @@
+/**
+ * Local provision World data-policy selection (EX34 / EX39).
+ * Default remains d01-local-retained-v1. Erasable and hosted retained are
+ * explicit NEW-install choices only — never rebound onto existing Worlds.
+ */
+
+export type LocalWorldPolicyId =
+  | "d01-local-retained-v1"
+  | "d03-local-erasable-v1"
+  | "d04-hosted-retained-v1";
+
+export interface LocalWorldPolicy {
+  readonly dataScope: "admitted-non-sensitive";
+  readonly enabledRealm: "live";
+  readonly erasure: boolean;
+  readonly legalHold: false;
+  readonly licensedExpiry: false;
+  readonly profileId: LocalWorldPolicyId;
+  readonly restoreAfterErasure: false;
+  readonly retention: "while-pinned";
+}
+
+const RETAINED: LocalWorldPolicy = {
+  dataScope: "admitted-non-sensitive",
+  enabledRealm: "live",
+  erasure: false,
+  legalHold: false,
+  licensedExpiry: false,
+  profileId: "d01-local-retained-v1",
+  restoreAfterErasure: false,
+  retention: "while-pinned",
+};
+
+const ERASABLE: LocalWorldPolicy = {
+  dataScope: "admitted-non-sensitive",
+  enabledRealm: "live",
+  erasure: true,
+  legalHold: false,
+  licensedExpiry: false,
+  profileId: "d03-local-erasable-v1",
+  restoreAfterErasure: false,
+  retention: "while-pinned",
+};
+
+/** Candidate hosted retained (freeze H01–H02); local compose stand-in only. */
+const HOSTED_RETAINED: LocalWorldPolicy = {
+  dataScope: "admitted-non-sensitive",
+  enabledRealm: "live",
+  erasure: false,
+  legalHold: false,
+  licensedExpiry: false,
+  profileId: "d04-hosted-retained-v1",
+  restoreAfterErasure: false,
+  retention: "while-pinned",
+};
+
+const BY_ID: Record<LocalWorldPolicyId, LocalWorldPolicy> = {
+  "d01-local-retained-v1": RETAINED,
+  "d03-local-erasable-v1": ERASABLE,
+  "d04-hosted-retained-v1": HOSTED_RETAINED,
+};
+
+export const LOCAL_WORLD_POLICY_IDS: readonly LocalWorldPolicyId[] = [
+  "d01-local-retained-v1",
+  "d03-local-erasable-v1",
+  "d04-hosted-retained-v1",
+];
+
+export const isLocalWorldPolicyId = (
+  value: string
+): value is LocalWorldPolicyId =>
+  value === "d01-local-retained-v1" ||
+  value === "d03-local-erasable-v1" ||
+  value === "d04-hosted-retained-v1";
+
+/** Resolve install policy; null when the id is not an admitted local profile. */
+export const resolveLocalWorldPolicy = (
+  worldPolicy: string
+): LocalWorldPolicy | null => {
+  if (!isLocalWorldPolicyId(worldPolicy)) {
+    return null;
+  }
+  return BY_ID[worldPolicy];
+};
