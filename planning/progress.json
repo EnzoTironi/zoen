@@ -455,7 +455,7 @@
     },
     {
       "date": "2026-09-06",
-      "commit": "673887b4962359867465b654ee13628968023037",
+      "commit": "88bb3c7d2b29dcac1671d676905b1d609d663624",
       "packages": ["EX27", "EX28", "EX29"],
       "state": "identity_writer_and_viewer_proofs_local_green_not_verified_for_profile",
       "profile": "d01-local-retained-v1 / subject-identity-v2",
