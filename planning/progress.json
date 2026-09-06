@@ -715,7 +715,7 @@
     },
     {
       "date": "2026-09-06",
-      "commit": "PENDING",
+      "commit": "b010da0776ec1930537b0a257996c119e81f8df7",
       "packages": ["EX36"],
       "state": "d04_hosted_retained_policy_schemas_landed",
       "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; composition defaults local retained)",
