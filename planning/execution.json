@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "planned",
-  "scope": "Pacotes D01/D02, CSV e compartilhamento local; estados planejados são requisitos, progresso executado fica em planning/progress.json",
+  "scope": "Pacotes D01/D02, CSV, compartilhamento local e primeiro incremento de erasure (contrato); estados planejados são requisitos, progresso executado fica em planning/progress.json",
   "workers": {
     "worker-1": {
       "model": "gpt-6-astra",
@@ -1735,7 +1735,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "ID-08 writers + recovery Question byte/entry/depth unit oracle green. Remote CI tip pending; not verified_for_profile.",
+      "commands_status": "Identity handlers verified_for_profile as part of subject-identity-v2 at cae72de (Main Verify 34062093334). execution status remains planned/not_run for verify_plan; progress in progress.json.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1800,7 +1800,7 @@
       "acceptance_requires": ["EX27"],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "ID-15 + EX28 viewer-denial Playwright green; undo polish landed. Recovery limits oracle closed in EX27 unit; remote CI tip pending; not verified_for_profile.",
+      "commands_status": "Web/CLI identity verified_for_profile with EX29 at cae72de. execution status remains planned/not_run for verify_plan; progress in progress.json.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1851,7 +1851,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "Local identity writer/viewer + recovery Question limits closed on subject-identity-v2. Not verified_for_profile: remote CI/image on new tip.",
+      "commands_status": "verified_for_profile subject-identity-v2 at cae72de incl. container CI 34062093334. execution status remains planned/not_run for verify_plan; progress in progress.json. Not full D02.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1901,6 +1901,300 @@
       ],
       "model": null,
       "reasoning_effort": null
+    },
+    {
+      "depends_on": {
+        "hard": ["EX23"],
+        "optional": ["EX29"]
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Freeze + schemas stubs landed with EX30 docs; product purge not authorized.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-erasure.md",
+        "docs/contracts/d03-erasure.review.md",
+        "docs/contracts/d03-erasure-freeze.md",
+        "docs/contracts/d03-sharing.md"
+      ],
+      "contracts_consumed": [
+        "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+      ],
+      "id": "EX30",
+      "owner": "root",
+      "reviewer": "worker-3",
+      "title": "Congelar erasure mínimo e schemas de solicitação/inspeção",
+      "scope": "Freeze note + schemas RequestWorldErasure/InspectWorldErasure e perfil candidato d03-local-erasable-v1; sem ativar Worlds existentes.",
+      "acceptance": [
+        "Freeze lista F01–F09 e gates bloqueados; restoreAfterErasure explicitamente fechado.",
+        "Schemas compiláveis sob packages/contracts/src/erasure/** com schemaVersion erasure.v1; sem wire de purge."
+      ],
+      "planned_direct_checks": [
+        "Unidade de parse/encode dos schemas; DataPolicy retida continua erasure:false.",
+        "Documento de freeze revisável; nenhum adapter apaga objetos."
+      ],
+      "owns": [
+        "docs/contracts/d03-erasure.md",
+        "docs/contracts/d03-erasure-freeze.md",
+        "packages/contracts/src/erasure/**",
+        "packages/contracts/test/erasure/**"
+      ],
+      "model": null,
+      "reasoning_effort": null
+    },
+    {
+      "depends_on": {
+        "hard": ["EX30"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Port interface may land; real controller adapter blocked until qualified.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-erasure.md",
+        "docs/contracts/d03-erasure.review.md",
+        "docs/contracts/d03-erasure-freeze.md",
+        "docs/contracts/d03-sharing.md"
+      ],
+      "contracts_consumed": [
+        "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+      ],
+      "id": "EX31",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Porta de registro externo de tentativa antes de Closing",
+      "scope": "Interface Context.Service para register/resolve attempt fora do rollback da app; sem implementar controlador completo se não qualificado.",
+      "acceptance": [
+        "Porta exige identidade estável de tentativa e resultados Registrada/Confirmada/Abortada/Unknown sem last-write-wins.",
+        "Nenhum caminho chama Closing sem observar registro prévio; adapter real permanece bloqueado/oráculo falho até topologia admitida."
+      ],
+      "planned_direct_checks": [
+        "ER05/ER06 conceituais: registro precede Closing; resposta perdida consulta mesma identidade.",
+        "Teste de bloqueio: restore/ativação recusa Registrada sem desfecho."
+      ],
+      "owns": [
+        "packages/authority/src/ports/erasure/**",
+        "packages/authority/test/ports/erasure/**"
+      ],
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low"
+    },
+    {
+      "depends_on": {
+        "hard": ["EX31"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Not started; Closing only after register port; no purge worker.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-erasure.md",
+        "docs/contracts/d03-erasure.review.md",
+        "docs/contracts/d03-erasure-freeze.md",
+        "docs/contracts/d03-sharing.md",
+        "docs/contracts/disclosure-durable.md"
+      ],
+      "contracts_consumed": [
+        "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+      ],
+      "id": "EX32",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Closing local irreversível no executor semântico",
+      "scope": "Handlers RequestWorldErasure/InspectWorldErasure: Active→Closing com receipt imutável; sem Purging/Erased até gates.",
+      "acceptance": [
+        "Owner autenticado, reautorização na linearização, mesmo operationId idempotente; viewer negado.",
+        "Commit Closing atômico com outbox; progresso separado do receipt; restoreAfterErasure continua false."
+      ],
+      "planned_direct_checks": [
+        "ER01–ER03/ER19 em PG real quando perfil novo existir; Worlds retidos rejeitam solicitação.",
+        "Nenhum DELETE de conteúdo admitido neste pacote."
+      ],
+      "owns": [
+        "packages/authority/src/knowledge/erasure/**",
+        "tests/integration/erasure/core/**"
+      ],
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low",
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "Schemas EX30 e porta EX31 revisados; handlers exportáveis.",
+          "completion": "Dispatcher/composição importam handlers; perfil novo só após EX34; sem rebind de Worlds retidos.",
+          "owns": [
+            "ops/migrations/**",
+            "packages/authority/src/index.ts",
+            "apps/server/src/composition.ts",
+            "apps/server/src/http/**"
+          ]
+        }
+      ]
+    },
+    {
+      "depends_on": {
+        "hard": ["EX30"],
+        "optional": []
+      },
+      "acceptance_requires": ["EX32"],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Not started; surfaces wait EX32 handlers.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-erasure.md",
+        "docs/contracts/d03-erasure.review.md",
+        "docs/contracts/d03-erasure-freeze.md",
+        "docs/contracts/d03-sharing.md"
+      ],
+      "contracts_consumed": [
+        "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+      ],
+      "id": "EX33",
+      "owner": "worker-2",
+      "reviewer": "worker-3",
+      "title": "Confirmação explícita de erasure em Web e CLI",
+      "scope": "Mesmos schemas/receipt; confirmação de escopo World inteiro; sem controles de restore.",
+      "acceptance": [
+        "Web/CLI exigem confirmação explícita de escopo e operationId; Stale exige nova inspeção.",
+        "Viewer não solicita nem inspeciona progresso administrativo alheio; restore UI ausente/bloqueada."
+      ],
+      "planned_direct_checks": [
+        "Jornada owner: inspect → confirm Closing; viewer denial.",
+        "Replay de receipt imutável sem promover a Erased na UI."
+      ],
+      "owns": [
+        "apps/web/src/features/erasure/**",
+        "apps/web/test/integration/erasure/**",
+        "apps/cli/src/erasure/**",
+        "apps/cli/test/erasure/**"
+      ],
+      "model": "gpt-6-astra",
+      "reasoning_effort": "low"
+    },
+    {
+      "depends_on": {
+        "hard": ["EX31", "EX32", "EX33"],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Blocked on controller/storage/backup gates for purge; compose Closing-only profile when ready.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": ["ZN-0112", "ZN-0113", "ZN-0114", "ZN-0115", "ZN-0116", "ZN-0117"],
+      "source_semantics": "Primeiro incremento de erasure: contrato/schemas, porta de registro, Closing local, confirmação Web/CLI e verify. Não conclui purge/Erased, controlador, Object Lock, backups, restore após erasure ou D03 integral.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/contracts/d03-erasure.md",
+        "docs/contracts/d03-erasure.review.md",
+        "docs/contracts/d03-erasure-freeze.md",
+        "docs/contracts/d03-sharing.md",
+        "docs/verification/erasure-s3-feasibility.md"
+      ],
+      "contracts_consumed": [
+        "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+      ],
+      "id": "EX34",
+      "owner": "root",
+      "reviewer": "worker-3",
+      "title": "Compor e verificar incremento Closing (sem purge falso)",
+      "scope": "Perfil novo d03-local-erasable-v1 só para Worlds novos; oráculos de registro/Closing; purge/Erased permanece blocked.",
+      "acceptance": [
+        "Mesmo executor; Worlds retidos rejeitam erasure; restoreAfterErasure false.",
+        "Evidência local/CI separa Closing verificado de purge ainda bloqueado (controlador/backups/Object Lock)."
+      ],
+      "planned_direct_checks": [
+        "Suite combinada + imagem quando Closing existir; oráculos ER05/ER01 mínimos.",
+        "Documentar gates restantes antes de qualquer purge real."
+      ],
+      "owns": [
+        "docs/verification/erasure-local.md",
+        "tests/integration/erasure/independent/**",
+        "ops/local/**"
+      ],
+      "model": null,
+      "reasoning_effort": null,
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "EX32/EX33 revisados e exports prontos.",
+          "completion": "Composition/HTTP/CLI main e provisionamento de perfil novo; sem rebind de Worlds retidos.",
+          "owns": [
+            "apps/server/src/composition.ts",
+            "apps/server/src/http/**",
+            "apps/server/src/main.ts",
+            "apps/cli/src/main.ts",
+            "apps/web/src/main.tsx"
+          ]
+        }
+      ]
     }
   ],
   "suggested_schedule": [
@@ -1944,11 +2238,19 @@
       "worker-2": ["revisão independente da CLI EX11"],
       "worker-3": ["EX15 após EX14"],
       "root": ["EX14", "revisão final da evidência e CI"]
+    },
+    {
+      "wave": "F-erasure",
+      "worker-1": ["EX31", "EX32"],
+      "worker-2": ["EX33 após schemas EX30"],
+      "worker-3": ["contraprovas erasure independent quando Closing existir"],
+      "root": ["EX30 freeze/schemas", "EX34 compose quando gates mínimos de Closing"]
     }
   ],
   "preserved_but_not_completed": [
     "D01 completo ainda exige todos incrementos de formato/retenção/recuperação e critérios de sua entrega; esta proposta não declara tudo aceito.",
-    "D02 merge/split reversível de identidade, workbench/priorização e closure para futuros consumers permanecem no mapa original; não contar sua ausência como conclusão.",
+    "D02 merge/split reversível de identidade, workbench/priorização e closure para futuros consumers permanecem no mapa original; subject-identity-v2 verified_for_profile não conta como D02 integral.",
+    "D03 erasure: freeze mínimo EX30+; purge real, controlador, Object Lock, catálogo de backups e restore após erasure continuam bloqueados.",
     "Deploy Fly, backups/restore incluindo supressão de apagamento e ampliação de direitos são próximas entregas reais; Docker local não prova cloud.",
     "Modelos, canais, fontes externas, efeitos, runners e finanças seguem fora da primeira composição; indisponíveis, nunca simulados."
   ],

@@ -1,6 +1,6 @@
 # D03 — contrato candidato de supressão, erasure e restore
 
-Status: proposta para revisão. Não é contrato admitido, operação disponível, permissão concedida, migração ou evidência de funcionamento. Não autoriza EX24 nem altera o perfil de Worlds existentes. Revisão conceitual de `59e0d28` após os achados ER-R01–05 em `docs/contracts/d03-erasure.review.md` (revisão independente `843ddad` + `9af5eec`). A versão anterior e seus contraexemplos permanecem no histórico; esta revisão não invalida os achados nem se autoaprova. As decisões pendentes abaixo precisam ser congeladas antes de tickets executáveis, write allowlists e oráculos finais.
+Status: candidato + **congelamento mínimo** em `docs/contracts/d03-erasure-freeze.md` (2026-09-06, tip `cae72de`). O freeze cobre ER-R01 (registro externo antes de Closing), perfil novo `d03-local-erasable-v1` só para Worlds novos, escopo World, restore-after-erasure bloqueado e Unavailable indefinido se o desfecho se perder. **Não** é admissão de purge, controlador, Object Lock, backups nem alteração de Worlds `d01-local-retained-v1`. Revisão ER-R01–05 em `d03-erasure.review.md` (`843ddad` + `9af5eec`) permanece autoritativa para gates ainda abertos. Não autoriza EX30+ a apagar dados reais antes dos gates do freeze.
 
 ## Autoridade e fatos atuais
 

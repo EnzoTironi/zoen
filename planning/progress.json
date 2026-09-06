@@ -9,8 +9,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex24-subject-identity",
-      "state": "partial_schemas_landed_not_verified_for_profile",
-      "notes": "Schemas/pure laws on tip and in unit suite. Not independently verified_for_profile; quality typecheck still red on later identity suites. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
+      "state": "verified_for_profile_subject_identity_v2",
+      "notes": "Schemas/pure laws consumed by EX27–EX29. Vertical proofs + Main Verify green at cae72de (run 34062093334). Part of subject-identity-v2 verified_for_profile; not full D02 delivery."
     },
     {
       "agent": "roadmap_redesign",
@@ -18,8 +18,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "independently_reviewed_component_partial",
-      "notes": "BC-01..09 component green on rebuild. Gaps remain for full graph/absence/recovery; not verified_for_profile. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
+      "state": "verified_for_profile_subject_identity_v2",
+      "notes": "BC-01..09 + additive basis in composed identity increment. verified_for_profile with EX24–EX29 at cae72de; merge/split stewardship beyond this increment may remain."
     },
     {
       "agent": "tickets_redesign",
@@ -27,8 +27,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "independent_proofs_green_partial",
-      "notes": "Independent oracles green (legacy/audience/concurrency/SIGKILL-007 + split writers). Full ID suite and quality typecheck debt remain; not verified_for_profile. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
+      "state": "verified_for_profile_subject_identity_v2",
+      "notes": "Independent oracles (legacy/audience/concurrency/SIGKILL + split writers) green in composed increment. verified_for_profile subject-identity-v2 at cae72de; not full D02."
     },
     {
       "agent": "architecture_redesign",
@@ -36,8 +36,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "id08_writers_proofs_green_partial",
-      "notes": "Core handlers+split + independent ResolveIdentity SIGKILL and concurrency counterproofs green on real PG/S3. Recovery Question byte/entry/depth oracle green. Not verified_for_profile pending remote CI/image."
+      "state": "verified_for_profile_subject_identity_v2",
+      "notes": "Handlers+persistence+writers SIGKILL/concurrency + recovery Question limits. verified_for_profile with CI container at cae72de."
     },
     {
       "agent": "roadmap_redesign",
@@ -45,8 +45,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "viewer_denial_browser_green_partial",
-      "notes": "HTTP/CLI/Web + ID-15 + EX28 viewer-denial Playwright green on subject-identity-v2; light undo UX button for last decisionRef. Recovery limits oracle closed. Not verified_for_profile pending remote CI/image."
+      "state": "verified_for_profile_subject_identity_v2",
+      "notes": "HTTP/CLI/Web + ID-15 + viewer-denial Playwright + undo polish. verified_for_profile subject-identity-v2 at cae72de."
     },
     {
       "agent": "architecture_redesign",
@@ -54,8 +54,17 @@
       "model": null,
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "local_and_container_partial_not_verified_for_profile",
-      "notes": "Gaps closed locally: ID-08 writer SIGKILL/concurrency + EX28 viewer denial browser + undo polish. Still not verified_for_profile: remote CI aggregator/image re-run on new tip (recovery Question limits oracle closed)."
+      "state": "verified_for_profile_subject_identity_v2",
+      "notes": "Compose+verify closed for subject-identity-v2: vertical EX24–EX28 proofs + Main Verify https://github.com/EnzoTironi/zoen/actions/runs/34062093334 @ cae72de (incl. container). Does NOT claim full D02 delivery. Next: D03 erasure freeze EX30+."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX30-erasure-contract-freeze-and-schemas",
+      "model": null,
+      "effort": null,
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "freeze_landed_implementation_planned",
+      "notes": "Minimum executable freeze in docs/contracts/d03-erasure-freeze.md; schemas/port stubs for EX30/EX31. Purge/controller/restore still blocked."
     }
   ],
   "temporary_ownership": [
@@ -212,13 +221,66 @@
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Provas de integração EX27 core."
+    },
+    {
+      "task": "D03-erasure-freeze",
+      "path": "docs/contracts/d03-erasure-freeze.md",
+      "owner": "root",
+      "integration_owner": "root",
+      "reason": "Congelamento mínimo ER-R01 e gates bloqueados; não autoriza purge."
+    },
+    {
+      "task": "EX30",
+      "path": "packages/contracts/src/erasure/**",
+      "owner": "root",
+      "integration_owner": "root",
+      "reason": "Schemas Request/Inspect WorldErasure; domínio erasure/**."
+    },
+    {
+      "task": "EX31",
+      "path": "packages/authority/src/ports/erasure/**",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Porta de registro de tentativa; adapter controlador real ainda bloqueado."
+    },
+    {
+      "task": "EX32",
+      "path": "packages/authority/src/knowledge/erasure/**",
+      "owner": "worker-1",
+      "integration_owner": "root",
+      "reason": "Closing local semântico; sem purge até gates do freeze."
+    },
+    {
+      "task": "EX33",
+      "path": "apps/web/src/features/erasure/**",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "Confirmação Web de erasure; composição root."
+    },
+    {
+      "task": "EX33",
+      "path": "apps/cli/src/erasure/**",
+      "owner": "worker-2",
+      "integration_owner": "root",
+      "reason": "Confirmação CLI de erasure."
+    },
+    {
+      "task": "EX34",
+      "path": "tests/integration/erasure/**",
+      "owner": "worker-3",
+      "integration_owner": "root",
+      "reason": "Oráculos/contraprovas; paths de domínio erasure/**."
     }
   ],
   "checkpoints": [
     {
       "date": "2026-09-05",
       "commit": "6241437",
-      "packages": ["EX01", "EX02", "EX03"],
+      "packages": [
+        "EX01",
+        "EX02",
+        "EX03"
+      ],
       "state": "reviewed_and_verified_locally",
       "evidence": "docs/verification/bootstrap.md",
       "remote_ci": {
@@ -234,7 +296,12 @@
     {
       "date": "2026-09-05",
       "commit": "40e0e7e",
-      "packages": ["EX04", "EX05", "EX06", "EX07"],
+      "packages": [
+        "EX04",
+        "EX05",
+        "EX06",
+        "EX07"
+      ],
       "state": "combined_checks_passed_with_review_followups",
       "unit_tests": 152,
       "integration_tests": 36,
@@ -244,10 +311,17 @@
     {
       "date": "2026-09-05",
       "commit": "6b7f6c6",
-      "packages": ["EX05", "EX06"],
+      "packages": [
+        "EX05",
+        "EX06"
+      ],
       "state": "independently_reviewed_and_verified_locally",
       "reviewer": "worker-3",
-      "witness_commits": ["0dd65c8", "70d0cbd", "a0955d0"],
+      "witness_commits": [
+        "0dd65c8",
+        "70d0cbd",
+        "a0955d0"
+      ],
       "scope": "Prazo interrompe lock SQL sem persistência; runtime não escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem alteração de UI posterior.",
       "unit_tests": 152,
       "integration_tests": 41
@@ -315,7 +389,12 @@
     {
       "date": "2026-09-05",
       "commit": "048d937",
-      "packages": ["EX16", "EX17", "EX18", "EX19"],
+      "packages": [
+        "EX16",
+        "EX17",
+        "EX18",
+        "EX19"
+      ],
       "state": "local_csv_journey_verified_container_pending",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
       "evidence": "docs/verification/csv-local.md",
@@ -326,7 +405,12 @@
     {
       "date": "2026-09-05",
       "commit": "92c26a73549a9bb3f92b48b82d23a66ac1d4f864",
-      "packages": ["EX16", "EX17", "EX18", "EX19"],
+      "packages": [
+        "EX16",
+        "EX17",
+        "EX18",
+        "EX19"
+      ],
       "state": "verified_for_profile",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
       "evidence": "docs/verification/csv-local.md",
@@ -344,7 +428,12 @@
     {
       "date": "2026-09-05",
       "commit": "d7941bb",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "candidate_with_reproduced_disclosure_failure",
       "witness_commits": [
         "420fc38",
@@ -361,7 +450,12 @@
     {
       "date": "2026-09-05",
       "commit": "dd4f781",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "independently_reviewed_and_verified_locally_ci_pending",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
       "evidence": "docs/verification/sharing-local.md",
@@ -376,7 +470,12 @@
     {
       "date": "2026-09-05",
       "commit": "40ab4db5411535bf17212072a903dad2039e09d2",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "remote_ci_failed_browser_logout_history",
       "evidence": "docs/verification/sharing-local.md",
       "remote_ci": {
@@ -394,7 +493,12 @@
     {
       "date": "2026-09-05",
       "commit": "06535bdcec668f62ba6d91d8ebb17e0235ed568b",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "remote_behavior_passed_report_format_failed",
       "remote_ci": {
         "commit": "06535bdcec668f62ba6d91d8ebb17e0235ed568b",
@@ -410,7 +514,12 @@
     {
       "date": "2026-09-05",
       "commit": "aaa30db2aeac2e4b6abf96569f6efca236147c69",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "verified_for_profile",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
       "evidence": "docs/verification/sharing-local.md",
@@ -428,7 +537,10 @@
     {
       "date": "2026-09-06",
       "commit": "1fb5adb",
-      "packages": ["EX25", "EX26"],
+      "packages": [
+        "EX25",
+        "EX26"
+      ],
       "state": "independently_reviewed_locally_partial",
       "reviewer": "worker-3",
       "evidence": "docs/verification/identity-basis.md",
@@ -442,7 +554,14 @@
     {
       "date": "2026-09-06",
       "commit": "dd4afed62c53fa1be4be1ee27c2fcb37c87dc867",
-      "packages": ["EX24", "EX25", "EX26", "EX27", "EX28", "EX29"],
+      "packages": [
+        "EX24",
+        "EX25",
+        "EX26",
+        "EX27",
+        "EX28",
+        "EX29"
+      ],
       "state": "local_and_container_partial_quality_ci_pending",
       "profile": "d01-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
       "evidence": "docs/verification/subject-identity-local.md",
@@ -456,7 +575,11 @@
     {
       "date": "2026-09-06",
       "commit": "88bb3c7d2b29dcac1671d676905b1d609d663624",
-      "packages": ["EX27", "EX28", "EX29"],
+      "packages": [
+        "EX27",
+        "EX28",
+        "EX29"
+      ],
       "state": "identity_writer_and_viewer_proofs_local_green_not_verified_for_profile",
       "profile": "d01-local-retained-v1 / subject-identity-v2",
       "evidence": "docs/verification/subject-identity-local.md",
@@ -470,37 +593,74 @@
     {
       "date": "2026-09-06",
       "commit": "dc8857b9ac6b57fe2e68733d53dea6a2de5a7463",
-      "packages": ["EX27", "EX28", "EX29"],
+      "packages": [
+        "EX27",
+        "EX28",
+        "EX29"
+      ],
       "state": "recovery_question_limits_oracle_local_green_not_verified_for_profile",
       "profile": "d01-local-retained-v1 / subject-identity-v2",
       "evidence": "docs/verification/subject-identity-local.md",
       "scope": "Fixed CI lint from identity writer/viewer tip; added recovery Question byte/entry/depth unit oracle; ensureQuestionFits QuotaExceeded on propose paths."
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "cae72de2be45c59ab63d1fbfc742a51ba34ae1b6",
+      "packages": [
+        "EX24",
+        "EX25",
+        "EX26",
+        "EX27",
+        "EX28",
+        "EX29"
+      ],
+      "state": "verified_for_profile",
+      "profile": "d01-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
+      "evidence": "docs/verification/subject-identity-local.md",
+      "remote_ci": {
+        "commit": "cae72de2be45c59ab63d1fbfc742a51ba34ae1b6",
+        "result": "success",
+        "url": "https://github.com/EnzoTironi/zoen/actions/runs/34062093334"
+      },
+      "scope": "Subject-identity-v2 increment verified for local/container profile via EX24–EX29 vertical proofs + Main Verify (incl. container). Does NOT conclude full D02 (merge/split stewardship breadth beyond identity, cloud, etc.). Erasure not included.",
+      "tests": {
+        "writers_sigkill": "pass",
+        "writers_concurrency": "pass",
+        "recovery_question_limits": "pass",
+        "acceptance_id15_ex28": "pass",
+        "main_verify_ci": "pass"
+      }
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "1362ee22d0bcbcc42bb40aab75ff16b8140e64c3",
+      "packages": [
+        "EX30"
+      ],
+      "state": "erasure_minimum_freeze_landed",
+      "profile": "d03-local-erasable-v1 (candidate; new Worlds only; restoreAfterErasure blocked)",
+      "evidence": "docs/contracts/d03-erasure-freeze.md",
+      "scope": "Frozen ER-R01 register-before-Closing, World scope, new profile only, indefinite Unavailable on lost outcome, restore blocked. Controller/backups/Object Lock/purge still blocked. No fake purge implementation."
     }
   ],
   "verified_deliveries": [],
   "external_blockers": [],
   "quality": {
     "subject_identity_lint_typecheck": {
-      "commit": "5da8582e87dbb3cec5469f06712f64df455805e8",
+      "commit": "cae72de2be45c59ab63d1fbfc742a51ba34ae1b6",
       "local": {
-        "format_check": "pass",
-        "lint": "pass",
-        "typecheck": "pass",
-        "unit_identity": "22 pass",
-        "integration_ex27_split": "3 pass"
+        "note": "Prior lint/typecheck clearance carried into tip; Main Verify aggregates quality."
       },
       "ci": {
-        "main_run": "https://github.com/EnzoTironi/zoen/actions/runs/34046351026",
-        "rebuild_run": "https://github.com/EnzoTironi/zoen/actions/runs/34046344988",
-        "format_lint_typecheck_build": "pass",
-        "verify_plan": "fail Unproved EX28",
-        "quality_job": "failure",
-        "integration_job": "failure"
+        "main_run": "https://github.com/EnzoTironi/zoen/actions/runs/34062093334",
+        "result": "success",
+        "includes_container": true
       },
-      "remaining_for_verified_for_profile": [
-        "Remote CI: verify_plan / integration legacy baseline / SH-04 EX05 drift as applicable",
-        "Re-run container acceptance + CI on tip after recovery Question limits + lint fixes",
-        "Do not start D03 in this increment"
+      "verified_for_profile": true,
+      "remaining_outside_identity_increment": [
+        "Full D02 merge/split stewardship beyond subject-identity-v2",
+        "D03 erasure purge (freeze only; controller/storage/backups blocked)",
+        "Cloud / restore-after-erasure"
       ]
     }
   }
