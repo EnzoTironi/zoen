@@ -441,7 +441,7 @@
     },
     {
       "date": "2026-09-06",
-      "commit": "9910a4d5a6e53f29e75c9a8a978abb1589e82979",
+      "commit": "dd4afed62c53fa1be4be1ee27c2fcb37c87dc867",
       "packages": ["EX24", "EX25", "EX26", "EX27", "EX28", "EX29"],
       "state": "local_and_container_partial_quality_ci_pending",
       "profile": "d01-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
