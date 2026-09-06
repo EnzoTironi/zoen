@@ -5,6 +5,10 @@ import {
 } from "effect/unstable/httpapi";
 
 import { SharingRequest, SharingSuccess } from "../sharing/operations.js";
+import {
+  SubjectIdentityRequest,
+  SubjectIdentitySuccess,
+} from "../subject-identity/operations.js";
 import { D01Error } from "./errors.js";
 import {
   CorrectionRequest,
@@ -35,4 +39,15 @@ export const SharingApiGroup = HttpApiGroup.make("sharing").add(
     success: SharingSuccess,
   })
 );
-export const ApplicationApi = D01Api.add(CorrectionApiGroup, SharingApiGroup);
+export const SubjectIdentityApiGroup = HttpApiGroup.make("subjectIdentity").add(
+  HttpApiEndpoint.post("execute", "/api/d02/subject-identity", {
+    error: D01Error.members,
+    payload: SubjectIdentityRequest,
+    success: SubjectIdentitySuccess,
+  })
+);
+export const ApplicationApi = D01Api.add(
+  CorrectionApiGroup,
+  SharingApiGroup,
+  SubjectIdentityApiGroup
+);

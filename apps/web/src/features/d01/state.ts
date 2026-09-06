@@ -19,6 +19,20 @@ import {
   confirmAccessRequest,
   inspectAccessRequest,
 } from "../sharing/requests.ts";
+import {
+  emptySubjectIdentity,
+  identityPatch,
+} from "../subject-identity/model.ts";
+import type { IdentityAnswerValue } from "../subject-identity/model.ts";
+import {
+  inspectIdentityRecoveryRequest,
+  inspectIdentityRequest,
+  partitionAnchorAway,
+  proposeSameAsRequest,
+  proposeSplitRequest,
+  proposeUndoRequest,
+  resolveIdentityRequest,
+} from "../subject-identity/requests.ts";
 import { BrowserApi, browserApiLayer } from "./client.ts";
 import { initialState, successPatch } from "./model.ts";
 import type { WorkspaceState } from "./model.ts";
@@ -59,6 +73,7 @@ export const createWorkspaceController = (origin: string) => {
       canRetry: false,
       feedback: "",
       frame: null,
+      identity: emptySubjectIdentity,
       membership: null,
       proposal: null,
       sharing: emptySharing,
@@ -90,8 +105,16 @@ export const createWorkspaceController = (origin: string) => {
     } else {
       publish({
         ...(error._tag === "Stale"
-          ? { sharing: { ...emptySharing, stale: true } }
+          ? {
+              identity: { ...emptySubjectIdentity, stale: true },
+              sharing: { ...emptySharing, stale: true },
+            }
           : {
+              identity: {
+                ...state.identity,
+                pendingAnswer: null,
+                question: null,
+              },
               sharing: { ...state.sharing, confirmation: null, target: null },
             }),
         actionError: errorMessage(error),
@@ -152,6 +175,21 @@ export const createWorkspaceController = (origin: string) => {
       result._tag === "WorldReadAccessRevoked"
     ) {
       publish({ sharing: { ...emptySharing, receipt: result } });
+      return;
+    }
+    if (
+      result._tag === "SubjectIdentityInspected" ||
+      result._tag === "IdentityRecoveryInspected" ||
+      result._tag === "IdentityProposed" ||
+      result._tag === "IdentityResolved"
+    ) {
+      publish({
+        actionError: null,
+        busy: false,
+        canRetry: false,
+        feedback: "",
+        identity: { ...state.identity, ...identityPatch(result) },
+      });
       return;
     }
     const patch = successPatch(state, result);
@@ -396,6 +434,32 @@ export const createWorkspaceController = (origin: string) => {
         )
       );
     },
+    confirmIdentityAnswer: () => {
+      const { world, identity } = state;
+      if (
+        state.busy ||
+        world === null ||
+        identity.question === null ||
+        identity.pendingAnswer === null
+      ) {
+        return;
+      }
+      launch(
+        resolveIdentityRequest(
+          world,
+          identity.question.questionRef,
+          identity.question.consequenceDigest,
+          identity.pendingAnswer
+        ).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
+    },
     createWorld: () => {
       invalidate({ world: null });
       launch(
@@ -487,6 +551,49 @@ export const createWorkspaceController = (origin: string) => {
       }
       launch(execute(request.value));
     },
+    inspectIdentity: (anchors: readonly string[], from: string, to: string) => {
+      if (state.world === null || state.busy) {
+        return;
+      }
+      publish({ identity: emptySubjectIdentity });
+      launch(
+        inspectIdentityRequest(state.world, anchors, from, to, null).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
+    },
+    inspectIdentityRecovery: (
+      anchor: string,
+      from: string,
+      to: string,
+      targetDecisionRef: string | null
+    ) => {
+      if (state.world === null || state.busy) {
+        return;
+      }
+      publish({ identity: emptySubjectIdentity });
+      launch(
+        inspectIdentityRecoveryRequest(
+          state.world,
+          anchor,
+          from,
+          to,
+          targetDecisionRef
+        ).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
+    },
     inspectRecipient: (principalRef: string) => {
       if (state.world === null || state.busy) {
         return;
@@ -551,8 +658,69 @@ export const createWorkspaceController = (origin: string) => {
       }
       publish({ sharing: { ...state.sharing, confirmation: action } });
     },
+    prepareIdentityAnswer: (answer: IdentityAnswerValue | null) => {
+      if (state.busy || state.identity.question === null) {
+        return;
+      }
+      publish({
+        identity: { ...state.identity, pendingAnswer: answer },
+      });
+    },
     proposeCorrection: (from: string, to: string, choice: string) => {
       correct(proposeRequest(state, from, to, choice));
+    },
+    proposeIdentitySplit: (anchor: string) => {
+      const { world, identity } = state;
+      if (state.busy || world === null || identity.frame === null) {
+        return;
+      }
+      launch(
+        proposeSplitRequest(
+          world,
+          identity.frame,
+          anchor,
+          partitionAnchorAway(identity.frame, anchor)
+        ).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
+    },
+    proposeIdentityUndo: (targetDecisionRef: string) => {
+      const { world, identity } = state;
+      if (state.busy || world === null || identity.frame === null) {
+        return;
+      }
+      launch(
+        proposeUndoRequest(world, identity.frame, targetDecisionRef).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
+    },
+    proposeSameAs: (left: string, right: string) => {
+      const { world, identity } = state;
+      if (state.busy || world === null || identity.frame === null) {
+        return;
+      }
+      launch(
+        proposeSameAsRequest(world, identity.frame, left, right).pipe(
+          Effect.flatMap(execute),
+          Effect.catchTag("InvalidInput", (failure) =>
+            Effect.sync(() => {
+              failed(failure);
+            })
+          )
+        )
+      );
     },
     refresh: () => {
       launch(refresh());

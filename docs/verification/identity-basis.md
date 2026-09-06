@@ -72,4 +72,4 @@ ZOEN_TEST_LEGACY_ROOT=.../identity-baseline-20260905-2203/source \
   --no-file-parallelism tests/integration/subject-identity/independent/
 ```
 
-Lacunas restantes para EX26 completo: suite completa grafo/ausência/recuperação (EX27 avançou: ProposeIdentitySplit real + provas core/independent de split/Stale; ID-08/13 completos e limites de Question de recuperação ainda parciais), Web/CLI de identidade (EX28). EX25 componente BC-01..09 permanece coberto; `verified_for_profile` ainda exige essas lacunas honestas.
+Lacunas restantes para EX26 completo: suite completa grafo/ausência/recuperação (EX27 avançou: ProposeIdentitySplit real + provas core/independent de split/Stale; ID-08/13 completos e limites de Question de recuperação ainda parciais), Web/CLI de identidade (EX28 vertical slice: HTTP `/api/d02/subject-identity`, CLI journey real, painel owner; ID-15 browser/polish ainda aberto). EX25 componente BC-01..09 permanece coberto; `verified_for_profile` ainda exige essas lacunas honestas.

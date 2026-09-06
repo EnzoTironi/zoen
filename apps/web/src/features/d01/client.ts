@@ -107,6 +107,24 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
         case "RevokeWorldReadAccess": {
           return yield* api.sharing.execute({ payload });
         }
+        case "InspectSubjectIdentity": {
+          return yield* api.subjectIdentity.execute({ payload });
+        }
+        case "InspectIdentityRecovery": {
+          return yield* api.subjectIdentity.execute({ payload });
+        }
+        case "ProposeIdentityResolution": {
+          return yield* api.subjectIdentity.execute({ payload });
+        }
+        case "ProposeIdentitySplit": {
+          return yield* api.subjectIdentity.execute({ payload });
+        }
+        case "ProposeIdentityUndo": {
+          return yield* api.subjectIdentity.execute({ payload });
+        }
+        case "ResolveIdentity": {
+          return yield* api.subjectIdentity.execute({ payload });
+        }
         default: {
           return yield* new Unavailable({ code: "UNAVAILABLE" });
         }

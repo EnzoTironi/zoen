@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useSyncExternalStore } from "react";
 
 import { CorrectionPanel } from "../../integration/d02/correction-panel.tsx";
 import { SharingPanel } from "../sharing/panel.tsx";
+import { SubjectIdentityPanel } from "../subject-identity/panel.tsx";
 import { AuthForm } from "./auth-form.tsx";
 import { field } from "./form.ts";
 import { ImportWorkspace } from "./import-workspace.tsx";
@@ -185,6 +186,13 @@ const Connected = ({
             state={state}
             key={`${state.session.session.id}:${state.world.worldId}:${state.membership?.role}`}
           />
+          {state.membership?.role === "owner" ? (
+            <SubjectIdentityPanel
+              controller={controller}
+              state={state}
+              key={`identity:${state.session.session.id}:${state.world.worldId}`}
+            />
+          ) : null}
         </>
       )}
     </>

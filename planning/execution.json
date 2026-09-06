@@ -1798,9 +1798,9 @@
         "optional": []
       },
       "acceptance_requires": ["EX27"],
-      "status": "planned",
-      "verification_state": "not_run",
-      "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
+      "status": "in_progress",
+      "verification_state": "partial",
+      "commands_status": "Vertical slice: HTTP /api/d02/subject-identity, CLI inspect/propose/resolve/split/recovery, Web owner panel. Help+request+CLI HTTP journey green. Gaps: browser ID-15, viewer denial browser proof, undo polish; EX29 not started.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1836,7 +1836,7 @@
       ],
       "owns": [
         "apps/web/src/features/subject-identity/**",
-        "apps/web/test/integration/d02-identity/**",
+        "apps/web/test/integration/subject-identity/**",
         "apps/cli/src/subject-identity/**",
         "apps/cli/test/subject-identity/**"
       ],

@@ -23,6 +23,7 @@ import { makeIdentityRoutes } from "./http/identity.ts";
 import { readinessRoutes } from "./http/readiness.ts";
 import { responseSecurity } from "./http/security.ts";
 import { makeSharingHttpGroup } from "./http/sharing.ts";
+import { makeSubjectIdentityHttpGroup } from "./http/subject-identity.ts";
 import { D01IdentityConfig } from "./identity/d01/configuration.ts";
 import { makeD01IdentityLayer } from "./identity/d01/identity.ts";
 import { captureMaintenance } from "./maintenance/captures.ts";
@@ -77,6 +78,7 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         Layer.provide(makeD01HttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeCorrectionHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeSharingHttpGroup(identityConfig.baseUrl)),
+        Layer.provide(makeSubjectIdentityHttpGroup(identityConfig.baseUrl)),
         Layer.provide(executor)
       );
       return Layer.mergeAll(

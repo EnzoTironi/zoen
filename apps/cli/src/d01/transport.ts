@@ -51,6 +51,24 @@ export const execute = Effect.fn(function* execute(
     case "RevokeWorldReadAccess": {
       return yield* client.sharing.execute({ payload });
     }
+    case "InspectSubjectIdentity": {
+      return yield* client.subjectIdentity.execute({ payload });
+    }
+    case "InspectIdentityRecovery": {
+      return yield* client.subjectIdentity.execute({ payload });
+    }
+    case "ProposeIdentityResolution": {
+      return yield* client.subjectIdentity.execute({ payload });
+    }
+    case "ProposeIdentitySplit": {
+      return yield* client.subjectIdentity.execute({ payload });
+    }
+    case "ProposeIdentityUndo": {
+      return yield* client.subjectIdentity.execute({ payload });
+    }
+    case "ResolveIdentity": {
+      return yield* client.subjectIdentity.execute({ payload });
+    }
     default: {
       return yield* new CliFailure("CLI_INPUT");
     }

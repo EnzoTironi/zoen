@@ -15,6 +15,7 @@ import { FetchHttpClient } from "effect/unstable/http";
 
 import { makeCorrectionCommands } from "../integration/d02/command.js";
 import { makeSharingCommands } from "../sharing/command.js";
+import { makeSubjectIdentityCommands } from "../subject-identity/command.js";
 import { readInput, validateBaseUrl } from "./input.js";
 import { CliFailure, formatFailure, formatSuccess } from "./output.js";
 import { readSession, removeSession, saveSession } from "./session.js";
@@ -307,6 +308,11 @@ export const d01Command = root.pipe(
     openEvidence,
     ...makeCorrectionCommands({ operationId, realm, worldId }, send, report),
     ...makeSharingCommands({ operationId, realm, worldId }, send, report),
+    ...makeSubjectIdentityCommands(
+      { operationId, realm, worldId },
+      send,
+      report
+    ),
   ]),
   Command.withExamples([
     {

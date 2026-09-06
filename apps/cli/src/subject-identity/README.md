@@ -1,0 +1,5 @@
+# Subject identity CLI (EX28)
+
+Thin command assembly for `InspectSubjectIdentity`, `InspectIdentityRecovery`, `ProposeIdentityResolution`, `ProposeIdentitySplit`, `ProposeIdentityUndo`, and `ResolveIdentity`. Transport posts to `/api/d02/subject-identity`.
+
+Retry: reuse the same `--operation-id` and consequence digest on Unavailable. Stale requires a new inspect and a newly confirmed operation id.

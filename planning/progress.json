@@ -18,7 +18,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "independently_reviewed_component_pending_ex27_ex28_gaps",
-      "notes": "EX25 BC-01..09 component green; EX26 independent green. BC-06 identity-edge writers: EX27 vertical slice landed (inspect/propose/resolve/undo + absence Stale). BC-09 Web/CLI still EX28. verified_for_profile still open."
+      "notes": "EX28 vertical slice on rebuild: subject-identity Web+CLI over real HTTP (inspect/propose/resolve/split/recovery). Help+request+CLI journey green. Remaining: browser ID-15, viewer-control denial browser proof, undo polish; EX29 not started."
     },
     {
       "agent": "tickets_redesign",

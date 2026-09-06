@@ -11,12 +11,15 @@ import { correctionPatch } from "../../integration/d02/model.ts";
 import type { CorrectionContext } from "../../integration/d02/model.ts";
 import { emptySharing } from "../sharing/model.ts";
 import type { SharingState } from "../sharing/model.ts";
+import { emptySubjectIdentity } from "../subject-identity/model.ts";
+import type { SubjectIdentityState } from "../subject-identity/model.ts";
 import type { BrowserSession } from "./client.ts";
 import { inspectionView } from "./presentation.ts";
 
 export interface WorkspaceState extends CorrectionContext {
   readonly membership: Membership | null;
   readonly sharing: SharingState;
+  readonly identity: SubjectIdentityState;
   readonly actionError: string | null;
   readonly busy: boolean;
   readonly canRetry: boolean;
@@ -39,6 +42,7 @@ export const initialState: WorkspaceState = {
   proposal: null,
   session: null,
   sharing: emptySharing,
+  identity: emptySubjectIdentity,
   view: { kind: "empty" },
   world: null,
 };
