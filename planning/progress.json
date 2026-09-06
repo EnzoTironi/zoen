@@ -641,6 +641,21 @@
       "profile": "d03-local-erasable-v1 (candidate; new Worlds only; restoreAfterErasure blocked)",
       "evidence": "docs/contracts/d03-erasure-freeze.md",
       "scope": "Frozen ER-R01 register-before-Closing, World scope, new profile only, indefinite Unavailable on lost outcome, restore blocked. Controller/backups/Object Lock/purge still blocked. No fake purge implementation."
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "98bf1126d15152a33503530feb689f99940f830584628c455e94ca98b6550dcb5b2058576",
+      "packages": [
+        "EX31"
+      ],
+      "state": "erasure_attempt_register_local_green",
+      "profile": "d03-local-erasable-v1 (candidate; register only; restoreAfterErasure blocked)",
+      "evidence": "docs/verification/erasure-local.md",
+      "scope": "Durable ErasureAttemptRegister on isolated erasure_attempt schema: idempotent replay, payload Conflict, mutually exclusive Confirmed/Aborted, no authority World mutation. Full controller/Closing/purge still blocked.",
+      "tests": {
+        "unit_restore_blocked": "pass",
+        "integration_local_register": "pass"
+      }
     }
   ],
   "verified_deliveries": [],

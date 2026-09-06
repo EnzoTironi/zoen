@@ -1962,9 +1962,9 @@
         "optional": []
       },
       "acceptance_requires": [],
-      "status": "planned",
-      "verification_state": "not_run",
-      "commands_status": "Port interface may land; real controller adapter blocked until qualified.",
+      "status": "implemented",
+      "verification_state": "local_green",
+      "commands_status": "Local PG register under erasure_attempt schema; unit+integration green; controller topology still unqualified for production Closing.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
