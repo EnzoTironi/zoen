@@ -5,6 +5,7 @@ import { defineConfig } from "vitest/config";
 const generated = [
   "**/node_modules/**",
   "**/dist/**",
+  ".local/**",
   "reference/**",
   "archives/**",
 ];
