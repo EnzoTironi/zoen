@@ -11,6 +11,7 @@ import {
   DataPolicySchema,
   VerifiedRequestContext,
 } from "../../../../packages/authority/src/ports/d01/context.js";
+import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import { digestBytes } from "../../../../packages/authority/src/values/canonical.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/d01/operations.js";
 
@@ -34,9 +35,10 @@ const policy = Schema.decodeSync(DataPolicySchema)({
   restoreAfterErasure: false,
   retention: "while-pinned",
 });
-export const configuration = Layer.merge(
+export const configuration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
-  Layer.succeed(DataPolicy, policy)
+  Layer.succeed(DataPolicy, policy),
+  ErasureAttemptRegister.unqualifiedLayer
 );
 
 export const makeInput = Effect.fn("EX05.makeInput")(function* makeInput() {

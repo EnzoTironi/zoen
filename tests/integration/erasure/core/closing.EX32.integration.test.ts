@@ -7,9 +7,9 @@ import { SqlClient } from "effect/unstable/sql";
 import { makeD01PostgresLayer } from "../../../../apps/server/src/adapters/postgres/d01/postgres.js";
 import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { applyWorldErasureSchema } from "../../../../packages/authority/src/knowledge/erasure/schema.js";
 import { inspectWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/inspect.js";
 import { requestWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/request.js";
+import { applyWorldErasureSchema } from "../../../../packages/authority/src/knowledge/erasure/schema.js";
 import {
   ErasureAttemptRegister,
   blocksWorldActivation,
@@ -42,9 +42,8 @@ const grantErasureSchemas = Effect.fn("EX32.grantErasure")(
   }
 );
 
-
-const withErasureRuntime = <A, E, R>(
-  configuration: Layer.Layer<any>,
+const withErasureRuntime = <A, E, R, ROut, EOut>(
+  configuration: Layer.Layer<ROut, EOut>,
   run: Effect.Effect<A, E, R>
 ) =>
   withD01Database((database) =>
@@ -58,7 +57,7 @@ const withErasureRuntime = <A, E, R>(
                 "../../../../ops/migrations/005_world_read_membership.sql",
                 import.meta.url
               ),
-              "utf8"
+              "utf-8"
             )
           )
         );
@@ -207,62 +206,66 @@ it.live("EX32 retained profile blocks Closing", () =>
   )
 );
 
-it.live("EX32 missing register (unqualified) blocks Closing — no local progress", () =>
-  withD01Database((database) =>
-    Effect.gen(function* missing() {
-      yield* Effect.gen(function* migrate() {
-        const sql = yield* SqlClient.SqlClient;
-        const membership = yield* Effect.promise(() =>
-          import("node:fs/promises").then((fs) =>
-            fs.readFile(
-              new URL(
-                "../../../../ops/migrations/005_world_read_membership.sql",
-                import.meta.url
-              ),
-              "utf8"
-            )
-          )
-        );
-        yield* sql.withTransaction(sql.unsafe(membership));
-        yield* applyErasureAttemptSchema();
-        yield* applyWorldErasureSchema();
-        yield* grantErasureSchemas(database.names.authority);
-      }).pipe(Effect.provide(database.migration));
-      const layers = Layer.mergeAll(
-        erasableConfiguration,
-        database.authority,
-        ErasureAttemptRegister.unqualifiedLayer
-      );
-      const context = yield* makeContext();
-      const created = yield* createWorld(context).pipe(Effect.provide(layers));
-      const request = yield* Schema.decodeEffect(RequestWorldErasure)({
-        input: {
-          confirmEntireWorld: true,
-          expectedErasureRevision: null,
-          policyVersion: "d03-local-erasable-v1",
-        },
-        operation: "RequestWorldErasure",
-        operationId: randomUUID(),
-        purpose: "personal-records",
-        schemaVersion: "erasure.v1",
-        worldRef: created.worldRef,
-      });
-      const error = yield* requestWorldErasure(context, request).pipe(
-        Effect.provide(layers),
-        Effect.flip
-      );
-      expect(error).toMatchObject({
-        _tag: "Unavailable",
-        code: "UNAVAILABLE",
-      });
-      expect(
-        yield* Effect.gen(function* countProgress() {
+it.live(
+  "EX32 missing register (unqualified) blocks Closing — no local progress",
+  () =>
+    withD01Database((database) =>
+      Effect.gen(function* missing() {
+        yield* Effect.gen(function* migrate() {
           const sql = yield* SqlClient.SqlClient;
-          return yield* sql`SELECT count(*)::int AS count FROM authority.world_erasure_progress`;
-        }).pipe(Effect.provide(database.authority))
-      ).toStrictEqual([{ count: 0 }]);
-    })
-  )
+          const membership = yield* Effect.promise(() =>
+            import("node:fs/promises").then((fs) =>
+              fs.readFile(
+                new URL(
+                  "../../../../ops/migrations/005_world_read_membership.sql",
+                  import.meta.url
+                ),
+                "utf-8"
+              )
+            )
+          );
+          yield* sql.withTransaction(sql.unsafe(membership));
+          yield* applyErasureAttemptSchema();
+          yield* applyWorldErasureSchema();
+          yield* grantErasureSchemas(database.names.authority);
+        }).pipe(Effect.provide(database.migration));
+        const layers = Layer.mergeAll(
+          erasableConfiguration,
+          database.authority,
+          ErasureAttemptRegister.unqualifiedLayer
+        );
+        const context = yield* makeContext();
+        const created = yield* createWorld(context).pipe(
+          Effect.provide(layers)
+        );
+        const request = yield* Schema.decodeEffect(RequestWorldErasure)({
+          input: {
+            confirmEntireWorld: true,
+            expectedErasureRevision: null,
+            policyVersion: "d03-local-erasable-v1",
+          },
+          operation: "RequestWorldErasure",
+          operationId: randomUUID(),
+          purpose: "personal-records",
+          schemaVersion: "erasure.v1",
+          worldRef: created.worldRef,
+        });
+        const error = yield* requestWorldErasure(context, request).pipe(
+          Effect.provide(layers),
+          Effect.flip
+        );
+        expect(error).toMatchObject({
+          _tag: "Unavailable",
+          code: "UNAVAILABLE",
+        });
+        expect(
+          yield* Effect.gen(function* countProgress() {
+            const sql = yield* SqlClient.SqlClient;
+            return yield* sql`SELECT count(*)::int AS count FROM authority.world_erasure_progress`;
+          }).pipe(Effect.provide(database.authority))
+        ).toStrictEqual([{ count: 0 }]);
+      })
+    )
 );
 
 it.live("EX32 idempotent replay, payload Conflict, viewer denied", () =>
@@ -327,7 +330,7 @@ it.live("EX32 idempotent replay, payload Conflict, viewer denied", () =>
       const decoded = yield* Schema.decodeUnknownEffect(WorldErasureRequested)(
         first
       );
-      expect(decoded.restoreAfterErasure).toBe(false);
+      expect(decoded.restoreAfterErasure).toBeFalsy();
     })
   )
 );

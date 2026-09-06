@@ -1,5 +1,4 @@
--- Numbered as ops/migrations/009_erasure_attempt_register.sql (root). Candidate copy for domain docs/tests.
--- Keep in sync with the numbered migration. Separate schema: not authority.*; outside Closing TX.
+-- Isolated attempt register (ER-R01 / freeze F01). Not authority.*; outside Closing TX.
 CREATE SCHEMA IF NOT EXISTS erasure_attempt;
 
 CREATE TABLE IF NOT EXISTS erasure_attempt.attempts (

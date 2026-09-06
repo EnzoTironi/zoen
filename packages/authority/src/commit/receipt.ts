@@ -20,8 +20,8 @@ const resultTags = {
   ProposeIdentityResolution: "IdentityProposed",
   ProposeIdentitySplit: "IdentityProposed",
   ProposeIdentityUndo: "IdentityProposed",
-  ResolveIdentity: "IdentityResolved",
   RequestWorldErasure: "WorldErasureRequested",
+  ResolveIdentity: "IdentityResolved",
   RevokeWorldReadAccess: "WorldReadAccessRevoked",
   UndoCorrection: "CorrectionUndone",
 } as const;

@@ -3,9 +3,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { PutBucketVersioningCommand } from "@aws-sdk/client-s3";
 import { NodeHttpServer, NodeServices } from "@effect/platform-node";
 import { AuthorityInstallationSchema } from "@zoen/authority/commit/configuration";
-import { applyWorldErasureSchema } from "@zoen/authority/knowledge/erasure/schema";
 import { DataPolicySchema } from "@zoen/authority/ports/d01/context";
-import { applyErasureAttemptSchema } from "@zoen/authority/ports/erasure/local-pg";
 import { digestBytes } from "@zoen/authority/values/canonical";
 import { Effect, Layer, Redacted, Schema } from "effect";
 import type { Scope } from "effect";
@@ -17,9 +15,11 @@ import {
   HttpServer,
 } from "effect/unstable/http";
 import type { HttpClientResponse } from "effect/unstable/http";
-import { SqlClient } from "effect/unstable/sql";
 
-import { applyIdentityBasisMigrations } from "../../../../../ops/migrations/run.ts";
+import {
+  applyErasureMigrations,
+  applyIdentityBasisMigrations,
+} from "../../../../../ops/migrations/run.ts";
 import { makeD01Application } from "../../../src/composition.ts";
 import { sdk, withStorage } from "../../adapters/object-storage/d01/fixture.ts";
 import { withD01Database } from "../../adapters/postgres/d01/database.ts";
@@ -51,17 +51,6 @@ const erasablePolicy = {
   restoreAfterErasure: false,
   retention: "while-pinned",
 } as const;
-
-const grantErasureSchemas = Effect.fn("test.grantErasure")(
-  function* grantErasureSchemas(authorityRole: string) {
-    const sql = yield* SqlClient.SqlClient;
-    yield* sql.unsafe(
-      `GRANT USAGE ON SCHEMA erasure_attempt TO "${authorityRole}";
-       GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA erasure_attempt TO "${authorityRole}";
-       GRANT SELECT, INSERT, UPDATE ON authority.world_erasure_progress, authority.world_erasure_receipts TO "${authorityRole}"`
-    );
-  }
-);
 
 export const withD01Http = <A, E>(
   run: (
@@ -187,11 +176,6 @@ export const withErasableHttp = <A, E>(
               { abortSignal: signal }
             )
           );
-          yield* Effect.gen(function* migrateErasure() {
-            yield* applyErasureAttemptSchema();
-            yield* applyWorldErasureSchema();
-            yield* grantErasureSchemas(database.names.authority);
-          }).pipe(Effect.provide(database.migration));
           const server = yield* HttpServer.HttpServer;
           if (server.address._tag !== "TcpAddress") {
             throw new Error("HTTP integration requires a TCP listener");
@@ -242,7 +226,7 @@ export const withErasableHttp = <A, E>(
       ),
     undefined,
     (database) =>
-      applyIdentityBasisMigrations(database.names).pipe(
+      applyErasureMigrations(database.names).pipe(
         Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
       )
   );

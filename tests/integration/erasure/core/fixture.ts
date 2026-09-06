@@ -56,7 +56,7 @@ export const retainedConfiguration = Layer.merge(
 );
 
 export const makeContext = Effect.fn("EX32.makeContext")(function* makeContext(
-  principalId = randomUUID()
+  principalId: string = randomUUID()
 ) {
   const now = yield* DateTime.now;
   return yield* Schema.decodeEffect(VerifiedRequestContext)({

@@ -1,5 +1,4 @@
--- Numbered as ops/migrations/010_world_erasure_closing.sql (root). Candidate copy for domain docs/tests.
--- Keep in sync with the numbered migration. Local Closing progress + immutable receipt.
+-- Local Closing progress + immutable receipt (freeze F05/F08). No purge/Erased transition here.
 CREATE TABLE IF NOT EXISTS authority.world_erasure_progress (
   world_id uuid NOT NULL,
   realm text COLLATE "C" NOT NULL CHECK (realm = 'live'),

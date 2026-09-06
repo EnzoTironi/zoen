@@ -13,6 +13,7 @@ import {
   DataPolicy,
   DataPolicySchema,
 } from "@zoen/authority/ports/d01/context";
+import { ErasureAttemptRegister } from "@zoen/authority/ports/erasure/attempt-register";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import {
@@ -263,6 +264,7 @@ export const withLegacyBasisHarness = <A, E, R>(
                 Layer.mergeAll(
                   Layer.succeed(AuthorityInstallation, installation),
                   Layer.succeed(DataPolicy, policy),
+                  ErasureAttemptRegister.unqualifiedLayer,
                   database.authority,
                   identity,
                   s3EvidenceLayer(storage)

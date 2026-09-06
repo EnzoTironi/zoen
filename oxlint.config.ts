@@ -72,6 +72,20 @@ export default defineConfig({
       },
     },
     {
+      files: [
+        "tests/integration/erasure/**",
+        "apps/cli/test/erasure/**",
+        "apps/web/test/integration/erasure/**",
+        "packages/authority/test/ports/erasure/**",
+        "packages/contracts/test/erasure/**",
+      ],
+      rules: {
+        "effecttsgo/prefer-schema-over-json": "off",
+        "effecttsgo/prefer-typed-schema-decoder": "off",
+        "effecttsgo/schema-sync-in-effect": "off",
+      },
+    },
+    {
       files: ["**/adapters/http.ts"],
       rules: { "effecttsgo/node-builtin-import": "off" },
     },

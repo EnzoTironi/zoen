@@ -11,9 +11,9 @@ import {
   QuestionRef,
   exact,
 } from "@zoen/contracts/d01/values";
+import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
 import { SharingMutationSuccess } from "@zoen/contracts/sharing/operations";
 import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
-import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
 import { Schema } from "effect";
 
 export const StoredOperationResult = Schema.Union([

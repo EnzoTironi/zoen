@@ -52,26 +52,32 @@ export const WorldErasureRequest = Schema.Union([
 ]);
 export type WorldErasureRequest = typeof WorldErasureRequest.Type;
 
-export const WorldErasureRequested = Schema.TaggedStruct("WorldErasureRequested", {
-  attemptExternalState: ErasureAttemptExternalState,
-  phase: WorldErasurePhase,
-  policyVersion: Schema.String.check(
-    Schema.isMinLength(1),
-    Schema.isMaxLength(128)
-  ),
-  receiptRef: ReceiptRef,
-  restoreAfterErasure: ErasureRestoreAfterErasure,
-  revision: Revision,
-  worldRef: WorldRef,
-}).annotate(exact);
+export const WorldErasureRequested = Schema.TaggedStruct(
+  "WorldErasureRequested",
+  {
+    attemptExternalState: ErasureAttemptExternalState,
+    phase: WorldErasurePhase,
+    policyVersion: Schema.String.check(
+      Schema.isMinLength(1),
+      Schema.isMaxLength(128)
+    ),
+    receiptRef: ReceiptRef,
+    restoreAfterErasure: ErasureRestoreAfterErasure,
+    revision: Revision,
+    worldRef: WorldRef,
+  }
+).annotate(exact);
 
-export const WorldErasureInspected = Schema.TaggedStruct("WorldErasureInspected", {
-  attemptExternalState: ErasureAttemptExternalState,
-  phase: WorldErasurePhase,
-  restoreAfterErasure: ErasureRestoreAfterErasure,
-  revision: Revision,
-  worldRef: WorldRef,
-}).annotate(exact);
+export const WorldErasureInspected = Schema.TaggedStruct(
+  "WorldErasureInspected",
+  {
+    attemptExternalState: ErasureAttemptExternalState,
+    phase: WorldErasurePhase,
+    restoreAfterErasure: ErasureRestoreAfterErasure,
+    revision: Revision,
+    worldRef: WorldRef,
+  }
+).annotate(exact);
 
 export const WorldErasureSuccess = Schema.Union([
   WorldErasureRequested,

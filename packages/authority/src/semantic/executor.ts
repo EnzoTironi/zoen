@@ -13,9 +13,9 @@ import {
 } from "@zoen/contracts/d01/operations";
 import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
 import { D01_LIMITS, Instant } from "@zoen/contracts/d01/values";
+import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
 import { SharingSuccess } from "@zoen/contracts/sharing/operations";
 import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
-import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
 import type { Redacted } from "effect";
 import { Clock, Context, DateTime, Effect, Layer, Schema, Scope } from "effect";
 
@@ -35,6 +35,9 @@ import { proposeCorrection } from "../knowledge/corrections/propose.js";
 import { parseCorrectionBytes } from "../knowledge/corrections/request.js";
 import { undoCorrection } from "../knowledge/corrections/undo.js";
 import { inspect } from "../knowledge/d01/inspect.js";
+import { inspectWorldErasure } from "../knowledge/erasure/handlers/inspect.js";
+import { requestWorldErasure } from "../knowledge/erasure/handlers/request.js";
+import { parseErasureBytes } from "../knowledge/erasure/request.js";
 import {
   inspectIdentityRecovery,
   inspectSubjectIdentity,
@@ -46,9 +49,6 @@ import {
 } from "../knowledge/subject-identity/handlers/propose.js";
 import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.js";
 import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
-import { inspectWorldErasure } from "../knowledge/erasure/handlers/inspect.js";
-import { requestWorldErasure } from "../knowledge/erasure/handlers/request.js";
-import { parseErasureBytes } from "../knowledge/erasure/request.js";
 import { Presence } from "../ports/d01/context.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
 import { canonicalJson } from "../values/canonical.js";
@@ -392,6 +392,13 @@ export class SemanticExecutor extends Context.Service<
           ),
         executeCorrectionWithEmission: (credential, bytes, emit) =>
           withEmission("correction", credential, bytes, emit),
+        executeErasure: (credential, bytes) =>
+          execute("erasure", credential, bytes).pipe(
+            Effect.flatMap(Schema.decodeUnknownEffect(WorldErasureSuccess)),
+            Effect.catchTag("SchemaError", schemaUnavailable)
+          ),
+        executeErasureWithEmission: (credential, bytes, emit) =>
+          withEmission("erasure", credential, bytes, emit),
         executeSharing: (credential, bytes) =>
           execute("sharing", credential, bytes).pipe(
             Effect.flatMap(Schema.decodeUnknownEffect(SharingSuccess)),
@@ -406,13 +413,6 @@ export class SemanticExecutor extends Context.Service<
           ),
         executeSubjectIdentityWithEmission: (credential, bytes, emit) =>
           withEmission("subject-identity", credential, bytes, emit),
-        executeErasure: (credential, bytes) =>
-          execute("erasure", credential, bytes).pipe(
-            Effect.flatMap(Schema.decodeUnknownEffect(WorldErasureSuccess)),
-            Effect.catchTag("SchemaError", schemaUnavailable)
-          ),
-        executeErasureWithEmission: (credential, bytes, emit) =>
-          withEmission("erasure", credential, bytes, emit),
         executeWithEmission: (credential, bytes, emit) =>
           withEmission("d01", credential, bytes, emit),
       });

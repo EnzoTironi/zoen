@@ -11,7 +11,7 @@ import { PgClient } from "@effect/sql-pg";
 import { Config, Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { applyIdentityBasisMigrations } from "../migrations/run.ts";
+import { applyErasureMigrations } from "../migrations/run.ts";
 
 class ProvisionError extends Schema.TaggedError<ProvisionError>()(
   "ProvisionError",
@@ -80,16 +80,38 @@ const program = Effect.gen(function* provisionLocalApplication() {
     generationId: randomUUID(),
     releaseDigest: createHash("sha256").update(release).digest("hex"),
   };
-  const policy = {
-    dataScope: "admitted-non-sensitive",
-    enabledRealm: "live",
-    erasure: false,
-    legalHold: false,
-    licensedExpiry: false,
-    profileId: "d01-local-retained-v1",
-    restoreAfterErasure: false,
-    retention: "while-pinned",
-  };
+  // F02: erasable only for NEW installs; default remains retained. No rebind of existing Worlds.
+  const worldPolicy = yield* Config.string("ZOEN_LOCAL_WORLD_POLICY").pipe(
+    Config.withDefault("d01-local-retained-v1")
+  );
+  if (
+    worldPolicy !== "d01-local-retained-v1" &&
+    worldPolicy !== "d03-local-erasable-v1"
+  ) {
+    return yield* new ProvisionError({ code: "INVALID_LOCAL_WORLD_POLICY" });
+  }
+  const policy =
+    worldPolicy === "d03-local-erasable-v1"
+      ? {
+          dataScope: "admitted-non-sensitive" as const,
+          enabledRealm: "live" as const,
+          erasure: true as const,
+          legalHold: false as const,
+          licensedExpiry: false as const,
+          profileId: "d03-local-erasable-v1" as const,
+          restoreAfterErasure: false as const,
+          retention: "while-pinned" as const,
+        }
+      : {
+          dataScope: "admitted-non-sensitive" as const,
+          enabledRealm: "live" as const,
+          erasure: false as const,
+          legalHold: false as const,
+          licensedExpiry: false as const,
+          profileId: "d01-local-retained-v1" as const,
+          restoreAfterErasure: false as const,
+          retention: "while-pinned" as const,
+        };
   yield* fs.makeDirectory(directory, { mode: 448, recursive: true });
   const installationPath = `${directory}/installation.json`;
   yield* fs.writeFileString(
@@ -150,7 +172,7 @@ const program = Effect.gen(function* provisionLocalApplication() {
     }
     yield* sql`CREATE DATABASE ${sql(databaseName)} OWNER ${sql(names.migration)}`;
   }).pipe(Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl })));
-  yield* applyIdentityBasisMigrations(names).pipe(
+  yield* applyErasureMigrations(names).pipe(
     Effect.provide(
       PgClient.layer({
         maxConnections: 1,

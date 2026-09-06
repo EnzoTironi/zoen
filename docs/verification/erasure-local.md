@@ -1,48 +1,56 @@
 # Erasure — evidência local (EX30–EX34)
 
-Em 2026-09-06 (PT), o **congelamento mínimo** de erasure está em [`docs/contracts/d03-erasure-freeze.md`](../contracts/d03-erasure-freeze.md). Schemas `erasure.v1`, a porta `ErasureAttemptRegister` e o **Closing local** (EX32) existem neste tip.
+Em 2026-09-06 (PT), o **congelamento mínimo** de erasure está em [`docs/contracts/d03-erasure-freeze.md`](../contracts/d03-erasure-freeze.md). O incremento **Closing/register local** (EX30–EX34) está composto e marcado **`verified_for_profile` apenas para a superfície local Closing/register** — **não** D03 integral.
 
 ## Estado honesto
 
 | Item | Estado |
 | --- | --- |
 | Freeze F01–F09 | Landed |
-| Schemas Request/Inspect | Landed (unidade EX30) |
-| Porta de registro | Interface + unqualified oracle Unavailable + **local PG adapter** (`erasure_attempt`) |
-| Durabilidade do registro | Linhas em `erasure_attempt.attempts` com digest de intenção; commit fora da unidade `authority.*` (schema separado; testes usam DB descartável / pool dedicado) |
-| Closing local (EX32) | **Landed** — `RequestWorldErasure` / `InspectWorldErasure` no executor semântico; Active→Closing com receipt+outbox; sucesso só após Confirmada |
-| Web/CLI (EX33) | Planejado |
+| Schemas Request/Inspect | Landed (EX30) |
+| Porta de registro | Interface + unqualified oracle + **local PG adapter** (`erasure_attempt`) |
+| Migrações numeradas | `009_erasure_attempt_register.sql` + `010_world_erasure_closing.sql` + grants |
+| Closing local (EX32) | Landed — Active→Closing com receipt+outbox; sucesso só após Confirmada |
+| Web/CLI (EX33) | Landed — `/api/erasure/execute`, CLI `--confirm-entire-world`, painel owner-only |
+| Compose/verify (EX34) | Landed — perfil `d03-local-erasable-v1` só em **Worlds novos**; retained default |
 | Purge / Erased | **Bloqueado** (controlador, backups, Object Lock, fencing World) |
 | restoreAfterErasure | **false** / fechado |
 
-Worlds `d01-local-retained-v1` continuam sem erasure. Perfil candidato `d03-local-erasable-v1` é suportado como `DataPolicy` union para Worlds **novos**; composição default permanece retained até EX34.
+Worlds `d01-local-retained-v1` continuam **sem** erasure. Perfil candidato `d03-local-erasable-v1` só via provisionamento explícito de instalação **nova** (`ZOEN_LOCAL_WORLD_POLICY=d03-local-erasable-v1`). Sem rebind/migração de Worlds retidos (F02).
 
-## EX31 — o que foi provado
+## Provisionamento local (EX34)
 
-- `register` → `Registered`; replay idêntico é idempotente.
-- Mesma identidade com payload/digest diferente → `Conflict`.
-- `mirrorLocalOutcome` é exclusivo (`Confirmed` ⟂ `Aborted`); espelho contraditório → `Conflict`.
-- Registrar **não** muta `authority.worlds` (probe); rollback de tx de autoridade não apaga a linha do registro.
-- `Registered` / `Unknown` bloqueiam ativação (`blocksWorldActivation`); registro ≠ Closing.
+```bash
+# Default — retained (sem erasure)
+ZOEN_LOCAL_PROFILE=application pnpm provision:local
 
-## EX32 — o que Closing garante
+# Novo install erasable (Worlds novos sob d03-local-erasable-v1)
+ZOEN_LOCAL_PROFILE=erasable-v1 \
+  ZOEN_LOCAL_PUBLIC_URL=http://127.0.0.1:4321 \
+  ZOEN_LOCAL_WORLD_POLICY=d03-local-erasable-v1 \
+  pnpm provision:local
+```
 
-- Registro externo observado (`Registered`) **antes** do commit local (F01).
-- Commit atômico: progresso `Closing` + receipt imutável de erasure + `jobs.outbox` + `authority.operations` (F05/F08).
-- Espelho `Confirmed` no registro **depois** do commit; HTTP/resultado de sucesso só com Confirmada observada.
-- Replay idempotente do mesmo `operationId` reautoriza e re-exige Confirmada.
-- Payload conflitante → `Conflict`; perfil retained → `PROFILE_BLOCKED`; registro unqualified/Unavailable → sem progresso local.
-- World entra em **Closing** sem reivindicar `Erased` / `Purging` / DELETE S3.
+`applyErasureMigrations` instala DDL 009/010 em qualquer install novo; a **política** no `installation.json` decide se Worlds nascem retained ou erasable. Retained permanece o default de compose.
 
-DDL candidata: `packages/authority/src/ports/erasure/schema.sql` + `packages/authority/src/knowledge/erasure/schema.sql`. Numeração em `ops/migrations/**` permanece do root.
+## EX31–EX33 — o que foi provado
 
-## Lacunas (bloqueiam EX33/EX34 / purge)
+- Registro externo idempotente; Conflict de payload; Confirmed ⟂ Aborted.
+- Closing só após Registered; sucesso só com Confirmada; retained → `PROFILE_BLOCKED`.
+- Web/CLI: owner confirma Closing; viewer negado; replay imutável; sem UI de purge/restore.
 
-- Topologia de controlador distinto (epochs, grants, âncora anti-rollback independente).
-- Mesmo host PostgreSQL de compose **não** é controlador qualificado.
-- Sem admissão de Object Lock / catálogo de cópias / fence World (ER-R02).
-- EX33 Web/CLI confirmação explícita ainda não implementada.
-- EX34 compose/verify do perfil erasable em Worlds novos; sem rebind de Worlds retidos.
-- Purge SQL/S3 e transição Closing→Erased bloqueados.
+## EX34 — o que o compose/verify garante
 
-Isto **não** marca erasure `verified_for_profile` e **não** autoriza apagar dados reais.
+- Migrações numeradas + grants para `erasure_attempt` e progresso/receipt locais.
+- Oráculos independentes: novo World erasable fecha em Closing; retained rejeita; `restoreAfterErasure:false`.
+- Fixtures de executor legados fornecem `ErasureAttemptRegister.unqualifiedLayer` (dívida EX33 de typecheck).
+- Evidência separa **Closing/register verificado** de **purge ainda bloqueado**.
+
+## Lacunas (bloqueiam D03 integral / purge)
+
+- Controlador distinto (epochs, grants, âncora anti-rollback independente).
+- Catálogo de backups/cópias; Object Lock / retention no storage real.
+- Fence World (ER-R02); restore online (ER-R03) permanece fechado (F04).
+- Purge SQL/S3 e transição Closing→Erased.
+
+Isto **não** autoriza apagar dados reais nem marca D03 completo.

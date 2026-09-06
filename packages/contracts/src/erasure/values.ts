@@ -28,7 +28,8 @@ export const ErasureAttemptExternalState = Schema.Literals([
   "Aborted",
   "Unknown",
 ]);
-export type ErasureAttemptExternalState = typeof ErasureAttemptExternalState.Type;
+export type ErasureAttemptExternalState =
+  typeof ErasureAttemptExternalState.Type;
 
 /**
  * Explicit product default from the freeze: restore-after-erasure stays closed

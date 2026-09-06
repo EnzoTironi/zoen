@@ -1,13 +1,7 @@
-import {
-  Conflict,
-  Stale,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
+import { Conflict, Stale, Unavailable } from "@zoen/contracts/d01/errors";
 import { Revision, exact } from "@zoen/contracts/d01/values";
-import {
-  RequestWorldErasure,
-  WorldErasureRequested,
-} from "@zoen/contracts/erasure/operations";
+import { WorldErasureRequested } from "@zoen/contracts/erasure/operations";
+import type { RequestWorldErasure } from "@zoen/contracts/erasure/operations";
 import { WorldErasurePhase } from "@zoen/contracts/erasure/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
@@ -20,10 +14,8 @@ import {
   readMutationReplay,
 } from "../../../commit/mutation.js";
 import type { VerifiedRequestContext } from "../../../ports/d01/context.js";
-import {
-  ErasureAttemptRegister,
-  type ErasureAttemptIdentity,
-} from "../../../ports/erasure/attempt-register.js";
+import type { ErasureAttemptIdentity } from "../../../ports/erasure/attempt-register.js";
+import { ErasureAttemptRegister } from "../../../ports/erasure/attempt-register.js";
 import { requireErasablePolicy } from "../policy.js";
 
 const ProgressRow = Schema.Struct({
@@ -67,7 +59,7 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
     context: VerifiedRequestContext,
     request: typeof RequestWorldErasure.Type
   ) {
-    if (request.input.confirmEntireWorld !== true) {
+    if (!request.input.confirmEntireWorld) {
       return yield* new Conflict({ code: "CONFLICT" });
     }
     yield* requireErasablePolicy(request.input.policyVersion);
@@ -168,8 +160,8 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
           ).pipe(
             Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
           );
-          if (progress === undefined) {
-            yield* sql`
+          yield* progress === undefined
+            ? sql`
               INSERT INTO authority.world_erasure_progress (
                 world_id, realm, phase, erasure_revision,
                 closing_operation_id, closing_receipt_id, policy_version
@@ -177,9 +169,8 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
                 ${world.worldId}, ${world.realm}, ${"Closing"}, ${nextRevision},
                 ${request.operationId}, ${receiptRef}, ${request.input.policyVersion}
               )
-            `;
-          } else {
-            yield* sql`
+            `
+            : sql`
               UPDATE authority.world_erasure_progress
               SET phase = ${"Closing"},
                   erasure_revision = ${nextRevision},
@@ -190,7 +181,6 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
               WHERE world_id = ${world.worldId} AND realm = ${world.realm}
                 AND phase = ${"Active"}
             `;
-          }
           yield* sql`
             INSERT INTO authority.world_erasure_receipts (
               world_id, realm, operation_id, principal_id, receipt_id,

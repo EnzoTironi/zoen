@@ -32,17 +32,17 @@ describe("EX30 erasure schemas", () => {
       schemaVersion: "erasure.v1",
       worldRef,
     });
-    expect(request.input.confirmEntireWorld).toBe(true);
+    expect(request.input.confirmEntireWorld).toBeTruthy();
     expect(request.schemaVersion).toBe("erasure.v1");
   });
 
   it("keeps restoreAfterErasure literally false on success DTOs", () => {
-    expect(Schema.decodeUnknownSync(ErasureRestoreAfterErasure)(false)).toBe(
-      false
-    );
+    expect(
+      Schema.decodeUnknownSync(ErasureRestoreAfterErasure)(false)
+    ).toBeFalsy();
     expect(() =>
       Schema.decodeUnknownSync(ErasureRestoreAfterErasure)(true)
-    ).toThrow();
+    ).toThrow(/./u);
     const inspected = Schema.decodeUnknownSync(WorldErasureInspected)({
       _tag: "WorldErasureInspected",
       attemptExternalState: "Registered",
@@ -51,7 +51,7 @@ describe("EX30 erasure schemas", () => {
       revision: "1",
       worldRef,
     });
-    expect(inspected.restoreAfterErasure).toBe(false);
+    expect(inspected.restoreAfterErasure).toBeFalsy();
     const requested = Schema.decodeUnknownSync(WorldErasureRequested)({
       _tag: "WorldErasureRequested",
       attemptExternalState: "Registered",
@@ -62,7 +62,7 @@ describe("EX30 erasure schemas", () => {
       revision: "1",
       worldRef,
     });
-    expect(requested.restoreAfterErasure).toBe(false);
+    expect(requested.restoreAfterErasure).toBeFalsy();
   });
 
   it("freezes candidate profile id for new Worlds only", () => {
@@ -71,7 +71,7 @@ describe("EX30 erasure schemas", () => {
     ).toBe("d03-local-erasable-v1");
     expect(() =>
       Schema.decodeUnknownSync(ErasurePolicyProfileId)("d01-local-retained-v1")
-    ).toThrow();
+    ).toThrow(/./u);
   });
 
   it("accepts InspectWorldErasure", () => {

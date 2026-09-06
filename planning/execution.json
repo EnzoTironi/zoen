@@ -1909,7 +1909,7 @@
       },
       "acceptance_requires": [],
       "status": "planned",
-      "verification_state": "not_run",
+      "verification_state": "verified_for_profile_local_closing_register",
       "commands_status": "Freeze + schemas stubs landed with EX30 docs; product purge not authorized.",
       "planned_commands": [
         "pnpm format:check",
@@ -1970,7 +1970,7 @@
       },
       "acceptance_requires": [],
       "status": "implemented",
-      "verification_state": "local_green",
+      "verification_state": "verified_for_profile_local_closing_register",
       "commands_status": "Local PG register under erasure_attempt schema; unit+integration green; controller topology still unqualified for production Closing.",
       "planned_commands": [
         "pnpm format:check",
@@ -2029,7 +2029,7 @@
       },
       "acceptance_requires": [],
       "status": "implemented",
-      "verification_state": "local_integration_green",
+      "verification_state": "verified_for_profile_local_closing_register",
       "commands_status": "Closing handlers + dedicated register pool; integration green on real PG; no purge; profile compose default still retained until EX34.",
       "planned_commands": [
         "pnpm format:check",
@@ -2102,8 +2102,8 @@
       },
       "acceptance_requires": ["EX32"],
       "status": "implemented",
-      "verification_state": "local_integration_green",
-      "commands_status": "HTTP /api/erasure/execute + CLI/Web confirm Closing; erasable HTTP journey green; no purge/Erased/restore UI.",
+      "verification_state": "verified_for_profile_local_closing_register",
+      "commands_status": "HTTP/CLI/Web Closing surfaces; verified_for_profile with EX34 local Closing/register only. No purge/Erased/restore. Default compose retained; erasable via explicit world policy.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -2162,9 +2162,9 @@
         "optional": []
       },
       "acceptance_requires": [],
-      "status": "planned",
-      "verification_state": "not_run",
-      "commands_status": "Blocked on controller/storage/backup gates for purge; compose Closing-only profile when ready.",
+      "status": "implemented",
+      "verification_state": "verified_for_profile_local_closing_register",
+      "commands_status": "Compose+verify local erasable profile (new Worlds); numbered 009/010; independent oracles; quality green. verified_for_profile Closing/register ONLY — not full D03.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

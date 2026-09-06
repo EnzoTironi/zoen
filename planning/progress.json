@@ -63,8 +63,8 @@
       "model": null,
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "freeze_landed_implementation_planned",
-      "notes": "Minimum executable freeze in docs/contracts/d03-erasure-freeze.md; schemas/port stubs for EX30/EX31. Purge/controller/restore still blocked."
+      "state": "verified_for_profile_erasure_local_closing_register",
+      "notes": "Freeze+schemas part of local Closing/register surface verified_for_profile with EX30–EX34. NOT full D03 (no purge/Erased/restore)."
     },
     {
       "agent": "roadmap_redesign",
@@ -72,8 +72,35 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "local_integration_green",
-      "notes": "Web/CLI surfaces + /api/erasure/execute; owner confirm Closing; viewer denial; immutable Closing replay. No purge/Erased/restore. Default compose profile still retained until EX34."
+      "state": "verified_for_profile_erasure_local_closing_register",
+      "notes": "Web/CLI Closing surfaces verified_for_profile with EX30–EX34 local Closing/register only. Default retained compose preserved; erasable via ZOEN_LOCAL_WORLD_POLICY. NOT full D03."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX34-erasure-compose-verify",
+      "model": null,
+      "effort": null,
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "verified_for_profile_erasure_local_closing_register",
+      "notes": "Compose+verify d03-local-erasable-v1 for NEW Worlds only; numbered migrations 009/010; independent Closing/retained oracles; executor fixture ErasureAttemptRegister debt cleared. verified_for_profile ONLY for local Closing/register surface — NOT full D03 (no purge/Erased/restore)."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX31-erasure-attempt-register",
+      "model": null,
+      "effort": null,
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "verified_for_profile_erasure_local_closing_register",
+      "notes": "Register port part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX32-erasure-closing",
+      "model": null,
+      "effort": null,
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "verified_for_profile_erasure_local_closing_register",
+      "notes": "Closing handlers part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03."
     }
   ],
   "temporary_ownership": [
@@ -600,6 +627,27 @@
         "integration_missing_register": "pass",
         "integration_replay_conflict_viewer": "pass"
       }
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "PENDING_EX34",
+      "packages": ["EX30", "EX31", "EX32", "EX33", "EX34"],
+      "state": "verified_for_profile",
+      "profile": "d03-local-erasable-v1 (new Worlds only) / Closing+register local surface; d01-local-retained-v1 default preserved",
+      "evidence": "docs/verification/erasure-local.md",
+      "scope": "Local Closing/register surface verified_for_profile for EX30–EX34: numbered migrations 009/010, erasable provision for NEW Worlds only, independent Closing/retained oracles, Web/CLI confirmation. Does NOT conclude full D03: purge/Erased, qualified controller, Object Lock, backup catalog, World fence ER-R02, restoreAfterErasure remain blocked.",
+      "tests": {
+        "unit_ex30": "pass",
+        "integration_local_register_ex31": "pass",
+        "integration_closing_ex32": "pass",
+        "cli_journey_ex33": "pass",
+        "web_requests_ex33": "pass",
+        "independent_compose_profile_ex34": "pass",
+        "format_lint_typecheck": "pass"
+      },
+      "verified_for_profile": true,
+      "not_full_d03": true,
+      "notes": "verified_for_profile ONLY for local Closing/register surface. NOT full D03: purge/Erased/restore/controller/Object Lock/backup catalog still blocked."
     }
   ],
   "verified_deliveries": [],

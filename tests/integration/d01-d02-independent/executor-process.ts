@@ -7,6 +7,7 @@ import type * as DisclosureModule from "../../../apps/server/src/adapters/postgr
 import type * as IdentityModule from "../../../apps/server/src/identity/d01/identity.ts";
 import type * as InstallationModule from "../../../packages/authority/src/commit/configuration.ts";
 import type * as PolicyModule from "../../../packages/authority/src/ports/d01/context.ts";
+import type * as ErasureRegisterModule from "../../../packages/authority/src/ports/erasure/attempt-register.ts";
 import type * as ExecutorModule from "../../../packages/authority/src/semantic/executor.ts";
 import { makeProcessConfiguration } from "./process-configuration.ts";
 
@@ -55,6 +56,19 @@ const program = Effect.scoped(
         import(
           new URL(
             "../../../packages/authority/dist/semantic/executor.js",
+            import.meta.url
+          ).href
+        ),
+    });
+    const { ErasureAttemptRegister } = yield* Effect.tryPromise({
+      catch: () =>
+        new BuildRequired({
+          message: "Build the application before EX15 process integration",
+        }),
+      try: (): Promise<typeof ErasureRegisterModule> =>
+        import(
+          new URL(
+            "../../../packages/authority/dist/ports/erasure/attempt-register.js",
             import.meta.url
           ).href
         ),
@@ -132,6 +146,7 @@ const program = Effect.scoped(
     const infrastructure = Layer.mergeAll(
       Layer.succeed(AuthorityInstallation, config.installation),
       Layer.succeed(DataPolicy, config.policy),
+      ErasureAttemptRegister.unqualifiedLayer,
       makeD01PostgresLayer({
         applicationName: "zoen-ex15-child",
         maxConnections: 2,

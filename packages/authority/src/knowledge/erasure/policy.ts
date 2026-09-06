@@ -17,7 +17,7 @@ export const requireErasablePolicy = Effect.fn("erasure.requireErasablePolicy")(
     if (!Schema.is(ErasableDataPolicySchema)(policy) || !policy.erasure) {
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
     }
-    if (policy.restoreAfterErasure !== false) {
+    if (policy.restoreAfterErasure) {
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
     }
     const expected = yield* Schema.decodeUnknownEffect(ErasurePolicyProfileId)(

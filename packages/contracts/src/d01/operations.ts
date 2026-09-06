@@ -1,14 +1,14 @@
 import { Schema } from "effect";
 
+import {
+  WorldErasureRequest,
+  WorldErasureSuccess,
+} from "../erasure/operations.js";
 import { SharingRequest, SharingSuccess } from "../sharing/operations.js";
 import {
   SubjectIdentityRequest,
   SubjectIdentitySuccess,
 } from "../subject-identity/operations.js";
-import {
-  WorldErasureRequest,
-  WorldErasureSuccess,
-} from "../erasure/operations.js";
 import { D01Error } from "./errors.js";
 import { CorrectionConsequence, VisibleFrame } from "./evidence.js";
 import {

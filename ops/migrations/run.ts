@@ -7,6 +7,7 @@ import { SqlClient } from "effect/unstable/sql";
 import { grantD01Roles } from "../../apps/server/sql/proposals/d01/grants.ts";
 import type { D01DatabaseRoles } from "../../apps/server/sql/proposals/d01/grants.ts";
 import { grantDisclosureRole } from "../../apps/server/sql/proposals/disclosure/grants.ts";
+import { grantErasureRole } from "../../apps/server/sql/proposals/erasure/grants.ts";
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantD01IdentityRole } from "../../apps/server/src/identity/d01/grants.ts";
 
@@ -118,3 +119,28 @@ export const applyIdentityBasisMigrations = Effect.fn(
   yield* sql.withTransaction(grantSubjectIdentityRole(roles.authority));
   return [...base, ...extension];
 });
+
+/** Closing register + progress DDL; retained installs get schema without enabling erasure (F02). */
+export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
+  function* applyErasureMigrations(roles: D01DatabaseRoles) {
+    const base = yield* applyIdentityBasisMigrations(roles);
+    const fs = yield* FileSystem.FileSystem;
+    const sql = yield* SqlClient.SqlClient;
+    const attempt = yield* fs.readFileString(
+      fileURLToPath(
+        new URL("009_erasure_attempt_register.sql", import.meta.url)
+      )
+    );
+    const closing = yield* fs.readFileString(
+      fileURLToPath(new URL("010_world_erasure_closing.sql", import.meta.url))
+    );
+    const extension = yield* PgMigrator.run({
+      loader: PgMigrator.fromRecord({
+        "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
+        "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
+      }),
+    });
+    yield* sql.withTransaction(grantErasureRole(roles.authority));
+    return [...base, ...extension];
+  }
+);
