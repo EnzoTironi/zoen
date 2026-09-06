@@ -32,3 +32,10 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 - Harness: `tests/integration/hosted/restore/**` (pg_dump→restore descartável + escopo hosted-only + S3 marker)
 - Doc: `docs/verification/hosted-retained-restore.md`
 - Prova só escopo `d04-hosted-retained-v1`; sem rebind local; `restoreAfterErasure` fechado; sem Fly/MPG/Tigris
+
+## EX38 admission flags
+
+- Contracts: `packages/contracts/src/hosted/admission/values.ts` — `d04HostedRetainedAdmissionFlags`
+- Authority: `packages/authority/src/hosted/admission/flags.ts` — readiness + `requireAdmittedCapability` / channel fail-closed
+- Unidade: `packages/authority/test/hosted/admission/flags.EX38.test.ts`
+- Núcleo web/cli/file ready; canais/providers disabled/Blocked; provider ausente não passa readiness de canal; sem Fly deploy

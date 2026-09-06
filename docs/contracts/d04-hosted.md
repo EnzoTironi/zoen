@@ -22,3 +22,7 @@ Perfil `d04-hosted-retained-v1` compilável em `packages/contracts/src/hosted/po
 ## EX37 (restore disposable)
 
 Prova local dump→restore do escopo retained habilitado em ambiente descartável (`tests/integration/hosted/restore/**`). Restore reproduz apenas Worlds/`data_policy_id` `d04-hosted-retained-v1` do install sob prova; Worlds retained locais não são rebound; `restoreAfterErasure` permanece false. Sem alegar ZN-0116, catálogo hosted, nem deploy.
+
+## EX38 (admission flags)
+
+Flags/contratos em `packages/contracts/src/hosted/admission/**` + enforcement em `packages/authority/src/hosted/admission/**`: web/cli/file admitted; WhatsApp/Telegram/OAuth/model/feed/GPU/broker/custodian explicitamente `disabled` (nunca healthy falso). Unidade sob `packages/authority/test/hosted/admission/**`. Sem deploy.

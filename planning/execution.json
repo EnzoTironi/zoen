@@ -2409,7 +2409,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "planned; progress tracked in planning/progress.json; keep verification_state not_run for verify_plan.",
+      "commands_status": "Admission flags/unit green under packages/*/hosted/admission/**; web/cli/file ready; WhatsApp/providers disabled/Blocked (no false healthy). execution status remains planned/not_run for verify_plan; progress in progress.json. Not D04 activated; no Fly deploy/MPG/Tigris.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

@@ -135,8 +135,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "planned",
-      "notes": "Await dispatch; ZN-0288 explicit disabled providers."
+      "state": "admission_flags_unit_green",
+      "notes": "Hosted retained admission flags under hosted/admission/**; web/cli/file admitted; WhatsApp/Telegram/OAuth/model/feed/GPU/broker/custodian explicit disabled/Blocked (ZN-0288/H06). Unit proofs green. execution.json kept planned/not_run for verify_plan. NOT D04 activated; no deploy/MPG/Tigris."
     },
     {
       "agent": "architecture_redesign",
@@ -739,6 +739,20 @@
       "integration_tests": [
         "tests/integration/hosted/restore/retained-restore.EX37.integration.test.ts"
       ]
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "PENDING",
+      "packages": ["EX38"],
+      "state": "admission_flags_unit_green",
+      "profile": "d04-hosted-retained-v1 (admission flags; new Worlds only; no deploy)",
+      "evidence": "docs/verification/hosted-admission.md",
+      "scope": "Admission flags fail-closed for non-admitted channels/providers; core web/cli/file ready; no false healthy; no Fly deploy.",
+      "tests": {
+        "unit_ex38_admission_flags": "pass",
+        "format_lint_typecheck": "pass"
+      },
+      "notes": "Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth. NOT D04 activated."
     }
   ],
   "verified_deliveries": [],
