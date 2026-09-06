@@ -136,7 +136,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "admission_flags_unit_green",
-      "notes": "Hosted retained admission flags under hosted/admission/**; web/cli/file admitted; WhatsApp/Telegram/OAuth/model/feed/GPU/broker/custodian explicit disabled/Blocked (ZN-0288/H06). Unit proofs green. execution.json kept planned/not_run for verify_plan. NOT D04 activated; no deploy/MPG/Tigris."
+      "notes": "Hosted retained admission flags under hosted/admission/**; web/cli/file admitted; WhatsApp/Telegram/OAuth/model/feed/GPU/broker/custodian explicit disabled/Blocked (ZN-0288/H06). Unit proofs green. execution.json kept planned/not_run for verify_plan. NOT D04 activated; no deploy/MPG/Tigris. Tip 23e7688."
     },
     {
       "agent": "architecture_redesign",
@@ -742,7 +742,7 @@
     },
     {
       "date": "2026-09-06",
-      "commit": "PENDING",
+      "commit": "23e76883837b50ffce152cc902f782060e86af02",
       "packages": ["EX38"],
       "state": "admission_flags_unit_green",
       "profile": "d04-hosted-retained-v1 (admission flags; new Worlds only; no deploy)",
