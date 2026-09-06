@@ -55,6 +55,7 @@ import type { IdentityEffectDraft } from "../pure/planning.js";
 import {
   bindIdentityEffectIds,
   planResolutionEffects,
+  planSplitEffects,
 } from "../pure/planning.js";
 import { loadIdentityFrame } from "./frame.js";
 
@@ -326,7 +327,154 @@ export const proposeIdentitySplit = Effect.fn("subjectIdentity.proposeSplit")(
     if (replay !== null) {
       return yield* Schema.decodeUnknownEffect(IdentityProposed)(replay);
     }
-    return yield* new Unavailable({ code: "UNAVAILABLE" });
+    const saved = yield* loadIdentityFrame(
+      context,
+      request.worldRef,
+      request.input.frame.frameRef
+    );
+    if (saved.visible_frame.kind !== request.input.frame.kind) {
+      return yield* new InvalidInput({ code: "INVALID_INPUT" });
+    }
+    const frame: IdentityFrame | IdentityRecoveryFrame = saved.visible_frame;
+    const basis = yield* ensureCurrentBasis(saved.internal_basis);
+    const principalRef = yield* Schema.decodeEffect(PrincipalRef)(
+      context.presence.principalId
+    ).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
+    const scope = identityScopeFrom(
+      request.worldRef,
+      principalRef,
+      context.purpose
+    );
+    const projection = yield* loadIdentityProjection(scope);
+    const plan = yield* planSplitEffects(
+      projection,
+      frame,
+      request.input.anchor,
+      request.input.partitionsByCell
+    );
+    const blocked: unknown[] = [];
+    const alternatives: unknown[] = [];
+    if (plan._tag === "Blocked") {
+      blocked.push({
+        answer: "confirm",
+        reason: plan.blocked.reason,
+        supportingRefs: plan.blocked.supportingRefs,
+      });
+    } else {
+      const effectItems = yield* allocateEffects(plan.effectItems);
+      const decisionRef =
+        yield* Schema.decodeEffect(IdentityDecisionRef)(randomUUID());
+      const provisional = yield* Schema.decodeEffect(IdentityDecision)({
+        authoredBy: principalRef,
+        decisionRef,
+        effectItems,
+        interval: frame.interval,
+        kind: "split",
+        purpose: context.purpose,
+        revision: nextRevision(projection.decisions),
+        targetDecisionRef: null,
+        worldRef: request.worldRef,
+      }).pipe(
+        Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+      );
+      const next = yield* projectIdentity(scope, [
+        ...projection.decisions,
+        provisional,
+      ]).pipe(Effect.mapError(() => new Conflict({ code: "CONFLICT" })));
+      const closure = yield* closeIdentity(
+        next,
+        frame.closureAnchors,
+        frame.interval
+      );
+      const drafts = yield* maximalIdentityCells(
+        closure,
+        frame.interval,
+        frame.kind === "subject-identity" ? frame.claims : []
+      );
+      const afterCells =
+        frame.kind === "subject-identity"
+          ? yield* compareIdentityCells(closure, drafts, frame.claims)
+          : drafts.map((cell) => ({
+              ...cell.structure,
+              cellRef: cell.cellRef,
+            }));
+      alternatives.push({
+        afterCells,
+        answer: "confirm",
+        ...(frame.kind === "subject-identity-recovery"
+          ? { comparison: "not-requested" }
+          : {}),
+        effectItems,
+        impact: impactApplied,
+      });
+    }
+    if (frame.kind === "subject-identity") {
+      alternatives.push({
+        afterCells: frame.cells,
+        answer: "unknown",
+        effectItems: [],
+        impact: impactUnchanged,
+      });
+    } else {
+      alternatives.push({
+        afterCells: frame.cells,
+        answer: "unknown",
+        comparison: "not-requested",
+        effectItems: [],
+        impact: impactUnchanged,
+      });
+    }
+    const caseRef = yield* Schema.decodeEffect(CaseRef)(randomUUID());
+    const questionRef = yield* Schema.decodeEffect(QuestionRef)(randomUUID());
+    const kind =
+      frame.kind === "subject-identity"
+        ? ("identity-split" as const)
+        : ("identity-recovery-split" as const);
+    const intent = {
+      anchor: request.input.anchor,
+      partitionsByCell: request.input.partitionsByCell,
+    };
+    const consequenceDigest = yield* structuredDigest("identity-consequence", {
+      alternatives,
+      blockedAlternatives: blocked,
+      frameRef: frame.frameRef,
+      intent,
+      kind,
+    });
+    const question = yield* Schema.decodeUnknownEffect(IdentityQuestion)({
+      alternatives,
+      audience: "private-author",
+      blockedAlternatives: blocked,
+      caseRef,
+      consequenceDigest,
+      ...(frame.kind === "subject-identity-recovery"
+        ? { comparison: "not-requested" }
+        : {}),
+      frame: { frameRef: frame.frameRef, kind: frame.kind },
+      intent,
+      interval: frame.interval,
+      kind,
+      purpose: context.purpose,
+      questionRef,
+      schemaVersion: "subject-identity.v1",
+      worldRef: request.worldRef,
+    }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
+    const encoded = new TextEncoder().encode(yield* canonicalJson(question));
+    if (encoded.byteLength > 1_048_576) {
+      return yield* new Unavailable({ code: "UNAVAILABLE" });
+    }
+    const result = yield* saveProposal({
+      bound,
+      caseRef,
+      context,
+      frameRef: frame.frameRef,
+      question,
+      questionRef,
+      savedBasis: basis,
+      subjectKey: request.input.anchor,
+      worldRef: request.worldRef,
+    });
+    return yield* Schema.decodeUnknownEffect(IdentityProposed)(result);
   },
   Effect.catchTag("SchemaError", () => new Unavailable({ code: "UNAVAILABLE" }))
 );

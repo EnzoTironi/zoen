@@ -4,4 +4,4 @@
 
 `SemanticExecutor.executeSubjectIdentity` dispatches InspectSubjectIdentity, InspectIdentityRecovery, ProposeIdentityResolution, ProposeIdentitySplit, ProposeIdentityUndo, and ResolveIdentity. Mutations use `commitMutation` with domain locks, receipts and outbox. Frames store IdentityFrame / IdentityRecoveryFrame privately; decisions append to `authority.identity_decisions`.
 
-Split proposal is intentionally unfinished in the first vertical slice (`Unavailable`). Do not treat EX27 as `verified_for_profile` until split, remaining oracles and independent review close.
+`ProposeIdentitySplit` is real: `planSplitEffects` builds Withdraw + full cross-block `different-from` Assert drafts (or blocks `confirm` with `InvalidPartition` / `QuotaExceeded`), then the handler freezes an `identity-split` / `identity-recovery-split` Question and Resolve applies atomically. Do not mark EX27 `verified_for_profile` until remaining ID-01/08–14 oracles and independent review close.
