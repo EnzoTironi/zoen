@@ -38,11 +38,11 @@ export const initialState: WorkspaceState = {
   checking: true,
   feedback: "",
   frame: null,
+  identity: emptySubjectIdentity,
   membership: null,
   proposal: null,
   session: null,
   sharing: emptySharing,
-  identity: emptySubjectIdentity,
   view: { kind: "empty" },
   world: null,
 };

@@ -1,4 +1,3 @@
-/* oxlint-disable effecttsgo/node-builtin-import, effecttsgo/global-timers, effecttsgo/new-promise, promise/avoid-new */
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 

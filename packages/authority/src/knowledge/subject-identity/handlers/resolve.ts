@@ -7,12 +7,8 @@ import {
   Stale,
   Unavailable,
 } from "@zoen/contracts/d01/errors";
-import {
-  CaseRef,
-  QuestionRef,
-  Revision,
-  WorldRef,
-} from "@zoen/contracts/d01/values";
+import type { QuestionRef, WorldRef } from "@zoen/contracts/d01/values";
+import { CaseRef, Revision } from "@zoen/contracts/d01/values";
 import { PrincipalRef } from "@zoen/contracts/sharing/operations";
 import {
   IdentityResolved,
@@ -29,11 +25,7 @@ import {
   commitMutation,
   readMutationReplay,
 } from "../../../commit/mutation.js";
-import {
-  CurrentInternalBasis,
-  DomainKey,
-  InternalBasis,
-} from "../../../ports/d01/basis.js";
+import { DomainKey, InternalBasis } from "../../../ports/d01/basis.js";
 import type { VerifiedRequestContext } from "../../../ports/d01/context.js";
 import {
   identityScopeFrom,
@@ -129,7 +121,7 @@ export const resolveIdentity = Effect.fn("subjectIdentity.resolveIdentity")(
               AND case_id = ${current.case_id}`;
 
           if (request.input.answer === "unknown") {
-            const result = yield* Schema.decodeUnknownEffect(IdentityResolved)({
+            const unknownResult = yield* Schema.decodeEffect(IdentityResolved)({
               _tag: "IdentityResolved",
               answer: "unknown",
               caseRef: current.case_id,
@@ -138,7 +130,10 @@ export const resolveIdentity = Effect.fn("subjectIdentity.resolveIdentity")(
               questionRef: request.input.questionRef,
               receiptRef,
             });
-            return { changedDomains: ["cases"] as const, result };
+            return {
+              changedDomains: ["cases"] as const,
+              result: unknownResult,
+            };
           }
           if (alternative.effectItems.length === 0) {
             if (
@@ -147,7 +142,7 @@ export const resolveIdentity = Effect.fn("subjectIdentity.resolveIdentity")(
             ) {
               return yield* new Conflict({ code: "CONFLICT" });
             }
-            const result = yield* Schema.decodeUnknownEffect(IdentityResolved)({
+            const reaffirmed = yield* Schema.decodeEffect(IdentityResolved)({
               _tag: "IdentityResolved",
               answer: request.input.answer,
               caseRef: current.case_id,
@@ -156,7 +151,7 @@ export const resolveIdentity = Effect.fn("subjectIdentity.resolveIdentity")(
               questionRef: request.input.questionRef,
               receiptRef,
             });
-            return { changedDomains: ["cases"] as const, result };
+            return { changedDomains: ["cases"] as const, result: reaffirmed };
           }
 
           const scope = identityScopeFrom(
@@ -170,13 +165,17 @@ export const resolveIdentity = Effect.fn("subjectIdentity.resolveIdentity")(
           const identityRevision = yield* Schema.decodeEffect(Revision)(
             (BigInt(cut.identity) + 1n).toString()
           );
-          const kind =
-            current.question.kind === "identity-resolution"
-              ? ("resolution" as const)
-              : current.question.kind === "identity-split" ||
-                  current.question.kind === "identity-recovery-split"
-                ? ("split" as const)
-                : ("undo" as const);
+          let kind: "resolution" | "split" | "undo";
+          if (current.question.kind === "identity-resolution") {
+            kind = "resolution";
+          } else if (
+            current.question.kind === "identity-split" ||
+            current.question.kind === "identity-recovery-split"
+          ) {
+            kind = "split";
+          } else {
+            kind = "undo";
+          }
           const targetDecisionRef =
             kind === "undo" && "targetDecisionRef" in current.question.intent
               ? current.question.intent.targetDecisionRef
@@ -205,7 +204,7 @@ export const resolveIdentity = Effect.fn("subjectIdentity.resolveIdentity")(
             receiptRef,
             worldRef: request.worldRef,
           });
-          const result = yield* Schema.decodeUnknownEffect(IdentityResolved)({
+          const resolved = yield* Schema.decodeEffect(IdentityResolved)({
             _tag: "IdentityResolved",
             answer: request.input.answer,
             caseRef: current.case_id,
@@ -214,7 +213,10 @@ export const resolveIdentity = Effect.fn("subjectIdentity.resolveIdentity")(
             questionRef: request.input.questionRef,
             receiptRef,
           });
-          return { changedDomains: ["cases", "identity"] as const, result };
+          return {
+            changedDomains: ["cases", "identity"] as const,
+            result: resolved,
+          };
         }).pipe(
           Effect.catchTag(
             "SchemaError",

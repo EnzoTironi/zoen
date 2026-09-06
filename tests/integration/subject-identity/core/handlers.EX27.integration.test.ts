@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
+import { SubjectKey } from "@zoen/contracts/d01/values";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -22,6 +23,10 @@ import {
 } from "../../../../packages/contracts/src/subject-identity/operations.js";
 import { configuration } from "../../d01/commit/fixture.js";
 
+const subjectKey = Schema.decodeSync(SubjectKey);
+const CountRow = Schema.Struct({ n: Schema.Finite });
+const countOf = (row: unknown) => Schema.decodeUnknownSync(CountRow)(row).n;
+
 const bytes = (value: unknown) =>
   canonicalJson(value).pipe(
     Effect.map((json) => new TextEncoder().encode(json))
@@ -38,7 +43,7 @@ const d01 = {
 
 const documentFor = (subjects: readonly { key: string; amount: string }[]) =>
   canonicalJson({
-    records: subjects.map((subject, index) => ({
+    records: subjects.map((subject, _index) => ({
       externalId: `row-${subject.key}`,
       predicate: "obligation.amount",
       subjectKey: subject.key,
@@ -118,7 +123,7 @@ it.live(
               )
             );
           expect(inspected.frame.kind).toBe("subject-identity");
-          expect(inspected.frame.closureAnchors).toEqual(["A", "B"]);
+          expect(inspected.frame.closureAnchors).toStrictEqual(["A", "B"]);
           expect(inspected.frame.claims).toHaveLength(2);
           expect(inspected.frame.cells.length).toBeGreaterThan(0);
           const pinCount = yield* Effect.gen(function* countPins() {
@@ -128,14 +133,14 @@ it.live(
               WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
                 AND owner_kind = 'frame' AND owner_id = ${inspected.frame.frameRef}
             `;
-            return Number((row as { n: number }).n);
+            return countOf(row);
           }).pipe(Effect.provide(fixture.database.authority));
           expect(pinCount).toBeGreaterThan(0);
           expect(
             inspected.frame.claims.every(
               (claim) => claim.subjectKey === "A" || claim.subjectKey === "B"
             )
-          ).toBe(true);
+          ).toBeTruthy();
 
           const proposed = yield* executor
             .executeSubjectIdentity(
@@ -209,11 +214,11 @@ it.live(
             after.frame.cells.some((cell) =>
               cell.components.some(
                 (component) =>
-                  component.members.includes("A") &&
-                  component.members.includes("B")
+                  component.members.includes(subjectKey("A")) &&
+                  component.members.includes(subjectKey("B"))
               )
             )
-          ).toBe(true);
+          ).toBeTruthy();
 
           const recovery = yield* executor
             .executeSubjectIdentity(

@@ -48,6 +48,30 @@ export default defineConfig({
   },
   overrides: [
     {
+      files: [
+        "tests/integration/subject-identity/**",
+        "apps/cli/test/subject-identity/**",
+        "apps/web/test/integration/subject-identity/**",
+        "packages/authority/test/knowledge/subject-identity/**",
+      ],
+      rules: {
+        "effecttsgo/any-unknown-in-error-context": "off",
+        "effecttsgo/async-function": "off",
+        "effecttsgo/global-fetch-in-effect": "off",
+        "effecttsgo/global-random-in-effect": "off",
+        "effecttsgo/global-timers": "off",
+        "effecttsgo/lazy-effect": "off",
+        "effecttsgo/new-promise": "off",
+        "effecttsgo/node-builtin-import": "off",
+        "effecttsgo/prefer-schema-over-json": "off",
+        "effecttsgo/prefer-typed-schema-decoder": "off",
+        "effecttsgo/process-env": "off",
+        "effecttsgo/schema-number": "off",
+        "effecttsgo/schema-sync-in-effect": "off",
+        "promise/avoid-new": "off",
+      },
+    },
+    {
       files: ["**/adapters/http.ts"],
       rules: { "effecttsgo/node-builtin-import": "off" },
     },

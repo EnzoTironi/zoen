@@ -134,7 +134,7 @@ it.live(
           const applied = yield* applyIdentityBasisMigrations(
             database.names
           ).pipe(Effect.provide(migrationServices(database)));
-          expect(applied).toEqual(
+          expect(applied).toStrictEqual(
             expect.arrayContaining([[7, "subject_identity_domain"]])
           );
           expect(yield* readCut(worldRef)).toMatchObject({

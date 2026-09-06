@@ -1,6 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
+import { InternalBasis } from "@zoen/authority/ports/d01/basis";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { canonicalJson } from "@zoen/authority/values/canonical";
 import {
@@ -23,6 +24,10 @@ import {
 } from "./fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
+const encodeBytes = (value: unknown) =>
+  canonicalJson(value).pipe(
+    Effect.map((text) => new TextEncoder().encode(text))
+  );
 const envelope = { purpose: "personal-records", schemaVersion: "d01.v1" };
 const executePath = "/api/d01/execute";
 const correctionsPath = "/api/d01/corrections";
@@ -267,8 +272,11 @@ it.live(
           ORDER BY created_at`;
         expect(beforeFrames.length).toBeGreaterThan(0);
         for (const frame of beforeFrames) {
-          expect(frame.internal_basis).not.toHaveProperty("schemaVersion");
-          expect(frame.internal_basis.cut).not.toHaveProperty("identity");
+          const basis = Schema.decodeUnknownSync(InternalBasis)(
+            frame.internal_basis
+          );
+          expect(basis).not.toHaveProperty("schemaVersion");
+          expect(basis.cut).not.toHaveProperty("identity");
         }
         const beforeReceipts = yield* sql`
           SELECT receipt_id::text AS receipt_id, operation, result
@@ -344,25 +352,22 @@ it.live(
           beforeFrames.map((frame) => frame.frame_id)
         );
         for (let index = 0; index < afterFrames.length; index += 1) {
-          expect(yield* canonicalJson(afterFrames[index].internal_basis)).toBe(
-            frameSnapshots[index].basis
-          );
-          expect(yield* canonicalJson(afterFrames[index].visible_frame)).toBe(
-            frameSnapshots[index].visible
-          );
+          const after = afterFrames[index];
+          const snap = frameSnapshots[index];
+          if (after === undefined || snap === undefined) {
+            return yield* Effect.die("missing frame snapshot pair");
+          }
+          expect(yield* canonicalJson(after.internal_basis)).toBe(snap.basis);
+          expect(yield* canonicalJson(after.visible_frame)).toBe(snap.visible);
         }
 
         return yield* Effect.gen(function* withCurrentExecutor() {
           const executor = yield* SemanticExecutor;
-          const bytes = (value: unknown) =>
-            canonicalJson(value).pipe(
-              Effect.map((text) => new TextEncoder().encode(text))
-            );
 
           const historical = yield* executor
             .execute(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: {
                   atFrame: original.frame.frameRef,
@@ -376,19 +381,19 @@ it.live(
           expect(historical.frame).toStrictEqual(original.frame);
 
           const replayPropose = yield* executor
-            .executeCorrection(owner, yield* bytes(pendingProposeRequest))
+            .executeCorrection(owner, yield* encodeBytes(pendingProposeRequest))
             .pipe(
               Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
             );
           expect(replayPropose).toStrictEqual(pendingProposed);
           const replayAnswer = yield* executor
-            .executeCorrection(owner, yield* bytes(answerRequest))
+            .executeCorrection(owner, yield* encodeBytes(answerRequest))
             .pipe(
               Effect.flatMap(Schema.decodeUnknownEffect(CorrectionApplied))
             );
           expect(replayAnswer).toStrictEqual(answered);
           const replayUndo = yield* executor
-            .executeCorrection(owner, yield* bytes(undoRequest))
+            .executeCorrection(owner, yield* encodeBytes(undoRequest))
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(CorrectionUndone)));
           expect(replayUndo).toStrictEqual(undone);
 
@@ -408,12 +413,15 @@ it.live(
           };
           expect(
             yield* executor
-              .executeCorrection(owner, yield* bytes(conflictIntent))
+              .executeCorrection(owner, yield* encodeBytes(conflictIntent))
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Conflict" });
           expect(
             yield* executor
-              .executeCorrection(stranger, yield* bytes(pendingProposeRequest))
+              .executeCorrection(
+                stranger,
+                yield* encodeBytes(pendingProposeRequest)
+              )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "NotFoundOrDenied" });
 
@@ -421,7 +429,7 @@ it.live(
             yield* executor
               .executeCorrection(
                 owner,
-                yield* bytes({
+                yield* encodeBytes({
                   ...pendingProposeRequest,
                   operationId: randomUUID(),
                 })
@@ -432,7 +440,7 @@ it.live(
             yield* executor
               .executeCorrection(
                 owner,
-                yield* bytes({
+                yield* encodeBytes({
                   ...envelope,
                   input: {
                     answer: "confirm",
@@ -450,7 +458,7 @@ it.live(
             yield* executor
               .executeCorrection(
                 owner,
-                yield* bytes({
+                yield* encodeBytes({
                   ...undoRequest,
                   operationId: randomUUID(),
                 })
@@ -481,7 +489,10 @@ it.live(
           expect(signOut.status).toBe(200);
           expect(
             yield* executor
-              .executeCorrection(owner, yield* bytes(pendingProposeRequest))
+              .executeCorrection(
+                owner,
+                yield* encodeBytes(pendingProposeRequest)
+              )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Unauthenticated" });
 

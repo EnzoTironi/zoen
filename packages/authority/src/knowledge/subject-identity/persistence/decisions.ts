@@ -1,11 +1,9 @@
 import { Unavailable } from "@zoen/contracts/d01/errors";
+import type { CaseRef, ReceiptRef, WorldRef } from "@zoen/contracts/d01/values";
 import {
-  CaseRef,
   LocalDate,
   Purpose,
-  ReceiptRef,
   Revision,
-  WorldRef,
   exact,
 } from "@zoen/contracts/d01/values";
 import { PrincipalRef } from "@zoen/contracts/sharing/operations";
@@ -20,7 +18,6 @@ import {
   IdentityScope,
   projectIdentity,
 } from "../pure/events.js";
-import type { IdentityProjection } from "../pure/events.js";
 
 const DecisionRow = Schema.Struct({
   decision_id: IdentityDecisionRef,
@@ -30,10 +27,10 @@ const DecisionRow = Schema.Struct({
   kind: Schema.Literals(["resolution", "split", "undo"]),
   principal_id: PrincipalRef,
   purpose: Purpose,
+  realm: Schema.Literal("live"),
   revision: Revision,
   target_decision_id: Schema.NullOr(IdentityDecisionRef),
   world_id: Schema.String.check(Schema.isUUID()),
-  realm: Schema.Literal("live"),
 }).annotate(exact);
 
 export const loadIdentityProjection = Effect.fn(
@@ -98,7 +95,7 @@ export const insertIdentityDecision = Effect.fn(
   readonly caseRef: typeof CaseRef.Type;
   readonly decision: IdentityDecision;
   readonly receiptRef: typeof ReceiptRef.Type;
-  readonly worldRef: typeof WorldRef.Type;
+  readonly worldRef: WorldRef;
 }) {
   const sql = yield* SqlClient.SqlClient;
   const effectsJson = yield* canonicalJson(input.decision.effectItems);
@@ -118,8 +115,8 @@ export const insertIdentityDecision = Effect.fn(
 });
 
 export const identityScopeFrom = (
-  worldRef: typeof WorldRef.Type,
-  principalRef: typeof PrincipalRef.Type,
+  worldRef: WorldRef,
+  principalRef: PrincipalRef,
   purpose: typeof Purpose.Type
 ) =>
   Schema.decodeSync(IdentityScope)({

@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
 import { EvidenceImported, WorldCreated } from "@zoen/contracts/d01/operations";
+import { SubjectKey } from "@zoen/contracts/d01/values";
 import {
   IdentityProposed,
   IdentityResolved,
@@ -19,6 +20,8 @@ import {
   withD01Http,
 } from "../../../server/test/composition/d01/fixture.ts";
 import { saveSession } from "../../src/d01/session.js";
+
+const subjectKey = Schema.decodeSync(SubjectKey);
 
 const read = <E, R>(stream: Stream.Stream<Uint8Array, E, R>) =>
   stream.pipe(
@@ -63,7 +66,7 @@ const document = json({
 
 const partitionAnchorAway = (
   frame: (typeof SubjectIdentityInspected.Type)["frame"],
-  anchor: string
+  anchor: typeof SubjectKey.Type
 ) =>
   frame.cells.map((cell) => {
     const component = cell.components.find((item) =>
@@ -74,9 +77,7 @@ const partitionAnchorAway = (
     }
     const others = component.members.filter((member) => member !== anchor);
     const blocks =
-      others.length === 0
-        ? [component.members.slice()]
-        : [[anchor], others.slice()];
+      others.length === 0 ? [[...component.members]] : [[anchor], [...others]];
     return { blocks, cellRef: cell.cellRef };
   });
 
@@ -136,7 +137,7 @@ it.live(
           cookie
         );
         expect(worldResponse.status).toBe(200);
-        const created = Schema.decodeSync(WorldCreated)(
+        const created = Schema.decodeUnknownSync(WorldCreated)(
           yield* jsonBody(worldResponse)
         );
         const { worldRef } = created;
@@ -153,7 +154,7 @@ it.live(
           cookie
         );
         expect(imported.status).toBe(200);
-        Schema.decodeSync(EvidenceImported)(yield* jsonBody(imported));
+        Schema.decodeUnknownSync(EvidenceImported)(yield* jsonBody(imported));
 
         const inspected = yield* cli([
           "inspect-identity",
@@ -168,11 +169,11 @@ it.live(
         ]);
         expect(inspected.exitCode).toBe(0);
         expect(inspected.stderr).toBe("");
-        const frameResult = Schema.decodeSync(SubjectIdentityInspected)(
+        const frameResult = Schema.decodeUnknownSync(SubjectIdentityInspected)(
           JSON.parse(inspected.stdout)
         );
         expect(frameResult.frame.kind).toBe("subject-identity");
-        expect(frameResult.frame.closureAnchors).toEqual(["A", "B"]);
+        expect(frameResult.frame.closureAnchors).toStrictEqual(["A", "B"]);
 
         const proposeId = randomUUID();
         const proposed = yield* cli([
@@ -189,7 +190,7 @@ it.live(
           proposeId,
         ]);
         expect(proposed.exitCode).toBe(0);
-        const question = Schema.decodeSync(IdentityProposed)(
+        const question = Schema.decodeUnknownSync(IdentityProposed)(
           JSON.parse(proposed.stdout)
         );
         expect(question.question.kind).toBe("identity-resolution");
@@ -208,7 +209,7 @@ it.live(
           randomUUID(),
         ]);
         expect(resolved.exitCode).toBe(0);
-        const applied = Schema.decodeSync(IdentityResolved)(
+        const applied = Schema.decodeUnknownSync(IdentityResolved)(
           JSON.parse(resolved.stdout)
         );
         expect(applied.outcome).toBe("applied");
@@ -226,20 +227,23 @@ it.live(
           "2026-10-01",
         ]);
         expect(merged.exitCode).toBe(0);
-        const mergedFrame = Schema.decodeSync(SubjectIdentityInspected)(
+        const mergedFrame = Schema.decodeUnknownSync(SubjectIdentityInspected)(
           JSON.parse(merged.stdout)
         );
         expect(
           mergedFrame.frame.cells.some((cell) =>
             cell.components.some(
               (component) =>
-                component.members.includes("A") &&
-                component.members.includes("B")
+                component.members.includes(subjectKey("A")) &&
+                component.members.includes(subjectKey("B"))
             )
           )
-        ).toBe(true);
+        ).toBeTruthy();
 
-        const partitions = partitionAnchorAway(mergedFrame.frame, "A");
+        const partitions = partitionAnchorAway(
+          mergedFrame.frame,
+          subjectKey("A")
+        );
         const splitProposed = yield* cli([
           "propose-identity-split",
           "--world-id",
@@ -254,7 +258,7 @@ it.live(
           randomUUID(),
         ]);
         expect(splitProposed.exitCode).toBe(0);
-        const splitQuestion = Schema.decodeSync(IdentityProposed)(
+        const splitQuestion = Schema.decodeUnknownSync(IdentityProposed)(
           JSON.parse(splitProposed.stdout)
         );
         expect(splitQuestion.question.kind).toBe("identity-split");
@@ -274,8 +278,9 @@ it.live(
         ]);
         expect(splitResolved.exitCode).toBe(0);
         expect(
-          Schema.decodeSync(IdentityResolved)(JSON.parse(splitResolved.stdout))
-            .outcome
+          Schema.decodeUnknownSync(IdentityResolved)(
+            JSON.parse(splitResolved.stdout)
+          ).outcome
         ).toBe("applied");
 
         const recovery = yield* cli([
@@ -292,9 +297,14 @@ it.live(
           String(applied.decisionRef),
         ]);
         expect(recovery.exitCode).toBe(0);
-        const recoveryJson = JSON.parse(recovery.stdout) as {
-          frame: { kind: string; comparison: string };
-        };
+        const recoveryJson = Schema.decodeUnknownSync(
+          Schema.Struct({
+            frame: Schema.Struct({
+              comparison: Schema.String,
+              kind: Schema.String,
+            }),
+          })
+        )(JSON.parse(recovery.stdout));
         expect(recoveryJson.frame.kind).toBe("subject-identity-recovery");
         expect(recoveryJson.frame.comparison).toBe("not-requested");
         expect(recoveryJson.frame).not.toHaveProperty("claims");

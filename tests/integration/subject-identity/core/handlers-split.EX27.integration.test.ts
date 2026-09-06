@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
+import { SubjectKey } from "@zoen/contracts/d01/values";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -20,6 +21,11 @@ import {
   SubjectIdentityInspected,
 } from "../../../../packages/contracts/src/subject-identity/operations.js";
 import { configuration } from "../../d01/commit/fixture.js";
+
+const subjectKey = Schema.decodeSync(SubjectKey);
+
+const CountRow = Schema.Struct({ n: Schema.Finite });
+const countOf = (row: unknown) => Schema.decodeUnknownSync(CountRow)(row).n;
 
 const bytes = (value: unknown) =>
   canonicalJson(value).pipe(
@@ -60,7 +66,7 @@ const documentFor = (subjects: readonly { key: string; amount: string }[]) =>
 
 const partitionAnchorAway = (
   frame: (typeof SubjectIdentityInspected.Type)["frame"],
-  anchor: string
+  anchor: typeof SubjectKey.Type
 ) =>
   frame.cells.map((cell) => {
     const component = cell.components.find((item) =>
@@ -71,9 +77,7 @@ const partitionAnchorAway = (
     }
     const others = component.members.filter((member) => member !== anchor);
     const blocks =
-      others.length === 0
-        ? [component.members.slice()]
-        : [[anchor], others.slice()];
+      others.length === 0 ? [[...component.members]] : [[anchor], [...others]];
     return { blocks, cellRef: cell.cellRef };
   });
 
@@ -113,27 +117,29 @@ it.live(
             })
           );
 
-          const inspectNow = Effect.fn("test.inspectNow")(function* () {
-            return yield* executor
-              .executeSubjectIdentity(
-                account.credential,
-                yield* bytes({
-                  ...envelope,
-                  input: {
-                    anchors: ["A", "B"],
-                    atFrame: null,
-                    interval,
-                  },
-                  operation: "InspectSubjectIdentity",
-                  worldRef,
-                })
-              )
-              .pipe(
-                Effect.flatMap(
-                  Schema.decodeUnknownEffect(SubjectIdentityInspected)
+          const inspectNow = Effect.fn("test.inspectNow")(
+            function* inspectNow() {
+              return yield* executor
+                .executeSubjectIdentity(
+                  account.credential,
+                  yield* bytes({
+                    ...envelope,
+                    input: {
+                      anchors: ["A", "B"],
+                      atFrame: null,
+                      interval,
+                    },
+                    operation: "InspectSubjectIdentity",
+                    worldRef,
+                  })
                 )
-              );
-          });
+                .pipe(
+                  Effect.flatMap(
+                    Schema.decodeUnknownEffect(SubjectIdentityInspected)
+                  )
+                );
+            }
+          );
 
           const first = yield* inspectNow();
           const proposedSame = yield* executor
@@ -177,11 +183,11 @@ it.live(
             merged.frame.cells.some((cell) =>
               cell.components.some(
                 (component) =>
-                  component.members.includes("A") &&
-                  component.members.includes("B")
+                  component.members.includes(subjectKey("A")) &&
+                  component.members.includes(subjectKey("B"))
               )
             )
-          ).toBe(true);
+          ).toBeTruthy();
 
           const invalid = yield* executor
             .executeSubjectIdentity(
@@ -206,7 +212,7 @@ it.live(
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(IdentityProposed)));
           expect(invalid.question.kind).toBe("identity-split");
-          expect(invalid.question.blockedAlternatives).toEqual(
+          expect(invalid.question.blockedAlternatives).toStrictEqual(
             expect.arrayContaining([
               expect.objectContaining({
                 answer: "confirm",
@@ -218,7 +224,7 @@ it.live(
             invalid.question.alternatives.some(
               (item) => item.answer === "confirm"
             )
-          ).toBe(false);
+          ).toBeFalsy();
 
           // Propose advances cases — need a fresh Frame before the real split.
           const forSplit = yield* inspectNow();
@@ -233,7 +239,10 @@ it.live(
                     frameRef: forSplit.frame.frameRef,
                     kind: "subject-identity",
                   },
-                  partitionsByCell: partitionAnchorAway(forSplit.frame, "A"),
+                  partitionsByCell: partitionAnchorAway(
+                    forSplit.frame,
+                    subjectKey("A")
+                  ),
                 },
                 operation: "ProposeIdentitySplit",
                 operationId: randomUUID(),
@@ -248,13 +257,13 @@ it.live(
           expect(confirm).toBeDefined();
           expect(
             confirm?.effectItems.some((item) => item._tag === "Withdraw")
-          ).toBe(true);
+          ).toBeTruthy();
           expect(
             confirm?.effectItems.some(
               (item) =>
                 item._tag === "Assert" && item.relation === "different-from"
             )
-          ).toBe(true);
+          ).toBeTruthy();
 
           // Stronger Stale/absence before apply: bump identity, confirm must Stale with no decision row.
           const beforeStale = yield* Effect.gen(function* count() {
@@ -263,7 +272,7 @@ it.live(
               SELECT count(*)::int AS n FROM authority.identity_decisions
               WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
             `;
-            return Number((row as { n: number }).n);
+            return countOf(row);
           }).pipe(Effect.provide(fixture.database.authority));
           yield* Effect.gen(function* bumpIdentity() {
             const sql = yield* SqlClient.SqlClient;
@@ -297,7 +306,7 @@ it.live(
               SELECT count(*)::int AS n FROM authority.identity_decisions
               WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
             `;
-            return Number((row as { n: number }).n);
+            return countOf(row);
           }).pipe(Effect.provide(fixture.database.authority));
           expect(afterStale).toBe(beforeStale);
 
@@ -314,7 +323,10 @@ it.live(
                     frameRef: forApply.frame.frameRef,
                     kind: "subject-identity",
                   },
-                  partitionsByCell: partitionAnchorAway(forApply.frame, "A"),
+                  partitionsByCell: partitionAnchorAway(
+                    forApply.frame,
+                    subjectKey("A")
+                  ),
                 },
                 operation: "ProposeIdentitySplit",
                 operationId: randomUUID(),
@@ -328,7 +340,7 @@ it.live(
               SELECT count(*)::int AS n FROM authority.identity_decisions
               WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
             `;
-            return Number((row as { n: number }).n);
+            return countOf(row);
           }).pipe(Effect.provide(fixture.database.authority));
           const resolvedSplit = yield* executor
             .executeSubjectIdentity(
@@ -354,7 +366,7 @@ it.live(
               SELECT count(*)::int AS n FROM authority.identity_decisions
               WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
             `;
-            return Number((row as { n: number }).n);
+            return countOf(row);
           }).pipe(Effect.provide(fixture.database.authority));
           expect(decisionsAfter).toBe(decisionsBefore + 1);
 
@@ -364,11 +376,11 @@ it.live(
               (cell) =>
                 !cell.components.some(
                   (component) =>
-                    component.members.includes("A") &&
-                    component.members.includes("B")
+                    component.members.includes(subjectKey("A")) &&
+                    component.members.includes(subjectKey("B"))
                 )
             )
-          ).toBe(true);
+          ).toBeTruthy();
 
           yield* postAuth(
             fixture.config.baseUrl,

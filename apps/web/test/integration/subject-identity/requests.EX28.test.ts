@@ -2,9 +2,9 @@ import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
 import { WorldRef } from "@zoen/contracts/d01/values";
+import { IdentityFrame } from "@zoen/contracts/subject-identity/frame";
 import { Effect, Schema } from "effect";
 
-import type { IdentityInspectedFrame } from "../../../src/features/subject-identity/model.ts";
 import {
   inspectIdentityRecoveryRequest,
   inspectIdentityRequest,
@@ -18,6 +18,40 @@ const world = Schema.decodeSync(WorldRef)({
   worldId: randomUUID(),
 });
 
+const sampleFrame = () =>
+  Schema.decodeUnknownSync(IdentityFrame)({
+    assertionSegments: [],
+    audience: "private-author",
+    cells: [
+      {
+        activeAssertionRefs: [],
+        cellRef: "a".repeat(64),
+        comparisons: [],
+        components: [{ members: ["A", "B"], representative: "A" }],
+        coveredClaimRefs: [],
+        distinctions: [],
+        interval: {
+          _tag: "DateInterval",
+          from: "2026-09-01",
+          to: "2026-10-01",
+        },
+      },
+    ],
+    claims: [],
+    closureAnchors: ["A", "B"],
+    frameRef: randomUUID(),
+    interval: {
+      _tag: "DateInterval",
+      from: "2026-09-01",
+      to: "2026-10-01",
+    },
+    kind: "subject-identity",
+    purpose: "personal-records",
+    requestedAnchors: ["A", "B"],
+    schemaVersion: "subject-identity.v1",
+    worldRef: world,
+  });
+
 it.effect("EX28 inspect requests omit operationId and bind schemaVersion", () =>
   Effect.gen(function* inspectShape() {
     const inspect = yield* inspectIdentityRequest(
@@ -30,8 +64,12 @@ it.effect("EX28 inspect requests omit operationId and bind schemaVersion", () =>
     expect(inspect.operation).toBe("InspectSubjectIdentity");
     expect(inspect.schemaVersion).toBe("subject-identity.v1");
     expect("operationId" in inspect).toBeFalsy();
-    expect(inspect.input.anchors).toEqual(["A", "B"]);
+    expect(inspect.input.anchors).toStrictEqual(["A", "B"]);
+  })
+);
 
+it.effect("EX28 recovery inspect binds targetDecisionRef", () =>
+  Effect.gen(function* recoveryShape() {
     const recovery = yield* inspectIdentityRecoveryRequest(
       world,
       "A",
@@ -48,38 +86,7 @@ it.effect(
   "EX28 propose/resolve mint fresh operationIds and retain digest on resolve",
   () =>
     Effect.gen(function* mutationIds() {
-      const frame = {
-        assertionSegments: [],
-        audience: "private-author",
-        cells: [
-          {
-            activeAssertionRefs: [],
-            cellRef: "a".repeat(64),
-            components: [{ members: ["A", "B"], representative: "A" }],
-            comparisons: [],
-            coveredClaimRefs: [],
-            distinctions: [],
-            interval: {
-              _tag: "DateInterval",
-              from: "2026-09-01",
-              to: "2026-10-01",
-            },
-          },
-        ],
-        claims: [],
-        closureAnchors: ["A", "B"],
-        frameRef: randomUUID(),
-        interval: {
-          _tag: "DateInterval",
-          from: "2026-09-01",
-          to: "2026-10-01",
-        },
-        kind: "subject-identity",
-        purpose: "personal-records",
-        requestedAnchors: ["A", "B"],
-        schemaVersion: "subject-identity.v1",
-        worldRef: world,
-      } as unknown as IdentityInspectedFrame;
+      const frame = sampleFrame();
       const first = yield* proposeSameAsRequest(world, frame, "A", "B");
       const second = yield* proposeSameAsRequest(world, frame, "A", "B");
       expect(first.operationId).not.toBe(second.operationId);
@@ -96,10 +103,16 @@ it.effect(
       expect(resolve.input.consequenceDigest).toBe(digest);
       expect(resolve.input.questionRef).toBe(questionRef);
       expect(resolve.operationId).toMatch(
-        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/iu
       );
-
-      const partitions = partitionAnchorAway(frame, "A");
-      expect(partitions[0]?.blocks).toEqual([["A"], ["B"]]);
     })
+);
+
+it.effect("EX28 partition helper separates the requested anchor", () =>
+  Effect.gen(function* partitionShape() {
+    yield* Effect.void;
+    const frame = sampleFrame();
+    const partitions = partitionAnchorAway(frame, "A");
+    expect(partitions[0]?.blocks).toStrictEqual([["A"], ["B"]]);
+  })
 );

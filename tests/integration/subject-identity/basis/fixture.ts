@@ -1,7 +1,6 @@
-/* oxlint-disable effecttsgo/node-builtin-import */
 import { spawn } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
-import { join } from "node:path";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { PutBucketVersioningCommand } from "@aws-sdk/client-s3";
@@ -25,6 +24,7 @@ import {
 import type { HttpClientResponse } from "effect/unstable/http";
 
 import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/d01/s3.ts";
+import type { D01Auth } from "../../../../apps/server/src/identity/d01/identity.ts";
 import {
   sdk,
   withStorage,
@@ -49,12 +49,12 @@ const reservePort = Effect.sync(
 
 export const http = Effect.fn("basis.http")(function* send(
   origin: string,
-  path: string,
+  routePath: string,
   body?: string,
   credential?: Redacted.Redacted
 ) {
   const base = HttpClientRequest.make(body === undefined ? "GET" : "POST")(
-    `${origin}${path}`
+    `${origin}${routePath}`
   ).pipe(
     HttpClientRequest.setHeaders({
       ...(credential === undefined
@@ -79,7 +79,7 @@ export const responseCookie = (
 
 export interface CurrentComponent {
   readonly identity: ReturnType<typeof makeTestIdentityLayer>;
-  readonly runtime: Layer.Layer<SemanticExecutor>;
+  readonly runtime: Layer.Layer<D01Auth | SemanticExecutor, unknown>;
 }
 
 export interface BasisHarness {
@@ -90,7 +90,10 @@ export interface BasisHarness {
   readonly policy: DataPolicySchema;
   readonly secret: Redacted.Redacted;
   readonly storage: Parameters<typeof s3EvidenceLayer>[0];
-  readonly transitionToCurrentComponent: () => Effect.Effect<CurrentComponent>;
+  readonly transitionToCurrentComponent: () => Effect.Effect<
+    CurrentComponent,
+    unknown
+  >;
 }
 
 export const withLegacyBasisHarness = <A, E, R>(
@@ -132,18 +135,18 @@ export const withLegacyBasisHarness = <A, E, R>(
           const secret = Redacted.make(randomBytes(32).toString("hex"));
           const port = yield* reservePort;
           const origin = `http://127.0.0.1:${port}`;
-          const directory = join(
+          const directory = path.join(
             repoLocal,
             `basis-compat-${randomBytes(6).toString("hex")}`
           );
           yield* fs.makeDirectory(directory, { mode: 0o700, recursive: true });
-          const installationPath = join(directory, "installation.json");
+          const installationPath = path.join(directory, "installation.json");
           yield* fs.writeFileString(
             installationPath,
             encodeJson({ installation, policy }),
             { flag: "wx", mode: 0o600 }
           );
-          const mainJs = join(legacy.root, "apps/server/dist/main.js");
+          const mainJs = path.join(legacy.root, "apps/server/dist/main.js");
           const logs: string[] = [];
           const child = yield* Effect.acquireRelease(
             Effect.sync(() => {
@@ -151,10 +154,10 @@ export const withLegacyBasisHarness = <A, E, R>(
                 cwd: legacy.root,
                 env: {
                   ...process.env,
-                  ZOEN_AUTH_SECRET: Redacted.value(secret),
                   ZOEN_AUTHORITY_DATABASE_URL: Redacted.value(
                     database.urls.authority
                   ),
+                  ZOEN_AUTH_SECRET: Redacted.value(secret),
                   ZOEN_IDENTITY_DATABASE_URL: Redacted.value(
                     database.urls.identity
                   ),
@@ -175,10 +178,10 @@ export const withLegacyBasisHarness = <A, E, R>(
                 stdio: ["ignore", "pipe", "pipe"],
               });
               processChild.stdout?.on("data", (chunk: Buffer) => {
-                logs.push(chunk.toString("utf8"));
+                logs.push(chunk.toString("utf-8"));
               });
               processChild.stderr?.on("data", (chunk: Buffer) => {
-                logs.push(chunk.toString("utf8"));
+                logs.push(chunk.toString("utf-8"));
               });
               return processChild;
             }),
@@ -190,7 +193,8 @@ export const withLegacyBasisHarness = <A, E, R>(
               })
           );
           yield* Effect.gen(function* awaitReady() {
-            for (let attempt = 0; attempt < 120; attempt += 1) {
+            let ready = false;
+            for (let attempt = 0; attempt < 120 && !ready; attempt += 1) {
               if (child.exitCode !== null) {
                 return yield* Effect.die(
                   new Error(
@@ -198,19 +202,21 @@ export const withLegacyBasisHarness = <A, E, R>(
                   )
                 );
               }
-              const ok = yield* Effect.tryPromise(() =>
+              ready = yield* Effect.tryPromise(() =>
                 fetch(`${origin}/ready`).then(
                   (response) => response.status === 200
                 )
               ).pipe(Effect.orElseSucceed(() => false));
-              if (ok) {
-                return;
+              if (!ready) {
+                yield* Effect.sleep("250 millis");
               }
-              yield* Effect.sleep("250 millis");
             }
-            return yield* Effect.die(
-              new Error(`Legacy server ready timeout logs=${logs.join("")}`)
-            );
+            if (!ready) {
+              return yield* Effect.die(
+                new Error(`Legacy server ready timeout logs=${logs.join("")}`)
+              );
+            }
+            return ready;
           });
           let transitioned = false;
           const transitionToCurrentComponent = () =>
@@ -229,7 +235,9 @@ export const withLegacyBasisHarness = <A, E, R>(
                       resolve();
                       return;
                     }
-                    child.once("exit", () => resolve());
+                    child.once("exit", () => {
+                      resolve();
+                    });
                     setTimeout(() => {
                       child.kill("SIGKILL");
                       resolve();

@@ -142,8 +142,8 @@ export const planResolutionEffects = Effect.fn(
   const left = first < second ? first : second;
   const right = first < second ? second : first;
   const result: Record<"same-as" | "different-from", IdentityEffectPlan> = {
-    "same-as": { _tag: "Allowed", effectItems: [] },
     "different-from": { _tag: "Allowed", effectItems: [] },
+    "same-as": { _tag: "Allowed", effectItems: [] },
   };
   for (const relation of ["same-as", "different-from"] as const) {
     const incompatible = frame.cells.filter((cell) => {
@@ -152,35 +152,34 @@ export const planResolutionEffects = Effect.fn(
         ? current === "different-from"
         : current === "same-as";
     });
-    if (incompatible.length > 0) {
-      result[relation] = {
-        _tag: "Blocked",
-        blocked: {
-          reason:
-            relation === "same-as"
-              ? "ConflictingDistinction"
-              : "RequiresPartition",
-          supportingRefs: [
-            ...new Set(
-              incompatible.flatMap((cell) => cell.activeAssertionRefs)
+    result[relation] =
+      incompatible.length > 0
+        ? {
+            _tag: "Blocked",
+            blocked: {
+              reason:
+                relation === "same-as"
+                  ? "ConflictingDistinction"
+                  : "RequiresPartition",
+              supportingRefs: [
+                ...new Set(
+                  incompatible.flatMap((cell) => cell.activeAssertionRefs)
+                ),
+              ].toSorted(),
+            },
+          }
+        : {
+            _tag: "Allowed",
+            effectItems: directGaps(frame, left, right, relation).map(
+              (interval) => ({
+                _tag: "Assert",
+                interval,
+                left,
+                relation,
+                right,
+              })
             ),
-          ].toSorted(),
-        },
-      };
-    } else {
-      result[relation] = {
-        _tag: "Allowed",
-        effectItems: directGaps(frame, left, right, relation).map(
-          (interval) => ({
-            _tag: "Assert",
-            interval,
-            left,
-            relation,
-            right,
-          })
-        ),
-      };
-    }
+          };
   }
   return result;
 });
@@ -303,6 +302,8 @@ const coalesceDrafts = (
 
 /** Explicit full-component partition; never invents intra-block equality. */
 export const planSplitEffects = Effect.fn("subjectIdentity.planSplitEffects")(
+  // Partition validation branches are intentional and fully covered by EX24 unit tests.
+  // oxlint-disable-next-line complexity -- explicit full-component partition checks
   function* planSplitEffects(
     projection: IdentityProjection,
     frame: IdentityControlFrame,
@@ -334,7 +335,7 @@ export const planSplitEffects = Effect.fn("subjectIdentity.planSplitEffects")(
       if (component === undefined) {
         return yield* new InvalidInput({ code: "INVALID_INPUT" });
       }
-      const members = component.members;
+      const { members } = component;
       const flat = partition.blocks.flat();
       if (
         partition.blocks.length === 0 ||
@@ -342,10 +343,7 @@ export const planSplitEffects = Effect.fn("subjectIdentity.planSplitEffects")(
         new Set(flat).size !== flat.length ||
         flat.some((member) => !members.includes(member))
       ) {
-        return blockedPlan(
-          "InvalidPartition",
-          cell.activeAssertionRefs.slice()
-        );
+        return blockedPlan("InvalidPartition", [...cell.activeAssertionRefs]);
       }
       if (partition.blocks.length > 1) {
         separated = true;
@@ -386,16 +384,13 @@ export const planSplitEffects = Effect.fn("subjectIdentity.planSplitEffects")(
       }
       for (const block of partition.blocks) {
         if (!connectedWithin(block, remaining)) {
-          return blockedPlan(
-            "InvalidPartition",
-            cell.activeAssertionRefs.slice()
-          );
+          return blockedPlan("InvalidPartition", [...cell.activeAssertionRefs]);
         }
       }
       for (
         let leftIndex = 0;
         leftIndex < partition.blocks.length;
-        leftIndex++
+        leftIndex += 1
       ) {
         const leftBlock = partition.blocks[leftIndex];
         if (leftBlock === undefined) {
@@ -404,7 +399,7 @@ export const planSplitEffects = Effect.fn("subjectIdentity.planSplitEffects")(
         for (
           let rightIndex = leftIndex + 1;
           rightIndex < partition.blocks.length;
-          rightIndex++
+          rightIndex += 1
         ) {
           const rightBlock = partition.blocks[rightIndex];
           if (rightBlock === undefined) {

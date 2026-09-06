@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
+import { SubjectKey } from "@zoen/contracts/d01/values";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -21,6 +22,11 @@ import {
   SubjectIdentityInspected,
 } from "../../../../packages/contracts/src/subject-identity/operations.js";
 import { configuration } from "../../d01/commit/fixture.js";
+
+const subjectKey = Schema.decodeSync(SubjectKey);
+
+const CountRow = Schema.Struct({ n: Schema.Finite });
+const countOf = (row: unknown) => Schema.decodeUnknownSync(CountRow)(row).n;
 
 const bytes = (value: unknown) =>
   canonicalJson(value).pipe(
@@ -79,8 +85,7 @@ const partitionAway = (
     const members = component?.members ?? [anchor];
     const others = members.filter((member) => member !== anchor);
     return {
-      blocks:
-        others.length === 0 ? [members.slice()] : [[anchor], others.slice()],
+      blocks: others.length === 0 ? [[...members]] : [[anchor], [...others]],
       cellRef: cell.cellRef,
     };
   });
@@ -118,27 +123,29 @@ it.live(
             })
           );
 
-          const inspectNow = Effect.fn("review.inspectNow")(function* () {
-            return yield* executor
-              .executeSubjectIdentity(
-                owner.credential,
-                yield* bytes({
-                  ...envelope,
-                  input: {
-                    anchors: ["A", "B"],
-                    atFrame: null,
-                    interval,
-                  },
-                  operation: "InspectSubjectIdentity",
-                  worldRef,
-                })
-              )
-              .pipe(
-                Effect.flatMap(
-                  Schema.decodeUnknownEffect(SubjectIdentityInspected)
+          const inspectNow = Effect.fn("review.inspectNow")(
+            function* inspectNow() {
+              return yield* executor
+                .executeSubjectIdentity(
+                  owner.credential,
+                  yield* bytes({
+                    ...envelope,
+                    input: {
+                      anchors: ["A", "B"],
+                      atFrame: null,
+                      interval,
+                    },
+                    operation: "InspectSubjectIdentity",
+                    worldRef,
+                  })
                 )
-              );
-          });
+                .pipe(
+                  Effect.flatMap(
+                    Schema.decodeUnknownEffect(SubjectIdentityInspected)
+                  )
+                );
+            }
+          );
 
           const first = yield* inspectNow();
           const merge = yield* executor
@@ -200,7 +207,7 @@ it.live(
               })
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(IdentityProposed)));
-          expect(smuggled.question.blockedAlternatives).toEqual(
+          expect(smuggled.question.blockedAlternatives).toStrictEqual(
             expect.arrayContaining([
               expect.objectContaining({
                 answer: "confirm",
@@ -345,7 +352,7 @@ it.live(
               SELECT count(*)::int AS n FROM authority.identity_decisions
               WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
             `;
-            return Number((row as { n: number }).n);
+            return countOf(row);
           }).pipe(Effect.provide(fixture.database.authority));
           const recoveryBlocked = yield* executor
             .executeSubjectIdentity(
@@ -360,7 +367,7 @@ it.live(
                   },
                   partitionsByCell: recovery.frame.cells.map((cell) => {
                     const component = cell.components.find((item) =>
-                      item.members.includes("A")
+                      item.members.includes(subjectKey("A"))
                     );
                     return {
                       blocks: [component?.members ?? ["A"]],
@@ -375,7 +382,7 @@ it.live(
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(IdentityProposed)));
           expect(recoveryBlocked.question.kind).toBe("identity-recovery-split");
-          expect(recoveryBlocked.question.blockedAlternatives).toEqual(
+          expect(recoveryBlocked.question.blockedAlternatives).toStrictEqual(
             expect.arrayContaining([
               expect.objectContaining({
                 answer: "confirm",
@@ -390,7 +397,7 @@ it.live(
               SELECT count(*)::int AS n FROM authority.identity_decisions
               WHERE world_id = ${worldRef.worldId} AND realm = ${worldRef.realm}
             `;
-            return Number((row as { n: number }).n);
+            return countOf(row);
           }).pipe(Effect.provide(fixture.database.authority));
           expect(after).toBe(before);
 

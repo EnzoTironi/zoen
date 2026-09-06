@@ -148,8 +148,6 @@ export class SemanticExecutor extends Context.Service<
             | ReturnType<typeof inspectSubjectIdentity>
             | ReturnType<typeof inspectIdentityRecovery>
             | ReturnType<typeof proposeIdentityResolution>
-            | ReturnType<typeof proposeIdentitySplit>
-            | ReturnType<typeof proposeIdentityUndo>
             | ReturnType<typeof resolveIdentity>
           >
         >()

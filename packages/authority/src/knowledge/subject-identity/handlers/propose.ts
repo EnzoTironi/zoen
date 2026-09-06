@@ -6,14 +6,10 @@ import {
   Stale,
   Unavailable,
 } from "@zoen/contracts/d01/errors";
-import {
-  CaseRef,
-  QuestionRef,
-  Revision,
-  WorldRef,
-} from "@zoen/contracts/d01/values";
+import type { WorldRef } from "@zoen/contracts/d01/values";
+import { CaseRef, QuestionRef, Revision } from "@zoen/contracts/d01/values";
 import { PrincipalRef } from "@zoen/contracts/sharing/operations";
-import {
+import type {
   IdentityFrame,
   IdentityRecoveryFrame,
 } from "@zoen/contracts/subject-identity/frame";
@@ -109,9 +105,9 @@ const saveProposal = Effect.fn("subjectIdentity.saveProposal")(
     readonly caseRef: typeof CaseRef.Type;
     readonly context: VerifiedRequestContext;
     readonly frameRef: string;
-    readonly question: typeof IdentityQuestion.Type;
+    readonly question: IdentityQuestion;
     readonly questionRef: typeof QuestionRef.Type;
-    readonly savedBasis: typeof CurrentInternalBasis.Type;
+    readonly savedBasis: CurrentInternalBasis;
     readonly subjectKey: string;
     readonly worldRef: WorldRef;
   }) {
@@ -122,12 +118,10 @@ const saveProposal = Effect.fn("subjectIdentity.saveProposal")(
           const revision = yield* Schema.decodeEffect(Revision)(
             (BigInt(cut.cases) + 1n).toString()
           );
-          const basis = yield* Schema.decodeUnknownEffect(CurrentInternalBasis)(
-            {
-              ...input.savedBasis,
-              cut: { ...input.savedBasis.cut, cases: revision },
-            }
-          );
+          const basis = yield* Schema.decodeEffect(CurrentInternalBasis)({
+            ...input.savedBasis,
+            cut: { ...input.savedBasis.cut, cases: revision },
+          });
           const basisJson = yield* canonicalJson(basis);
           const questionJson = yield* canonicalJson(input.question);
           const consequenceJson = yield* canonicalJson({
@@ -630,7 +624,13 @@ export const proposeIdentityUndo = Effect.fn("subjectIdentity.proposeUndo")(
       savedBasis: basis,
       subjectKey:
         frame.kind === "subject-identity"
-          ? [...frame.requestedAnchors].toSorted()[0]!
+          ? (() => {
+              const [primary] = [...frame.requestedAnchors].toSorted();
+              if (primary === undefined) {
+                throw new Error("Identity requestedAnchors must be non-empty");
+              }
+              return primary;
+            })()
           : frame.anchor,
       worldRef: request.worldRef,
     });

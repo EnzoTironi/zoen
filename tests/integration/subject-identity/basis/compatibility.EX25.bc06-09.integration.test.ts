@@ -1,6 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
+import { InternalBasis } from "@zoen/authority/ports/d01/basis";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { canonicalJson } from "@zoen/authority/values/canonical";
 import {
@@ -25,6 +26,18 @@ import {
 } from "./fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
+const encodeBytes = (value: unknown) =>
+  canonicalJson(value).pipe(
+    Effect.map((text) => new TextEncoder().encode(text))
+  );
+
+const requireRow = <A>(row: A | undefined, message: string) => {
+  if (row === undefined) {
+    throw new Error(message);
+  }
+  return row;
+};
+
 const envelope = { purpose: "personal-records", schemaVersion: "d01.v1" };
 const sharing = {
   purpose: "personal-records",
@@ -180,7 +193,11 @@ it.live(
           SELECT operation
           FROM authority.receipts
           WHERE world_id = ${worldRef.worldId}::uuid`;
-        expect(legacyOps.map((row) => row.operation).sort()).toEqual(
+        expect(
+          legacyOps
+            .map((row) => String(row.operation))
+            .toSorted((left, right) => left.localeCompare(right))
+        ).toStrictEqual(
           expect.arrayContaining([
             "CreatePersonalWorld",
             "GrantWorldReadAccess",
@@ -193,15 +210,11 @@ it.live(
 
         return yield* Effect.gen(function* withCurrentExecutor() {
           const executor = yield* SemanticExecutor;
-          const bytes = (value: unknown) =>
-            canonicalJson(value).pipe(
-              Effect.map((text) => new TextEncoder().encode(text))
-            );
 
           const replayBootstrap = yield* executor
             .execute(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: {},
                 operation: "CreatePersonalWorld",
@@ -212,19 +225,19 @@ it.live(
           expect(replayBootstrap).toStrictEqual(created);
 
           const replayImport = yield* executor
-            .execute(owner, yield* bytes(importRequest))
+            .execute(owner, yield* encodeBytes(importRequest))
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(EvidenceImported)));
           expect(replayImport).toStrictEqual(imported);
 
           const replayGrant = yield* executor
-            .executeSharing(owner, yield* bytes(grantRequest))
+            .executeSharing(owner, yield* encodeBytes(grantRequest))
             .pipe(
               Effect.flatMap(Schema.decodeUnknownEffect(WorldReadAccessGranted))
             );
           expect(replayGrant).toStrictEqual(granted);
 
           const replayRevoke = yield* executor
-            .executeSharing(owner, yield* bytes(revokeRequest))
+            .executeSharing(owner, yield* encodeBytes(revokeRequest))
             .pipe(
               Effect.flatMap(Schema.decodeUnknownEffect(WorldReadAccessRevoked))
             );
@@ -233,7 +246,7 @@ it.live(
           const freshImport = yield* executor
             .execute(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: { document: jsonDocument("2", "110.00") },
                 operation: "ImportEvidence",
@@ -242,11 +255,14 @@ it.live(
               })
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(EvidenceImported)));
-          const [importReceipt] = yield* sql`
+          const importReceipt = requireRow(
+            (yield* sql`
             SELECT touched_domains
             FROM authority.receipts
             WHERE world_id = ${worldRef.worldId}::uuid
-              AND receipt_id = ${freshImport.receiptRef}::uuid`;
+              AND receipt_id = ${freshImport.receiptRef}::uuid`)[0],
+            "missing import receipt"
+          );
           expect(importReceipt.touched_domains).toHaveProperty("identity");
           const framesBeforeGrant = yield* sql`
             SELECT count(*)::int AS frames
@@ -256,7 +272,7 @@ it.live(
           const regrant = yield* executor
             .executeSharing(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...sharing,
                 input: {
                   expectedRevision: "1",
@@ -274,11 +290,14 @@ it.live(
             revision: "2",
             state: "active",
           });
-          const [grantReceipt] = yield* sql`
+          const grantReceipt = requireRow(
+            (yield* sql`
             SELECT touched_domains
             FROM authority.receipts
             WHERE world_id = ${worldRef.worldId}::uuid
-              AND receipt_id = ${regrant.receiptRef}::uuid`;
+              AND receipt_id = ${regrant.receiptRef}::uuid`)[0],
+            "missing grant receipt"
+          );
           expect(grantReceipt.touched_domains).toHaveProperty("identity");
           expect(
             yield* sql`
@@ -290,7 +309,7 @@ it.live(
           const inspected = yield* executor
             .execute(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: { atFrame: null, subjectKey: "invoice-a" },
                 operation: "Inspect",
@@ -298,17 +317,21 @@ it.live(
               })
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
-          const [storedBasis] = yield* sql`
+          const storedBasisRow = requireRow(
+            (yield* sql`
             SELECT internal_basis
             FROM authority.frames
             WHERE world_id = ${worldRef.worldId}::uuid
-              AND frame_id = ${inspected.frame.frameRef}::uuid`;
-          expect(storedBasis.internal_basis).toMatchObject({
+              AND frame_id = ${inspected.frame.frameRef}::uuid`)[0],
+            "missing stored frame basis"
+          );
+          const storedBasis = Schema.decodeUnknownSync(InternalBasis)(
+            storedBasisRow.internal_basis
+          );
+          expect(storedBasis).toMatchObject({
             schemaVersion: "authority.basis.v2",
           });
-          expect(
-            Object.keys(storedBasis.internal_basis.cut).sort()
-          ).toStrictEqual([
+          expect(Object.keys(storedBasis.cut).toSorted()).toStrictEqual([
             "cases",
             "claims",
             "evidence",
@@ -316,7 +339,7 @@ it.live(
             "membership",
             "sources",
           ]);
-          expect(storedBasis.internal_basis.readSet).toMatchObject({
+          expect(storedBasis.readSet).toMatchObject({
             identities: [],
             schemaVersion: "authority.read-set.v2",
           });
@@ -330,7 +353,7 @@ it.live(
           const proposed = yield* executor
             .executeCorrection(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: {
                   consequence: {
@@ -351,26 +374,32 @@ it.live(
             .pipe(
               Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
             );
-          const [caseBasis] = yield* sql`
+          const caseBasisRow = requireRow(
+            (yield* sql`
             SELECT internal_basis
             FROM authority.cases
             WHERE world_id = ${worldRef.worldId}::uuid
-              AND case_id = ${proposed.caseRef}::uuid`;
-          expect(caseBasis.internal_basis.cut.cases).toBe(
-            (BigInt(storedBasis.internal_basis.cut.cases) + 1n).toString()
+              AND case_id = ${proposed.caseRef}::uuid`)[0],
+            "missing case basis"
+          );
+          const caseBasis = Schema.decodeUnknownSync(InternalBasis)(
+            caseBasisRow.internal_basis
+          );
+          expect(caseBasis.cut.cases).toBe(
+            (BigInt(storedBasis.cut.cases) + 1n).toString()
           );
           expect({
-            ...caseBasis.internal_basis,
+            ...caseBasis,
             cut: {
-              ...caseBasis.internal_basis.cut,
-              cases: storedBasis.internal_basis.cut.cases,
+              ...caseBasis.cut,
+              cases: storedBasis.cut.cases,
             },
-          }).toStrictEqual(storedBasis.internal_basis);
+          }).toStrictEqual(storedBasis);
 
           const answered = yield* executor
             .executeCorrection(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: {
                   answer: "confirm",
@@ -390,7 +419,7 @@ it.live(
           const afterAnswer = yield* executor
             .execute(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: { atFrame: null, subjectKey: "invoice-a" },
                 operation: "Inspect",
@@ -407,7 +436,7 @@ it.live(
           const pending = yield* executor
             .executeCorrection(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: {
                   consequence: {
@@ -429,11 +458,14 @@ it.live(
               Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
             );
 
-          const [identityBefore] = yield* sql`
+          const identityBefore = requireRow(
+            (yield* sql`
             SELECT version::text AS version
             FROM authority.domains
             WHERE world_id = ${worldRef.worldId}::uuid
-              AND domain_key = 'identity'`;
+              AND domain_key = 'identity'`)[0],
+            "missing identity domain before"
+          );
           yield* sql`
             UPDATE authority.domains
             SET version = version + 1
@@ -443,7 +475,7 @@ it.live(
             yield* executor
               .executeCorrection(
                 owner,
-                yield* bytes({
+                yield* encodeBytes({
                   ...envelope,
                   input: {
                     answer: "confirm",
@@ -457,13 +489,16 @@ it.live(
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Stale" });
-          const [identityAfter] = yield* sql`
+          const identityAfter = requireRow(
+            (yield* sql`
             SELECT version::text AS version
             FROM authority.domains
             WHERE world_id = ${worldRef.worldId}::uuid
-              AND domain_key = 'identity'`;
-          expect(BigInt(identityAfter.version)).toBe(
-            BigInt(identityBefore.version) + 1n
+              AND domain_key = 'identity'`)[0],
+            "missing identity domain after"
+          );
+          expect(BigInt(String(identityAfter.version))).toBe(
+            BigInt(String(identityBefore.version)) + 1n
           );
           expect(
             yield* sql`
@@ -477,7 +512,7 @@ it.live(
           yield* executor
             .execute(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...envelope,
                 input: { document: jsonDocument("3", "120.00") },
                 operation: "ImportEvidence",
@@ -489,7 +524,7 @@ it.live(
           const liveGrant = yield* executor
             .executeSharing(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...sharing,
                 input: {
                   expectedRevision: "2",
@@ -515,17 +550,19 @@ it.live(
           yield* Effect.scoped(
             executor.executeWithEmission(
               viewer,
-              yield* bytes(viewerInspectRequest),
+              yield* encodeBytes(viewerInspectRequest),
               (body) => {
                 emitted = body;
                 return "submitted";
               }
             )
           );
-          expect(emitted).not.toBeNull();
+          if (emitted === null) {
+            return yield* Effect.die("expected disclosure emission body");
+          }
           const emittedFrame = yield* Schema.decodeUnknownEffect(
             FrameInspected
-          )(JSON.parse(new TextDecoder().decode(emitted as Uint8Array)));
+          )(JSON.parse(new TextDecoder().decode(emitted)));
           expect(emittedFrame._tag).toBe("FrameInspected");
           expect(emittedFrame.frame.subjectKey).toBe("invoice-a");
           expect(JSON.stringify(emittedFrame)).not.toContain(
@@ -538,10 +575,10 @@ it.live(
           // Wait for disclosure ACK so membership writers are not blocked by a stale pending row.
           yield* Effect.gen(function* awaitAck() {
             for (let attempt = 0; attempt < 200; attempt += 1) {
-              const pending = yield* sql`
+              const pendingRows = yield* sql`
                 SELECT count(*)::int AS count FROM jobs.disclosure_pending`;
-              if (pending[0]?.count === 0) {
-                return;
+              if (pendingRows[0]?.count === 0) {
+                return "acked" as const;
               }
               yield* Effect.sleep("20 millis");
             }
@@ -553,7 +590,7 @@ it.live(
           const won = yield* executor
             .executeSharing(
               owner,
-              yield* bytes({
+              yield* encodeBytes({
                 ...sharing,
                 input: {
                   expectedRevision: liveGrant.membershipAtCommit.revision,
@@ -574,7 +611,7 @@ it.live(
             yield* Effect.scoped(
               executor.executeWithEmission(
                 viewer,
-                yield* bytes(viewerInspectRequest),
+                yield* encodeBytes(viewerInspectRequest),
                 () => {
                   afterRevokeEmitted = true;
                   return "submitted";
@@ -582,7 +619,7 @@ it.live(
               )
             ).pipe(Effect.flip)
           ).toMatchObject({ _tag: "NotFoundOrDenied" });
-          expect(afterRevokeEmitted).toBe(false);
+          expect(afterRevokeEmitted).toBeFalsy();
 
           return {
             bc: ["BC-06", "BC-07", "BC-09"],

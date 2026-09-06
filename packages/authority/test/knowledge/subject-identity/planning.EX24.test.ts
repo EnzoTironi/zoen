@@ -1,11 +1,15 @@
 import { describe, expect, it } from "@effect/vitest";
-import { Effect } from "effect";
+import { SubjectKey } from "@zoen/contracts/d01/values";
+import { IdentityFrame } from "@zoen/contracts/subject-identity/frame";
+import { Effect, Schema } from "effect";
 
 import { maximalIdentityCells } from "../../../src/knowledge/subject-identity/pure/cells.js";
 import { projectIdentity } from "../../../src/knowledge/subject-identity/pure/events.js";
 import { closeIdentity } from "../../../src/knowledge/subject-identity/pure/graph.js";
 import { planSplitEffects } from "../../../src/knowledge/subject-identity/pure/planning.js";
 import { assertEdge, decision, period, scope } from "./fixtures.js";
+
+const anchor = Schema.decodeSync(SubjectKey);
 
 describe("EX24 planSplitEffects", () => {
   it.effect(
@@ -20,7 +24,7 @@ describe("EX24 planSplitEffects", () => {
         ]);
         const closure = yield* closeIdentity(
           projection,
-          ["A", "B", "C"],
+          [anchor("A"), anchor("B"), anchor("C")],
           period()
         );
         const drafts = yield* maximalIdentityCells(closure, period());
@@ -39,27 +43,27 @@ describe("EX24 planSplitEffects", () => {
           interval: period(),
           kind: "subject-identity" as const,
           purpose: scope.purpose,
-          requestedAnchors: ["A", "B"] as const,
+          requestedAnchors: [anchor("A"), anchor("B")] as const,
           schemaVersion: "subject-identity.v1" as const,
           worldRef: scope.worldRef,
         };
         const partitionsByCell = frame.cells.map((cell) => ({
-          blocks: [["A"], ["B", "C"]],
+          blocks: [[anchor("A")], [anchor("B"), anchor("C")]],
           cellRef: cell.cellRef,
         }));
         const plan = yield* planSplitEffects(
           projection,
-          frame as never,
-          "A",
+          Schema.decodeUnknownSync(IdentityFrame)(frame),
+          anchor("A"),
           partitionsByCell
         );
         expect(plan._tag).toBe("Allowed");
         if (plan._tag !== "Allowed") {
           return;
         }
-        expect(plan.effectItems.some((item) => item._tag === "Withdraw")).toBe(
-          true
-        );
+        expect(
+          plan.effectItems.some((item) => item._tag === "Withdraw")
+        ).toBeTruthy();
         const distinctions = plan.effectItems.filter(
           (item) => item._tag === "Assert" && item.relation === "different-from"
         );
@@ -74,7 +78,7 @@ describe("EX24 planSplitEffects", () => {
       const projection = yield* projectIdentity(scope, [decision(1, [ab, bc])]);
       const closure = yield* closeIdentity(
         projection,
-        ["A", "B", "C"],
+        [anchor("A"), anchor("B"), anchor("C")],
         period()
       );
       const drafts = yield* maximalIdentityCells(closure, period());
@@ -93,19 +97,19 @@ describe("EX24 planSplitEffects", () => {
         interval: period(),
         kind: "subject-identity" as const,
         purpose: scope.purpose,
-        requestedAnchors: ["A", "B"] as const,
+        requestedAnchors: [anchor("A"), anchor("B")] as const,
         schemaVersion: "subject-identity.v1" as const,
         worldRef: scope.worldRef,
       };
       // A|C keeps A and C together without an AC edge after withdrawing AB/BC paths.
       const partitionsByCell = frame.cells.map((cell) => ({
-        blocks: [["A", "C"], ["B"]],
+        blocks: [[anchor("A"), anchor("C")], [anchor("B")]],
         cellRef: cell.cellRef,
       }));
       const plan = yield* planSplitEffects(
         projection,
-        frame as never,
-        "A",
+        Schema.decodeUnknownSync(IdentityFrame)(frame),
+        anchor("A"),
         partitionsByCell
       );
       expect(plan._tag).toBe("Blocked");
@@ -114,12 +118,12 @@ describe("EX24 planSplitEffects", () => {
       }
       const noSep = yield* planSplitEffects(
         projection,
-        frame as never,
-        "A",
+        Schema.decodeUnknownSync(IdentityFrame)(frame),
+        anchor("A"),
         frame.cells.map((cell) => ({
           blocks: [
-            cell.components.find((item) => item.members.includes("A"))
-              ?.members ?? ["A"],
+            cell.components.find((item) => item.members.includes(anchor("A")))
+              ?.members ?? [anchor("A")],
           ],
           cellRef: cell.cellRef,
         }))

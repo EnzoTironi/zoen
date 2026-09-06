@@ -1,11 +1,13 @@
 import { VisibleClaim } from "@zoen/contracts/d01/evidence";
-import { DateInterval } from "@zoen/contracts/d01/values";
+import { DateInterval, SubjectKey } from "@zoen/contracts/d01/values";
 import { Schema } from "effect";
 
 import {
   IdentityDecision,
   IdentityScope,
 } from "../../../src/knowledge/subject-identity/pure/events.js";
+
+const decodeSubjectKey = Schema.decodeSync(SubjectKey);
 
 export const id = (number: number) =>
   `00000000-0000-4000-8000-${number.toString(16).padStart(12, "0")}`;
@@ -40,18 +42,18 @@ export const assertEdge = (
   relation = "same-as",
   interval = period()
 ) => ({
-  _tag: "Assert",
+  _tag: "Assert" as const,
   assertionRef: id(2000 + index),
   effectRef: id(3000 + index),
   interval,
-  left,
+  left: decodeSubjectKey(left),
   relation,
-  right,
+  right: decodeSubjectKey(right),
 });
 
 export const claim = (
   index: number,
-  subjectKey: string,
+  key: string,
   fields: Readonly<Record<string, unknown>> = {}
 ) =>
   Schema.decodeSync(VisibleClaim)({
@@ -67,7 +69,7 @@ export const claim = (
       revision: "1",
     },
     sourceRef: id(12_000 + index),
-    subjectKey,
+    subjectKey: decodeSubjectKey(key),
     validTime: period(),
     value: { _tag: "Known", amount: "100", currency: "BRL" },
     verification: "unverified",

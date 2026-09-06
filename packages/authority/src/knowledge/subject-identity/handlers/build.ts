@@ -6,22 +6,15 @@ import {
   Unavailable,
 } from "@zoen/contracts/d01/errors";
 import type { VisibleClaim } from "@zoen/contracts/d01/evidence";
-import {
-  DateInterval,
-  FrameRef,
-  Instant,
-  SubjectKey,
-} from "@zoen/contracts/d01/values";
-import type { Purpose, WorldRef } from "@zoen/contracts/d01/values";
-import { PrincipalRef } from "@zoen/contracts/sharing/operations";
+import { DateInterval, FrameRef, Instant } from "@zoen/contracts/d01/values";
+import type { Purpose, WorldRef, SubjectKey } from "@zoen/contracts/d01/values";
+import type { PrincipalRef } from "@zoen/contracts/sharing/operations";
 import {
   IdentityFrame,
   IdentityRecoveryFrame,
 } from "@zoen/contracts/subject-identity/frame";
-import {
-  IdentityDecisionRef,
-  IdentitySeeds,
-} from "@zoen/contracts/subject-identity/values";
+import type { IdentityDecisionRef } from "@zoen/contracts/subject-identity/values";
+import { IdentitySeeds } from "@zoen/contracts/subject-identity/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -29,9 +22,8 @@ import {
   CurrentInternalBasis,
   IdentityDependency,
   ReadSet,
-  SourceDependency,
 } from "../../../ports/d01/basis.js";
-import type { DomainCut } from "../../../ports/d01/basis.js";
+import type { DomainCut, SourceDependency } from "../../../ports/d01/basis.js";
 import { canonicalJson, structuredDigest } from "../../../values/canonical.js";
 import {
   maximalIdentityCells,
@@ -43,7 +35,13 @@ import { closeIdentity } from "../pure/graph.js";
 
 export const primarySubjectKey = (
   anchors: readonly (typeof SubjectKey.Type)[]
-): typeof SubjectKey.Type => [...anchors].toSorted()[0]!;
+): typeof SubjectKey.Type => {
+  const [primary] = [...anchors].toSorted();
+  if (primary === undefined) {
+    throw new Error("Identity anchors must be non-empty");
+  }
+  return primary;
+};
 
 export const buildIdentityDependency = Effect.fn(
   "subjectIdentity.buildDependency"
@@ -51,7 +49,7 @@ export const buildIdentityDependency = Effect.fn(
   readonly anchors: readonly (typeof SubjectKey.Type)[];
   readonly closureAnchors: readonly (typeof SubjectKey.Type)[];
   readonly interval: typeof DateInterval.Type;
-  readonly principalRef: typeof PrincipalRef.Type;
+  readonly principalRef: PrincipalRef;
   readonly purpose: typeof Purpose.Type;
   readonly revision: DomainCut["identity"];
 }) {
@@ -73,7 +71,7 @@ export const buildComparisonFrame = Effect.fn(
   readonly cut: DomainCut;
   readonly interval: typeof DateInterval.Type;
   readonly membershipRevision: CurrentInternalBasis["readSet"]["membershipRevision"];
-  readonly principalRef: typeof PrincipalRef.Type;
+  readonly principalRef: PrincipalRef;
   readonly projection: IdentityProjection;
   readonly purpose: typeof Purpose.Type;
   readonly seeds: typeof IdentitySeeds.Type;
@@ -162,7 +160,7 @@ export const buildRecoveryFrame = Effect.fn(
   readonly cut: DomainCut;
   readonly interval: typeof DateInterval.Type;
   readonly membershipRevision: CurrentInternalBasis["readSet"]["membershipRevision"];
-  readonly principalRef: typeof PrincipalRef.Type;
+  readonly principalRef: PrincipalRef;
   readonly projection: IdentityProjection;
   readonly purpose: typeof Purpose.Type;
   readonly sources: readonly (typeof SourceDependency.Type)[];

@@ -53,10 +53,10 @@ interface Fixture {
   readonly client: S3Client;
 }
 
-export const withStorage = <A, E>(
+export const withStorage = <A, E, R = never>(
   use: (
     fixture: Fixture
-  ) => Effect.Effect<A, E, EvidenceObjectStore | Scope.Scope>
+  ) => Effect.Effect<A, E, R | EvidenceObjectStore | Scope.Scope>
 ) =>
   Effect.scoped(
     Effect.gen(function* storageFixture() {
