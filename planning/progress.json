@@ -729,7 +729,7 @@
     },
     {
       "date": "2026-09-06",
-      "commit": "PENDING",
+      "commit": "f3982e48380f312beecd04712eb28d820cc57285",
       "packages": ["EX37"],
       "state": "d04_hosted_retained_restore_disposable_landed",
       "profile": "d04-hosted-retained-v1 (candidate; disposable restore of enabled retained scope only)",
