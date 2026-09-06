@@ -6,6 +6,8 @@ import {
   DataPolicy,
   DataPolicySchema,
 } from "@zoen/authority/ports/d01/context";
+import { ErasureAttemptRegister } from "@zoen/authority/ports/erasure/attempt-register";
+import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { ApplicationApi } from "@zoen/contracts/d01/api";
 import { Effect, Layer, Schema } from "effect";
@@ -30,6 +32,8 @@ import { captureMaintenance } from "./maintenance/captures.ts";
 
 export interface D01ApplicationConfig {
   readonly authorityDatabaseUrl: Redacted.Redacted;
+  /** Dedicated pool/DB for attempt register (outside Closing TX). Defaults to authority URL. */
+  readonly erasureAttemptDatabaseUrl?: Redacted.Redacted;
   readonly identity: D01IdentityConfig;
   readonly installation: typeof AuthorityInstallationSchema.Type;
   readonly policy: DataPolicySchema;
@@ -54,22 +58,32 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         maxConnections: 8,
         url: config.authorityDatabaseUrl,
       });
+      const authorityPg = makeD01PostgresLayer({
+        applicationName: "zoen-authority-live",
+        maxConnections: 8,
+        url: config.authorityDatabaseUrl,
+      });
+      const erasureAttemptUrl =
+        config.erasureAttemptDatabaseUrl ?? config.authorityDatabaseUrl;
+      const erasureAttemptPg = makeD01PostgresLayer({
+        applicationName: "zoen-erasure-attempt",
+        maxConnections: 4,
+        url: erasureAttemptUrl,
+      });
+      const erasureRegister = localErasureAttemptRegisterLayer.pipe(
+        Layer.provide(erasureAttemptPg)
+      );
       const infrastructure = Layer.mergeAll(
         Layer.effectDiscard(checkD01AuthorityRole).pipe(
-          Layer.provideMerge(
-            makeD01PostgresLayer({
-              applicationName: "zoen-authority-live",
-              maxConnections: 8,
-              url: config.authorityDatabaseUrl,
-            })
-          )
+          Layer.provideMerge(authorityPg)
         ),
         makeD01IdentityLayer(config.identity).pipe(
           Layer.provideMerge(disclosure)
         ),
         s3EvidenceLayer(config.storage),
         Layer.succeed(AuthorityInstallation, installation),
-        Layer.succeed(DataPolicy, policy)
+        Layer.succeed(DataPolicy, policy),
+        erasureRegister
       );
       const executor = SemanticExecutor.layer.pipe(
         Layer.provide(infrastructure)

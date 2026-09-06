@@ -15,6 +15,7 @@ import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
 import { D01_LIMITS, Instant } from "@zoen/contracts/d01/values";
 import { SharingSuccess } from "@zoen/contracts/sharing/operations";
 import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
+import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
 import type { Redacted } from "effect";
 import { Clock, Context, DateTime, Effect, Layer, Schema, Scope } from "effect";
 
@@ -45,12 +46,15 @@ import {
 } from "../knowledge/subject-identity/handlers/propose.js";
 import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.js";
 import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
+import { inspectWorldErasure } from "../knowledge/erasure/handlers/inspect.js";
+import { requestWorldErasure } from "../knowledge/erasure/handlers/request.js";
+import { parseErasureBytes } from "../knowledge/erasure/request.js";
 import { Presence } from "../ports/d01/context.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
 import { canonicalJson } from "../values/canonical.js";
 import { parseEnvelopeBytes } from "../values/json.js";
 
-type Family = "d01" | "correction" | "sharing" | "subject-identity";
+type Family = "d01" | "correction" | "sharing" | "subject-identity" | "erasure";
 type Emit = (jsonBytes: Uint8Array) => "submitted";
 type ExecuteWithEmission = (
   credential: Redacted.Redacted,
@@ -71,6 +75,9 @@ const parseRequest = (family: Family, bytes: Uint8Array) => {
     }
     case "subject-identity": {
       return parseSubjectIdentityBytes(bytes);
+    }
+    case "erasure": {
+      return parseErasureBytes(bytes);
     }
     default: {
       return Effect.fail(new Unsupported({ code: "UNSUPPORTED" }));
@@ -93,6 +100,9 @@ const decodeSuccess = (
     }
     case "subject-identity": {
       return Schema.decodeUnknownEffect(SubjectIdentitySuccess)(result);
+    }
+    case "erasure": {
+      return Schema.decodeUnknownEffect(WorldErasureSuccess)(result);
     }
     default: {
       return Effect.fail(new Unsupported({ code: "UNSUPPORTED" }));
@@ -121,10 +131,15 @@ export class SemanticExecutor extends Context.Service<
       credential: Redacted.Redacted,
       bytes: Uint8Array
     ) => Effect.Effect<SubjectIdentitySuccess, D01Error>;
+    readonly executeErasure: (
+      credential: Redacted.Redacted,
+      bytes: Uint8Array
+    ) => Effect.Effect<WorldErasureSuccess, D01Error>;
     readonly executeWithEmission: ExecuteWithEmission;
     readonly executeCorrectionWithEmission: ExecuteWithEmission;
     readonly executeSharingWithEmission: ExecuteWithEmission;
     readonly executeSubjectIdentityWithEmission: ExecuteWithEmission;
+    readonly executeErasureWithEmission: ExecuteWithEmission;
   }
 >()("zoen/authority/semantic/SemanticExecutor") {
   static readonly layer = Layer.effect(
@@ -149,6 +164,8 @@ export class SemanticExecutor extends Context.Service<
             | ReturnType<typeof inspectIdentityRecovery>
             | ReturnType<typeof proposeIdentityResolution>
             | ReturnType<typeof resolveIdentity>
+            | ReturnType<typeof requestWorldErasure>
+            | ReturnType<typeof inspectWorldErasure>
           >
         >()
       );
@@ -222,6 +239,12 @@ export class SemanticExecutor extends Context.Service<
               }
               case "ResolveIdentity": {
                 return yield* resolveIdentity(context, request);
+              }
+              case "RequestWorldErasure": {
+                return yield* requestWorldErasure(context, request);
+              }
+              case "InspectWorldErasure": {
+                return yield* inspectWorldErasure(context, request);
               }
               default: {
                 return yield* new Unsupported({ code: "UNSUPPORTED" });
@@ -383,6 +406,13 @@ export class SemanticExecutor extends Context.Service<
           ),
         executeSubjectIdentityWithEmission: (credential, bytes, emit) =>
           withEmission("subject-identity", credential, bytes, emit),
+        executeErasure: (credential, bytes) =>
+          execute("erasure", credential, bytes).pipe(
+            Effect.flatMap(Schema.decodeUnknownEffect(WorldErasureSuccess)),
+            Effect.catchTag("SchemaError", schemaUnavailable)
+          ),
+        executeErasureWithEmission: (credential, bytes, emit) =>
+          withEmission("erasure", credential, bytes, emit),
         executeWithEmission: (credential, bytes, emit) =>
           withEmission("d01", credential, bytes, emit),
       });

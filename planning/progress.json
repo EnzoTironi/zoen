@@ -656,6 +656,23 @@
         "unit_restore_blocked": "pass",
         "integration_local_register": "pass"
       }
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "PENDING",
+      "packages": [
+        "EX32"
+      ],
+      "state": "erasure_closing_local_green",
+      "profile": "d03-local-erasable-v1 (candidate Closing; restoreAfterErasure blocked)",
+      "evidence": "docs/verification/erasure-local.md",
+      "scope": "Semantic Closing after ErasureAttemptRegister: Active→Closing with immutable receipt+outbox; success only after Confirmada; retained Worlds blocked; no S3 purge/Erased.",
+      "tests": {
+        "integration_closing_happy": "pass",
+        "integration_retained_blocked": "pass",
+        "integration_missing_register": "pass",
+        "integration_replay_conflict_viewer": "pass"
+      }
     }
   ],
   "verified_deliveries": [],

@@ -2,7 +2,7 @@ import { AuthorityInstallationSchema } from "@zoen/authority/commit/configuratio
 import { DataPolicySchema } from "@zoen/authority/ports/d01/context";
 import { parseJsonBytes } from "@zoen/authority/values/json";
 import { exact } from "@zoen/contracts/d01/values";
-import { Config, Effect, FileSystem, Schema } from "effect";
+import { Config, Effect, FileSystem, Option, Schema } from "effect";
 
 import type { D01ApplicationConfig } from "./composition.ts";
 import { verifyRelease } from "./release.ts";
@@ -36,6 +36,9 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
       code: "INVALID_CONFIGURATION",
     });
   }
+  const erasureAttemptDatabaseUrl = yield* Config.redacted(
+    "ZOEN_ERASURE_ATTEMPT_DATABASE_URL"
+  ).pipe(Config.option);
   const application: D01ApplicationConfig = {
     authorityDatabaseUrl: yield* Config.redacted("ZOEN_AUTHORITY_DATABASE_URL"),
     identity: {
@@ -59,6 +62,9 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
       region: yield* Config.string("ZOEN_S3_REGION"),
       requestTimeoutMillis: 5000,
     },
+    ...(Option.isSome(erasureAttemptDatabaseUrl)
+      ? { erasureAttemptDatabaseUrl: erasureAttemptDatabaseUrl.value }
+      : {}),
   };
   return { application, listenHost, listenPort };
 });

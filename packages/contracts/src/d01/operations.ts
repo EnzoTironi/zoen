@@ -5,6 +5,10 @@ import {
   SubjectIdentityRequest,
   SubjectIdentitySuccess,
 } from "../subject-identity/operations.js";
+import {
+  WorldErasureRequest,
+  WorldErasureSuccess,
+} from "../erasure/operations.js";
 import { D01Error } from "./errors.js";
 import { CorrectionConsequence, VisibleFrame } from "./evidence.js";
 import {
@@ -109,6 +113,7 @@ export const SemanticRequest = Schema.Union([
   CorrectionRequest,
   SharingRequest,
   SubjectIdentityRequest,
+  WorldErasureRequest,
 ]);
 export type SemanticRequest = typeof SemanticRequest.Type;
 export const decodeD01Request = Schema.decodeUnknownEffect(D01Request);
@@ -166,6 +171,7 @@ export const SemanticSuccess = Schema.Union([
   CorrectionSuccess,
   SharingSuccess,
   SubjectIdentitySuccess,
+  WorldErasureSuccess,
 ]);
 export type SemanticSuccess = typeof SemanticSuccess.Type;
 export const SemanticResult = Schema.Union([SemanticSuccess, D01Error]);

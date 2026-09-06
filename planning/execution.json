@@ -2014,9 +2014,9 @@
         "optional": []
       },
       "acceptance_requires": [],
-      "status": "planned",
-      "verification_state": "not_run",
-      "commands_status": "Not started; Closing only after register port; no purge worker.",
+      "status": "implemented",
+      "verification_state": "local_integration_green",
+      "commands_status": "Closing handlers + dedicated register pool; integration green on real PG; no purge; profile compose default still retained until EX34.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

@@ -13,6 +13,7 @@ import {
 } from "@zoen/contracts/d01/values";
 import { SharingMutationSuccess } from "@zoen/contracts/sharing/operations";
 import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
+import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
 import { Schema } from "effect";
 
 export const StoredOperationResult = Schema.Union([
@@ -21,6 +22,7 @@ export const StoredOperationResult = Schema.Union([
   CorrectionSuccess,
   SharingMutationSuccess,
   SubjectIdentitySuccess,
+  WorldErasureSuccess,
 ]);
 export const StoredQuestion = Schema.Struct({
   allowedAnswers: Schema.Array(QuestionAnswer).check(

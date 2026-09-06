@@ -44,6 +44,8 @@ const capabilities = {
   ProposeIdentitySplit: "mutate",
   ProposeIdentityUndo: "mutate",
   ResolveIdentity: "mutate",
+  RequestWorldErasure: "mutate",
+  InspectWorldErasure: "manage",
   RevokeWorldReadAccess: "manage",
   UndoCorrection: "mutate",
 } as const satisfies Record<SemanticRequest["operation"], WorldCapability>;
