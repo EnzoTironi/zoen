@@ -1,0 +1,16 @@
+# D04 — primeiro produto hospedado (contrato candidato)
+
+Status: candidato. Congelamento mínimo executável em `docs/contracts/d04-hosted-freeze.md`. Entrega estrutural em `planning/deliveries.json` (`D04`, fase P2): deploy Fly, operação e restore reais no escopo habilitado, sem cutover implícito.
+
+## Resultado do incremento EX35+
+
+1. Declarar perfil de World **novo** `d04-hosted-retained-v1` (só Worlds novos).
+2. Prometer somente operações comprováveis: hospedagem candidata + restore do escopo retained habilitado.
+3. Manter canais/providers não admitidos desabilitados de forma explícita.
+4. Separar stubs/ops do ato de deploy (deploy exige EX de ativação posterior e recursos reais).
+
+## Fora de escopo deste incremento
+
+- Cutover do app legado `zoen` / DNS de produção.
+- Piloto sensível com erasure e supressão pós-restore (depende de D03 além de Closing/register).
+- HA, multi-região, SSO, self-host equivalence certificate.

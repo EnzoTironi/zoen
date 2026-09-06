@@ -101,6 +101,51 @@
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
       "notes": "Closing handlers part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX35-hosted-freeze-and-fly-stubs",
+      "model": null,
+      "effort": null,
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "freeze_landed_no_deploy",
+      "notes": "D04 first increment freeze H01–H08 + ops/fly stubs + inventory. Fly auth present; no apps create/deploy/MPG/Tigris. Legacy zoen not cut over. NOT full D03; NOT D04 activated."
+    },
+    {
+      "agent": "roadmap_redesign",
+      "task": "EX36-hosted-retained-policy-schemas",
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "planned",
+      "notes": "Await dispatch after EX35; d04-hosted-retained-v1 schemas for NEW Worlds only."
+    },
+    {
+      "agent": "tickets_redesign",
+      "task": "EX37-hosted-retained-restore-disposable",
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "planned",
+      "notes": "Await dispatch; ZN-0049 bounded to retained enabled scope — no ZN-0116 claim."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX38-hosted-admission-flags",
+      "model": "gpt-6-astra",
+      "effort": "low",
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "planned",
+      "notes": "Await dispatch; ZN-0288 explicit disabled providers."
+    },
+    {
+      "agent": "architecture_redesign",
+      "task": "EX39-hosted-compose-verify-no-deploy",
+      "model": null,
+      "effort": null,
+      "worktree": "/Users/enzotironi/zoen-rebuild",
+      "state": "planned",
+      "notes": "Compose after EX36–EX38; still no fly deploy."
     }
   ],
   "temporary_ownership": [
@@ -648,10 +693,44 @@
       "verified_for_profile": true,
       "not_full_d03": true,
       "notes": "verified_for_profile ONLY for local Closing/register surface. NOT full D03: purge/Erased/restore/controller/Object Lock/backup catalog still blocked."
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "PENDING",
+      "packages": [
+        "EX35"
+      ],
+      "state": "d04_freeze_and_stubs_landed",
+      "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; no deploy; restore-after-erasure blocked)",
+      "evidence": "docs/contracts/d04-hosted-freeze.md",
+      "scope": "Freeze H01–H08; inventory Fly auth yes, Dockerfile yes, ops/fly stubs, legacy zoen not cut over; MPG/Tigris/app zoen-rebuild/secrets redesign absent. EX36–EX39 planned. Does NOT conclude D04 or full D03.",
+      "fly_auth_present": true,
+      "fly_deployed": false,
+      "not_full_d03": true,
+      "not_full_d04": true,
+      "blockers": [
+        "zoen-rebuild Fly app not created (cost gate)",
+        "No Fly Managed Postgres / Tigris in org inventory",
+        "Rebuild secrets not provisioned on Fly",
+        "D03 purge + restore-after-erasure still blocked for sensitive pilot"
+      ]
     }
   ],
   "verified_deliveries": [],
-  "external_blockers": [],
+  "external_blockers": [
+    {
+      "id": "fly-hosted-persistence",
+      "delivery": "D04",
+      "detail": "Fly auth present on maintainer Mac, but zoen-rebuild app, Managed Postgres, Tigris/object store, and redesign secrets are not provisioned; deploy/spend deferred by freeze H07.",
+      "since": "2026-09-06"
+    },
+    {
+      "id": "d03-purge-restore-after-erasure",
+      "delivery": "D03",
+      "detail": "Local Closing/register verified_for_profile only; purge/Erased/controller/Object Lock/backup catalog/restoreAfterErasure remain blocked — blocks sensitive D04 pilot, not the retained hosted freeze.",
+      "since": "2026-09-06"
+    }
+  ],
   "quality": {
     "subject_identity_lint_typecheck": {
       "commit": "cae72de2be45c59ab63d1fbfc742a51ba34ae1b6",
@@ -669,6 +748,16 @@
         "D03 erasure purge (freeze only; controller/storage/backups blocked)",
         "Cloud / restore-after-erasure"
       ]
+    },
+    "d04_hosted_bootstrap": {
+      "fly_auth": true,
+      "fly_legacy_app": "zoen (not cut over)",
+      "stubs": [
+        "ops/fly/fly.toml",
+        "ops/fly/README.md"
+      ],
+      "dockerfile": "ops/containers/application.Dockerfile",
+      "deployed": false
     }
   }
 }

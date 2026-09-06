@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "planned",
-  "scope": "Pacotes D01/D02, CSV, compartilhamento local e primeiro incremento de erasure (contrato); estados planejados são requisitos, progresso executado fica em planning/progress.json",
+  "scope": "Pacotes D01/D02, CSV, compartilhamento local, primeiro incremento de erasure (contrato) e primeiro incremento hosted D04 (freeze/stubs); estados planejados são requisitos, progresso executado fica em planning/progress.json",
   "workers": {
     "worker-1": {
       "model": "gpt-6-astra",
@@ -2230,6 +2230,330 @@
           ]
         }
       ]
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX23"
+        ],
+        "optional": [
+          "EX34"
+        ]
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Freeze+inventory landed with ops/fly stubs; execution remains planned/not_run for verify_plan; progress in progress.json. No Fly deploy.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0049",
+        "ZN-0287",
+        "ZN-0288"
+      ],
+      "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/roadmap.md",
+        "docs/contracts/d04-hosted.md",
+        "docs/contracts/d04-hosted-freeze.md",
+        "docs/verification/hosted-bootstrap.md"
+      ],
+      "contracts_consumed": [
+        "Freeze H01–H08 em docs/contracts/d04-hosted-freeze.md: perfil d04-hosted-retained-v1 só Worlds novos; restore só escopo retained; sem cutover do app zoen; sem deploy/gasto neste freeze.",
+        "D03 Closing/register local (EX30–EX34) não satisfaz purge/ZN-0116; piloto sensível permanece blocked."
+      ],
+      "id": "EX35",
+      "owner": "root",
+      "reviewer": "worker-3",
+      "title": "Congelar primeiro incremento hosted e inventário Fly",
+      "scope": "Freeze H01–H08, inventário auth/Dockerfile/legado, stubs ops/fly sem criar app nem deploy; perfil candidato d04-hosted-retained-v1.",
+      "acceptance": [
+        "Freeze lista H01–H08 e gates bloqueados; restore-após-erasure e cutover explicitamente fechados.",
+        "ops/fly/fly.toml + README existem como stub; nenhum fly deploy/apps create neste pacote."
+      ],
+      "planned_direct_checks": [
+        "python3 tooling/verify_plan.py",
+        "Documentar fly auth presente vs ausência de MPG/Tigris/app zoen-rebuild."
+      ],
+      "owns": [
+        "docs/contracts/d04-hosted.md",
+        "docs/contracts/d04-hosted-freeze.md",
+        "docs/verification/hosted-bootstrap.md",
+        "ops/fly/**"
+      ],
+      "model": null,
+      "reasoning_effort": null
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX35"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "planned; progress tracked in planning/progress.json; keep verification_state not_run for verify_plan.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0049",
+        "ZN-0287",
+        "ZN-0288"
+      ],
+      "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/roadmap.md",
+        "docs/contracts/d04-hosted.md",
+        "docs/contracts/d04-hosted-freeze.md",
+        "docs/verification/hosted-bootstrap.md",
+        "docs/contracts/d01.md"
+      ],
+      "contracts_consumed": [
+        "Freeze H01–H08 em docs/contracts/d04-hosted-freeze.md: perfil d04-hosted-retained-v1 só Worlds novos; restore só escopo retained; sem cutover do app zoen; sem deploy/gasto neste freeze.",
+        "D03 Closing/register local (EX30–EX34) não satisfaz purge/ZN-0116; piloto sensível permanece blocked."
+      ],
+      "id": "EX36",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Schemas do perfil hosted retained (Worlds novos)",
+      "scope": "Schemas/policy d04-hosted-retained-v1 sob hosted/**; sem ativar Worlds existentes; sem wire de deploy.",
+      "acceptance": [
+        "profileId literal d04-hosted-retained-v1 com erasure:false e restoreAfterErasure:false compilável.",
+        "Nenhuma migração/rebind de Worlds d01/d03; integração na união DataPolicy fica para root."
+      ],
+      "planned_direct_checks": [
+        "Unidade de decode/encode do perfil hosted retained.",
+        "Retained local e erasable local continuam distintos."
+      ],
+      "owns": [
+        "packages/contracts/src/hosted/policy/**",
+        "packages/contracts/test/hosted/policy/**",
+        "packages/authority/src/ports/hosted/**",
+        "packages/authority/test/ports/hosted/**"
+      ],
+      "model": null,
+      "reasoning_effort": null,
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "EX36 schemas exportados e testes de unidade verdes.",
+          "completion": "Exportar perfil hosted nos indexes e compor DataPolicy sem rebind de Worlds antigos (edição de ports/d01/context.ts sob root, fora do owns do worker).",
+          "owns": [
+            "packages/contracts/src/index.ts",
+            "packages/authority/src/index.ts",
+            "apps/server/src/composition.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX35"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "planned; progress tracked in planning/progress.json; keep verification_state not_run for verify_plan.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0049",
+        "ZN-0287"
+      ],
+      "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/roadmap.md",
+        "docs/contracts/d04-hosted.md",
+        "docs/contracts/d04-hosted-freeze.md",
+        "docs/verification/hosted-bootstrap.md"
+      ],
+      "contracts_consumed": [
+        "Freeze H01–H08 em docs/contracts/d04-hosted-freeze.md: perfil d04-hosted-retained-v1 só Worlds novos; restore só escopo retained; sem cutover do app zoen; sem deploy/gasto neste freeze.",
+        "D03 Closing/register local (EX30–EX34) não satisfaz purge/ZN-0116; piloto sensível permanece blocked."
+      ],
+      "id": "EX37",
+      "owner": "worker-2",
+      "reviewer": "worker-1",
+      "title": "Provar backup/restore disposable do escopo retained habilitado",
+      "scope": "Oráculos de backup→restore só para dados do perfil hosted/retained habilitado em ambiente descartável; sem alegar ZN-0116.",
+      "acceptance": [
+        "Restore reproduz apenas o escopo retained habilitado; ausência de apagamento não é tratada como erasure.",
+        "Nenhuma prova usa o app legado zoen nem secrets de produção."
+      ],
+      "planned_direct_checks": [
+        "Integração disposable PG/S3 (compose local) backup/restore round-trip.",
+        "Negativo: não divulgar conteúdo fora do escopo restaurado."
+      ],
+      "owns": [
+        "tests/integration/hosted/restore/**"
+      ],
+      "model": null,
+      "reasoning_effort": null
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX35"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "planned; progress tracked in planning/progress.json; keep verification_state not_run for verify_plan.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0288",
+        "ZN-0287"
+      ],
+      "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/roadmap.md",
+        "docs/contracts/d04-hosted.md",
+        "docs/contracts/d04-hosted-freeze.md",
+        "docs/verification/hosted-bootstrap.md"
+      ],
+      "contracts_consumed": [
+        "Freeze H01–H08 em docs/contracts/d04-hosted-freeze.md: perfil d04-hosted-retained-v1 só Worlds novos; restore só escopo retained; sem cutover do app zoen; sem deploy/gasto neste freeze.",
+        "D03 Closing/register local (EX30–EX34) não satisfaz purge/ZN-0116; piloto sensível permanece blocked."
+      ],
+      "id": "EX38",
+      "owner": "worker-3",
+      "reviewer": "worker-2",
+      "title": "Admission flags de capacidades no perfil hosted",
+      "scope": "Flags/contratos que desabilitam explicitamente canais/modelos não admitidos (WhatsApp etc.) sem mock saudável.",
+      "acceptance": [
+        "Capacidades não provisionadas reportam disabled/Blocked, não healthy falso.",
+        "Núcleo web/file permanece o único caminho admitido neste incremento."
+      ],
+      "planned_direct_checks": [
+        "Unidade das flags e matriz disabled vs enabled.",
+        "Negativo: provider ausente não passa readiness de canal."
+      ],
+      "owns": [
+        "packages/contracts/src/hosted/admission/**",
+        "packages/authority/src/hosted/admission/**",
+        "packages/authority/test/hosted/admission/**"
+      ],
+      "model": null,
+      "reasoning_effort": null
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX35",
+          "EX36",
+          "EX37",
+          "EX38"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "planned; progress tracked in planning/progress.json; keep verification_state not_run for verify_plan.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0049",
+        "ZN-0287",
+        "ZN-0288"
+      ],
+      "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/roadmap.md",
+        "docs/contracts/d04-hosted.md",
+        "docs/contracts/d04-hosted-freeze.md",
+        "docs/verification/hosted-bootstrap.md"
+      ],
+      "contracts_consumed": [
+        "Freeze H01–H08 em docs/contracts/d04-hosted-freeze.md: perfil d04-hosted-retained-v1 só Worlds novos; restore só escopo retained; sem cutover do app zoen; sem deploy/gasto neste freeze.",
+        "D03 Closing/register local (EX30–EX34) não satisfaz purge/ZN-0116; piloto sensível permanece blocked."
+      ],
+      "id": "EX39",
+      "owner": "root",
+      "reviewer": "worker-3",
+      "title": "Compor stubs hosted e verificar incremento sem deploy",
+      "scope": "Compor perfil novo só Worlds novos; evidência local; manter fly.toml stub; proibir deploy neste pacote.",
+      "acceptance": [
+        "Evidência separa stubs/inventário de operação Fly ainda não ativada.",
+        "Nenhum cutover do app zoen; D03 purge/restore-após-erasure permanece blocked."
+      ],
+      "planned_direct_checks": [
+        "Suite combinada local quando EX36–EX38 existirem; verify_plan estrutural.",
+        "Checklist de bloqueadores MPG/Tigris/secrets/app create atualizado."
+      ],
+      "owns": [
+        "docs/verification/hosted-local.md",
+        "tests/integration/hosted/independent/**",
+        "ops/local/**"
+      ],
+      "model": null,
+      "reasoning_effort": null,
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "EX36–EX38 revisados e exports prontos.",
+          "completion": "Composition do perfil hosted novo; ops/fly permanece stub sem deploy; provision local sob owns de root se necessário.",
+          "owns": [
+            "apps/server/src/composition.ts",
+            "apps/server/src/main.ts",
+            "ops/fly/**",
+            "ops/containers/**"
+          ]
+        }
+      ]
     }
   ],
   "suggested_schedule": [
@@ -2283,13 +2607,20 @@
         "EX30 freeze/schemas",
         "EX34 compose quando gates mínimos de Closing"
       ]
+    },
+    {
+      "wave": "G-hosted",
+      "worker-1": ["EX36"],
+      "worker-2": ["EX37"],
+      "worker-3": ["EX38"],
+      "root": ["EX35 freeze/stubs", "EX39 compose quando EX36–EX38 prontos — sem fly deploy"]
     }
   ],
   "preserved_but_not_completed": [
     "D01 completo ainda exige todos incrementos de formato/retenção/recuperação e critérios de sua entrega; esta proposta não declara tudo aceito.",
     "D02 merge/split reversível de identidade, workbench/priorização e closure para futuros consumers permanecem no mapa original; subject-identity-v2 verified_for_profile não conta como D02 integral.",
     "D03 erasure: freeze mínimo EX30+; purge real, controlador, Object Lock, catálogo de backups e restore após erasure continuam bloqueados.",
-    "Deploy Fly, backups/restore incluindo supressão de apagamento e ampliação de direitos são próximas entregas reais; Docker local não prova cloud.",
+    "D04 hosted: EX35 freeze/stubs; app zoen-rebuild, MPG/Tigris, secrets redesign, deploy real e cutover do legado zoen não feitos; Docker local não prova cloud.",
     "Modelos, canais, fontes externas, efeitos, runners e finanças seguem fora da primeira composição; indisponíveis, nunca simulados."
   ],
   "max_active_workers": 3,
