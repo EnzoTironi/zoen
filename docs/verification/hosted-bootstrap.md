@@ -26,3 +26,9 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 - `packages/authority/src/ports/hosted/policy.ts` + união em `ports/d01/context.ts`
 - Unidade: `*.EX36.test.ts` sob contracts/authority `hosted/policy`
 - Composition default permanece local retained; sem `fly deploy`
+
+## EX37 disposable restore
+
+- Harness: `tests/integration/hosted/restore/**` (pg_dump→restore descartável + escopo hosted-only + S3 marker)
+- Doc: `docs/verification/hosted-retained-restore.md`
+- Prova só escopo `d04-hosted-retained-v1`; sem rebind local; `restoreAfterErasure` fechado; sem Fly/MPG/Tigris

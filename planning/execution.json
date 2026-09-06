@@ -2360,7 +2360,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "planned; progress tracked in planning/progress.json; keep verification_state not_run for verify_plan.",
+      "commands_status": "Disposable PG dump→restore + scoped hosted-only + S3 marker green under tests/integration/hosted/restore/**; progress in progress.json. execution status remains planned/not_run for verify_plan. Not D04 activated; no ZN-0116; no Fly/MPG/Tigris.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

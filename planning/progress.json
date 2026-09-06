@@ -126,8 +126,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "planned",
-      "notes": "Await dispatch; ZN-0049 bounded to retained enabled scope — no ZN-0116 claim."
+      "state": "disposable_restore_proof_green",
+      "notes": "Disposable dump→restore of d04-hosted-retained-v1 World/install on compose PG; scoped restore excludes local-retained neighbor; S3 marker round-trip; restoreAfterErasure closed; no World rebind; no Fly/MPG/Tigris/ZN-0116. execution.json kept planned/not_run for verify_plan."
     },
     {
       "agent": "architecture_redesign",
@@ -726,6 +726,19 @@
         "packages/contracts/test/hosted/policy/values.EX36.test.ts",
         "packages/authority/test/ports/hosted/policy.EX36.test.ts"
       ]
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "PENDING",
+      "packages": ["EX37"],
+      "state": "d04_hosted_retained_restore_disposable_landed",
+      "profile": "d04-hosted-retained-v1 (candidate; disposable restore of enabled retained scope only)",
+      "evidence": "tests/integration/hosted/restore/**; docs/verification/hosted-retained-restore.md",
+      "scope": "EX37 local stand-in for hosted restore path: pg_dump→restore discarded after proof; scoped copy excludes d01-local-retained-v1; S3 disposable marker; erasure/restoreAfterErasure stay closed. No Fly deploy/MPG/Tigris; no ZN-0116. Does NOT conclude D04 or full D03.",
+      "fly_deployed": false,
+      "integration_tests": [
+        "tests/integration/hosted/restore/retained-restore.EX37.integration.test.ts"
+      ]
     }
   ],
   "verified_deliveries": [],
@@ -770,7 +783,10 @@
       "hosted_retained_policy_schemas": true,
       "profile_id": "d04-hosted-retained-v1",
       "data_policy_union": true,
-      "composition_default": "d01-local-retained-v1"
+      "composition_default": "d01-local-retained-v1",
+      "hosted_retained_disposable_restore": true,
+      "restore_after_erasure": false,
+      "zn_0116_claimed": false
     }
   }
 }
