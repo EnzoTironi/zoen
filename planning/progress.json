@@ -36,8 +36,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "vertical_slice_verified_pending_review",
-      "notes": "Core handlers+split vertical slice green on real PG/S3/Better Auth. Remaining: ID-08 concurrency/SIGKILL full suite, recovery Question limits, worker-3 review. Not verified_for_profile. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
+      "state": "id08_writers_proofs_green_partial",
+      "notes": "Core handlers+split + independent ResolveIdentity SIGKILL and concurrency counterproofs green on real PG/S3. Remaining: recovery Question byte/entry limits. Not verified_for_profile."
     },
     {
       "agent": "roadmap_redesign",
@@ -45,8 +45,8 @@
       "model": "gpt-6-astra",
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
-      "state": "partial_surfaces_id15_browser_green",
-      "notes": "HTTP/CLI/Web + ID-15 Playwright green on subject-identity-v2. Remaining: viewer denial browser, undo polish. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
+      "state": "viewer_denial_browser_green_partial",
+      "notes": "HTTP/CLI/Web + ID-15 + EX28 viewer-denial Playwright green on subject-identity-v2; light undo UX button for last decisionRef. Remaining: recovery limits / combined CI profile proof. Not verified_for_profile."
     },
     {
       "agent": "architecture_redesign",
@@ -55,7 +55,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "local_and_container_partial_not_verified_for_profile",
-      "notes": "subject-identity-v2 + container-bfd0485f1d994118: 13/13 acceptance incl. ID-15. Quality lint/typecheck debt remains; not verified_for_profile. Lint/typecheck cleared on 5da8582. execution.json kept planned/not_run for verify_plan (progress tracked here). CI prepares identity baseline and requires ZOEN_TEST_LEGACY_ROOT; EX05/SH-04 include identity domain. Not verified_for_profile."
+      "notes": "Gaps closed locally: ID-08 writer SIGKILL/concurrency + EX28 viewer denial browser + undo polish. Still not verified_for_profile: recovery Question limits; remote CI aggregator/image re-run on new tip."
     }
   ],
   "temporary_ownership": [
@@ -452,6 +452,20 @@
       "scope": "Compose+verify identity increment on subject-identity-v2 without rebinding old Worlds. Same executor+fence; ID-15 + full 13 acceptance scenarios green on image container-bfd0485f1d994118. Stale alert cross-talk fixed. Not verified_for_profile: pnpm lint/typecheck still fail on pre-existing identity suites; remote CI aggregator not yet green.",
       "container_image": "zoen-local:container-bfd0485f1d994118",
       "container_acceptance_tests": 13
+    },
+    {
+      "date": "2026-09-06",
+      "commit": "673887b4962359867465b654ee13628968023037",
+      "packages": ["EX27", "EX28", "EX29"],
+      "state": "identity_writer_and_viewer_proofs_local_green_not_verified_for_profile",
+      "profile": "d01-local-retained-v1 / subject-identity-v2",
+      "evidence": "docs/verification/subject-identity-local.md",
+      "scope": "Landed independent ResolveIdentity SIGKILL + concurrency counterproofs; EX28 Playwright viewer denial (UI + HTTP); light undo button. 14/14 acceptance green locally. Not verified_for_profile: recovery Question limits + remote CI/image tip.",
+      "tests": {
+        "writers_sigkill": "pass",
+        "writers_concurrency": "pass",
+        "acceptance_suite": "14 pass incl. ID-15 and EX28 viewer denial"
+      }
     }
   ],
   "verified_deliveries": [],
@@ -475,9 +489,9 @@
         "integration_job": "failure"
       },
       "remaining_for_verified_for_profile": [
-        "verify_plan Unproved EX28 (and peer EX statuses as required by tooling/verify_plan.py)",
-        "CI integration: ZOEN_TEST_LEGACY_ROOT / legacy baseline missing on runner for EX25 basis suites",
-        "CI integration: SH-04/EX05 domain-count expectations vs identity domain (pre-existing drift)",
+        "Recovery Question byte/entry prospective limits oracle still open",
+        "Remote CI: verify_plan / integration legacy baseline / SH-04 EX05 drift as applicable",
+        "Re-run container acceptance + CI on tip after identity writer/viewer proofs",
         "Do not start D03 in this increment"
       ]
     }

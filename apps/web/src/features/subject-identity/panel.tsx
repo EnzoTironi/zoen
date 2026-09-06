@@ -334,13 +334,27 @@ export const SubjectIdentityPanel = ({
         )}
         <QuestionPanel controller={controller} state={state} />
         {resolved === null ? null : (
-          <p>
-            Última resolução: {resolved.outcome}
-            {resolved.decisionRef === null
-              ? ""
-              : ` · decisão ${resolved.decisionRef}`}
-            .
-          </p>
+          <div aria-label="Última resolução de identidade">
+            <p>
+              Última resolução: {resolved.outcome}
+              {resolved.decisionRef === null
+                ? ""
+                : ` · decisão ${resolved.decisionRef}`}
+              .
+            </p>
+            {resolved.decisionRef === null || frame === null ? null : (
+              <button
+                className="d01-button"
+                disabled={disabled}
+                onClick={() => {
+                  controller.proposeIdentityUndo(resolved.decisionRef);
+                }}
+                type="button"
+              >
+                Propor undo da última decisão
+              </button>
+            )}
+          </div>
         )}
         {receipt === null || !("receiptRef" in receipt) ? null : (
           <p>Recibo: {receipt.receiptRef}.</p>

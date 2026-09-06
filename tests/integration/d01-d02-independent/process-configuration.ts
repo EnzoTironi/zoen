@@ -10,7 +10,9 @@ export const makeProcessConfiguration = (
   Schema.Struct({
     authorityUrl: Schema.String,
     credential: Schema.String,
-    family: Schema.optional(Schema.Literals(["d01", "correction", "sharing"])),
+    family: Schema.optional(
+      Schema.Literals(["d01", "correction", "sharing", "subject-identity"])
+    ),
     identity: Schema.Struct({
       baseUrl: Schema.String,
       databaseUrl: Schema.String,

@@ -12,6 +12,7 @@
 
 ## Remaining
 
-- Broader ID-01/08–14 oracles (full concurrency interleaving, SIGKILL atomicity on identity writers, import-over-quota recovery journey, historical replay conflict) not yet exhaustive in this folder.
+- ID-08 SIGKILL + ResolveIdentity concurrency counterproofs live under `../independent/writers-*.review.integration.test.ts` (adversarial process/race; not happy-path re-run).
+- Remaining broader oracles: recovery Question byte/entry limits, import-over-quota recovery journey, historical replay conflict — not yet exhaustive.
 - Worker-3 independent review of split writers is in `../independent/split-writers.review.integration.test.ts` (adversarial; not a happy-path re-run).
 - Root integrator: migration `008_subject_identity_events.sql` wired into `applyIdentityBasisMigrations` and test DB fixture; executor family `executeSubjectIdentity` registered.

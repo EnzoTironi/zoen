@@ -175,6 +175,9 @@ const program = Effect.scoped(
         case "correction": {
           return yield* executor.executeCorrection(credential, bytes);
         }
+        case "subject-identity": {
+          return yield* executor.executeSubjectIdentity(credential, bytes);
+        }
         case "d01":
         case undefined: {
           return yield* executor.execute(credential, bytes);

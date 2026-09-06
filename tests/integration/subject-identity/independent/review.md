@@ -11,6 +11,8 @@
 | `concurrency.review.integration.test.ts` | Corrida real Answer×bump de `identity` sob locks; corrida Answer×ImportEvidence (writer de claims); sem apply parcial |
 | `migration-sigkill.review.integration.test.ts` | SIGKILL com transação 007 aberta (não `Effect.fail` injetado); snapshot inalterado; CHECK parcial → `Unavailable`; recovery pelo migrator |
 | `split-writers.review.integration.test.ts` | EX27 adversarial: membro estrangeiro → InvalidPartition; stranger → NotFoundOrDenied; opId replay vs Conflict; recovery-split sem separação bloqueado sem nova decision |
+| `writers-sigkill.review.integration.test.ts` | ID-08: SIGKILL real em `ResolveIdentity` com outbox lock; rollback sem decision/receipt/outbox; replay pós-commit |
+| `writers-concurrency.review.integration.test.ts` | ID-08: ResolveIdentity × bump de `identity` e × ImportEvidence; Stale sem decision parcial |
 
 ## Lacunas honestas (EX26 acceptance)
 
@@ -27,3 +29,5 @@ ZOEN_TEST_LEGACY_ROOT=/Users/enzotironi/zoen-rebuild/.local/identity-baseline-20
   node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration \
   tests/integration/subject-identity/independent/
 ```
+
+Update 2026-09-06 (ID-08 writers): independent SIGKILL + concurrency counterproofs for ResolveIdentity landed. Recovery Question byte/entry limits remain open.

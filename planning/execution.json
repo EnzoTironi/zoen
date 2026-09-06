@@ -1735,7 +1735,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "Vertical slice + real ProposeIdentitySplit green on rebuild. Remaining: ID-08 full suite, recovery limits, worker-3 review; not verified_for_profile.",
+      "commands_status": "ID-08 ResolveIdentity SIGKILL + concurrency independent proofs green. Remaining: recovery Question limits; not verified_for_profile.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1800,7 +1800,7 @@
       "acceptance_requires": ["EX27"],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "Vertical slice + ID-15 Playwright green locally; lint/typecheck cleared on tip. Not verified_for_profile: viewer denial browser, undo polish, combined CI/profile proof.",
+      "commands_status": "ID-15 + EX28 viewer-denial Playwright green; undo polish landed. Not verified_for_profile: recovery limits / combined CI tip.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",
@@ -1851,7 +1851,7 @@
       "acceptance_requires": [],
       "status": "planned",
       "verification_state": "not_run",
-      "commands_status": "subject-identity-v2 composition + ID-15 local/container partial. Not verified_for_profile: CI quality+integration must settle; independent review still open.",
+      "commands_status": "Local identity writer/viewer gaps closed on subject-identity-v2. Not verified_for_profile: recovery limits + remote CI/image on new tip.",
       "planned_commands": [
         "pnpm format:check",
         "pnpm lint",

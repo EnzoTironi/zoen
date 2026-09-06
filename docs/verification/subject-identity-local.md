@@ -17,12 +17,14 @@ Rotas/arquivos novos preferem `subject-identity`. O endpoint HTTP composto perma
 | Camada | Evidência |
 | --- | --- |
 | Composição | `composition.ts` liga `makeSubjectIdentityHttpGroup` ao mesmo executor/fence. Web + CLI consomem os mesmos schemas. |
-| Qualidade estática | `pnpm format:check` passou. `pnpm lint` / `pnpm typecheck` **ainda falham** em suítes EX25–EX27 pré-existentes no tip (~53 erros TS); bloqueia CI quality. |
-| Unidade | 241 testes / 35 arquivos passaram (antes da correção de Stale; leis/pure inalteradas). |
-| Integração identidade | core/basis/independent + CLI journey + requests EX28: 12 arquivos / 13 testes passaram com PG/S3/Better Auth reais. |
-| Aceitação ID-15 | Chromium passou no profile `subject-identity-v2`: inspect → propose same-as → confirm. |
-| Regressão sharing | O cenário independente EX23 Stale+grant voltou a passar após o scoping de Stale (falhava com dois `role=alert`). |
-| Imagem | `zoen-local:container-bfd0485f1d994118`: **13/13** aceitações passaram (~3 min), incluindo ID-15 e EX23 Stale independente. Um run anterior falhou por alerta cruzado de Stale (corrigido). CI remota: ver checkpoint. |
+| Qualidade estática | `pnpm format:check` / lint / typecheck cleared on tip `5da8582`+; main CI format/lint/typecheck/build green on later tips. |
+| Unidade | 241+ testes identity-related na suíte unit. |
+| Integração identidade | core/basis/independent + CLI journey + requests EX28; independent agora inclui SIGKILL de `ResolveIdentity` e concorrência Resolve×bump/Import. |
+| Aceitação ID-15 | Chromium no profile `subject-identity-v2`: inspect → propose same-as → confirm. |
+| Aceitação EX28 viewer | Chromium: leitor com grant não vê região/controles de identidade; `InspectSubjectIdentity` via fetch devolve negação sem Frame privado. |
+| Undo UX | Botão barato «Propor undo da última decisão» quando há `decisionRef` aplicado. |
+| Regressão sharing | EX23 Stale+grant independente verde após scoping de Stale. |
+| Imagem | `zoen-local:container-bfd0485f1d994118`: **13/13** aceitações (~3 min) no tip anterior; revalidar imagem/CI após este incremento. |
 
 ## Executar
 
@@ -40,11 +42,18 @@ ZOEN_LOCAL_PROFILE=subject-identity-v2 \
   pnpm test:acceptance -- apps/web/test/integration/subject-identity/identity.browser.spec.ts
 ```
 
+Integração writers (PG/S3/Better Auth reais):
+
+```bash
+node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration \
+  tests/integration/subject-identity/independent/writers-sigkill.review.integration.test.ts \
+  tests/integration/subject-identity/independent/writers-concurrency.review.integration.test.ts
+```
+
 ## Lacunas antes de `verified_for_profile`
 
-- Qualidade: typecheck/lint das suítes identity herdadas.
-- EX27: ID-08 concurrency/SIGKILL completo; limites de recovery; review worker-3.
-- EX28: browser de negação de viewer; polish de undo.
-- EX29: aceitação completa na imagem + CI remota verdes; não alegar D02/erasure/cloud.
+- Recovery Question limits (bytes/entries prospectivos) ainda não têm oráculo dedicado de quota.
+- CI remota: `verify_plan` / integração (legacy baseline, SH-04/EX05 drift) podem ainda falhar no agregado; não alegar D02/erasure/cloud.
+- Aceitação completa na imagem nova após este tip (re-run container + CI).
 
-Próximo passo sugerido: fechar dívida de qualidade typecheck **ou** iniciar incremento de **apagamento/erasure (D03)** mantendo EX29 como partial até CI verde.
+Próximo passo sugerido: fechar oráculo de limites de Question de recuperação **ou** iniciar incremento de **apagamento/erasure (D03)** mantendo EX29 partial até CI/imagem verdes no tip novo.
