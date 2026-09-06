@@ -41,7 +41,9 @@ export default defineConfig({
           hookTimeout: 30_000,
           include: ["**/*.integration.test.{ts,tsx}"],
           // These workers share real PostgreSQL/S3 and launch additional native processes.
-          maxWorkers: 2,
+          // Keep one worker: parallel legacy-basis harnesses can contend on disposable
+          // DB/storage long enough to hit it.live timeouts before container acceptance.
+          maxWorkers: 1,
           name: "integration",
           testTimeout: 30_000,
         },
