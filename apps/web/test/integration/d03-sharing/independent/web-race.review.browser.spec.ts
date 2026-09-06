@@ -38,21 +38,26 @@ const signup = async (api: APIRequestContext) => {
 const send = async (api: APIRequestContext, path: string, data: unknown) => {
   // Membership mutations refuse while a disclosure permit is still pending (HTTP 503
   // Unavailable). Product semantics reuse the same operationId/intention after ACK.
-  let response = await api.post(`${baseURL}${path}`, {
-    data,
-    headers: { origin: baseURL },
-  });
-  for (let attempt = 0; response.status() === 503 && attempt < 10; attempt++) {
+  const post = () =>
+    api.post(`${baseURL}${path}`, {
+      data,
+      headers: { origin: baseURL },
+    });
+  const retryUnavailable = async (
+    response: Awaited<ReturnType<typeof post>>,
+    attempt: number
+  ): Promise<Awaited<ReturnType<typeof post>>> => {
+    if (response.status() !== 503 || attempt >= 10) {
+      return response;
+    }
     expect(await response.json()).toStrictEqual({
       _tag: "Unavailable",
       code: "UNAVAILABLE",
     });
     await setTimeout(25 * (attempt + 1));
-    response = await api.post(`${baseURL}${path}`, {
-      data,
-      headers: { origin: baseURL },
-    });
-  }
+    return await retryUnavailable(await post(), attempt + 1);
+  };
+  const response = await retryUnavailable(await post(), 0);
   expect(response.status()).toBe(200);
   return Schema.decodeUnknownSync(Schema.Unknown)(await response.json());
 };
