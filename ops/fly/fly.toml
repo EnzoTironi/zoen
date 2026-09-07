@@ -1,5 +1,5 @@
 # Zoen rebuild — all-in-one Fly VM (app + Postgres + RustFS on one volume).
-# Hosted path rejected Managed Postgres and Managed S3/Tigris (Enzo).
+# Hosted path: reject managed Postgres and managed object storage (Enzo).
 # Legacy app `zoen` is a different product topology; do not cut over here.
 #
 # Deploy from repository root:

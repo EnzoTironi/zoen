@@ -31,8 +31,19 @@ it.effect(
       expect(toml).toContain('source = "zoen_data"');
       expect(toml).toContain('destination = "/data"');
       expect(toml).toContain('path = "/ready"');
-      expect(toml.toLowerCase().includes("mpg")).toBeFalsy();
-      expect(toml.toLowerCase().includes("tigris")).toBeFalsy();
+      // Forbid real MPG/Tigris provisioning keys — not English words in rejection comments.
+      const tomlNoComments = toml
+        .split("\n")
+        .map((line) => {
+          const hash = line.indexOf("#");
+          return hash === -1 ? line : line.slice(0, hash);
+        })
+        .join("\n")
+        .toLowerCase();
+      expect(/\bmpg\b/u.test(tomlNoComments)).toBeFalsy();
+      expect(/\btigris\b/u.test(tomlNoComments)).toBeFalsy();
+      expect(tomlNoComments.includes("[tigris]")).toBeFalsy();
+      expect(tomlNoComments.includes("fly_tigris")).toBeFalsy();
       expect(readme).toContain("zoen-rebuild");
       expect(readme.toLowerCase()).toContain("all-in-one");
       expect(readme.includes("Managed Postgres")).toBeTruthy();

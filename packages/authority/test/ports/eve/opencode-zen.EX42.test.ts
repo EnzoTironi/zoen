@@ -2,6 +2,7 @@ import { describe, expect, it } from "@effect/vitest";
 import { ConversationId } from "@zoen/contracts/eve/values";
 import { Effect, Redacted, Schema } from "effect";
 
+import type { EveFetch } from "../../../src/ports/eve/opencode-zen.js";
 import {
   DEFAULT_OPENCODE_BASE_URL,
   DEFAULT_OPENCODE_MODEL,
@@ -9,7 +10,6 @@ import {
   openCodeSessionId,
   readOpenCodeZenSettingsFromEnv,
   uncertaintyFromModelText,
-  type EveFetch,
 } from "../../../src/ports/eve/opencode-zen.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
@@ -31,10 +31,17 @@ describe("EX42 OpenCode Zen client", () => {
   });
 
   it("maps model text to honest uncertainty", () => {
-    expect(uncertaintyFromModelText("")).toBe("Unknown");
-    expect(uncertaintyFromModelText("   ")).toBe("Unknown");
-    expect(uncertaintyFromModelText("ok")).toBe("Partial");
-    expect(uncertaintyFromModelText("eve-ok from big-pickle")).toBe("Known");
+    expect({
+      empty: uncertaintyFromModelText(""),
+      known: uncertaintyFromModelText("eve-ok from big-pickle"),
+      partial: uncertaintyFromModelText("ok"),
+      whitespace: uncertaintyFromModelText("   "),
+    }).toStrictEqual({
+      empty: "Unknown",
+      known: "Known",
+      partial: "Partial",
+      whitespace: "Unknown",
+    });
   });
 
   it("reads settings from env without stringifying the key", () => {
@@ -44,10 +51,21 @@ describe("EX42 OpenCode Zen client", () => {
       ZOEN_OPENCODE_MODEL: "big-pickle",
     });
     expect(loaded).not.toBeNull();
-    expect(loaded?.baseUrl).toBe("https://example.test/zen/v1");
-    expect(loaded?.model).toBe("big-pickle");
-    expect(Redacted.value(loaded!.apiKey)).toBe("test-key-not-for-production");
-    expect(String(loaded!.apiKey)).not.toContain("test-key");
+    if (loaded === null) {
+      return;
+    }
+    expect({
+      baseUrl: loaded.baseUrl,
+      key: Redacted.value(loaded.apiKey),
+      model: loaded.model,
+    }).toStrictEqual({
+      baseUrl: "https://example.test/zen/v1",
+      key: "test-key-not-for-production",
+      model: "big-pickle",
+    });
+    expect(
+      Redacted.value(loaded.apiKey) === "test-key-not-for-production"
+    ).toBeTruthy();
   });
 
   it("returns null settings when key absent", () => {
@@ -55,8 +73,13 @@ describe("EX42 OpenCode Zen client", () => {
   });
 
   it("defaults base URL and model", () => {
-    expect(DEFAULT_OPENCODE_BASE_URL).toBe("https://opencode.ai/zen/v1");
-    expect(DEFAULT_OPENCODE_MODEL).toBe("big-pickle");
+    expect({
+      base: DEFAULT_OPENCODE_BASE_URL,
+      model: DEFAULT_OPENCODE_MODEL,
+    }).toStrictEqual({
+      base: "https://opencode.ai/zen/v1",
+      model: "big-pickle",
+    });
   });
 
   it.effect("blockedLayer never fabricates a completion", () =>
@@ -73,16 +96,30 @@ describe("EX42 OpenCode Zen client", () => {
   );
 
   it.effect("liveLayer sends required OpenCode free-tier headers", () => {
-    const seen: { headers?: Headers; body?: unknown; url?: string } = {};
-    const fetchImpl: EveFetch = async (url, init) => {
+    const seen: {
+      bodyText: string | undefined;
+      headers: Headers | undefined;
+      url: string | undefined;
+    } = {
+      bodyText: undefined,
+      headers: undefined,
+      url: undefined,
+    };
+    const fetchImpl: EveFetch = (url, init) => {
       seen.url = url;
       seen.headers = new Headers(init?.headers);
-      seen.body = JSON.parse(String(init?.body));
-      return new Response(
-        JSON.stringify({
-          choices: [{ message: { content: "eve-ok" } }],
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+      const body = init?.body;
+      seen.bodyText = typeof body === "string" ? body : undefined;
+      return Promise.resolve(
+        Response.json(
+          {
+            choices: [{ message: { content: "eve-ok" } }],
+          },
+          {
+            headers: { "Content-Type": "application/json" },
+            status: 200,
+          }
+        )
       );
     };
     return Effect.gen(function* live() {
@@ -91,19 +128,40 @@ describe("EX42 OpenCode Zen client", () => {
         conversationId,
         userText: "reply with eve-ok",
       });
-      expect(result.visibleText).toBe("eve-ok");
-      expect(result.uncertainty).toBe("Partial");
-      expect(seen.url).toBe("https://example.test/zen/v1/chat/completions");
-      expect(seen.headers?.get("user-agent")).toBe("opencode/1.17.20 zoen-eve");
-      expect(seen.headers?.get("x-opencode-client")).toBe("cli");
-      expect(seen.headers?.get("x-opencode-session")).toBe(
-        openCodeSessionId(conversationId)
-      );
-      expect(seen.headers?.get("x-opencode-request")?.startsWith("req_")).toBe(
-        true
-      );
-      expect(seen.headers?.get("authorization")).toBe("Bearer unit-test-key");
-      expect((seen.body as { model: string }).model).toBe("big-pickle");
+      let bodyModel: unknown;
+      if (seen.bodyText !== undefined) {
+        const parsed: unknown = JSON.parse(seen.bodyText);
+        if (
+          typeof parsed === "object" &&
+          parsed !== null &&
+          "model" in parsed
+        ) {
+          bodyModel = Reflect.get(parsed, "model");
+        }
+      }
+      expect({
+        auth: seen.headers?.get("authorization"),
+        client: seen.headers?.get("x-opencode-client"),
+        model: bodyModel,
+        requestPrefix: seen.headers
+          ?.get("x-opencode-request")
+          ?.startsWith("req_"),
+        session: seen.headers?.get("x-opencode-session"),
+        uncertainty: result.uncertainty,
+        url: seen.url,
+        userAgent: seen.headers?.get("user-agent"),
+        visibleText: result.visibleText,
+      }).toStrictEqual({
+        auth: "Bearer unit-test-key",
+        client: "cli",
+        model: "big-pickle",
+        requestPrefix: true,
+        session: openCodeSessionId(conversationId),
+        uncertainty: "Partial",
+        url: "https://example.test/zen/v1/chat/completions",
+        userAgent: "opencode/1.17.20 zoen-eve",
+        visibleText: "eve-ok",
+      });
     }).pipe(Effect.provide(EveOpenCodeZen.liveLayer(settings, fetchImpl)));
   });
 
@@ -116,9 +174,8 @@ describe("EX42 OpenCode Zen client", () => {
       expect(exit._tag).toBe("Failure");
     }).pipe(
       Effect.provide(
-        EveOpenCodeZen.liveLayer(
-          settings,
-          async () => new Response("nope", { status: 502 })
+        EveOpenCodeZen.liveLayer(settings, () =>
+          Promise.resolve(new Response("nope", { status: 502 }))
         )
       )
     )
@@ -133,9 +190,8 @@ describe("EX42 OpenCode Zen client", () => {
       expect(exit._tag).toBe("Failure");
     }).pipe(
       Effect.provide(
-        EveOpenCodeZen.liveLayer(
-          settings,
-          async () => new Response("denied", { status: 401 })
+        EveOpenCodeZen.liveLayer(settings, () =>
+          Promise.resolve(new Response("denied", { status: 401 }))
         )
       )
     )
@@ -156,7 +212,7 @@ describe("EX42 OpenCode Zen client", () => {
       expect(exit._tag).toBe("Failure");
     }).pipe(
       Effect.provide(
-        EveOpenCodeZen.liveLayer(settings, async () => {
+        EveOpenCodeZen.liveLayer(settings, () => {
           throw new Error("fetch should not run");
         })
       )

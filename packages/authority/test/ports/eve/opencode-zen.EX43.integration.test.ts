@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
-import { resolve } from "node:path";
+import path from "node:path";
 
 import { describe, expect, it } from "@effect/vitest";
 import {
@@ -21,11 +21,11 @@ import { runEveTurn } from "../../../src/ports/eve/turn.js";
 
 /** Load `.local/opencode.env` into process.env when present (never log values). */
 const loadLocalOpenCodeEnv = (): void => {
-  const path = resolve(process.cwd(), ".local/opencode.env");
-  if (!existsSync(path)) {
+  const envPath = path.resolve(process.cwd(), ".local/opencode.env");
+  if (!existsSync(envPath)) {
     return;
   }
-  const text = readFileSync(path, "utf8");
+  const text = readFileSync(envPath, "utf-8");
   for (const line of text.split(/\r?\n/u)) {
     const trimmed = line.trim();
     if (trimmed.length === 0 || trimmed.startsWith("#")) {
@@ -43,9 +43,7 @@ const loadLocalOpenCodeEnv = (): void => {
     ) {
       value = value.slice(1, -1);
     }
-    if (process.env[key] === undefined) {
-      process.env[key] = value;
-    }
+    process.env[key] ??= value;
   }
 };
 
@@ -55,6 +53,10 @@ const describeLive = settings === null ? describe.skip : describe;
 
 describeLive("EX43 OpenCode Zen live smoke (gated)", () => {
   it.effect("accept → live model → settle returns non-empty model text", () => {
+    if (settings === null) {
+      return Effect.void;
+    }
+    const liveSettings = settings;
     const conversationId = Schema.decodeSync(ConversationId)(randomUUID());
     const relationshipId = Schema.decodeSync(RelationshipId)(randomUUID());
     const ingressId = Schema.decodeSync(IngressId)(randomUUID());
@@ -62,7 +64,7 @@ describeLive("EX43 OpenCode Zen live smoke (gated)", () => {
     const messageId = Schema.decodeSync(MessageId)(randomUUID());
     const layer = Layer.mergeAll(
       EveJournal.stubMemoryLayer,
-      EveOpenCodeZen.liveLayer(settings!)
+      EveOpenCodeZen.liveLayer(liveSettings)
     );
     return Effect.gen(function* live() {
       const result = yield* runEveTurn({

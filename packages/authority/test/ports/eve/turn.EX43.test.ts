@@ -9,10 +9,8 @@ import {
 import { Effect, Layer, Redacted, Schema } from "effect";
 
 import { EveJournal } from "../../../src/ports/eve/journal.js";
-import {
-  EveOpenCodeZen,
-  type EveFetch,
-} from "../../../src/ports/eve/opencode-zen.js";
+import type { EveFetch } from "../../../src/ports/eve/opencode-zen.js";
+import { EveOpenCodeZen } from "../../../src/ports/eve/opencode-zen.js";
 import { runEveTurn } from "../../../src/ports/eve/turn.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
@@ -47,18 +45,23 @@ const settings = {
   userAgent: "opencode/1.17.20 zoen-eve",
 } as const;
 
-const mockOkFetch: EveFetch = async () =>
-  new Response(
-    JSON.stringify({
-      choices: [
-        {
-          message: {
-            content: "Model reply: eve-ok from mocked OpenCode Zen.",
+const mockOkFetch: EveFetch = () =>
+  Promise.resolve(
+    Response.json(
+      {
+        choices: [
+          {
+            message: {
+              content: "Model reply: eve-ok from mocked OpenCode Zen.",
+            },
           },
-        },
-      ],
-    }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+        ],
+      },
+      {
+        headers: { "Content-Type": "application/json" },
+        status: 200,
+      }
+    )
   );
 
 const zenLayer = Layer.mergeAll(
@@ -79,28 +82,40 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
         turnId,
         userText: "reply with eve-ok",
       });
-      expect(result.turn.phase).toBe("Settled");
-      expect(result.message.state).toBe("Visible");
-      expect(result.message.visibleText).toContain("eve-ok");
-      expect(result.message.uncertainty).toBe("Known");
-
       const journal = yield* EveJournal;
       const snapshot = yield* journal.recover(conversationId);
-      expect(snapshot.authorityCredentialPresent).toBeFalsy();
-      expect(snapshot.providerAdmission).toBe("opencode-zen");
-      expect(snapshot.messages).toHaveLength(1);
       const wire = JSON.stringify(snapshot);
-      expect(wire.includes("unit-test-key")).toBeFalsy();
-      expect(wire.includes("must-not-journal")).toBeFalsy();
-      expect(wire.toLowerCase().includes("authorization")).toBeFalsy();
+      expect({
+        admission: snapshot.providerAdmission,
+        credential: snapshot.authorityCredentialPresent,
+        messageCount: snapshot.messages.length,
+        phase: result.turn.phase,
+        state: result.message.state,
+        uncertainty: result.message.uncertainty,
+        visibleHasEveOk: result.message.visibleText.includes("eve-ok"),
+        wireHasAuthHeader: wire.toLowerCase().includes("authorization"),
+        wireHasKey: wire.includes("unit-test-key"),
+        wireHasSecretPhrase: wire.includes("must-not-journal"),
+      }).toStrictEqual({
+        admission: "opencode-zen",
+        credential: false,
+        messageCount: 1,
+        phase: "Settled",
+        state: "Visible",
+        uncertainty: "Known",
+        visibleHasEveOk: true,
+        wireHasAuthHeader: false,
+        wireHasKey: false,
+        wireHasSecretPhrase: false,
+      });
     }).pipe(Effect.provide(zenLayer))
   );
 
   it.effect("abort during model call cancels before settle", () => {
     const controller = new AbortController();
-    const abortingFetch: EveFetch = async (_url, init) => {
+    const abortingFetch: EveFetch = (_url, init) => {
       controller.abort();
-      if (init?.signal?.aborted) {
+      if (init?.signal?.aborted === true) {
         throw new DOMException("Aborted", "AbortError");
       }
       throw new DOMException("Aborted", "AbortError");
@@ -123,14 +138,20 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
           userText: "will cancel",
         })
       );
-      expect(exit._tag).toBe("Failure");
-
       const journal = yield* EveJournal;
       const snapshot = yield* journal.recover(conversationId);
-      expect(snapshot.messages).toHaveLength(0);
       const turn = snapshot.turns.find((row) => row.turnId === turnCancel);
-      expect(turn?.phase).toBe("Cancelled");
-      expect(JSON.stringify(snapshot).includes("unit-test-key")).toBeFalsy();
+      expect({
+        exit: exit._tag,
+        messageCount: snapshot.messages.length,
+        phase: turn?.phase,
+        wireHasKey: JSON.stringify(snapshot).includes("unit-test-key"),
+      }).toStrictEqual({
+        exit: "Failure",
+        messageCount: 0,
+        phase: "Cancelled",
+        wireHasKey: false,
+      });
     }).pipe(Effect.provide(layer));
   });
 

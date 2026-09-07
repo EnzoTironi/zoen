@@ -38,13 +38,23 @@ const evidenceRef = Schema.decodeSync(EvidenceRef)(
 
 describe("EX41 eve journal stub port", () => {
   it("marks real-model and voice admissions as live-blocked; Zen/stub admitted", () => {
-    expect(isLiveProviderBlocked("stub-local")).toBeFalsy();
-    expect(isLiveProviderBlocked("opencode-zen")).toBeFalsy();
-    expect(isLiveProviderBlocked("real-model-blocked")).toBeTruthy();
-    expect(isLiveProviderBlocked("voice-blocked")).toBeTruthy();
-    expect(isAdmittedProvider("opencode-zen")).toBeTruthy();
-    expect(isAdmittedProvider("stub-local")).toBeTruthy();
-    expect(isAdmittedProvider("voice-blocked")).toBeFalsy();
+    expect({
+      admittedStub: isAdmittedProvider("stub-local"),
+      admittedVoice: isAdmittedProvider("voice-blocked"),
+      admittedZen: isAdmittedProvider("opencode-zen"),
+      liveReal: isLiveProviderBlocked("real-model-blocked"),
+      liveStub: isLiveProviderBlocked("stub-local"),
+      liveVoice: isLiveProviderBlocked("voice-blocked"),
+      liveZen: isLiveProviderBlocked("opencode-zen"),
+    }).toStrictEqual({
+      admittedStub: true,
+      admittedVoice: false,
+      admittedZen: true,
+      liveReal: true,
+      liveStub: false,
+      liveVoice: true,
+      liveZen: false,
+    });
   });
 
   it.effect("blocks real-model accept path", () =>
@@ -230,14 +240,23 @@ describe("EX41 eve journal stub port", () => {
         turnId: turnA,
         userText: "live path accept",
       });
-      expect(accepted.phase).toBe("Accepted");
       const recovered = yield* journal.recover(conversationId);
-      expect(recovered.providerAdmission).toBe("opencode-zen");
-      expect(recovered.conversation.profileId).toBe("eve-opencode-zen-v1");
-      expect(recovered.authorityCredentialPresent).toBeFalsy();
       const serialized = JSON.stringify(recovered);
-      expect(serialized.includes("sk-")).toBeFalsy();
-      expect(serialized.toLowerCase().includes("apikey")).toBeFalsy();
+      expect({
+        admission: recovered.providerAdmission,
+        credential: recovered.authorityCredentialPresent,
+        hasApiKey: serialized.toLowerCase().includes("apikey"),
+        hasSk: serialized.includes("sk-"),
+        phase: accepted.phase,
+        profileId: recovered.conversation.profileId,
+      }).toStrictEqual({
+        admission: "opencode-zen",
+        credential: false,
+        hasApiKey: false,
+        hasSk: false,
+        phase: "Accepted",
+        profileId: "eve-opencode-zen-v1",
+      });
     }).pipe(Effect.provide(EveJournal.stubMemoryLayer))
   );
 });
