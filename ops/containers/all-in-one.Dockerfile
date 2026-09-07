@@ -56,6 +56,7 @@ COPY ops/containers/all-in-one-entrypoint.sh /usr/local/bin/all-in-one-entrypoin
 COPY apps/server/sql ./apps/server/sql
 COPY apps/server/src/identity/worlds/grants.ts ./apps/server/src/identity/worlds/grants.ts
 COPY apps/server/src/all-in-one-release-align.ts ./apps/server/src/all-in-one-release-align.ts
+COPY apps/server/src/all-in-one-release-apply.ts ./apps/server/src/all-in-one-release-apply.ts
 
 # Let ops/*.ts (migrations bootstrap) resolve apps/server production deps.
 RUN ln -sfn /app/apps/server/node_modules /app/ops/node_modules \

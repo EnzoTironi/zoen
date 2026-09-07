@@ -1,6 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
 import { Effect, Logger, Schema } from "effect";
 
+import { ServerConfigurationError } from "../src/configuration.ts";
 import {
   logServerFailed,
   serverMainRuntimeOptions,
@@ -40,4 +41,12 @@ describe("server.failed Cause logging", () => {
       expect(entry.cause).toContain("Die");
     })
   );
+});
+
+describe("ServerConfigurationError Cause message", () => {
+  it("exposes RELEASE_MISMATCH for Fly server.failed Cause logs", () => {
+    const error = new ServerConfigurationError({ code: "RELEASE_MISMATCH" });
+    expect(error.message).toBe("RELEASE_MISMATCH");
+    expect(String(error)).toContain("RELEASE_MISMATCH");
+  });
 });
