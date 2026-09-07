@@ -6,6 +6,7 @@ import { httpListener } from "./adapters/http.ts";
 import { makeD01Application } from "./composition.ts";
 import { loadConfiguration } from "./configuration.ts";
 import { webRoutes } from "./http/web.ts";
+import { logServerFailed, serverMainRuntimeOptions } from "./server-failed.ts";
 
 const program = loadConfiguration.pipe(
   Effect.flatMap(({ application, listenHost, listenPort }) =>
@@ -19,10 +20,7 @@ const program = loadConfiguration.pipe(
     )
   ),
   Effect.provide(NodeServices.layer),
-  Effect.tapCause((cause) =>
-    Effect.logError({ event: "server.failed", cause: String(cause) })
-  )
+  Effect.tapCause((cause) => logServerFailed(cause))
 );
 
-// Keep Effect pretty-printing on so Fly logs show the real defect.
-NodeRuntime.runMain(program);
+NodeRuntime.runMain(program, serverMainRuntimeOptions);
