@@ -1010,6 +1010,30 @@
         "Hosted Closing\u2192Erased on live retained install",
         "restoreAfterErasure (F04 closed)"
       ]
+    },
+    {
+      "date": "2026-09-07",
+      "commit": "edbf72f",
+      "packages": [],
+      "state": "tip_hosted_fly_deploy_ready",
+      "profile": "fly zoen-rebuild all-in-one / tip after #82",
+      "evidence": "https://github.com/EnzoTironi/zoen/actions/runs/34152681282",
+      "scope": "Tip edbf72f (#82 code landed: RELEASE_MISMATCH / releaseDigest alignment on all-in-one redeploy). Fly Deploy GitHub Actions succeeded for headSha edbf72f2a3ae652f11ff6a753f3ec39e1e31fa6b: https://github.com/EnzoTironi/zoen/actions/runs/34152681282. Operator observation 2026-09-07: Fly image deployment-01M1YKZRT31AB9TXJCBGDXXE3J / release v13 and /ready HTTP 200 (body {\"status\":\"ready\"} only \u2014 does NOT prove running commit or releaseDigest identity). docs/architecture-audit/ documents the post-#74 execution frontier (ZA slices, tip\u2192target, anti-list); 0 ZA accepted; architecture-repair HOLD. Does NOT fill verified_deliveries with D01\u2013D22 or claim full D04 activation.",
+      "notes": "Honesty checkpoint only. #82 landed and Deploy succeeded + /ready 200 observed; do not treat /ready as tip_hosted_release_digest_aligned proof. Post-audit tip includes #75\u2013#82. G-TIP rebind required before executing ZA on tip. deliveries.json may still say planned.",
+      "fly_deploy": {
+        "app": "zoen-rebuild",
+        "deploy_run": "https://github.com/EnzoTironi/zoen/actions/runs/34152681282",
+        "head_sha": "edbf72f2a3ae652f11ff6a753f3ec39e1e31fa6b",
+        "verified_ready": true,
+        "ready_status": 200,
+        "ready_body_note": "Returns {status:ready} only; no commit/digest in payload",
+        "release": "v13",
+        "image": "deployment-01M1YKZRT31AB9TXJCBGDXXE3J",
+        "image_note": "Operator observation from Deploy run log / Fly; not proven by /ready body",
+        "verified_on": "2026-09-07",
+        "verifier": "New Bot"
+      },
+      "za_accepted": 0
     }
   ],
   "verified_deliveries": [],
@@ -1017,7 +1041,7 @@
     {
       "id": "fly-hosted-retained-gaps",
       "delivery": "D04",
-      "detail": "Fly app zoen-rebuild is live all-in-one (PG+RustFS+app on volume, min_machines_running=1, https://zoen-rebuild.fly.dev; secrets include ZOEN_OPENCODE_*). MPG/Tigris destroyed by design \u2014 do not revive. Remaining gaps block full D04: backup catalog for admitted restore beyond disposable, sensitive pilot (needs D03 purge/restore-after-erasure), and legacy zoen / DNS cutover (explicit human decision).",
+      "detail": "Fly app zoen-rebuild exists; tip edbf72f (#82) Deploy succeeded (https://github.com/EnzoTironi/zoen/actions/runs/34152681282); operator observed release v13 + /ready 200 on 2026-09-07 (image deployment-01M1YKZRT31AB9TXJCBGDXXE3J; /ready does not expose digest). MPG/Tigris remain destroyed by design \u2014 do not revive. Full D04 activation still not claimed: Managed Postgres/Tigris are not the topology; remaining gaps include backup catalog for admitted restore beyond disposable, sensitive pilot (needs D03 purge/restore-after-erasure), and legacy zoen / DNS cutover (explicit human decision).",
       "since": "2026-09-07"
     },
     {
@@ -1062,7 +1086,7 @@
       "fly_legacy_app": "zoen (not cut over)",
       "stubs": ["ops/fly/fly.toml", "ops/fly/README.md"],
       "dockerfile": "ops/containers/application.Dockerfile",
-      "deployed": false,
+      "deployed": true,
       "hosted_retained_policy_schemas": true,
       "profile_id": "d04-hosted-retained-v1",
       "data_policy_union": true,
@@ -1073,7 +1097,19 @@
       "hosted_admission_flags": true,
       "hosted_local_compose": true,
       "verified_for_profile_local_bootstrap": true,
-      "not_production_fly": true
+      "not_production_fly": true,
+      "deployed_app": "zoen-rebuild",
+      "deployed_tip": "edbf72f",
+      "deployed_head_sha": "edbf72f2a3ae652f11ff6a753f3ec39e1e31fa6b",
+      "deploy_run": "https://github.com/EnzoTironi/zoen/actions/runs/34152681282",
+      "deployed_ready_verified": true,
+      "deployed_ready_status": 200,
+      "deployed_release": "v13",
+      "deployed_image": "deployment-01M1YKZRT31AB9TXJCBGDXXE3J",
+      "deployed_verified_on": "2026-09-07",
+      "digest_proven_by_ready": false,
+      "full_d04_activation_claimed": false,
+      "notes": "Deploy succeeded for tip edbf72f (https://github.com/EnzoTironi/zoen/actions/runs/34152681282); /ready 200 observed. Image/release v13 are operator observations from the Deploy run \u2014 /ready body does not prove commit or releaseDigest identity. not_production_fly remains true because legacy zoen cutover, Managed Postgres/Tigris (intentionally absent), backup catalog, and sensitive-pilot qualification still block claiming full D04."
     }
   }
 }

@@ -29,6 +29,8 @@ Surfaces first: **web** and **CLI** (same verbs). Agent, SDK, and MCP come later
 
 [https://zoen.tironi.xyz](https://zoen.tironi.xyz)
 
+**Status:** tip on Fly `zoen-rebuild` is deployed; post-#74 execution frontier is documented in [docs/architecture-audit/](docs/architecture-audit/README.md) (ZA not accepted). Honest verified increments live in `planning/progress.json`.
+
 ## Development
 
 Trunk is `main`. There is no paid Fly staging app — staging is local Docker only (zero Fly staging cost).
@@ -80,6 +82,7 @@ Do not commit Fly secrets or `.env*` files. See [SECURITY.md](SECURITY.md).
 ## Docs
 
 - [Architecture](docs/architecture.md) — workspaces and composition
+- [Architecture audit (post-#74 frontier)](docs/architecture-audit/README.md) — execution frontier, anti-list, ZA plan (docs only; 0 ZA accepted)
 - [Invariants](docs/invariants.md) — product laws
 - [Roadmap](docs/roadmap.md) — phases and deliveries
 - [Quality](docs/quality.md) — gates and proof layers
