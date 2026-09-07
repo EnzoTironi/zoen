@@ -1037,7 +1037,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "pending-za17",
+      "commit": "538f2d95046020c94710121618452784ed075d56",
       "packages": ["ZA-17"],
       "state": "eve_product_fail_closed",
       "profile": "eve unadmitted (blockedProviders + blocked Zen; stubMemory not product)",
