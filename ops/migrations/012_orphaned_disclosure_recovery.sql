@@ -1,9 +1,10 @@
 -- Orphaned disclosure recovery: writer-epoch inventory and monotone recovery records.
 -- Pending rows are not wiped by TTL; recovery retires a contained epoch then advances pending.
--- Pre-launch: refuse activation while durable pending lacks epochs (no silent stuck barriers).
+-- First activation only: refuse while durable pending lacks epochs (no silent stuck barriers).
 DO $$
 BEGIN
-  IF EXISTS (SELECT 1 FROM jobs.disclosure_pending) THEN
+  IF to_regclass('jobs.disclosure_writer_epochs') IS NULL
+     AND EXISTS (SELECT 1 FROM jobs.disclosure_pending) THEN
     RAISE EXCEPTION
       'disclosure: drain jobs.disclosure_pending before orphaned-recovery activation';
   END IF;
