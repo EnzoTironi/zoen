@@ -4,8 +4,8 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { makeD01PostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { makeWorldsPostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { inspectWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/inspect.js";
 import { requestWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/request.js";
@@ -46,7 +46,7 @@ const withErasureRuntime = <A, E, R, ROut, EOut>(
   configuration: Layer.Layer<ROut, EOut>,
   run: Effect.Effect<A, E, R>
 ) =>
-  withD01Database((database) =>
+  withWorldsDatabase((database) =>
     Effect.gen(function* prepare() {
       yield* Effect.gen(function* migrate() {
         const sql = yield* SqlClient.SqlClient;
@@ -67,7 +67,7 @@ const withErasureRuntime = <A, E, R, ROut, EOut>(
         yield* grantErasureSchemas(database.names.authority);
       }).pipe(Effect.provide(database.migration));
 
-      const registerPg = makeD01PostgresLayer({
+      const registerPg = makeWorldsPostgresLayer({
         applicationName: "zoen-ex32-erasure-attempt",
         maxConnections: 4,
         url: database.urls.authority,
@@ -209,7 +209,7 @@ it.live("EX32 retained profile blocks Closing", () =>
 it.live(
   "EX32 missing register (unqualified) blocks Closing — no local progress",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* missing() {
         yield* Effect.gen(function* migrate() {
           const sql = yield* SqlClient.SqlClient;

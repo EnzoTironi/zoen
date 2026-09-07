@@ -10,14 +10,14 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../../../../apps/server/test/composition/worlds/fixture.js";
 import { canonicalJson } from "../../../../packages/authority/src/values/canonical.js";
 
 it.live(
   "independent EX10 audience and byte validation happen before authenticated semantic mutation",
   () =>
-    withD01Http(({ database, origin }) =>
+    withWorldsHttp(({ database, origin }) =>
       Effect.gen(function* authenticatedTransportRejection() {
         const signup = yield* http(
           origin,

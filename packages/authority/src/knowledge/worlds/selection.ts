@@ -1,14 +1,14 @@
 import { InvalidInput } from "@zoen/contracts/worlds/errors";
 import { VisibleClaim } from "@zoen/contracts/worlds/evidence";
 import type { Selection } from "@zoen/contracts/worlds/evidence";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { compareAmounts } from "../../values/amount.js";
 import { intervalRelation } from "../../values/time.js";
 
 const Claims = Schema.Array(VisibleClaim).check(
-  Schema.isMaxLength(D01_LIMITS.frameClaims)
+  Schema.isMaxLength(WorldLimits.frameClaims)
 );
 
 const pairConflicts = Effect.fn("authority.knowledge.pairConflicts")(

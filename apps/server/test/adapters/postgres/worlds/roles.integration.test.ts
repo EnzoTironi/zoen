@@ -5,33 +5,35 @@ import { expect, it } from "@effect/vitest";
 import { Effect } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { makeD01PostgresLayer } from "../../../../src/adapters/postgres/worlds/postgres.ts";
-import { withD01Database } from "./database.ts";
+import { makeWorldsPostgresLayer } from "../../../../src/adapters/postgres/worlds/postgres.ts";
+import { withWorldsDatabase } from "./database.ts";
 import { claimRow, seedEvidence } from "./seed.ts";
 
 for (const misconfiguration of ["public-create", "replication"] as const) {
-  it.live(`D01 runtime admission rejects ${misconfiguration} credentials`, () =>
-    withD01Database(
-      (database) =>
-        Effect.gen(function* rejectMisconfiguration() {
-          const failure = yield* Effect.void.pipe(
-            Effect.provide(database.authority),
-            Effect.flip
-          );
-          expect(failure).toMatchObject({
-            _tag: "UnsafePostgresRole",
-            code: "runtime_role_is_privileged",
-          });
-        }),
-      misconfiguration
-    )
+  it.live(
+    `Worlds runtime admission rejects ${misconfiguration} credentials`,
+    () =>
+      withWorldsDatabase(
+        (database) =>
+          Effect.gen(function* rejectMisconfiguration() {
+            const failure = yield* Effect.void.pipe(
+              Effect.provide(database.authority),
+              Effect.flip
+            );
+            expect(failure).toMatchObject({
+              _tag: "UnsafePostgresRole",
+              code: "runtime_role_is_privileged",
+            });
+          }),
+        misconfiguration
+      )
   );
 }
 
 it.live(
-  "D01 identity and progress cannot mint domain authority; progress updates only its granted columns",
+  "Worlds identity and progress cannot mint domain authority; progress updates only its granted columns",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* roles() {
         const seed = yield* Effect.gen(function* prepare() {
           const sql = yield* SqlClient.SqlClient;
@@ -106,8 +108,8 @@ it.live(
     )
 );
 
-it.live("D01 runtime admission rejects the real migration owner", () =>
-  withD01Database((database) =>
+it.live("Worlds runtime admission rejects the real migration owner", () =>
+  withWorldsDatabase((database) =>
     Effect.gen(function* rejectOwner() {
       const client = yield* PgClient.PgClient;
       if (client.config.url === undefined) {
@@ -115,7 +117,7 @@ it.live("D01 runtime admission rejects the real migration owner", () =>
       }
       const rejected = yield* Effect.void.pipe(
         Effect.provide(
-          makeD01PostgresLayer({
+          makeWorldsPostgresLayer({
             applicationName: "ex06-reject-owner",
             maxConnections: 1,
             url: client.config.url,

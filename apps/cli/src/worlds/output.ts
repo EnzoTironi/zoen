@@ -1,4 +1,4 @@
-import { D01Error } from "@zoen/contracts/worlds/errors";
+import { SemanticError } from "@zoen/contracts/worlds/errors";
 import type { SemanticSuccess } from "@zoen/contracts/worlds/operations";
 import { Data, Schema } from "effect";
 
@@ -22,7 +22,7 @@ export const formatFailure = (
   json: string;
   exitCode: number;
 } => {
-  if (Schema.is(D01Error)(error)) {
+  if (Schema.is(SemanticError)(error)) {
     return {
       exitCode: 1,
       json: JSON.stringify({ _tag: error._tag, code: error.code }),

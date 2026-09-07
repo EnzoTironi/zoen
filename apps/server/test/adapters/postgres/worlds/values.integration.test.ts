@@ -3,13 +3,13 @@ import { DecimalText, LocalDate } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "./database.ts";
+import { withWorldsDatabase } from "./database.ts";
 import { claimRow, seedEvidence } from "./seed.ts";
 
 it.live(
-  "D01 PostgreSQL preserves decimal precision, Known zero, Unknown and civil dates in different timezones",
+  "Worlds PostgreSQL preserves decimal precision, Known zero, Unknown and civil dates in different timezones",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* values() {
         const sql = yield* SqlClient.SqlClient;
         const seed = yield* seedEvidence();

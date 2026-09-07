@@ -8,7 +8,7 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../worlds/fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
@@ -16,9 +16,9 @@ const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const eve = { purpose: "personal-records", schemaVersion: "eve.v1" };
 
 it.live(
-  "ZA-17 makeD01Application with OpenCode key still Blocked on Eve accept",
+  "ZA-17 makeApplication with OpenCode key still Blocked on Eve accept",
   () =>
-    withD01Http(
+    withWorldsHttp(
       ({ origin }) =>
         Effect.gen(function* eveHttpKeyPresent() {
           const email = `${randomUUID()}@example.test`;

@@ -31,9 +31,9 @@ const TargetPanel = ({
         <p>O proprietário não pode ser alvo de concessão ou revogação.</p>
       ) : null}
       {target.membership?.role !== "owner" && confirmation === null ? (
-        <div className="d01-action-row">
+        <div className="worlds-action-row">
           <button
-            className="d01-button"
+            className="worlds-button"
             disabled={disabled}
             onClick={() => {
               controller.prepareAccess("grant");
@@ -44,7 +44,7 @@ const TargetPanel = ({
           </button>
           {target.membership === null ? null : (
             <button
-              className="d01-button"
+              className="worlds-button"
               disabled={disabled}
               onClick={() => {
                 controller.prepareAccess("revoke");
@@ -74,7 +74,7 @@ const TargetPanel = ({
             histórico, backups ou cópias já recebidas.
           </p>
           <button
-            className="d01-button d01-button-primary"
+            className="worlds-button worlds-button-primary"
             disabled={disabled}
             onClick={() => {
               controller.confirmAccess();
@@ -86,7 +86,7 @@ const TargetPanel = ({
               : "Revogar leitura do espaço"}
           </button>
           <button
-            className="d01-button"
+            className="worlds-button"
             disabled={state.busy}
             onClick={() => {
               controller.cancelAccess();
@@ -116,9 +116,9 @@ export const SharingPanel = ({
   return (
     <section
       aria-label="Compartilhar leitura"
-      className="worlds-workspace d01-context"
+      className="worlds-workspace worlds-context"
     >
-      <div className="d01-context-inner">
+      <div className="worlds-context-inner">
         <h2>Compartilhar leitura deste espaço</h2>
         <p>
           Peça à pessoa o identificador da conta dela. Informe o UUID exato; não
@@ -144,7 +144,7 @@ export const SharingPanel = ({
             type="text"
           />
           <button
-            className="d01-button"
+            className="worlds-button"
             disabled={state.busy || state.canRetry}
             type="submit"
           >

@@ -17,8 +17,8 @@ export const AuthForm = ({
   const submitLabel = mode === "sign-in" ? "Entrar" : "Criar conta";
   return (
     <div className="worlds-workspace">
-      <main className="d01-account">
-        <p className="d01-eyebrow">Zoen · seu espaço privado</p>
+      <main className="worlds-account">
+        <p className="worlds-eyebrow">Zoen · seu espaço privado</p>
         <h1>
           {mode === "sign-in" ? "Entre para continuar" : "Crie sua conta"}
         </h1>
@@ -36,7 +36,7 @@ export const AuthForm = ({
           }}
         >
           <fieldset disabled={state.busy || state.checking}>
-            <legend className="d01-visually-hidden">
+            <legend className="worlds-visually-hidden">
               {mode === "sign-in" ? "Entrar" : "Criar conta"}
             </legend>
             {mode === "sign-up" ? (
@@ -70,16 +70,19 @@ export const AuthForm = ({
               required
               type="password"
             />
-            <p className="d01-muted">
+            <p className="worlds-muted">
               Use pelo menos 12 caracteres. O email identifica sua conta local.
             </p>
-            <button className="d01-button d01-button-primary" type="submit">
+            <button
+              className="worlds-button worlds-button-primary"
+              type="submit"
+            >
               {state.busy ? "Aguarde…" : submitLabel}
             </button>
           </fieldset>
         </form>
         <button
-          className="d01-button d01-button-quiet"
+          className="worlds-button worlds-button-quiet"
           disabled={state.busy || state.checking}
           onClick={() => {
             setMode(mode === "sign-in" ? "sign-up" : "sign-in");

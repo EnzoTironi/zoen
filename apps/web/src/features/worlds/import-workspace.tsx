@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 
-import { D01Workspace } from "../../components/worlds/worlds-workspace.tsx";
+import { WorldsWorkspace } from "../../components/worlds/worlds-workspace.tsx";
 import type { WorkspaceState } from "./model.ts";
 import type { ImportFileFormat } from "./requests.ts";
 import type { WorkspaceController } from "./state.ts";
@@ -21,9 +21,9 @@ export const ImportWorkspace = ({
       {state.membership?.role === "owner" ? (
         <section
           aria-label="Formato da importação"
-          className="worlds-workspace d01-context"
+          className="worlds-workspace worlds-context"
         >
-          <div className="d01-context-inner">
+          <div className="worlds-context-inner">
             <label htmlFor={`${id}-format`}>Formato dos arquivos</label>
             <select
               disabled={state.busy}
@@ -46,7 +46,7 @@ export const ImportWorkspace = ({
           </div>
         </section>
       ) : null}
-      <D01Workspace
+      <WorldsWorkspace
         {...(state.canRetry ? { onRetry: controller.retry } : {})}
         acceptedFileTypes={csv ? "text/csv,.csv" : "application/json,.json"}
         readOnly={state.membership?.role !== "owner"}

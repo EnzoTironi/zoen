@@ -8,17 +8,17 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../worlds/fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const eve = { purpose: "personal-records", schemaVersion: "eve.v1" };
 
 it.live(
   "EX44 Eve HTTP fail-closed Blocked when OpenCode key absent; recover/cancel require auth",
   () =>
-    withD01Http(({ origin }) =>
+    withWorldsHttp(({ origin }) =>
       Effect.gen(function* eveHttp() {
         const email = `${randomUUID()}@example.test`;
         const password = Redacted.make(randomBytes(24).toString("base64url"));
@@ -34,7 +34,7 @@ it.live(
           origin,
           "/api/worlds/execute",
           json({
-            ...d01,
+            ...worldsBasis,
             input: {},
             operation: "CreatePersonalWorld",
             operationId: randomUUID(),

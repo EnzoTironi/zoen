@@ -3,13 +3,13 @@ import { Presence } from "@zoen/authority/ports/worlds/context";
 import { Effect } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01IdentityDatabase } from "./database.ts";
+import { withIdentityDatabase } from "./database.ts";
 import { createAccount, postAuth } from "./http.ts";
 
 it.live(
   "independent logout review: successful deletion with unavailable post-check does not clear the cookie",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* postCheckFailure() {
         const presence = yield* Presence;
         const account = yield* createAccount(fixture.config.baseUrl);
@@ -67,7 +67,7 @@ it.live(
 it.live(
   "independent logout review: body targeting another live session cannot redirect revocation or confirmation",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* exactSession() {
         const presence = yield* Presence;
         const first = yield* createAccount(fixture.config.baseUrl);

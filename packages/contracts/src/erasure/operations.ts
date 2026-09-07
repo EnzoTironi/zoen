@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { D01Error } from "../worlds/errors.js";
+import { SemanticError } from "../worlds/errors.js";
 import {
   OperationId,
   Purpose,
@@ -121,5 +121,5 @@ export const WorldErasureSuccess = Schema.Union([
 ]);
 export type WorldErasureSuccess = typeof WorldErasureSuccess.Type;
 
-export const WorldErasureFailure = D01Error;
+export const WorldErasureFailure = SemanticError;
 export type WorldErasureFailure = typeof WorldErasureFailure.Type;

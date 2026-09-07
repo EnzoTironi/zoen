@@ -8,13 +8,13 @@ import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
 import { DateTime, Deferred, Effect, Fiber, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01IdentityDatabase } from "../worlds/database.ts";
+import { withIdentityDatabase } from "../worlds/database.ts";
 import { createAccount, postAuth } from "../worlds/http.ts";
 
 it.live(
   "EX22 real logout stays unavailable across pending ACK, then confirms absence on retry",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* logoutOrdering() {
         const fence = yield* DisclosureFence;
         const presence = yield* Presence;
@@ -110,7 +110,7 @@ it.live(
 it.live(
   "EX22 PrincipalDirectory returns exact account existence without identity metadata",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* accountEligibility() {
         const directory = yield* PrincipalDirectory;
         const account = yield* createAccount(fixture.config.baseUrl);

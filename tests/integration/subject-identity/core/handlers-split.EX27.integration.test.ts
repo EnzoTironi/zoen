@@ -7,7 +7,7 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.js";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
 import {
   createAccount,
   postAuth,
@@ -36,7 +36,7 @@ const envelope = {
   purpose: "personal-records" as const,
   schemaVersion: "subject-identity.v1" as const,
 };
-const d01 = {
+const worldsBasis = {
   purpose: "personal-records" as const,
   schemaVersion: "worlds.v1" as const,
 };
@@ -84,7 +84,7 @@ const partitionAnchorAway = (
 it.live(
   "EX27 ProposeIdentitySplit applies partition, blocks invalid cover, and Stales retained confirm",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage(({ config: storage }) =>
         Effect.gen(function* splitCore() {
           const account = yield* createAccount(fixture.config.baseUrl);
@@ -93,7 +93,7 @@ it.live(
             .execute(
               account.credential,
               yield* bytes({
-                ...d01,
+                ...worldsBasis,
                 input: {},
                 operation: "CreatePersonalWorld",
                 operationId: randomUUID(),
@@ -104,7 +104,7 @@ it.live(
           yield* executor.execute(
             account.credential,
             yield* bytes({
-              ...d01,
+              ...worldsBasis,
               input: {
                 document: yield* documentFor([
                   { amount: "100", key: "A" },

@@ -18,7 +18,7 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../../../../server/test/composition/worlds/fixture.ts";
 import { saveSession } from "../../../src/worlds/session.js";
 
@@ -59,7 +59,7 @@ const document = (revision: string) =>
 it.live(
   "EX14 compiled CLI preserves correction consent, replay, undo and typed stale or revoked failures",
   () =>
-    withD01Http(({ database, origin }) =>
+    withWorldsHttp(({ database, origin }) =>
       Effect.gen(function* correctionHttpJourney() {
         const signup = yield* http(
           origin,

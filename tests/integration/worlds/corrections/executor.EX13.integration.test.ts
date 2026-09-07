@@ -4,7 +4,7 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
 import {
   createAccount,
   postAuth,
@@ -27,7 +27,7 @@ const bytes = (value: unknown) =>
 it.live(
   "EX13 real identity executes scoped correction through the shared executor, and logout denies retained replay",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage(() =>
         Effect.gen(function* authenticatedCorrections() {
           const account = yield* createAccount(fixture.config.baseUrl);

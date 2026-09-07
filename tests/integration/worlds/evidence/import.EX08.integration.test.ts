@@ -5,7 +5,7 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { readCut } from "../../../../packages/authority/src/commit/guards.js";
 import { bindWorldIntent } from "../../../../packages/authority/src/commit/intent.js";
@@ -18,7 +18,7 @@ import { configuration, makeInput } from "../commit/fixture.js";
 it.live(
   "EX08 real import preserves one revision, rejects changed intent and leaves unchanged knowledge counters on dedup",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       withStorage(() =>
         Effect.gen(function* importAndDedup() {
           const { context, request } = yield* makeInput();

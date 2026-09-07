@@ -3,7 +3,7 @@ import { Deferred, Effect, Layer, Queue, Ref } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import type { SqlError } from "effect/unstable/sql/SqlError";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { serializable } from "../../../../packages/authority/src/commit/transaction.js";
 import { configuration, makeInput } from "./fixture.js";
@@ -11,7 +11,7 @@ import { configuration, makeInput } from "./fixture.js";
 it.live(
   "EX05 a real outbox constraint failure rolls back all genesis state and its receipt",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* outboxFailure() {
         yield* Effect.gen(function* rejectOutboxEvent() {
           const sql = yield* SqlClient.SqlClient;
@@ -57,7 +57,7 @@ it.live(
 it.live(
   "EX05 three real serialization conflicts exhaust exactly three total attempts",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.scoped(
         Effect.gen(function* serializationLimit() {
           const { context, request } = yield* makeInput();
@@ -106,7 +106,7 @@ it.live(
 it.live(
   "EX05 a real SQL expression failure is never retried and exposes no SQL detail",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* nonRetryableSql() {
         const sql = yield* SqlClient.SqlClient;
         const attempts = yield* Ref.make(0);
@@ -129,7 +129,7 @@ it.live(
 it.live(
   "EX05 a deferred FK failure at COMMIT remains a safe typed failure",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* deferredCommitFailure() {
         const { context, request } = yield* makeInput();
         const sql = yield* SqlClient.SqlClient;
@@ -153,7 +153,7 @@ it.live(
 it.live(
   "EX05 a write-skew conflict raised only at COMMIT retries the same transaction",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.scoped(
         Effect.gen(function* commitSerialization() {
           const firstInput = yield* makeInput();

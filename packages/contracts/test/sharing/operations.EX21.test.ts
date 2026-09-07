@@ -3,7 +3,7 @@ import { Schema } from "effect";
 
 import {
   CorrectionRequest,
-  D01Request,
+  WorldRequest,
   SemanticRequest,
 } from "../../src/worlds/operations.js";
 
@@ -21,7 +21,7 @@ const grant = {
 describe("SH schemas", () => {
   it("SH schemas admit exact sharing requests without widening legacy families", () => {
     expect(Schema.is(SemanticRequest)(grant)).toBeTruthy();
-    expect(Schema.is(D01Request)(grant)).toBeFalsy();
+    expect(Schema.is(WorldRequest)(grant)).toBeFalsy();
     expect(Schema.is(CorrectionRequest)(grant)).toBeFalsy();
     for (const input of [
       { principalRef: grant.input.principalRef },

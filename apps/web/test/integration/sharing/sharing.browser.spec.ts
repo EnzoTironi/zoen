@@ -92,7 +92,7 @@ test("EX23 owner confirms the whole World; viewer reads own history and clears p
     await expect(
       page.getByText("Seu papel: proprietário", { exact: true })
     ).toBeVisible();
-    const world = await page.locator(".d01-world-id span").textContent();
+    const world = await page.locator(".worlds-world-id span").textContent();
     if (world === null) {
       throw new Error("Created World identifier is missing");
     }
@@ -225,7 +225,7 @@ test("EX23 owner confirms the whole World; viewer reads own history and clears p
       page.getByRole("region", { exact: true, name: "Acesso consultado" })
     ).toContainText("leitor · revogado · revisão 1");
     // Normal periodic access inspection receives denial and discards all private presentation state.
-    await expect(reader.locator(".d01-world-id")).toHaveCount(0, {
+    await expect(reader.locator(".worlds-world-id")).toHaveCount(0, {
       timeout: 15_000,
     });
     await expect(reader.getByText(sourceLabel, { exact: true })).toHaveCount(0);

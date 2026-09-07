@@ -35,7 +35,7 @@ export const CorrectionPanel = ({
   return (
     <section
       aria-label="Decisões por período"
-      className="worlds-workspace d01-context corrections-panel"
+      className="worlds-workspace worlds-context corrections-panel"
     >
       <h2>Sua decisão sobre este período</h2>
       <p>
@@ -79,7 +79,10 @@ export const CorrectionPanel = ({
                 </option>
               ))}
             </select>
-            <button className="d01-button d01-button-primary" type="submit">
+            <button
+              className="worlds-button worlds-button-primary"
+              type="submit"
+            >
               Revisar proposta
             </button>
           </fieldset>
@@ -103,7 +106,7 @@ export const CorrectionPanel = ({
             fontes nem comprova pagamento.
           </p>
           <button
-            className="d01-button d01-button-primary"
+            className="worlds-button worlds-button-primary"
             disabled={state.busy}
             onClick={() => {
               controller.answerQuestion("confirm");
@@ -113,7 +116,7 @@ export const CorrectionPanel = ({
             Confirmar decisão
           </button>
           <button
-            className="d01-button"
+            className="worlds-button"
             disabled={state.busy}
             onClick={() => {
               controller.answerQuestion("unknown");
@@ -146,7 +149,7 @@ export const CorrectionPanel = ({
                   decisão no histórico.
                 </p>
                 <button
-                  className="d01-button"
+                  className="worlds-button"
                   disabled={state.busy || proposal !== null}
                   onClick={() => {
                     controller.undoCorrection(correction.correctionRef);

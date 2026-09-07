@@ -3,7 +3,7 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { hostedAdmissionLayer } from "../../../../apps/server/src/composition.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { resolveLocalWorldPolicy } from "../../../../ops/local/world-policy.ts";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import {
@@ -33,7 +33,7 @@ import {
 it.live(
   "EX39 hosted-retained NEW Worlds stamp d04 policy; erasure/restore closed",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* hostedStamp() {
         const context = yield* makeContext();
         const request = yield* makeCreateWorld();
@@ -60,7 +60,7 @@ it.live(
 );
 
 it.live("EX39 default local retained remains distinct (no hosted rebind)", () =>
-  withD01Database((database) =>
+  withWorldsDatabase((database) =>
     Effect.gen(function* retainedDefault() {
       const context = yield* makeContext();
       const request = yield* makeCreateWorld();
@@ -91,7 +91,7 @@ it.live("EX39 default local retained remains distinct (no hosted rebind)", () =>
 it.live(
   "EX39 composition admission layer: core ready; channels Blocked; no false healthy",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* admissionCompose() {
         const flags = yield* HostedAdmissionFlags;
         expect(flags).toStrictEqual(d04HostedRetainedAdmissionFlags);

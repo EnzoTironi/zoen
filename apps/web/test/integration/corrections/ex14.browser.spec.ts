@@ -146,7 +146,7 @@ test("EX14 browser decisions replay through CLI and preserve stale consent, hist
       stdout: '{"_tag":"SignedIn"}\n',
     });
     await page.getByRole("button", { name: "Criar espaço privado" }).click();
-    await expect(page.locator(".d01-world-id span")).toBeVisible();
+    await expect(page.locator(".worlds-world-id span")).toBeVisible();
     await page.getByLabel("Adicionar arquivos", { exact: true }).setInputFiles(
       ["100", "200"].map((amount) => ({
         buffer: Buffer.from(source(subject, `Fonte ${amount}`, amount)),

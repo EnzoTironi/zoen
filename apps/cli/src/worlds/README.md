@@ -1,6 +1,6 @@
 # D01 CLI candidate — EX11
 
-`command.ts` exports `d01Command`. Root composes `Command.run({ version })`, `NodeServices.layer`, `FetchHttpClient.layer`, and `NodeRuntime.runMain` in the reserved entrypoint. Every command needs `--base-url <origin>`; the default session directory is `~/.config/zoen` (0700).
+`command.ts` exports `rootCommand`. Root composes `Command.run({ version })`, `NodeServices.layer`, `FetchHttpClient.layer`, and `NodeRuntime.runMain` in the reserved entrypoint. Every command needs `--base-url <origin>`; the default session directory is `~/.config/zoen` (0700).
 
 Commands: `sign-up`, `sign-in`, `sign-out`, `create-world`, `import`, `inspect`, `open`. Command help describes flags. Passwords use stdin or an owned 0600 `--password-file`. Sessions store the real authentication cookie in an owned 0600 file bound to the exact origin. An existing session file is never overwritten. Sign out revokes the server session before removing that file.
 

@@ -40,7 +40,7 @@ export interface CorrectionDraft {
   readonly explanation: string;
 }
 
-export interface D01WorkspaceProps {
+export interface WorldsWorkspaceProps {
   readonly readOnly?: boolean;
   readonly view: WorkspaceView;
   readonly acceptedFileTypes: string;

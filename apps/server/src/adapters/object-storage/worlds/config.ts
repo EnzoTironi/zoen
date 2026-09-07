@@ -1,10 +1,10 @@
 import { StorageFailure } from "@zoen/authority/ports/worlds/storage";
-import { D01_LIMITS, exact } from "@zoen/contracts/worlds/values";
+import { WorldLimits, exact } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 const Timeout = Schema.Int.check(
   Schema.isGreaterThan(0),
-  Schema.isLessThanOrEqualTo(D01_LIMITS.requestSeconds * 1000)
+  Schema.isLessThanOrEqualTo(WorldLimits.requestSeconds * 1000)
 );
 export const S3EvidenceConfig = Schema.Struct({
   bucket: Schema.String.check(

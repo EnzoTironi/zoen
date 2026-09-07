@@ -1,11 +1,11 @@
 import { Schema } from "effect";
 
-import { D01_LIMITS, Digest, SubjectKey } from "../worlds/values.js";
+import { WorldLimits, Digest, SubjectKey } from "../worlds/values.js";
 
 export const SUBJECT_IDENTITY_LIMITS = {
   anchors: 32,
   cells: 64,
-  claims: D01_LIMITS.frameClaims,
+  claims: WorldLimits.frameClaims,
   comparisonPairsPerCell: 256,
   effectItems: 512,
   segments: 128,

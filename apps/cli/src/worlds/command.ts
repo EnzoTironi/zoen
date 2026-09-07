@@ -2,7 +2,7 @@ import { homedir } from "node:os";
 
 import { decodeSemanticRequest } from "@zoen/contracts/worlds/operations";
 import {
-  D01_LIMITS,
+  WorldLimits,
   EvidenceRef,
   FrameRef,
   OperationId,
@@ -135,7 +135,10 @@ const importEvidence = Command.make(
   (flags) =>
     report(
       Effect.gen(function* importDocument() {
-        const document = yield* readInput(flags.file, D01_LIMITS.documentBytes);
+        const document = yield* readInput(
+          flags.file,
+          WorldLimits.documentBytes
+        );
         yield* send({
           ...envelope,
           input:
@@ -296,7 +299,7 @@ const logout = Command.make("sign-out", {}, () =>
   ])
 );
 
-export const d01Command = root.pipe(
+export const rootCommand = root.pipe(
   Command.withDescription(
     "Zoen public API client. Results are JSON; errors go to stderr with nonzero exit status."
   ),

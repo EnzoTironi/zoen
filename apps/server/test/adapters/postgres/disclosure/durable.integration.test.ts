@@ -9,8 +9,8 @@ import { DateTime, Deferred, Effect, Exit, Fiber, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { makeDisclosureFenceLayer } from "../../../../src/adapters/postgres/disclosure/fence.ts";
-import { withD01Database } from "../worlds/database.ts";
-import type { D01TestDatabase } from "../worlds/database.ts";
+import { withWorldsDatabase } from "../worlds/database.ts";
+import type { WorldsTestDatabase } from "../worlds/database.ts";
 
 const context = Effect.gen(function* testContext() {
   const now = yield* DateTime.now;
@@ -31,7 +31,7 @@ const context = Effect.gen(function* testContext() {
     }),
   };
 });
-const runtime = (database: D01TestDatabase) =>
+const runtime = (database: WorldsTestDatabase) =>
   Layer.merge(
     makeDisclosureFenceLayer({
       applicationName: "ex22-durable",
@@ -44,7 +44,7 @@ const runtime = (database: D01TestDatabase) =>
 it.live(
   "EX22 Scope closure retains a durable permit; exact ACK permits terminal logout, which prevents new disclosure",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* terminalClosing() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -105,7 +105,7 @@ it.live(
 it.live(
   "EX22 failed permit INSERT rolls both subject writes back and discards the transaction's physical client",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* atomicRegistration() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -141,7 +141,7 @@ it.live(
 it.live(
   "EX22 denied ACK retains the same durable permit and retry removes only that UUID without another emission",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* retryAcknowledgement() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -175,7 +175,7 @@ it.live(
 it.live(
   "EX22 a lost coordinator leaves pending durable and blocks terminal logout until ACK on a current connection",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* physicalLoss() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -227,7 +227,7 @@ it.live(
 it.live(
   "EX22 coordinator health rejects missing durable grants on the actual pool",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* healthGrants() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -244,7 +244,7 @@ it.live(
 it.live(
   "EX22 concurrent exact ACKs release one physical reservation and use a saturated one-slot pool safely",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* concurrentAcknowledgements() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -274,7 +274,7 @@ it.live(
 it.live(
   "EX22 explicit cancellation proof can ACK from an interrupted owner's finalizer",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* cancelledBeforeEmission() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -307,7 +307,7 @@ it.live(
 it.live(
   "EX22 registration obeys its deadline even when its caller is uninterruptible and PostgreSQL blocks the subject write",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* boundedRegistration() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;

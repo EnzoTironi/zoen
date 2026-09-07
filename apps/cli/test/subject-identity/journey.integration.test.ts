@@ -20,7 +20,7 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../../../server/test/composition/worlds/fixture.ts";
 import { saveSession } from "../../src/worlds/session.js";
 
@@ -34,7 +34,7 @@ const read = <E, R>(stream: Stream.Stream<Uint8Array, E, R>) =>
   );
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const interval = {
   _tag: "DateInterval",
   from: "2026-09-01",
@@ -87,7 +87,7 @@ const partitionAnchorAway = (
 it.live(
   "EX28 compiled CLI inspects, proposes same-as, resolves, splits and recovers over real HTTP",
   () =>
-    withD01Http(({ origin }) =>
+    withWorldsHttp(({ origin }) =>
       Effect.gen(function* identityCliJourney() {
         const signup = yield* http(
           origin,
@@ -132,7 +132,7 @@ it.live(
           origin,
           "/api/worlds/execute",
           json({
-            ...d01,
+            ...worldsBasis,
             input: {},
             operation: "CreatePersonalWorld",
             operationId: randomUUID(),
@@ -148,7 +148,7 @@ it.live(
           origin,
           "/api/worlds/execute",
           json({
-            ...d01,
+            ...worldsBasis,
             input: { document },
             operation: "ImportEvidence",
             operationId: randomUUID(),

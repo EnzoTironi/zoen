@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { InvalidInput, QuotaExceeded } from "@zoen/contracts/worlds/errors";
 import { decodeSemanticRequest } from "@zoen/contracts/worlds/operations";
 import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
-import { D01_LIMITS, Digest } from "@zoen/contracts/worlds/values";
+import { WorldLimits, Digest } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { parseImportDocument } from "./document.js";
@@ -21,7 +21,7 @@ const quota = (): never => {
 export const digestBytes = (bytes: Uint8Array): typeof Digest.Type =>
   Schema.decodeSync(Digest)(createHash("sha256").update(bytes).digest("hex"));
 
-/** Sorted UTF-16 keys, exact strings and safe integers: the D01 JSON subset. */
+/** Sorted UTF-16 keys, exact strings and safe integers: the Worlds JSON subset. */
 export const canonicalJson = (input: unknown) =>
   Effect.try({
     catch: (error) =>
@@ -35,14 +35,14 @@ export const canonicalJson = (input: unknown) =>
       let entries = 0;
       const append = (text: string): void => {
         bytes += encoder.encode(text).byteLength;
-        if (bytes > D01_LIMITS.envelopeBytes) {
+        if (bytes > WorldLimits.envelopeBytes) {
           quota();
         }
         parts.push(text);
       };
       const count = (): void => {
         entries += 1;
-        if (entries > D01_LIMITS.entries) {
+        if (entries > WorldLimits.entries) {
           quota();
         }
       };
@@ -104,7 +104,7 @@ export const canonicalJson = (input: unknown) =>
         }
       };
       const visit = (value: unknown, depth: number): void => {
-        if (depth > D01_LIMITS.depth) {
+        if (depth > WorldLimits.depth) {
           quota();
         }
         count();

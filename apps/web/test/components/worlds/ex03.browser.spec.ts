@@ -152,7 +152,7 @@ test.describe("EX03 — componente React real, sem backend", () => {
       page.getByRole("button", { name: "Não sei responder" })
     ).toBeVisible();
     const firstCard = await page
-      .locator(".d01-source-card")
+      .locator(".worlds-source-card")
       .first()
       .boundingBox();
     expect(firstCard?.width).toBeGreaterThan(350);

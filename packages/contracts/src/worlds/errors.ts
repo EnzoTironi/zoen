@@ -60,7 +60,7 @@ export class RetryableInfrastructureFailure extends Schema.TaggedError<Retryable
   { code: Schema.Literal("RETRYABLE_INFRASTRUCTURE_FAILURE") },
   { httpApiStatus: 503 }
 ) {}
-export const D01Error = Schema.Union([
+export const SemanticError = Schema.Union([
   InvalidInput,
   Unauthenticated,
   NotFoundOrDenied,
@@ -74,4 +74,4 @@ export const D01Error = Schema.Union([
   Expired,
   RetryableInfrastructureFailure,
 ]);
-export type D01Error = typeof D01Error.Type;
+export type SemanticError = typeof SemanticError.Type;

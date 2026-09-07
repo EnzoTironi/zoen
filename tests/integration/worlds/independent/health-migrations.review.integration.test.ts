@@ -11,16 +11,16 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { S3Health } from "../../../../apps/server/src/adapters/object-storage/worlds/health.ts";
 import { layer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.ts";
-import { makeD01Application } from "../../../../apps/server/src/composition.ts";
+import { makeApplication } from "../../../../apps/server/src/composition.ts";
 import {
   sdk,
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import {
   http,
   jsonBody,
-  withD01Http,
+  withWorldsHttp,
 } from "../../../../apps/server/test/composition/worlds/fixture.ts";
 import { applyD01Migrations } from "../../../../ops/migrations/run.ts";
 import { configuration } from "../commit/fixture.ts";
@@ -28,7 +28,7 @@ import { configuration } from "../commit/fixture.ts";
 it.live(
   "independent EX10 readiness observes loss of authority write rights on the live pool",
   () =>
-    withD01Http(({ database, origin }) =>
+    withWorldsHttp(({ database, origin }) =>
       Effect.gen(function* revokedAuthorityGrant() {
         const ready = yield* http(origin, "/ready");
         expect(ready.status).toBe(200);
@@ -87,7 +87,7 @@ it.live(
 it.live(
   "independent EX10 rejects identity credentials supplied to the authority pool before serving the application",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         withStorage(({ client, config: storage }) =>
           Effect.gen(function* authorityRoleAdmission() {
@@ -105,7 +105,7 @@ it.live(
               throw new Error("Review requires a real TCP listener");
             }
             const origin = `http://127.0.0.1:${server.address.port}`;
-            const application = makeD01Application({
+            const application = makeApplication({
               authorityDatabaseUrl: database.urls.identity,
               identity: {
                 baseUrl: origin,
@@ -141,7 +141,7 @@ it.live(
 it.live(
   "independent EX10 numbered migrations replay without duplication and preserve runtime role separation",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         Effect.gen(function* migrationReplay() {
           const repeat = yield* applyD01Migrations(database.names).pipe(

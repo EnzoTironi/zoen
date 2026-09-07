@@ -13,9 +13,9 @@ import { Effect, Layer, Schema } from "effect";
 import type { Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { grantD01Roles } from "../../../../apps/server/sql/proposals/worlds/grants.js";
+import { grantWorldsRoles } from "../../../../apps/server/sql/proposals/worlds/grants.js";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { authorizeWorld } from "../../../../packages/authority/src/access/world.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { HostedRetainedDataPolicySchema } from "../../../../packages/authority/src/ports/worlds/context.js";
@@ -73,7 +73,7 @@ const s3Send = <A>(run: (signal: AbortSignal) => Promise<A>) =>
 it.live(
   "EX37 disposable dump→restore reproduces hosted-retained World install only under enabled scope",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* hostedRoundTrip() {
         const context = yield* makeContext();
         const request = yield* makeCreateWorld();
@@ -100,7 +100,7 @@ it.live(
 
         yield* withLogicalDumpRestore(database.urls.migration, (restored) =>
           Effect.gen(function* verifyTarget() {
-            yield* grantD01Roles({
+            yield* grantWorldsRoles({
               authority: database.names.authority,
               identity: database.names.identity,
               progress: database.names.progress,
@@ -174,7 +174,7 @@ it.live(
 it.live(
   "EX37 scoped restore excludes local-retained World content outside enabled hosted scope",
   () =>
-    withD01Database((source) =>
+    withWorldsDatabase((source) =>
       Effect.gen(function* scopedRestore() {
         const hostedCtx = yield* makeContext();
         const localCtx = yield* makeContext();
@@ -235,7 +235,7 @@ it.live(
           ORDER BY domain_key
         `;
 
-        yield* withD01Database((target) =>
+        yield* withWorldsDatabase((target) =>
           Effect.gen(function* copyHostedScope() {
             const admin = yield* SqlClient.SqlClient;
             yield* admin.unsafe(`

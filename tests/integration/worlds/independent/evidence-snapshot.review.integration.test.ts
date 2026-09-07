@@ -5,7 +5,7 @@ import { Deferred, Effect, Fiber, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { readCut } from "../../../../packages/authority/src/commit/guards.js";
 import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.js";
@@ -20,7 +20,7 @@ import { configuration, makeInput } from "../commit/fixture.js";
 it.live(
   "independent EX08 concurrent dedup stays atomic and a blocked frame retains its original snapshot and pins",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       withStorage(() =>
         Effect.scoped(
           Effect.gen(function* snapshotReview() {

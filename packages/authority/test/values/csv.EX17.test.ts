@@ -1,5 +1,5 @@
 import { ImportEvidence } from "@zoen/contracts/worlds/operations";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Effect, Result, Schema } from "effect";
 import { describe, expect, it } from "vitest";
 
@@ -298,7 +298,7 @@ describe("EX17 frozen CSV representation", () => {
     const render = () =>
       csv(ids.map((recordExternalId) => row({ ...source, recordExternalId })));
     let missing =
-      D01_LIMITS.documentBytes - new TextEncoder().encode(render()).byteLength;
+      WorldLimits.documentBytes - new TextEncoder().encode(render()).byteLength;
     for (let index = 0; index < ids.length; index += 1) {
       const id = ids[index];
       if (id === undefined) {
@@ -311,7 +311,7 @@ describe("EX17 frozen CSV representation", () => {
     const exact = render();
     expect(missing).toBe(0);
     expect(new TextEncoder().encode(exact)).toHaveLength(
-      D01_LIMITS.documentBytes
+      WorldLimits.documentBytes
     );
     expect(parse(exact).records).toHaveLength(200);
     expect(
@@ -329,7 +329,7 @@ describe("EX17 frozen CSV representation", () => {
     expect(
       fail(
         parseImportDocument({
-          document: " ".repeat(D01_LIMITS.documentBytes + 1),
+          document: " ".repeat(WorldLimits.documentBytes + 1),
           format: "worlds.csv.v1",
         })
       )

@@ -5,7 +5,7 @@ import {
   IdentityEffectRef,
   SUBJECT_IDENTITY_LIMITS,
 } from "@zoen/contracts/subject-identity/values";
-import { D01_LIMITS, SubjectKey } from "@zoen/contracts/worlds/values";
+import { WorldLimits, SubjectKey } from "@zoen/contracts/worlds/values";
 import { Effect, Result, Schema } from "effect";
 
 import { maximalIdentityCells } from "../../../src/knowledge/subject-identity/pure/cells.js";
@@ -57,7 +57,7 @@ describe("EX27 recovery Question prospective limits", () => {
           [edge.left, edge.right],
           period()
         );
-        const claims = Array.from({ length: D01_LIMITS.frameClaims }, (_, i) =>
+        const claims = Array.from({ length: WorldLimits.frameClaims }, (_, i) =>
           claim(i + 1, i % 2 === 0 ? "A" : "B")
         );
         const compared = yield* maximalIdentityCells(closure, period(), claims);
@@ -130,7 +130,7 @@ describe("EX27 recovery Question prospective limits", () => {
         });
         const measured = yield* measure(question);
         expect(measured.bytes).toBeGreaterThan(0);
-        expect(measured.bytes).toBeLessThanOrEqual(D01_LIMITS.responseBytes);
+        expect(measured.bytes).toBeLessThanOrEqual(WorldLimits.responseBytes);
         expect(
           measured.json.includes("claimRef") ||
             measured.json.includes("obligation.amount")

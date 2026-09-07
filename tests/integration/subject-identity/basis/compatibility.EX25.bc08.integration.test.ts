@@ -7,7 +7,7 @@ import { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, FileSystem, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { seedEvidence } from "../../../../apps/server/test/adapters/postgres/worlds/seed.ts";
 import {
   applyDisclosureMigrations,
@@ -15,7 +15,7 @@ import {
 } from "../../../../ops/migrations/run.ts";
 
 const migrationServices = (
-  database: Parameters<Parameters<typeof withD01Database>[0]>[0]
+  database: Parameters<Parameters<typeof withWorldsDatabase>[0]>[0]
 ) => Layer.mergeAll(database.migration, NodeServices.layer);
 
 const snapshot = Effect.gen(function* snapshotHistory() {
@@ -45,7 +45,7 @@ const snapshot = Effect.gen(function* snapshotHistory() {
 it.live(
   "EX25 BC-08 failed identity-basis migration rolls back and incomplete activation stays Unavailable",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         Effect.gen(function* proveMigrationFailure() {
           const sql = yield* SqlClient.SqlClient;

@@ -2,7 +2,7 @@ import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
 import { EveConversationSuccess } from "@zoen/contracts/eve/operations";
 import { SharingSuccess } from "@zoen/contracts/sharing/operations";
 import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
-import type { D01Error } from "@zoen/contracts/worlds/errors";
+import type { SemanticError } from "@zoen/contracts/worlds/errors";
 import {
   InvalidInput,
   Unauthenticated,
@@ -12,11 +12,11 @@ import {
 } from "@zoen/contracts/worlds/errors";
 import {
   CorrectionSuccess,
-  D01Success,
+  WorldSuccess,
   WorldCreated,
 } from "@zoen/contracts/worlds/operations";
 import type { SemanticSuccess } from "@zoen/contracts/worlds/operations";
-import { D01_LIMITS, Instant } from "@zoen/contracts/worlds/values";
+import { WorldLimits, Instant } from "@zoen/contracts/worlds/values";
 import type { Redacted } from "effect";
 import { Clock, Context, DateTime, Effect, Layer, Schema, Scope } from "effect";
 
@@ -79,7 +79,7 @@ type ExecuteWithEmission = (
   credential: Redacted.Redacted,
   bytes: Uint8Array,
   emit: Emit
-) => Effect.Effect<void, D01Error, Scope.Scope>;
+) => Effect.Effect<void, SemanticError, Scope.Scope>;
 
 const parseRequest = (family: Family, bytes: Uint8Array) => {
   switch (family) {
@@ -112,7 +112,7 @@ const decodeSuccess = (
 ): Effect.Effect<SemanticSuccess, Schema.SchemaError | Unsupported> => {
   switch (family) {
     case "worlds": {
-      return Schema.decodeUnknownEffect(D01Success)(result);
+      return Schema.decodeUnknownEffect(WorldSuccess)(result);
     }
     case "correction": {
       return Schema.decodeUnknownEffect(CorrectionSuccess)(result);
@@ -143,27 +143,27 @@ export class SemanticExecutor extends Context.Service<
     readonly execute: (
       credential: Redacted.Redacted,
       bytes: Uint8Array
-    ) => Effect.Effect<D01Success, D01Error>;
+    ) => Effect.Effect<WorldSuccess, SemanticError>;
     readonly executeCorrection: (
       credential: Redacted.Redacted,
       bytes: Uint8Array
-    ) => Effect.Effect<CorrectionSuccess, D01Error>;
+    ) => Effect.Effect<CorrectionSuccess, SemanticError>;
     readonly executeSharing: (
       credential: Redacted.Redacted,
       bytes: Uint8Array
-    ) => Effect.Effect<SharingSuccess, D01Error>;
+    ) => Effect.Effect<SharingSuccess, SemanticError>;
     readonly executeSubjectIdentity: (
       credential: Redacted.Redacted,
       bytes: Uint8Array
-    ) => Effect.Effect<SubjectIdentitySuccess, D01Error>;
+    ) => Effect.Effect<SubjectIdentitySuccess, SemanticError>;
     readonly executeErasure: (
       credential: Redacted.Redacted,
       bytes: Uint8Array
-    ) => Effect.Effect<WorldErasureSuccess, D01Error>;
+    ) => Effect.Effect<WorldErasureSuccess, SemanticError>;
     readonly executeEve: (
       credential: Redacted.Redacted,
       bytes: Uint8Array
-    ) => Effect.Effect<EveConversationSuccess, D01Error>;
+    ) => Effect.Effect<EveConversationSuccess, SemanticError>;
     readonly executeWithEmission: ExecuteWithEmission;
     readonly executeCorrectionWithEmission: ExecuteWithEmission;
     readonly executeSharingWithEmission: ExecuteWithEmission;
@@ -213,7 +213,7 @@ export class SemanticExecutor extends Context.Service<
           const now = yield* DateTime.now;
           const deadline = yield* Schema.decodeEffect(Instant)(
             DateTime.formatIso(
-              DateTime.add(now, { seconds: D01_LIMITS.requestSeconds })
+              DateTime.add(now, { seconds: WorldLimits.requestSeconds })
             )
           ).pipe(
             Effect.mapError(() => new InvalidInput({ code: "INVALID_INPUT" }))
@@ -305,7 +305,7 @@ export class SemanticExecutor extends Context.Service<
           const jsonBytes = new TextEncoder().encode(
             yield* canonicalJson(decoded)
           );
-          if (jsonBytes.byteLength > D01_LIMITS.responseBytes) {
+          if (jsonBytes.byteLength > WorldLimits.responseBytes) {
             return yield* schemaUnavailable();
           }
           const worldRef =
@@ -318,7 +318,7 @@ export class SemanticExecutor extends Context.Service<
         },
         Effect.catchTag("SqlError", schemaUnavailable),
         Effect.timeoutOrElse({
-          duration: `${D01_LIMITS.requestSeconds} seconds`,
+          duration: `${WorldLimits.requestSeconds} seconds`,
           orElse: () => Effect.fail(new Expired({ code: "EXPIRED" })),
         }),
         Effect.provide(dependencies)
@@ -430,7 +430,7 @@ export class SemanticExecutor extends Context.Service<
       return SemanticExecutor.of({
         execute: (credential, bytes) =>
           execute("worlds", credential, bytes).pipe(
-            Effect.flatMap(Schema.decodeUnknownEffect(D01Success)),
+            Effect.flatMap(Schema.decodeUnknownEffect(WorldSuccess)),
             Effect.catchTag("SchemaError", schemaUnavailable)
           ),
         executeCorrection: (credential, bytes) =>

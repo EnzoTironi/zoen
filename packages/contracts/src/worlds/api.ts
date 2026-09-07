@@ -17,39 +17,39 @@ import {
   SubjectIdentityRequest,
   SubjectIdentitySuccess,
 } from "../subject-identity/operations.js";
-import { D01Error } from "./errors.js";
+import { SemanticError } from "./errors.js";
 import {
   CorrectionRequest,
   CorrectionSuccess,
-  D01Request,
-  D01Success,
+  WorldRequest,
+  WorldSuccess,
 } from "./operations.js";
 
-export const D01ApiGroup = HttpApiGroup.make("worlds").add(
+export const WorldApiGroup = HttpApiGroup.make("worlds").add(
   HttpApiEndpoint.post("execute", "/api/worlds/execute", {
-    error: D01Error.members,
-    payload: D01Request,
-    success: D01Success,
+    error: SemanticError.members,
+    payload: WorldRequest,
+    success: WorldSuccess,
   })
 );
 export const CorrectionApiGroup = HttpApiGroup.make("corrections").add(
   HttpApiEndpoint.post("execute", "/api/corrections/execute", {
-    error: D01Error.members,
+    error: SemanticError.members,
     payload: CorrectionRequest,
     success: CorrectionSuccess,
   })
 );
-export const D01Api = HttpApi.make("zoen-worlds").add(D01ApiGroup);
+export const WorldApi = HttpApi.make("zoen-worlds").add(WorldApiGroup);
 export const SharingApiGroup = HttpApiGroup.make("sharing").add(
   HttpApiEndpoint.post("execute", "/api/d03/sharing", {
-    error: D01Error.members,
+    error: SemanticError.members,
     payload: SharingRequest,
     success: SharingSuccess,
   })
 );
 export const SubjectIdentityApiGroup = HttpApiGroup.make("subjectIdentity").add(
   HttpApiEndpoint.post("execute", "/api/subject-identity/execute", {
-    error: D01Error.members,
+    error: SemanticError.members,
     payload: SubjectIdentityRequest,
     success: SubjectIdentitySuccess,
   })
@@ -57,20 +57,20 @@ export const SubjectIdentityApiGroup = HttpApiGroup.make("subjectIdentity").add(
 /** Domain path — prefer /api/erasure over a new /api/d03/ segment. */
 export const ErasureApiGroup = HttpApiGroup.make("erasure").add(
   HttpApiEndpoint.post("execute", "/api/erasure/execute", {
-    error: D01Error.members,
+    error: SemanticError.members,
     payload: WorldErasureRequest,
     success: WorldErasureSuccess,
   })
 );
-/** Domain path — /api/eve (no /api/d05 segment). */
+/** Domain path — /api/eve. */
 export const EveApiGroup = HttpApiGroup.make("eve").add(
   HttpApiEndpoint.post("execute", "/api/eve/execute", {
-    error: D01Error.members,
+    error: SemanticError.members,
     payload: EveConversationRequest,
     success: EveConversationSuccess,
   })
 );
-export const ApplicationApi = D01Api.add(
+export const ApplicationApi = WorldApi.add(
   CorrectionApiGroup,
   SharingApiGroup,
   SubjectIdentityApiGroup,

@@ -2,7 +2,7 @@ import { QuotaExceeded, Unavailable } from "@zoen/contracts/worlds/errors";
 import { ScopedCorrection } from "@zoen/contracts/worlds/evidence";
 import {
   CorrectionRef,
-  D01_LIMITS,
+  WorldLimits,
   ReceiptRef,
 } from "@zoen/contracts/worlds/values";
 import type { SubjectKey, WorldRef } from "@zoen/contracts/worlds/values";
@@ -48,9 +48,9 @@ export const readScopedCorrections = Effect.fn(
       JOIN authority.corrections e ON e.world_id = ${world.worldId} AND e.realm = ${world.realm}
         AND e.correction_id = effective.correction_id
       ORDER BY e.answer->'consequence'->'validTime'->>'from', e.answer->'consequence'->'validTime'->>'to'
-      LIMIT ${D01_LIMITS.frameClaims + 1}
+      LIMIT ${WorldLimits.frameClaims + 1}
     `;
-    if (rows.length > D01_LIMITS.frameClaims) {
+    if (rows.length > WorldLimits.frameClaims) {
       return yield* new QuotaExceeded({ code: "QUOTA_EXCEEDED" });
     }
     const decisions: ScopedCorrection[] = [];

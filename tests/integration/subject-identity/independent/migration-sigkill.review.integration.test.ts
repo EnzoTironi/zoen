@@ -8,7 +8,7 @@ import { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, FileSystem, Layer, Path, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { seedEvidence } from "../../../../apps/server/test/adapters/postgres/worlds/seed.ts";
 import {
   applyDisclosureMigrations,
@@ -16,7 +16,7 @@ import {
 } from "../../../../ops/migrations/run.ts";
 
 const migrationServices = (
-  database: Parameters<Parameters<typeof withD01Database>[0]>[0]
+  database: Parameters<Parameters<typeof withWorldsDatabase>[0]>[0]
 ) => Layer.mergeAll(database.migration, NodeServices.layer);
 
 const snapshot = Effect.gen(function* snapshotHistory() {
@@ -42,7 +42,7 @@ const snapshot = Effect.gen(function* snapshotHistory() {
 it.live(
   "independent: SIGKILL during open 007 transaction rolls back; migrator recovers Unavailable cut",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         Effect.gen(function* refutePartialMigration() {
           const sql = yield* SqlClient.SqlClient;

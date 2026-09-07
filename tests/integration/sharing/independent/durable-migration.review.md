@@ -2,7 +2,7 @@
 
 Reviewed production commit `4357917000a6078a10c3619b702693c9d9ed8a04` on an isolated worktree. No production files were changed or activated.
 
-Executed `node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration tests/integration/d03-sharing/independent/durable-migration.review.integration.test.ts --maxWorkers=1`: **1 test passed**, 839 ms total / 397 ms test time, on 2026-09-05. The fixture creates a dedicated real PostgreSQL database and separate login roles; runtime checks use each role's actual connection, never migration impersonation. SQL history is synthetic input to the real database, not authenticated application admission or provider evidence.
+Executed `node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration tests/integration/sharing/independent/durable-migration.review.integration.test.ts --maxWorkers=1`: **1 test passed**, 839 ms total / 397 ms test time, on 2026-09-05. The fixture creates a dedicated real PostgreSQL database and separate login roles; runtime checks use each role's actual connection, never migration impersonation. SQL history is synthetic input to the real database, not authenticated application admission or provider evidence.
 
 The test installs migrations 001–005 using `applySharingMigrations`, seeds authority evidence/receipts/membership, identity user/session and jobs capture/outbox, and snapshots every old authority/identity/jobs table, including empty ones. Applying `applyDisclosureMigrations` reports only migration 006. All old rows, migration metadata 001–005, table ownership/ACLs, column ACLs and schema ownership/ACLs remain exactly equal.
 

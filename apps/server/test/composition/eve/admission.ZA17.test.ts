@@ -26,10 +26,10 @@ const turnId = Schema.decodeSync(TurnId)(
 
 describe("ZA-17 product Eve composition admission", () => {
   it.effect(
-    "OpenCode key present still installs blocked journal+Zen (makeD01Application surface)",
+    "OpenCode key present still installs blocked journal+Zen (makeApplication surface)",
     () =>
       Effect.gen(function* keyPresentBlocked() {
-        // Same helper makeD01Application uses — key alone must not admit live/stub.
+        // Same helper makeApplication uses — key alone must not admit live/stub.
         const surface = yield* makeProductEveSurface(true);
         yield* Effect.gen(function* assertBlocked() {
           const journal = yield* EveJournal;

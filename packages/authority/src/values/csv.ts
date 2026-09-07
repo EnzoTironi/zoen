@@ -1,6 +1,6 @@
 import { InvalidInput, QuotaExceeded } from "@zoen/contracts/worlds/errors";
 import { decodeImportDocument } from "@zoen/contracts/worlds/evidence";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { validUnicode } from "./json.js";
@@ -83,7 +83,7 @@ const rowsFromText = (text: string) => {
     return value;
   };
   while (offset < text.length) {
-    if (rows.length >= D01_LIMITS.records) {
+    if (rows.length >= WorldLimits.records) {
       return invalid();
     }
     const row: string[] = [];
@@ -185,7 +185,7 @@ export const parseCsvBytes = (bytes: Uint8Array) =>
         ? error
         : new InvalidInput({ code: "INVALID_INPUT" }),
     try: () => {
-      if (bytes.byteLength > D01_LIMITS.documentBytes) {
+      if (bytes.byteLength > WorldLimits.documentBytes) {
         throw new QuotaExceeded({ code: "QUOTA_EXCEEDED" });
       }
       const text = new TextDecoder("utf-8", {

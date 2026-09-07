@@ -4,7 +4,7 @@ import {
   InvalidInput,
   Unauthenticated,
 } from "@zoen/contracts/worlds/errors";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { DateTime, Effect, Schema } from "effect";
 
 import { VerifiedRequestContext } from "../ports/worlds/context.js";
@@ -29,7 +29,7 @@ export const validateContext = Effect.fn("authority.access.validateContext")(
     }
     const maximum = DateTime.formatIso(
       DateTime.add(yield* DateTime.now, {
-        seconds: D01_LIMITS.requestSeconds,
+        seconds: WorldLimits.requestSeconds,
       })
     );
     if (context.deadline > maximum) {

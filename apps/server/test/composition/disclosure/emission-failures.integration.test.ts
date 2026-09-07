@@ -13,7 +13,7 @@ import {
 } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withSharingDatabase } from "../../../../../tests/integration/d03-sharing/core/fixture.ts";
+import { withSharingDatabase } from "../../../../../tests/integration/sharing/core/fixture.ts";
 import { configuration } from "../../../../../tests/integration/worlds/commit/fixture.ts";
 import { makePrivateJsonEmitter } from "../../../src/http/disclosure.ts";
 import { ResponseSecurityHeaders } from "../../../src/http/security.ts";
@@ -24,7 +24,7 @@ const bytes = (value: unknown) =>
   new TextEncoder().encode(
     Schema.encodeSync(Schema.fromJsonString(Schema.Unknown))(value)
   );
-const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
@@ -46,7 +46,7 @@ it.live.each(["throw-after-end", "ack-delete-denied"] as const)(
             .execute(
               owner.credential,
               bytes({
-                ...d01,
+                ...worldsBasis,
                 input: {},
                 operation: "CreatePersonalWorld",
                 operationId: randomUUID(),
@@ -176,7 +176,7 @@ it.live.each(["session-expired", "cancelled"] as const)(
             .execute(
               owner.credential,
               bytes({
-                ...d01,
+                ...worldsBasis,
                 input: {},
                 operation: "CreatePersonalWorld",
                 operationId: randomUUID(),

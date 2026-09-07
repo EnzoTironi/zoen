@@ -20,19 +20,19 @@ import {
 } from "effect";
 
 import {
-  D01IdentityConfig,
+  IdentityConfig,
   IdentityConfigurationError,
-  d01AuthOptions,
+  identityAuthOptions,
 } from "./configuration.ts";
 import {
-  acquireD01IdentityPool,
-  checkD01IdentityPool,
+  acquireIdentityPool,
+  checkIdentityPool,
   identitySessionExists,
   identityPrincipalExists,
 } from "./database.ts";
 
-export class D01Auth extends Context.Service<
-  D01Auth,
+export class IdentityAuth extends Context.Service<
+  IdentityAuth,
   {
     readonly checkHealth: Effect.Effect<void, Unavailable>;
     readonly handle: (request: Request) => Effect.Effect<Response, Unavailable>;
@@ -67,10 +67,10 @@ const toPresence = (current: typeof ProviderSession.Type) =>
     sessionId: current.session.id,
   }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
 /** Provides real auth transport and the shared executor's Presence port. */
-export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
+export const makeIdentityLayer = (input: IdentityConfig) =>
   Layer.effectContext(
     Effect.gen(function* makeIdentity() {
-      const config = yield* Schema.decodeEffect(D01IdentityConfig)(input).pipe(
+      const config = yield* Schema.decodeEffect(IdentityConfig)(input).pipe(
         Effect.mapError(
           () =>
             new IdentityConfigurationError({
@@ -79,9 +79,9 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
         )
       );
       const fence = yield* DisclosureFence;
-      const pool = yield* acquireD01IdentityPool(config.databaseUrl);
-      yield* checkD01IdentityPool(pool);
-      const auth = betterAuth(d01AuthOptions(config, pool));
+      const pool = yield* acquireIdentityPool(config.databaseUrl);
+      yield* checkIdentityPool(pool);
+      const auth = betterAuth(identityAuthOptions(config, pool));
       yield* Effect.tryPromise({
         catch: () => new Unavailable({ code: "UNAVAILABLE" }),
         try: () => auth.$context,
@@ -205,9 +205,9 @@ export const makeD01IdentityLayer = (input: D01IdentityConfig) =>
           })
         ),
         Context.add(
-          D01Auth,
-          D01Auth.of({
-            checkHealth: checkD01IdentityPool(pool).pipe(
+          IdentityAuth,
+          IdentityAuth.of({
+            checkHealth: checkIdentityPool(pool).pipe(
               Effect.andThen(fence.checkHealth)
             ),
             handle: (request) => Effect.scoped(handle(request)),

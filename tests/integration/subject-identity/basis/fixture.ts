@@ -29,13 +29,13 @@ import type { HttpClientResponse } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
 
 import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.ts";
-import type { D01Auth } from "../../../../apps/server/src/identity/worlds/identity.ts";
+import type { IdentityAuth } from "../../../../apps/server/src/identity/worlds/identity.ts";
 import {
   sdk,
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
-import type { D01TestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import type { WorldsTestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/worlds/database.ts";
 import {
   applyDisclosureMigrations,
@@ -238,11 +238,11 @@ export const responseCookie = (
 
 export interface CurrentComponent {
   readonly identity: ReturnType<typeof makeTestIdentityLayer>;
-  readonly runtime: Layer.Layer<D01Auth | SemanticExecutor, unknown>;
+  readonly runtime: Layer.Layer<IdentityAuth | SemanticExecutor, unknown>;
 }
 
 export interface BasisHarness {
-  readonly database: D01TestDatabase;
+  readonly database: WorldsTestDatabase;
   readonly installation: typeof AuthorityInstallationSchema.Type;
   readonly legacy: LegacyBuild;
   readonly origin: string;
@@ -258,7 +258,7 @@ export interface BasisHarness {
 export const withLegacyBasisHarness = <A, E, R>(
   run: (harness: BasisHarness) => Effect.Effect<A, E, R>
 ) =>
-  withD01Database(
+  withWorldsDatabase(
     (database) =>
       withStorage(({ client, config: storage }) =>
         Effect.gen(function* basisHarness() {

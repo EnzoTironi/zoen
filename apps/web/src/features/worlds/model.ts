@@ -2,7 +2,7 @@ import type { Membership } from "@zoen/contracts/sharing/operations";
 import type { VisibleFrame } from "@zoen/contracts/worlds/evidence";
 import type {
   CorrectionSuccess,
-  D01Success,
+  WorldSuccess,
 } from "@zoen/contracts/worlds/operations";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
 
@@ -53,7 +53,7 @@ export const initialState: WorkspaceState = {
 
 export const successPatch = (
   state: WorkspaceState,
-  result: D01Success | CorrectionSuccess
+  result: WorldSuccess | CorrectionSuccess
 ): Partial<WorkspaceState> => {
   switch (result._tag) {
     case "WorldCreated": {

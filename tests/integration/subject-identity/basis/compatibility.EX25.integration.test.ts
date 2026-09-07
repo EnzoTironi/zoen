@@ -15,7 +15,7 @@ import {
 import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { D01Auth } from "../../../../apps/server/src/identity/worlds/identity.ts";
+import { IdentityAuth } from "../../../../apps/server/src/identity/worlds/identity.ts";
 import {
   asCurrentCredential,
   realignIntentDigest,
@@ -520,7 +520,7 @@ it.live(
               (SELECT count(*)::int FROM jobs.outbox WHERE world_id = ${worldRef.worldId}::uuid) AS outbox`;
           expect(countsAfter).toStrictEqual(countsBefore);
 
-          const auth = yield* D01Auth;
+          const auth = yield* IdentityAuth;
           const signOut = yield* auth.handle(
             new Request(`${harness.origin}/api/auth/sign-out`, {
               body: "{}",

@@ -2,8 +2,8 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { D01Auth } from "../../../src/identity/worlds/identity.ts";
-import { makeTestIdentityLayer, withD01IdentityDatabase } from "./database.ts";
+import { IdentityAuth } from "../../../src/identity/worlds/identity.ts";
+import { makeTestIdentityLayer, withIdentityDatabase } from "./database.ts";
 
 const roleName = SqlClient.SqlClient.pipe(
   Effect.flatMap((sql) => sql`SELECT current_user AS name`),
@@ -18,7 +18,7 @@ const roleName = SqlClient.SqlClient.pipe(
 it.live(
   "EX09 identity startup rejects isolated USAGE with no required table grants",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* insufficientStartupGrants() {
         const role = yield* roleName.pipe(
           Effect.provide(fixture.database.identity)
@@ -47,9 +47,9 @@ it.live(
 it.live(
   "EX09 readiness rechecks every required identity table privilege after startup",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* revokedGrants() {
-        const auth = yield* D01Auth;
+        const auth = yield* IdentityAuth;
         yield* auth.checkHealth;
         const role = yield* roleName.pipe(
           Effect.provide(fixture.database.identity)

@@ -126,7 +126,7 @@ test("ID-15 owner inspects, proposes same-as and confirms over real HTTP fence",
   const label = `Identity source ${randomUUID()}`;
   await signUp(page);
   await page.getByRole("button", { name: "Criar espaço privado" }).click();
-  await expect(page.locator(".d01-world-id span")).toBeVisible();
+  await expect(page.locator(".worlds-world-id span")).toBeVisible();
   await expect(
     page.getByRole("region", { name: "Identidade de assuntos" })
   ).toBeVisible();
@@ -218,7 +218,7 @@ test("EX28 viewer cannot see private identity controls or drive subject-identity
     await expect(
       page.getByRole("region", { name: "Identidade de assuntos" })
     ).toBeVisible();
-    const world = await page.locator(".d01-world-id span").textContent();
+    const world = await page.locator(".worlds-world-id span").textContent();
     if (world === null) {
       throw new Error("Created World identifier is missing");
     }

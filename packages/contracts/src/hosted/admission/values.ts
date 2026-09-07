@@ -7,8 +7,8 @@ import {
 } from "../policy/values.js";
 
 /**
- * D01 core surfaces admitted on d04-hosted-retained-v1 (freeze H06).
- * Acceptance emphasizes web/file; CLI remains the third D01 surface.
+ * Worlds core surfaces admitted on d04-hosted-retained-v1 (freeze H06).
+ * Acceptance emphasizes web/file; CLI remains the third Worlds surface.
  */
 export const HostedAdmittedSurfaceId = Schema.Literals(["web", "cli", "file"]);
 export type HostedAdmittedSurfaceId = typeof HostedAdmittedSurfaceId.Type;

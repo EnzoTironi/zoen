@@ -69,10 +69,10 @@ const QuestionPanel = ({
         </p>
       ) : null}
       {pendingAnswer === null ? (
-        <div className="d01-action-row">
+        <div className="worlds-action-row">
           {answers.map((answer) => (
             <button
-              className="d01-button"
+              className="worlds-button"
               disabled={disabled}
               key={answer}
               onClick={() => {
@@ -91,9 +91,9 @@ const QuestionPanel = ({
             exibido. Em caso de Stale, inspecione de novo e confirme uma nova
             intenção; retry de Unavailable reutiliza o mesmo operationId/digest.
           </p>
-          <div className="d01-action-row">
+          <div className="worlds-action-row">
             <button
-              className="d01-button d01-button-primary"
+              className="worlds-button worlds-button-primary"
               disabled={disabled}
               onClick={() => {
                 controller.confirmIdentityAnswer();
@@ -103,7 +103,7 @@ const QuestionPanel = ({
               Confirmar {pendingAnswer}
             </button>
             <button
-              className="d01-button"
+              className="worlds-button"
               disabled={disabled}
               onClick={() => {
                 controller.prepareIdentityAnswer(null);
@@ -138,9 +138,9 @@ export const SubjectIdentityPanel = ({
   return (
     <section
       aria-label="Identidade de assuntos"
-      className="worlds-workspace d01-context"
+      className="worlds-workspace worlds-context"
     >
-      <div className="d01-context-inner">
+      <div className="worlds-context-inner">
         <h2>Identidade privada entre assuntos</h2>
         <p>{privateAudience}</p>
         {stale ? (
@@ -193,7 +193,7 @@ export const SubjectIdentityPanel = ({
             required
             type="text"
           />
-          <button className="d01-button" disabled={disabled} type="submit">
+          <button className="worlds-button" disabled={disabled} type="submit">
             Inspecionar identidade
           </button>
         </form>
@@ -244,7 +244,7 @@ export const SubjectIdentityPanel = ({
             name="target"
             type="text"
           />
-          <button className="d01-button" disabled={disabled} type="submit">
+          <button className="worlds-button" disabled={disabled} type="submit">
             Inspecionar recuperação
           </button>
         </form>
@@ -277,7 +277,7 @@ export const SubjectIdentityPanel = ({
               required
               type="text"
             />
-            <button className="d01-button" disabled={disabled} type="submit">
+            <button className="worlds-button" disabled={disabled} type="submit">
               Propor resolução
             </button>
           </form>
@@ -304,7 +304,7 @@ export const SubjectIdentityPanel = ({
               required
               type="text"
             />
-            <button className="d01-button" disabled={disabled} type="submit">
+            <button className="worlds-button" disabled={disabled} type="submit">
               Propor partição
             </button>
           </form>
@@ -327,7 +327,7 @@ export const SubjectIdentityPanel = ({
               required
               type="text"
             />
-            <button className="d01-button" disabled={disabled} type="submit">
+            <button className="worlds-button" disabled={disabled} type="submit">
               Propor undo
             </button>
           </form>
@@ -344,7 +344,7 @@ export const SubjectIdentityPanel = ({
             </p>
             {resolved.decisionRef === null || frame === null ? null : (
               <button
-                className="d01-button"
+                className="worlds-button"
                 disabled={disabled}
                 onClick={() => {
                   controller.proposeIdentityUndo(resolved.decisionRef);

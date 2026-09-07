@@ -17,7 +17,7 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../../../apps/server/test/composition/worlds/fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
@@ -31,7 +31,7 @@ const text = <E, R>(stream: Stream.Stream<Uint8Array, E, R>) =>
 it.live(
   "independent EX14 CLI requires explicit mutation identity and answer, unknown stays scoped, and changed digest or reused identity cannot change consent",
   () =>
-    withD01Http(({ database, origin }) =>
+    withWorldsHttp(({ database, origin }) =>
       Effect.gen(function* correctionCliReview() {
         const signup = yield* http(
           origin,

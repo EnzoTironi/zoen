@@ -1,5 +1,5 @@
 import { Conflict, Stale, Unavailable } from "@zoen/contracts/worlds/errors";
-import type { D01Error } from "@zoen/contracts/worlds/errors";
+import type { SemanticError } from "@zoen/contracts/worlds/errors";
 import {
   Digest,
   ReceiptRef,
@@ -41,7 +41,7 @@ export interface MutationPlan {
     cut: DomainCut
   ) => Effect.Effect<
     MutationOutcome,
-    D01Error | SqlError.SqlError,
+    SemanticError | SqlError.SqlError,
     SqlClient.SqlClient
   >;
 }

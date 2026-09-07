@@ -8,7 +8,7 @@ import type { Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
 import { inspectWorldAccess } from "../../../../packages/authority/src/access/sharing/inspect.ts";
 import {
@@ -51,7 +51,7 @@ import {
 import type { WorldRef } from "../../../../packages/contracts/src/worlds/values.ts";
 import { configuration } from "../../worlds/commit/fixture.ts";
 
-type Fixture = Parameters<Parameters<typeof withD01IdentityDatabase>[0]>[0];
+type Fixture = Parameters<Parameters<typeof withIdentityDatabase>[0]>[0];
 const installSharing = (fixture: Fixture) =>
   Effect.gen(function* installSharingSchema() {
     const source = yield* FileSystem.FileSystem.use((fs) =>
@@ -142,7 +142,7 @@ const grantRequest = (worldRef: WorldRef, principalRef: string) =>
 it.live(
   "independent sharing replay preserves the installation guards of the existing mutation path",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* setup() {
         yield* installSharing(fixture);
         return yield* withStorage(() =>
@@ -239,7 +239,7 @@ it.live(
 it.live(
   "independent SH-02–04 viewer reads World evidence without observing private owner Questions corrections or Frames",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* setupAudience() {
         yield* installSharing(fixture);
         return yield* withStorage(() =>

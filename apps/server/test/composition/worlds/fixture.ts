@@ -20,16 +20,16 @@ import {
   applyErasureMigrations,
   applyIdentityBasisMigrations,
 } from "../../../../../ops/migrations/run.ts";
-import { makeD01Application } from "../../../src/composition.ts";
+import { makeApplication } from "../../../src/composition.ts";
 import {
   sdk,
   withStorage,
 } from "../../adapters/object-storage/worlds/fixture.ts";
-import { withD01Database } from "../../adapters/postgres/worlds/database.ts";
-import type { D01TestDatabase } from "../../adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../adapters/postgres/worlds/database.ts";
+import type { WorldsTestDatabase } from "../../adapters/postgres/worlds/database.ts";
 
 export interface HttpFixture {
-  readonly database: D01TestDatabase;
+  readonly database: WorldsTestDatabase;
   readonly origin: string;
 }
 
@@ -55,7 +55,7 @@ const erasablePolicy = {
   retention: "while-pinned",
 } as const;
 
-export interface WithD01HttpOptions {
+export interface WithWorldsHttpOptions {
   /** When set, exercises ZA-17 key-present composition (still fail-closed). */
   readonly openCodeZen?: {
     readonly apiKey: Redacted.Redacted;
@@ -64,13 +64,13 @@ export interface WithD01HttpOptions {
   };
 }
 
-export const withD01Http = <A, E>(
+export const withWorldsHttp = <A, E>(
   run: (
     fixture: HttpFixture
   ) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>,
-  options?: WithD01HttpOptions
+  options?: WithWorldsHttpOptions
 ) =>
-  withD01Database(
+  withWorldsDatabase(
     (database) =>
       withStorage(({ client, config: storage }) =>
         Effect.gen(function* actualHttpServer() {
@@ -110,7 +110,7 @@ export const withD01Http = <A, E>(
             generationId: randomUUID(),
             releaseDigest: digestBytes(releaseDescriptor),
           });
-          const application = makeD01Application({
+          const application = makeApplication({
             authorityDatabaseUrl: database.urls.authority,
             identity: {
               baseUrl: origin,
@@ -179,7 +179,7 @@ export const withErasableHttp = <A, E>(
     fixture: HttpFixture
   ) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>
 ) =>
-  withD01Database(
+  withWorldsDatabase(
     (database) =>
       withStorage(({ client, config: storage }) =>
         Effect.gen(function* erasableHttpServer() {
@@ -218,7 +218,7 @@ export const withErasableHttp = <A, E>(
             generationId: randomUUID(),
             releaseDigest: digestBytes(releaseDescriptor),
           });
-          const application = makeD01Application({
+          const application = makeApplication({
             authorityDatabaseUrl: database.urls.authority,
             erasureAttemptDatabaseUrl: database.urls.authority,
             identity: {

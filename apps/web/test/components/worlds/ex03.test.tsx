@@ -1,17 +1,17 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import type { D01WorkspaceProps } from "../../../src/components/worlds/presentation.ts";
-import { D01Workspace } from "../../../src/components/worlds/worlds-workspace.tsx";
+import type { WorldsWorkspaceProps } from "../../../src/components/worlds/presentation.ts";
+import { WorldsWorkspace } from "../../../src/components/worlds/worlds-workspace.tsx";
 import { inspection, views } from "./fixtures.ts";
 
 const render = (
-  view: D01WorkspaceProps["view"],
-  additions: Partial<D01WorkspaceProps> = {}
+  view: WorldsWorkspaceProps["view"],
+  additions: Partial<WorldsWorkspaceProps> = {}
 ) => {
   const events: string[] = [];
   return renderToStaticMarkup(
-    <D01Workspace
+    <WorldsWorkspace
       acceptedFileTypes=".json,application/json"
       fileHelp="Arquivos JSON, conforme os limites do seu espaço."
       onFilesSelected={(files) => {

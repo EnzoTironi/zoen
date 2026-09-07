@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 
-import type { D01WorkspaceProps, InspectionView } from "./presentation.ts";
+import type { WorldsWorkspaceProps, InspectionView } from "./presentation.ts";
 
 import "./worlds.css";
 
@@ -10,16 +10,16 @@ const FileInput = ({
   onFilesSelected,
   disabled,
 }: Pick<
-  D01WorkspaceProps,
+  WorldsWorkspaceProps,
   "acceptedFileTypes" | "fileHelp" | "onFilesSelected"
 > & {
   readonly disabled: boolean;
 }) => {
   const id = useId();
   return (
-    <div className="d01-file-input">
+    <div className="worlds-file-input">
       <label htmlFor={id}>Adicionar arquivos</label>
-      <p id={`${id}-help`} className="d01-muted">
+      <p id={`${id}-help`} className="worlds-muted">
         {fileHelp}
       </p>
       <input
@@ -48,7 +48,7 @@ const CorrectionForm = ({
   onUndo,
   actionPending = false,
 }: Pick<
-  D01WorkspaceProps,
+  WorldsWorkspaceProps,
   "onCorrection" | "onUnknown" | "onUndo" | "actionPending"
 > & {
   readonly inspection: InspectionView;
@@ -60,14 +60,14 @@ const CorrectionForm = ({
     return null;
   }
   return (
-    <section aria-labelledby={`${id}-title`} className="d01-correction">
+    <section aria-labelledby={`${id}-title`} className="worlds-correction">
       <div>
-        <p className="d01-eyebrow">Sua participação</p>
+        <p className="worlds-eyebrow">Sua participação</p>
         <h2 id={`${id}-title`}>Esclareça este compromisso</h2>
         <p>
           Escopo desta resposta: <strong>{inspection.scope}</strong>.
         </p>
-        <p className="d01-muted">
+        <p className="worlds-muted">
           Sua resposta será enviada para análise. Nenhuma alteração é confirmada
           nesta tela antes do resultado.
         </p>
@@ -82,7 +82,7 @@ const CorrectionForm = ({
           }}
         >
           <fieldset disabled={actionPending}>
-            <legend className="d01-visually-hidden">
+            <legend className="worlds-visually-hidden">
               Esclarecimento com escopo
             </legend>
             <label htmlFor={`${id}-answer`}>O que precisa ser corrigido?</label>
@@ -96,7 +96,7 @@ const CorrectionForm = ({
               value={answer}
             />
             <label htmlFor={`${id}-explanation`}>
-              Como você sabe? <span className="d01-muted">(opcional)</span>
+              Como você sabe? <span className="worlds-muted">(opcional)</span>
             </label>
             <input
               id={`${id}-explanation`}
@@ -107,7 +107,7 @@ const CorrectionForm = ({
               value={explanation}
             />
             <button
-              className="d01-button d01-button-primary"
+              className="worlds-button worlds-button-primary"
               disabled={!answer.trim()}
               type="submit"
             >
@@ -116,10 +116,10 @@ const CorrectionForm = ({
           </fieldset>
         </form>
       ) : null}
-      <div className="d01-action-row">
+      <div className="worlds-action-row">
         {onUnknown ? (
           <button
-            className="d01-button"
+            className="worlds-button"
             disabled={actionPending}
             onClick={onUnknown}
             type="button"
@@ -129,7 +129,7 @@ const CorrectionForm = ({
         ) : null}
         {onUndo ? (
           <button
-            className="d01-button d01-button-quiet"
+            className="worlds-button worlds-button-quiet"
             disabled={actionPending}
             onClick={onUndo}
             type="button"
@@ -146,7 +146,7 @@ const Inspection = ({
   inspection,
   ...actions
 }: Pick<
-  D01WorkspaceProps,
+  WorldsWorkspaceProps,
   | "onInspectEvidence"
   | "onCorrection"
   | "onUnknown"
@@ -156,15 +156,15 @@ const Inspection = ({
   const id = useId();
   return (
     <>
-      <section aria-labelledby={`${id}-title`} className="d01-overview">
-        <p className="d01-eyebrow">Compromisso em análise</p>
+      <section aria-labelledby={`${id}-title`} className="worlds-overview">
+        <p className="worlds-eyebrow">Compromisso em análise</p>
         <h1 id={`${id}-title`}>{inspection.title}</h1>
-        <div className="d01-status-row">
-          <span className="d01-badge">{inspection.statusLabel}</span>
-          <span className="d01-muted">{inspection.verificationLabel}</span>
+        <div className="worlds-status-row">
+          <span className="worlds-badge">{inspection.statusLabel}</span>
+          <span className="worlds-muted">{inspection.verificationLabel}</span>
         </div>
-        <p className="d01-lead">{inspection.explanation}</p>
-        <dl className="d01-basis">
+        <p className="worlds-lead">{inspection.explanation}</p>
+        <dl className="worlds-basis">
           <div>
             <dt>Referência da leitura</dt>
             <dd>{inspection.basisLabel}</dd>
@@ -175,21 +175,21 @@ const Inspection = ({
           </div>
         </dl>
       </section>
-      <div className="d01-inspection-grid">
+      <div className="worlds-inspection-grid">
         <section aria-labelledby={`${id}-sources`}>
-          <div className="d01-section-heading">
+          <div className="worlds-section-heading">
             <h2 id={`${id}-sources`}>O que dizem as fontes</h2>
-            <span className="d01-muted">Registros disponíveis</span>
+            <span className="worlds-muted">Registros disponíveis</span>
           </div>
-          <div className="d01-source-list">
+          <div className="worlds-source-list">
             {inspection.sources.map((source) => (
-              <article className="d01-source-card" key={source.id}>
-                <p className="d01-source-name">{source.name}</p>
-                <p className="d01-value">{source.value}</p>
+              <article className="worlds-source-card" key={source.id}>
+                <p className="worlds-source-name">{source.name}</p>
+                <p className="worlds-value">{source.value}</p>
                 <p>{source.description}</p>
-                <p className="d01-muted">{source.location}</p>
+                <p className="worlds-muted">{source.location}</p>
                 <button
-                  className="d01-button"
+                  className="worlds-button"
                   disabled={actions.actionPending}
                   onClick={() => {
                     actions.onInspectEvidence(source.id);
@@ -197,7 +197,10 @@ const Inspection = ({
                   type="button"
                 >
                   Inspecionar evidência
-                  <span className="d01-visually-hidden"> de {source.name}</span>
+                  <span className="worlds-visually-hidden">
+                    {" "}
+                    de {source.name}
+                  </span>
                 </button>
               </article>
             ))}
@@ -206,16 +209,16 @@ const Inspection = ({
         <aside
           aria-live="polite"
           aria-labelledby={`${id}-evidence`}
-          className="d01-evidence"
+          className="worlds-evidence"
         >
-          <p className="d01-eyebrow">Por trás da resposta</p>
+          <p className="worlds-eyebrow">Por trás da resposta</p>
           <h2 id={`${id}-evidence`}>Evidência</h2>
           {inspection.evidence ? (
             <>
               <h3>{inspection.evidence.sourceName}</h3>
-              <p className="d01-muted">{inspection.evidence.location}</p>
+              <p className="worlds-muted">{inspection.evidence.location}</p>
               <blockquote>{inspection.evidence.excerpt}</blockquote>
-              <p className="d01-muted">
+              <p className="worlds-muted">
                 Retida em {inspection.evidence.retainedAt}
               </p>
               <p>
@@ -240,22 +243,22 @@ const Inspection = ({
   );
 };
 
-export const D01Workspace = (props: D01WorkspaceProps) => {
+export const WorldsWorkspace = (props: WorldsWorkspaceProps) => {
   const id = useId();
   const blocked =
     props.view.kind === "denied" || props.view.kind === "unavailable";
   return (
     <div className="worlds-workspace">
-      <a className="d01-skip-link" href={`#${id}-main`}>
+      <a className="worlds-skip-link" href={`#${id}-main`}>
         Ir para o conteúdo
       </a>
-      <header className="d01-header">
-        <span aria-label="Zoen" className="d01-wordmark">
+      <header className="worlds-header">
+        <span aria-label="Zoen" className="worlds-wordmark">
           zoen<span aria-hidden="true">.</span>
         </span>
-        <span className="d01-header-note">Informação com origem</span>
+        <span className="worlds-header-note">Informação com origem</span>
         <button
-          className="d01-button d01-button-quiet"
+          className="worlds-button worlds-button-quiet"
           onClick={props.onLogout}
           type="button"
         >
@@ -264,7 +267,7 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
       </header>
       <main id={`${id}-main`} tabIndex={-1}>
         {props.view.kind === "empty" && props.readOnly === true ? (
-          <section className="d01-empty">
+          <section className="worlds-empty">
             <h1>Consultar espaço compartilhado</h1>
             <p>
               Informe a obrigação para ler as fontes disponíveis ou abra uma
@@ -273,18 +276,18 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
           </section>
         ) : null}
         {props.view.kind === "empty" && props.readOnly !== true ? (
-          <section className="d01-empty">
-            <p className="d01-eyebrow">Um começo simples</p>
+          <section className="worlds-empty">
+            <p className="worlds-eyebrow">Um começo simples</p>
             <h1>
               Entenda seus compromissos.
               <br />
               <span>Comece pelas fontes.</span>
             </h1>
-            <p className="d01-lead">
+            <p className="worlds-lead">
               Adicione seus arquivos para reunir informações, conferir a origem
               de cada registro e esclarecer o que ainda falta saber.
             </p>
-            <ol className="d01-steps">
+            <ol className="worlds-steps">
               <li>
                 <span aria-hidden="true">01</span>
                 <strong>Adicione uma fonte</strong>
@@ -304,11 +307,11 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
           </section>
         ) : null}
         {props.view.kind === "uploading" ? (
-          <section aria-busy="true" className="d01-empty">
-            <p className="d01-eyebrow">Seus arquivos</p>
+          <section aria-busy="true" className="worlds-empty">
+            <p className="worlds-eyebrow">Seus arquivos</p>
             <h1>Recebendo a fonte</h1>
-            <output className="d01-lead">{props.view.message}</output>
-            <p className="d01-muted">
+            <output className="worlds-lead">{props.view.message}</output>
+            <p className="worlds-muted">
               A informação estará disponível quando a admissão for confirmada.
             </p>
           </section>
@@ -317,21 +320,21 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
           <Inspection {...props} inspection={props.view.inspection} />
         ) : null}
         {blocked ? (
-          <section className="d01-empty">
-            <p className="d01-eyebrow">Acesso à informação</p>
+          <section className="worlds-empty">
+            <p className="worlds-eyebrow">Acesso à informação</p>
             <h1>
               {props.view.kind === "denied"
                 ? "Não foi possível abrir este conteúdo"
                 : "Conteúdo indisponível"}
             </h1>
-            <p className="d01-lead">
+            <p className="worlds-lead">
               {props.view.kind === "denied"
                 ? "Seu acesso atual não permite exibir esta informação."
                 : "Não é possível exibir esta informação agora. Isso não significa que seu valor seja zero."}
             </p>
             {props.onRetry ? (
               <button
-                className="d01-button"
+                className="worlds-button"
                 disabled={props.actionPending}
                 onClick={props.onRetry}
                 type="button"
@@ -342,7 +345,10 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
           </section>
         ) : null}
         {!blocked && props.readOnly !== true ? (
-          <section aria-label="Importação de arquivos" className="d01-upload">
+          <section
+            aria-label="Importação de arquivos"
+            className="worlds-upload"
+          >
             <FileInput
               {...props}
               disabled={
@@ -354,10 +360,10 @@ export const D01Workspace = (props: D01WorkspaceProps) => {
         {props.feedback !== undefined &&
         props.feedback.length > 0 &&
         !blocked ? (
-          <output className="d01-feedback">{props.feedback}</output>
+          <output className="worlds-feedback">{props.feedback}</output>
         ) : null}
       </main>
-      <footer className="d01-footer">
+      <footer className="worlds-footer">
         <span>Fontes, interpretações e decisões têm papéis distintos.</span>
         <span>Zoen</span>
       </footer>

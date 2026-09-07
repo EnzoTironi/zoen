@@ -3,7 +3,7 @@ import { Effect, Layer, Schema } from "effect";
 import type { Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-export interface D01PostgresConfig {
+export interface WorldsPostgresConfig {
   readonly url: Redacted.Redacted;
   readonly applicationName: string;
   readonly maxConnections: number;
@@ -18,9 +18,10 @@ const AllowedRole = Schema.Tuple([
   Schema.Struct({ allowed: Schema.Literal(true) }),
 ]);
 
-export const checkD01RuntimeRole = Effect.gen(function* checkD01DatabaseRole() {
-  const sql = yield* SqlClient.SqlClient;
-  yield* sql`
+export const checkWorldsRuntimeRole = Effect.gen(
+  function* checkWorldsDatabaseRole() {
+    const sql = yield* SqlClient.SqlClient;
+    yield* sql`
     SELECT NOT EXISTS (
       SELECT FROM pg_roles
       WHERE (rolname = current_user OR pg_has_role(current_user, oid, 'SET'))
@@ -39,17 +40,18 @@ export const checkD01RuntimeRole = Effect.gen(function* checkD01DatabaseRole() {
       )
     ) AS allowed
   `.pipe(
-    Effect.flatMap(Schema.decodeUnknownEffect(AllowedRole)),
-    Effect.catchTag(
-      "SchemaError",
-      () => new UnsafePostgresRole({ code: "runtime_role_is_privileged" })
-    )
-  );
-});
+      Effect.flatMap(Schema.decodeUnknownEffect(AllowedRole)),
+      Effect.catchTag(
+        "SchemaError",
+        () => new UnsafePostgresRole({ code: "runtime_role_is_privileged" })
+      )
+    );
+  }
+);
 
 /** A concrete pool profile, not another SQL/transaction abstraction. */
-export const makeD01PostgresLayer = (config: D01PostgresConfig) =>
-  Layer.effectDiscard(checkD01RuntimeRole).pipe(
+export const makeWorldsPostgresLayer = (config: WorldsPostgresConfig) =>
+  Layer.effectDiscard(checkWorldsRuntimeRole).pipe(
     Layer.provideMerge(
       PgClient.layer({
         applicationName: config.applicationName,

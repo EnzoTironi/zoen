@@ -4,7 +4,7 @@ Production base: `c60eff8`. The reviewer built its own compiled server/authority
 
 ## Harness and boundaries
 
-The three sibling TypeScript files launch two separate Node processes, each importing the real compiled `makeD01Application`, listening on its own TCP port, and sharing the same isolated PostgreSQL database, S3 bucket, installation, data policy and identity secret. Each process uses its actual origin. Configuration files are mode 0600 inside a mode-0700 temporary directory. Accounts, World creation, import, grant, read, revoke and logout all use public HTTP. The session ID used for coordination comes from authenticated `/api/auth/get-session`, not a fabricated presence or provider response.
+The three sibling TypeScript files launch two separate Node processes, each importing the real compiled `makeApplication`, listening on its own TCP port, and sharing the same isolated PostgreSQL database, S3 bucket, installation, data policy and identity secret. Each process uses its actual origin. Configuration files are mode 0600 inside a mode-0700 temporary directory. Accounts, World creation, import, grant, read, revoke and logout all use public HTTP. The session ID used for coordination comes from authenticated `/api/auth/get-session`, not a fabricated presence or provider response.
 
 The reader process observes two actual native calls. Before the matching shared-lock query, it can pause before delegating the original `pg.Client.query`. This point follows production request preparation/serialization and precedes permit admission. Alternatively, it pauses inside `ServerResponse.end` before delegating the original method with the original receiver and bytes. This point follows the production final revalidation and transition to `attempting`. File sentinels and `Atomics.wait` block only that child process. The sibling server continues to handle the competing public operation. Neither observer replaces the executor, SQL result, identity provider, storage, or response body.
 
@@ -15,7 +15,7 @@ Membership revocation's blocking exclusive lock is observed as an ungranted `Exc
 Command:
 
 ```text
-node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration tests/integration/d03-sharing/independent/http-process.review.integration.test.ts --maxWorkers=1
+node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration tests/integration/sharing/independent/http-process.review.integration.test.ts --maxWorkers=1
 ```
 
 The original OpenEvidence matrix passed all 4 tests on 2026-09-05: 13.99 seconds total / 11.89 seconds test time. The extension to current Inspect and the viewer's own retained Frame then passed **all 12 tests**, using the same compiled production base: **19.93 seconds total / 19.43 seconds test time**. Whole-worktree `tsc --noEmit` and focused lint passed. The native-only observer file has a narrow documented exemption from the suggestion to replace Node `fs`/`http` imports with Effect APIs: synchronous blocking at those native boundaries is the purpose of this harness.

@@ -27,7 +27,7 @@ const read = <E, R>(stream: Stream.Stream<Uint8Array, E, R>) =>
   );
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 
 it.live(
   "EX33 compiled CLI inspects then confirms Closing over real erasable HTTP; viewer denied; replay stays Closing",
@@ -96,7 +96,7 @@ it.live(
           origin,
           "/api/worlds/execute",
           json({
-            ...d01,
+            ...worldsBasis,
             input: {},
             operation: "CreatePersonalWorld",
             operationId: randomUUID(),

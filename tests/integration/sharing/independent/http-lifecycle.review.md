@@ -23,9 +23,9 @@ A subsequent lint autofix incorrectly removed an explicit undefined argument fro
 The corrected harness passed 2/2, then after lint-equivalent traversal cleanup the final file passed **2/2 on 2026-09-05: 3.35 seconds total, 2.91 seconds test time**. Whole-worktree TypeScript checking, focused lint and diff whitespace checking passed.
 
 ```text
-node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration tests/integration/d03-sharing/independent/http-lifecycle.review.integration.test.ts --maxWorkers=1
+node --env-file=.env.infra node_modules/vitest/vitest.mjs run --project integration tests/integration/sharing/independent/http-lifecycle.review.integration.test.ts --maxWorkers=1
 node node_modules/typescript/bin/tsc --noEmit
-node node_modules/oxlint/bin/oxlint tests/integration/d03-sharing/independent/http-lifecycle.review.integration.test.ts
+node node_modules/oxlint/bin/oxlint tests/integration/sharing/independent/http-lifecycle.review.integration.test.ts
 ```
 
 This is evidence for the specified SH05 process-concurrency gap. It does not claim all sharing lifecycle permutations, erasure/restore, admission of a new profile or complete D03 acceptance. Final integration and acceptance belong to the independent root review.

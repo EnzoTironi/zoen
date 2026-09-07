@@ -18,12 +18,12 @@ import { SqlClient } from "effect/unstable/sql";
 import { makeDisclosureFenceLayer } from "../../../../src/adapters/postgres/disclosure/fence.ts";
 import { makePrivateJsonEmitter } from "../../../../src/http/disclosure.ts";
 import { ResponseSecurityHeaders } from "../../../../src/http/security.ts";
-import { withD01Database } from "../worlds/database.ts";
+import { withWorldsDatabase } from "../worlds/database.ts";
 
 it.live(
   "EX22 coordinator loss retains pending until native submission ACK; confirmed closing forbids subsequent HTTP private bytes",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* writerLoss() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;

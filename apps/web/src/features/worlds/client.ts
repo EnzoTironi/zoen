@@ -1,5 +1,5 @@
 import { ApplicationApi } from "@zoen/contracts/worlds/api";
-import { D01Error, Unavailable } from "@zoen/contracts/worlds/errors";
+import { SemanticError, Unavailable } from "@zoen/contracts/worlds/errors";
 import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
 import { Context, Effect, Layer, Option, Schema } from "effect";
 import {
@@ -16,9 +16,9 @@ export const BrowserSession = Schema.Struct({
 });
 export type BrowserSession = typeof BrowserSession.Type;
 
-const closedError = (error: unknown): D01Error =>
+const closedError = (error: unknown): SemanticError =>
   Option.getOrElse(
-    Schema.decodeUnknownOption(D01Error)(error),
+    Schema.decodeUnknownOption(SemanticError)(error),
     () => new Unavailable({ code: "UNAVAILABLE" })
   );
 

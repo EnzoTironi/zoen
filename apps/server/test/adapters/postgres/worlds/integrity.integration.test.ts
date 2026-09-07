@@ -4,13 +4,13 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Exit, Result } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "./database.ts";
+import { withWorldsDatabase } from "./database.ts";
 import { claimRow, seedEvidence } from "./seed.ts";
 
 it.live(
-  "D01 composite foreign keys reject cross World, cross realm and mismatched provenance",
+  "Worlds composite foreign keys reject cross World, cross realm and mismatched provenance",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* integrity() {
         const sql = yield* SqlClient.SqlClient;
         const a = yield* seedEvidence();
@@ -77,9 +77,9 @@ it.live(
 );
 
 it.live(
-  "D01 failed commit rolls back observed writes, deferred receipt references and domain counters",
+  "Worlds failed commit rolls back observed writes, deferred receipt references and domain counters",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* atomicity() {
         const sql = yield* SqlClient.SqlClient;
         const seed = yield* seedEvidence();

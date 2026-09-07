@@ -16,7 +16,7 @@ import {
 import type { DocumentStageInput } from "@zoen/authority/ports/worlds/storage";
 import { digestBytes } from "@zoen/authority/values/canonical";
 import {
-  D01_LIMITS,
+  WorldLimits,
   Digest,
   DocumentFormat,
   WorldRef,
@@ -52,7 +52,7 @@ const CaptureExpectation = Schema.Struct({
   captureId: CaptureId,
   expectedBytes: Schema.Int.check(
     Schema.isGreaterThan(0),
-    Schema.isLessThanOrEqualTo(D01_LIMITS.documentBytes)
+    Schema.isLessThanOrEqualTo(WorldLimits.documentBytes)
   ),
   expectedDigest: Digest,
   worldRef: WorldRef,

@@ -53,7 +53,7 @@ import {
   sdk,
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { applyIdentityBasisMigrations } from "../../../../ops/migrations/run.ts";
 import { configuration } from "../../worlds/commit/fixture.ts";
 import { makeHttpProcessConfiguration } from "./http-process-configuration.ts";
@@ -67,7 +67,7 @@ const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
     }),
     Effect.timeout("8 seconds")
   );
-const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
@@ -126,7 +126,7 @@ for (const mode of ["open", "inspect", "retained"] as const) {
       it.live(
         `independent SH07/08 two real HTTP processes: ${stage} orders public ${action} and ${mode} emission`,
         () =>
-          withD01Database(
+          withWorldsDatabase(
             (database) =>
               withStorage((storage) =>
                 Effect.scoped(
@@ -255,7 +255,7 @@ for (const mode of ["open", "inspect", "retained"] as const) {
                       controller.origin,
                       path,
                       {
-                        ...d01,
+                        ...worldsBasis,
                         input: {},
                         operation: "CreatePersonalWorld",
                         operationId: randomUUID(),
@@ -270,7 +270,7 @@ for (const mode of ["open", "inspect", "retained"] as const) {
                       controller.origin,
                       path,
                       {
-                        ...d01,
+                        ...worldsBasis,
                         input: { document },
                         operation: "ImportEvidence",
                         operationId: randomUUID(),
@@ -363,7 +363,7 @@ for (const mode of ["open", "inspect", "retained"] as const) {
                             controller.origin,
                             path,
                             {
-                              ...d01,
+                              ...worldsBasis,
                               input: { atFrame: null, subjectKey: "order-1" },
                               operation: "Inspect",
                               worldRef,
@@ -390,13 +390,13 @@ for (const mode of ["open", "inspect", "retained"] as const) {
                     const readRequest =
                       mode === "open"
                         ? {
-                            ...d01,
+                            ...worldsBasis,
                             input: { evidenceRef: imported.evidenceRef },
                             operation: "OpenEvidence",
                             worldRef,
                           }
                         : {
-                            ...d01,
+                            ...worldsBasis,
                             input: {
                               atFrame:
                                 mode === "retained"

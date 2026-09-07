@@ -1,5 +1,5 @@
 import {
-  D01_LIMITS,
+  WorldLimits,
   Digest,
   DocumentFormat,
   WorldRef,
@@ -15,7 +15,7 @@ export type CaptureId = typeof CaptureId.Type;
 export const ObjectLocation = Schema.Struct({
   byteLength: Schema.Int.check(
     Schema.isGreaterThan(0),
-    Schema.isLessThanOrEqualTo(D01_LIMITS.documentBytes)
+    Schema.isLessThanOrEqualTo(WorldLimits.documentBytes)
   ),
   captureId: CaptureId,
   digest: Digest,

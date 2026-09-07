@@ -10,7 +10,7 @@ import {
 import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { http, jsonBody, responseCookie, withD01Http } from "./fixture.ts";
+import { http, jsonBody, responseCookie, withWorldsHttp } from "./fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
 const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
@@ -42,7 +42,7 @@ const document = (source: string, amount: string) =>
 it.live(
   "EX10 real HTTP authenticates, retains rival evidence, replays and denies current revoked access",
   () =>
-    withD01Http(({ database, origin }) =>
+    withWorldsHttp(({ database, origin }) =>
       Effect.gen(function* realJourney() {
         const ready = yield* http(origin, "/ready");
         expect({
@@ -238,7 +238,7 @@ it.live(
 it.live(
   "EX10 HTTP preserves strict bytes and rejects cross-origin and oversized requests",
   () =>
-    withD01Http(({ origin }) =>
+    withWorldsHttp(({ origin }) =>
       Effect.gen(function* requestBoundaries() {
         const duplicate = yield* http(
           origin,

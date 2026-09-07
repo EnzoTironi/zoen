@@ -24,12 +24,12 @@ import {
 } from "../../../../../tests/integration/worlds/commit/fixture.ts";
 import { sweepCaptureWorldPage } from "../../../src/maintenance/captures.ts";
 import { withStorage } from "../../adapters/object-storage/worlds/fixture.ts";
-import { withD01Database } from "../../adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../adapters/postgres/worlds/database.ts";
 
 it.live(
   "independent maintenance visits 33 Worlds fairly and preserves admitted bytes",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       withStorage(() =>
         Effect.gen(function* backgroundCaptureConsumer() {
           const { context, request } = yield* makeInput();

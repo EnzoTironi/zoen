@@ -176,7 +176,7 @@ const program = Effect.scoped(
         )
       );
     installObservers(config.controlPrefix);
-    const { makeD01Application } = yield* Effect.promise(
+    const { makeApplication } = yield* Effect.promise(
       (): Promise<typeof ApplicationModule> =>
         import(
           new URL(
@@ -191,7 +191,7 @@ const program = Effect.scoped(
         throw new Error("Independent HTTP process requires TCP");
       }
       const origin = `http://127.0.0.1:${server.address.port}`;
-      const application = makeD01Application({
+      const application = makeApplication({
         authorityDatabaseUrl: Redacted.make(config.authorityUrl),
         identity: {
           baseUrl: origin,

@@ -13,7 +13,7 @@ import {
   SubjectIdentityRequest,
   SubjectIdentitySuccess,
 } from "../subject-identity/operations.js";
-import { D01Error } from "./errors.js";
+import { SemanticError } from "./errors.js";
 import { CorrectionConsequence, VisibleFrame } from "./evidence.js";
 import {
   CaseRef,
@@ -102,13 +102,13 @@ export const UndoCorrection = Schema.Struct({
   worldRef: WorldRef,
 }).annotate(exact);
 
-export const D01Request = Schema.Union([
+export const WorldRequest = Schema.Union([
   CreatePersonalWorld,
   ImportEvidence,
   Inspect,
   OpenEvidence,
 ]);
-export type D01Request = typeof D01Request.Type;
+export type WorldRequest = typeof WorldRequest.Type;
 export const CorrectionRequest = Schema.Union([
   ProposeCorrection,
   AnswerQuestion,
@@ -116,7 +116,7 @@ export const CorrectionRequest = Schema.Union([
 ]);
 export type CorrectionRequest = typeof CorrectionRequest.Type;
 export const SemanticRequest = Schema.Union([
-  D01Request,
+  WorldRequest,
   CorrectionRequest,
   SharingRequest,
   SubjectIdentityRequest,
@@ -124,7 +124,7 @@ export const SemanticRequest = Schema.Union([
   EveConversationRequest,
 ]);
 export type SemanticRequest = typeof SemanticRequest.Type;
-export const decodeD01Request = Schema.decodeUnknownEffect(D01Request);
+export const decodeWorldRequest = Schema.decodeUnknownEffect(WorldRequest);
 export const decodeSemanticRequest =
   Schema.decodeUnknownEffect(SemanticRequest);
 
@@ -161,13 +161,13 @@ export const CorrectionUndone = Schema.TaggedStruct("CorrectionUndone", {
   receiptRef: ReceiptRef,
 }).annotate(exact);
 
-export const D01Success = Schema.Union([
+export const WorldSuccess = Schema.Union([
   WorldCreated,
   EvidenceImported,
   FrameInspected,
   EvidenceOpened,
 ]);
-export type D01Success = typeof D01Success.Type;
+export type WorldSuccess = typeof WorldSuccess.Type;
 export const CorrectionSuccess = Schema.Union([
   CorrectionProposed,
   CorrectionApplied,
@@ -175,7 +175,7 @@ export const CorrectionSuccess = Schema.Union([
 ]);
 export type CorrectionSuccess = typeof CorrectionSuccess.Type;
 export const SemanticSuccess = Schema.Union([
-  D01Success,
+  WorldSuccess,
   CorrectionSuccess,
   SharingSuccess,
   SubjectIdentitySuccess,
@@ -183,5 +183,5 @@ export const SemanticSuccess = Schema.Union([
   EveConversationSuccess,
 ]);
 export type SemanticSuccess = typeof SemanticSuccess.Type;
-export const SemanticResult = Schema.Union([SemanticSuccess, D01Error]);
+export const SemanticResult = Schema.Union([SemanticSuccess, SemanticError]);
 export type SemanticResult = typeof SemanticResult.Type;

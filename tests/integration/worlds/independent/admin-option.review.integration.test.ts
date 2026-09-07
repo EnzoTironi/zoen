@@ -2,12 +2,12 @@ import { describe, expect, it } from "@effect/vitest";
 import { Effect } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { checkD01RuntimeRole } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { checkWorldsRuntimeRole } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 
 describe("independent ADMIN OPTION membership review", () => {
   it.live("rejects ADMIN OPTION that can restore migration SET access", () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* roleMembership() {
         const admin = yield* SqlClient.SqlClient;
         const migration = yield* SqlClient.SqlClient.use(
@@ -17,7 +17,7 @@ describe("independent ADMIN OPTION membership review", () => {
           const runtime = yield* SqlClient.SqlClient;
           const authority = yield* runtime`SELECT current_user::text AS name`;
           yield* admin`GRANT ${admin(String(migration[0]?.name))} TO ${admin(String(authority[0]?.name))} WITH ADMIN TRUE, INHERIT FALSE, SET FALSE`;
-          const checked = yield* Effect.result(checkD01RuntimeRole);
+          const checked = yield* Effect.result(checkWorldsRuntimeRole);
           expect(
             yield* runtime`SELECT pg_has_role(current_user, ${String(migration[0]?.name)}, 'SET') AS allowed`
           ).toStrictEqual([{ allowed: false }]);

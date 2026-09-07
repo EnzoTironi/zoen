@@ -13,7 +13,7 @@ import {
   StorageFailure,
 } from "@zoen/authority/ports/worlds/storage";
 import { digestBytes } from "@zoen/authority/values/canonical";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Deferred, Effect, Fiber, Redacted, Schema, Stream } from "effect";
 
 import { layer } from "../../../../src/adapters/object-storage/worlds/s3.js";
@@ -163,12 +163,12 @@ describe("EX07 real S3 capture", () => {
             },
             {
               content: Stream.make(
-                new Uint8Array(D01_LIMITS.documentBytes + 1)
+                new Uint8Array(WorldLimits.documentBytes + 1)
               ),
               reason: "InvalidInput",
             },
             {
-              expectedBytes: D01_LIMITS.documentBytes + 1,
+              expectedBytes: WorldLimits.documentBytes + 1,
               reason: "InvalidInput",
             },
             { expectedBytes: 0, reason: "InvalidInput" },
@@ -229,11 +229,11 @@ describe("EX07 real S3 capture", () => {
       withStorage(({ client, config }) =>
         Effect.gen(function* exactLimitAndRealm() {
           const store = yield* EvidenceObjectStore;
-          const maximum = new Uint8Array(D01_LIMITS.documentBytes).fill(32);
+          const maximum = new Uint8Array(WorldLimits.documentBytes).fill(32);
           const input = stageInput(maximum);
           const location = yield* store.stage(input);
           expect((yield* store.read(location)).byteLength).toBe(
-            D01_LIMITS.documentBytes
+            WorldLimits.documentBytes
           );
           expect(location.digest).toBe(digestBytes(maximum));
           const forbidden = yield* store

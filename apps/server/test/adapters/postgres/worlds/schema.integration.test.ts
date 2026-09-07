@@ -4,12 +4,12 @@ import { Effect, Layer } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { applyApplicationMigrations } from "../../../../../../ops/migrations/run.ts";
-import { withD01Database } from "./database.ts";
+import { withWorldsDatabase } from "./database.ts";
 
 it.live(
-  "D01 migrates the dedicated database and admits only restricted runtime",
+  "Worlds migrates the dedicated database and admits only restricted runtime",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         Effect.gen(function* verifyMigration() {
           const sql = yield* SqlClient.SqlClient;

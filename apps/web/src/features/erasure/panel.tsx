@@ -22,9 +22,9 @@ export const ErasurePanel = ({
   return (
     <section
       aria-label="Exclusão do espaço"
-      className="worlds-workspace d01-context"
+      className="worlds-workspace worlds-context"
     >
-      <div className="d01-context-inner">
+      <div className="worlds-context-inner">
         <h2>Exclusão autorizada deste espaço</h2>
         <p>{entireWorldScope}</p>
         <p>{noRestoreNotice}</p>
@@ -35,9 +35,9 @@ export const ErasurePanel = ({
             anterior.
           </p>
         ) : null}
-        <div className="d01-action-row">
+        <div className="worlds-action-row">
           <button
-            className="d01-button"
+            className="worlds-button"
             disabled={disabled}
             onClick={() => {
               controller.inspectWorldErasure();
@@ -63,7 +63,7 @@ export const ErasurePanel = ({
             ) : null}
             {progress.phase === "Active" && !confirmation ? (
               <button
-                className="d01-button"
+                className="worlds-button"
                 disabled={disabled}
                 onClick={() => {
                   controller.prepareWorldErasure();
@@ -85,9 +85,9 @@ export const ErasurePanel = ({
                   repita a mesma intenção (mesmo operationId). Em Stale,
                   inspecione de novo e confirme uma nova operação.
                 </p>
-                <div className="d01-action-row">
+                <div className="worlds-action-row">
                   <button
-                    className="d01-button d01-button-primary"
+                    className="worlds-button worlds-button-primary"
                     disabled={disabled}
                     onClick={() => {
                       controller.confirmWorldErasure();
@@ -97,7 +97,7 @@ export const ErasurePanel = ({
                     Confirmar exclusão do espaço inteiro
                   </button>
                   <button
-                    className="d01-button"
+                    className="worlds-button"
                     disabled={state.busy}
                     onClick={() => {
                       controller.cancelWorldErasure();

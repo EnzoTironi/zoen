@@ -3,7 +3,7 @@ import { VisibleClaim } from "@zoen/contracts/worlds/evidence";
 import {
   ClaimRef,
   Currency,
-  D01_LIMITS,
+  WorldLimits,
   DecimalText,
   Digest,
   EvidenceRef,
@@ -54,9 +54,9 @@ export const readClaims = Effect.fn("authority.knowledge.readClaims")(
       JOIN authority.sources s ON (s.world_id, s.realm, s.source_id) = (c.world_id, c.realm, c.source_id)
       WHERE c.world_id = ${world.worldId} AND c.realm = ${world.realm} AND c.subject_key = ${subjectKey}
       ORDER BY s.namespace COLLATE "C", s.external_id COLLATE "C", e.source_revision COLLATE "C", c.external_id COLLATE "C", c.claim_id
-      LIMIT ${D01_LIMITS.frameClaims + 1}
+      LIMIT ${WorldLimits.frameClaims + 1}
     `;
-    if (raw.length > D01_LIMITS.frameClaims) {
+    if (raw.length > WorldLimits.frameClaims) {
       return yield* new QuotaExceeded({ code: "QUOTA_EXCEEDED" });
     }
     const rows = yield* Schema.decodeUnknownEffect(Schema.Array(ClaimRow))(raw);

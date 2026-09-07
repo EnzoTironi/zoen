@@ -22,7 +22,7 @@ import {
 import { SqlClient } from "effect/unstable/sql";
 
 import { makeDisclosureFenceLayer } from "../../../../src/adapters/postgres/disclosure/fence.ts";
-import { withD01Database } from "../worlds/database.ts";
+import { withWorldsDatabase } from "../worlds/database.ts";
 
 const deadline = (ms = 5000) =>
   DateTime.now.pipe(
@@ -50,7 +50,7 @@ const world = () =>
 it.live(
   "EX22 physical session and membership locks last through scope and unlock exactly once",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* scopedLocks() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -124,7 +124,7 @@ it.live(
 it.live(
   "EX22 an exclusive session gate blocks a reader until its original deadline; interrupted readers release acquired session locks",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* competingLocks() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;
@@ -188,7 +188,7 @@ it.live(
 it.live(
   "EX22 confirmed coordinator connection loss interrupts the emitting fiber and removes all physical locks",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* lostConnection() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;

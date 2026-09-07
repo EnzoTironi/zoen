@@ -7,13 +7,13 @@ import { SqlClient } from "effect/unstable/sql";
 import { grantDisclosureRole } from "../../apps/server/sql/proposals/disclosure/grants.ts";
 import { grantErasureRole } from "../../apps/server/sql/proposals/erasure/grants.ts";
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
-import { grantD01Roles } from "../../apps/server/sql/proposals/worlds/grants.ts";
-import type { D01DatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
-import { grantD01IdentityRole } from "../../apps/server/src/identity/worlds/grants.ts";
+import { grantWorldsRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
+import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
+import { grantIdentityRole } from "../../apps/server/src/identity/worlds/grants.ts";
 
 /** Called only by the migration owner, never by the server's runtime pool. */
 export const applyD01Migrations = Effect.fn("migrations.applyD01")(
-  function* applyD01Migrations(roles: D01DatabaseRoles) {
+  function* applyD01Migrations(roles: WorldsDatabaseRoles) {
     const fs = yield* FileSystem.FileSystem;
     const sql = yield* SqlClient.SqlClient;
     const authority = yield* fs.readFileString(
@@ -34,8 +34,8 @@ export const applyD01Migrations = Effect.fn("migrations.applyD01")(
     });
     yield* sql.withTransaction(
       Effect.gen(function* grantApplicationRoles() {
-        yield* grantD01Roles(roles);
-        yield* grantD01IdentityRole(roles.identity);
+        yield* grantWorldsRoles(roles);
+        yield* grantIdentityRole(roles.identity);
       })
     );
     return applied;
@@ -45,7 +45,7 @@ export const applyD01Migrations = Effect.fn("migrations.applyD01")(
 /** The published D01 baseline stays reproducible; the current application extends it explicitly. */
 export const applyApplicationMigrations = Effect.fn(
   "migrations.applyApplication"
-)(function* applyApplicationMigrations(roles: D01DatabaseRoles) {
+)(function* applyApplicationMigrations(roles: WorldsDatabaseRoles) {
   const base = yield* applyD01Migrations(roles);
   const fs = yield* FileSystem.FileSystem;
   const sql = yield* SqlClient.SqlClient;
@@ -62,7 +62,7 @@ export const applyApplicationMigrations = Effect.fn(
 
 /** Sharing is an explicit extension; retained JSON/CSV migration baselines remain reproducible. */
 export const applySharingMigrations = Effect.fn("migrations.applySharing")(
-  function* applySharingMigrations(roles: D01DatabaseRoles) {
+  function* applySharingMigrations(roles: WorldsDatabaseRoles) {
     const base = yield* applyApplicationMigrations(roles);
     const fs = yield* FileSystem.FileSystem;
     const sql = yield* SqlClient.SqlClient;
@@ -81,7 +81,7 @@ export const applySharingMigrations = Effect.fn("migrations.applySharing")(
 /** Durable coordination extends the separately reproducible membership migration. */
 export const applyDisclosureMigrations = Effect.fn(
   "migrations.applyDisclosure"
-)(function* applyDisclosureMigrations(roles: D01DatabaseRoles) {
+)(function* applyDisclosureMigrations(roles: WorldsDatabaseRoles) {
   const base = yield* applySharingMigrations(roles);
   const fs = yield* FileSystem.FileSystem;
   const sql = yield* SqlClient.SqlClient;
@@ -100,7 +100,7 @@ export const applyDisclosureMigrations = Effect.fn(
 /** Basis v2 is an explicit transition; the five-domain executables retain migrations 001–006. */
 export const applyIdentityBasisMigrations = Effect.fn(
   "migrations.applyIdentityBasis"
-)(function* applyIdentityBasisMigrations(roles: D01DatabaseRoles) {
+)(function* applyIdentityBasisMigrations(roles: WorldsDatabaseRoles) {
   const base = yield* applyDisclosureMigrations(roles);
   const fs = yield* FileSystem.FileSystem;
   const sql = yield* SqlClient.SqlClient;
@@ -122,7 +122,7 @@ export const applyIdentityBasisMigrations = Effect.fn(
 
 /** Closing register + progress DDL; retained installs get schema without enabling erasure (F02). */
 export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
-  function* applyErasureMigrations(roles: D01DatabaseRoles) {
+  function* applyErasureMigrations(roles: WorldsDatabaseRoles) {
     const base = yield* applyIdentityBasisMigrations(roles);
     const fs = yield* FileSystem.FileSystem;
     const sql = yield* SqlClient.SqlClient;

@@ -77,7 +77,7 @@ test("independent EX14 recovered proposal remains reviewable after a real networ
   const subject = `retry-${randomUUID()}`;
   await signUp(page);
   await page.getByRole("button", { name: "Criar espaço privado" }).click();
-  await expect(page.locator(".d01-world-id span")).toBeVisible();
+  await expect(page.locator(".worlds-world-id span")).toBeVisible();
   await page
     .getByLabel("Adicionar arquivos", { exact: true })
     .setInputFiles(sourceFile(subject, "Retry source", "100.00"));

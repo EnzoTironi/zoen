@@ -4,12 +4,12 @@ import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import type { Pool } from "pg";
 
-import { checkD01RuntimeRole } from "../worlds/postgres.ts";
+import { checkWorldsRuntimeRole } from "../worlds/postgres.ts";
 
 /** Readiness verifies the actual coordinator role, schema and required grants. */
 export const checkDisclosurePool = (pool: Pool) =>
   Effect.gen(function* disclosureRole() {
-    yield* checkD01RuntimeRole;
+    yield* checkWorldsRuntimeRole;
     const sql = yield* SqlClient.SqlClient;
     yield* sql`SELECT has_schema_privilege(current_user, 'jobs', 'USAGE')
     AND NOT EXISTS (

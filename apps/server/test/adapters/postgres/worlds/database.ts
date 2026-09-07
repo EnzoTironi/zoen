@@ -7,8 +7,8 @@ import { Config, Effect, FileSystem, Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { grantDisclosureRole } from "../../../../sql/proposals/disclosure/grants.ts";
-import { grantD01Roles } from "../../../../sql/proposals/worlds/grants.ts";
-import { makeD01PostgresLayer } from "../../../../src/adapters/postgres/worlds/postgres.ts";
+import { grantWorldsRoles } from "../../../../sql/proposals/worlds/grants.ts";
+import { makeWorldsPostgresLayer } from "../../../../src/adapters/postgres/worlds/postgres.ts";
 
 const profile = (url: Redacted.Redacted, name: string) => ({
   applicationName: `zoen-ex06-${name}`,
@@ -18,20 +18,20 @@ const profile = (url: Redacted.Redacted, name: string) => ({
 
 type DatabaseRole = "authority" | "identity" | "migration" | "progress";
 
-export interface D01TestDatabase {
-  readonly authority: ReturnType<typeof makeD01PostgresLayer>;
-  readonly identity: ReturnType<typeof makeD01PostgresLayer>;
-  readonly progress: ReturnType<typeof makeD01PostgresLayer>;
+export interface WorldsTestDatabase {
+  readonly authority: ReturnType<typeof makeWorldsPostgresLayer>;
+  readonly identity: ReturnType<typeof makeWorldsPostgresLayer>;
+  readonly progress: ReturnType<typeof makeWorldsPostgresLayer>;
   readonly migration: ReturnType<typeof PgClient.layer>;
   readonly names: Readonly<Record<DatabaseRole, string>>;
   readonly urls: Readonly<Record<DatabaseRole, Redacted.Redacted>>;
 }
 
 /** Real dedicated PostgreSQL database. Only this invocation's resources are removed. */
-export const withD01Database = <A, E, R, E2 = never, R2 = never>(
-  run: (database: D01TestDatabase) => Effect.Effect<A, E, R>,
+export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
+  run: (database: WorldsTestDatabase) => Effect.Effect<A, E, R>,
   misconfiguration?: "public-create" | "replication",
-  install?: (database: D01TestDatabase) => Effect.Effect<unknown, E2, R2>
+  install?: (database: WorldsTestDatabase) => Effect.Effect<unknown, E2, R2>
 ) =>
   Effect.gen(function* configureDatabase() {
     const adminUrl = yield* Config.redacted("ZOEN_TEST_DATABASE_URL");
@@ -59,14 +59,18 @@ export const withD01Database = <A, E, R, E2 = never, R2 = never>(
     const migration = PgClient.layer(
       profile(roleUrl("migration"), "migration")
     );
-    const database: D01TestDatabase = {
-      authority: makeD01PostgresLayer(
+    const database: WorldsTestDatabase = {
+      authority: makeWorldsPostgresLayer(
         profile(roleUrl("authority"), "authority")
       ),
-      identity: makeD01PostgresLayer(profile(roleUrl("identity"), "identity")),
+      identity: makeWorldsPostgresLayer(
+        profile(roleUrl("identity"), "identity")
+      ),
       migration,
       names,
-      progress: makeD01PostgresLayer(profile(roleUrl("progress"), "progress")),
+      progress: makeWorldsPostgresLayer(
+        profile(roleUrl("progress"), "progress")
+      ),
       urls: {
         authority: roleUrl("authority"),
         identity: roleUrl("identity"),
@@ -174,7 +178,7 @@ export const withD01Database = <A, E, R, E2 = never, R2 = never>(
             )
           ).pipe(Effect.provide(NodeFileSystem.layer));
           yield* sql.withTransaction(sql.unsafe(identityEvents));
-          yield* grantD01Roles(names);
+          yield* grantWorldsRoles(names);
           yield* grantDisclosureRole(names.authority);
           if (misconfiguration === "public-create") {
             yield* sql`GRANT CREATE ON SCHEMA public TO ${sql(names.authority)}`;
