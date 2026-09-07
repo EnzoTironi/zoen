@@ -17,6 +17,10 @@ Fonte tip de partida: `bb608c4` (Closing/register local EX30–EX34 verificado e
 | Secrets do rebuild | Não provisionados (autoridade/identity/S3/Better Auth do monólito modular). |
 | Perfis Worlds | `d01-local-retained-v1` e candidato `d03-local-erasable-v1` (local); candidato hosted `d04-hosted-retained-v1` (EX36 schemas; sem ativação/deploy). |
 
+### Atualização operacional (2026-09-07 PT)
+
+App Fly **`zoen-rebuild` está live** all-in-one (PG+RustFS+app no volume, `min_machines_running=1`, https://zoen-rebuild.fly.dev). Secrets incluem `ZOEN_OPENCODE_*`. **MPG/Tigris destruídos por desenho — não reviver.** Isto **não** marca D04 `activated`, **não** cutover do legado `zoen`, e **não** habilita piloto sensível / restore-após-erasure.
+
 ## Congelado agora (mínimo executável)
 
 | ID | Decisão | Efeito |
@@ -27,20 +31,20 @@ Fonte tip de partida: `bb608c4` (Closing/register local EX30–EX34 verificado e
 | H04 | Sem cutover implícito: app/host novos ≠ substituir `zoen` legado nem DNS `zoen.tironi.xyz` sem decisão explícita. | Stubs usam app candidato `zoen-rebuild` (criar só em EX posterior com custo consciente). |
 | H05 | Docker local / imagem CI ≠ operação Fly. | Deploy, persistência gerenciada, backup e recover exigem provas próprias. |
 | H06 | Admission flags: canais/modelos/conectores ausentes ficam **explicitamente desabilitados**, nunca mock-saudáveis (ZN-0288). | Web/CLI/file do núcleo D01 no perfil; WhatsApp/Telegram/etc. fora. |
-| H07 | Hosted = all-in-one Dockerfile+volume; **proibido** provisionar MPG/Tigris. Deploy do `zoen-rebuild` exige confirmação de custo. | Auth presente ≠ MPG/Tigris; cutover `zoen` continua bloqueado. |
+| H07 | Hosted = all-in-one Dockerfile+volume; **proibido** provisionar MPG/Tigris. Deploy do `zoen-rebuild` exige confirmação de custo (feita — app live). | MPG/Tigris não reviver; cutover `zoen` continua bloqueado. |
 | H08 | Paths de domínio: `hosted/**`, `ops/fly/**`. | Sem rename em massa de rotas/pastas `d0x`. |
 
 ## Ainda bloqueado (gates antes de ativar D04 / piloto sensível)
 
 | Gate | Por quê |
 | --- | --- |
-| Conta de persistência hospedada | All-in-one volume (não MPG/Tigris). |
-| App Fly `zoen-rebuild` | Criado (pending) — deploy all-in-one sob ativação. |
-| Deploy + health real | Provar `/ready` na VM all-in-one; legado `zoen` não conta. |
-| Catálogo de backup/cópias do host | Necessário para restore admitido além do disposable. |
+| Conta de persistência hospedada | **Resolvido** — volume all-in-one na VM (MPG/Tigris rejeitados; não reviver). |
+| App Fly `zoen-rebuild` | **Live** all-in-one (`min_machines_running=1`, https://zoen-rebuild.fly.dev); secrets incluem `ZOEN_OPENCODE_*`. |
+| Deploy + health real | **Live** — VM all-in-one; legado `zoen` não conta como evidência. |
+| Catálogo de backup/cópias do host | Ainda necessário para restore admitido além do disposable. |
 | D03 purge + restore-after-erasure (ZN-0116) | Pré-requisito do **piloto sensível** D04; Closing/register local ≠ D03 integral. |
 | Cutover DNS/legado | Decisão humana explícita; fora deste incremento. |
-| Secrets managed + rotação | Inventário abaixo; nenhum valor commitado. |
+| Secrets managed + rotação | Mínimo live no app; rotação/inventário completo e valores nunca commitados. |
 
 ## Secrets / configuração ausentes (rebuild)
 
