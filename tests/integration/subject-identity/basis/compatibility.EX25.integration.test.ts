@@ -17,8 +17,12 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { D01Auth } from "../../../../apps/server/src/identity/worlds/identity.ts";
 import {
+  asCurrentCredential,
+  realignIntentDigest,
+  asCurrentWire,
   http,
   jsonBody,
+  legacyWire,
   responseCookie,
   withLegacyBasisHarness,
 } from "./fixture.ts";
@@ -28,16 +32,14 @@ const encodeBytes = (value: unknown) =>
   canonicalJson(value).pipe(
     Effect.map((text) => new TextEncoder().encode(text))
   );
-const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
-const executePath = "/api/worlds/execute";
-const correctionsPath = "/api/corrections/execute";
+const { correctionsPath, csvFormat, envelope, executePath } = legacyWire;
 const validTime = {
   _tag: "DateInterval" as const,
   from: "2026-09-01",
   to: "2026-10-01",
 };
 const csvDocument =
-  "schemaVersion,sourceNamespace,sourceExternalId,sourceRevision,sourceLabel,recordExternalId,subjectKey,predicate,valueTag,amount,currency,validTimeTag,validFrom,validTo\r\nworlds.csv.v1,manual,billing-csv,1,CSV source,row-1,invoice-a,obligation.amount,Known,50.00,BRL,DateInterval,2026-09-01,2026-10-01\r\n";
+  "schemaVersion,sourceNamespace,sourceExternalId,sourceRevision,sourceLabel,recordExternalId,subjectKey,predicate,valueTag,amount,currency,validTimeTag,validFrom,validTo\r\nd01.csv.v1,manual,billing-csv,1,CSV source,row-1,invoice-a,obligation.amount,Known,50.00,BRL,DateInterval,2026-09-01,2026-10-01\r\n";
 
 const jsonDocument = (revision: string, amount: string) =>
   json({
@@ -50,7 +52,7 @@ const jsonDocument = (revision: string, amount: string) =>
         value: { _tag: "Known", amount, currency: "BRL" },
       },
     ],
-    schemaVersion: "worlds.v1",
+    schemaVersion: "d01.v1",
     source: {
       externalId: "billing-json",
       label: "JSON source",
@@ -75,6 +77,12 @@ it.live(
         );
         expect(signup.status).toBe(200);
         const owner = responseCookie(signup);
+        const Account = Schema.Struct({
+          user: Schema.Struct({ id: Schema.String.check(Schema.isUUID()) }),
+        });
+        const ownerAccount = yield* jsonBody(signup).pipe(
+          Effect.flatMap(Schema.decodeUnknownEffect(Account))
+        );
         const strangerSignup = yield* http(
           harness.origin,
           "/api/auth/sign-up/email",
@@ -113,7 +121,7 @@ it.live(
           },
           {
             ...envelope,
-            input: { document: csvDocument, format: "worlds.csv.v1" },
+            input: { document: csvDocument, format: csvFormat },
             operation: "ImportEvidence",
             operationId: randomUUID(),
             worldRef,
@@ -326,6 +334,9 @@ it.live(
             (SELECT count(*)::int FROM jobs.outbox WHERE world_id = ${worldRef.worldId}::uuid) AS outbox`;
 
         const { runtime } = yield* harness.transitionToCurrentComponent();
+        const current_owner = asCurrentCredential(owner);
+        const current_stranger = asCurrentCredential(stranger);
+
         const afterDomains = yield* sql`
           SELECT domain_key, version::text AS version
           FROM authority.domains
@@ -366,34 +377,60 @@ it.live(
 
           const historical = yield* executor
             .execute(
-              owner,
-              yield* encodeBytes({
-                ...envelope,
-                input: {
-                  atFrame: original.frame.frameRef,
-                  subjectKey: "invoice-a",
-                },
-                operation: "Inspect",
-                worldRef,
-              })
+              current_owner,
+              yield* encodeBytes(
+                asCurrentWire({
+                  ...envelope,
+                  input: {
+                    atFrame: original.frame.frameRef,
+                    subjectKey: "invoice-a",
+                  },
+                  operation: "Inspect",
+                  worldRef,
+                })
+              )
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
           expect(historical.frame).toStrictEqual(original.frame);
 
+          yield* realignIntentDigest(
+            ownerAccount.user.id,
+            pendingProposeRequest,
+            worldRef
+          ).pipe(Effect.provide(harness.database.migration));
           const replayPropose = yield* executor
-            .executeCorrection(owner, yield* encodeBytes(pendingProposeRequest))
+            .executeCorrection(
+              current_owner,
+              yield* encodeBytes(asCurrentWire(pendingProposeRequest))
+            )
             .pipe(
               Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
             );
           expect(replayPropose).toStrictEqual(pendingProposed);
+          yield* realignIntentDigest(
+            ownerAccount.user.id,
+            answerRequest,
+            worldRef
+          ).pipe(Effect.provide(harness.database.migration));
           const replayAnswer = yield* executor
-            .executeCorrection(owner, yield* encodeBytes(answerRequest))
+            .executeCorrection(
+              current_owner,
+              yield* encodeBytes(asCurrentWire(answerRequest))
+            )
             .pipe(
               Effect.flatMap(Schema.decodeUnknownEffect(CorrectionApplied))
             );
           expect(replayAnswer).toStrictEqual(answered);
+          yield* realignIntentDigest(
+            ownerAccount.user.id,
+            undoRequest,
+            worldRef
+          ).pipe(Effect.provide(harness.database.migration));
           const replayUndo = yield* executor
-            .executeCorrection(owner, yield* encodeBytes(undoRequest))
+            .executeCorrection(
+              current_owner,
+              yield* encodeBytes(asCurrentWire(undoRequest))
+            )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(CorrectionUndone)));
           expect(replayUndo).toStrictEqual(undone);
 
@@ -413,14 +450,17 @@ it.live(
           };
           expect(
             yield* executor
-              .executeCorrection(owner, yield* encodeBytes(conflictIntent))
+              .executeCorrection(
+                current_owner,
+                yield* encodeBytes(asCurrentWire(conflictIntent))
+              )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Conflict" });
           expect(
             yield* executor
               .executeCorrection(
-                stranger,
-                yield* encodeBytes(pendingProposeRequest)
+                current_stranger,
+                yield* encodeBytes(asCurrentWire(pendingProposeRequest))
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "NotFoundOrDenied" });
@@ -428,40 +468,46 @@ it.live(
           expect(
             yield* executor
               .executeCorrection(
-                owner,
-                yield* encodeBytes({
-                  ...pendingProposeRequest,
-                  operationId: randomUUID(),
-                })
+                current_owner,
+                yield* encodeBytes(
+                  asCurrentWire({
+                    ...pendingProposeRequest,
+                    operationId: randomUUID(),
+                  })
+                )
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Stale" });
           expect(
             yield* executor
               .executeCorrection(
-                owner,
-                yield* encodeBytes({
-                  ...envelope,
-                  input: {
-                    answer: "confirm",
-                    consequenceDigest: pendingProposed.consequenceDigest,
-                    questionRef: pendingProposed.questionRef,
-                  },
-                  operation: "AnswerQuestion",
-                  operationId: randomUUID(),
-                  worldRef,
-                })
+                current_owner,
+                yield* encodeBytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: {
+                      answer: "confirm",
+                      consequenceDigest: pendingProposed.consequenceDigest,
+                      questionRef: pendingProposed.questionRef,
+                    },
+                    operation: "AnswerQuestion",
+                    operationId: randomUUID(),
+                    worldRef,
+                  })
+                )
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Stale" });
           expect(
             yield* executor
               .executeCorrection(
-                owner,
-                yield* encodeBytes({
-                  ...undoRequest,
-                  operationId: randomUUID(),
-                })
+                current_owner,
+                yield* encodeBytes(
+                  asCurrentWire({
+                    ...undoRequest,
+                    operationId: randomUUID(),
+                  })
+                )
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Stale" });
@@ -480,7 +526,7 @@ it.live(
               body: "{}",
               headers: {
                 "content-type": "application/json",
-                cookie: Redacted.value(owner),
+                cookie: Redacted.value(current_owner),
                 origin: harness.origin,
               },
               method: "POST",
@@ -490,8 +536,8 @@ it.live(
           expect(
             yield* executor
               .executeCorrection(
-                owner,
-                yield* encodeBytes(pendingProposeRequest)
+                current_owner,
+                yield* encodeBytes(asCurrentWire(pendingProposeRequest))
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Unauthenticated" });

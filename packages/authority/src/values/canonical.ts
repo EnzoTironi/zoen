@@ -161,6 +161,17 @@ const domainDigest = (domain: DigestDomain | "intent", value: unknown) =>
 export const structuredDigest = (domain: DigestDomain, value: unknown) =>
   domainDigest(domain, value);
 
+/**
+ * Verify retained pre-identity read-set seals only. New writes use structuredDigest
+ * (zoen:worlds). Not an admission dual-read — historical integrity for Stale vs Unavailable.
+ */
+export const legacyReadSetDigest = (value: unknown) =>
+  canonicalJson(value).pipe(
+    Effect.map((canonical) =>
+      digestBytes(encoder.encode(`zoen:d01:read-set:v1\n${canonical}`))
+    )
+  );
+
 export const intentDigest = (request: SemanticRequest) =>
   Effect.gen(function* computeIntentDigest() {
     // Check the original object too: schema decoding must not erase non-JSON metadata.

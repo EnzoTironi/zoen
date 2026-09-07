@@ -40,3 +40,9 @@ ALTER TABLE jobs.captures
 UPDATE authority.cases
   SET question = jsonb_set(question, '{version}', to_jsonb('worlds.v1'::text), false)
   WHERE question->>'version' = 'd01.v1';
+
+-- Retained policy id renamed with d01→worlds; rewrite rows written by frozen
+-- pre-identity executables so current DataPolicy (worlds-local-retained-v1) matches.
+UPDATE authority.worlds
+  SET data_policy_id = 'worlds-local-retained-v1'
+  WHERE data_policy_id = 'd01-local-retained-v1';

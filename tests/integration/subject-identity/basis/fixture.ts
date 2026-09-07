@@ -15,6 +15,8 @@ import {
   DataPolicySchema,
 } from "@zoen/authority/ports/worlds/context";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
+import { intentDigest } from "@zoen/authority/values/canonical";
+import { decodeSemanticRequest } from "@zoen/contracts/worlds/operations";
 import { Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import {
   Cookies,
@@ -23,6 +25,7 @@ import {
   HttpClientRequest,
 } from "effect/unstable/http";
 import type { HttpClientResponse } from "effect/unstable/http";
+import { SqlClient } from "effect/unstable/sql";
 
 import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.ts";
 import type { D01Auth } from "../../../../apps/server/src/identity/worlds/identity.ts";
@@ -44,6 +47,90 @@ const encodeJson = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
 const repoLocal = fileURLToPath(
   new URL("../../../../.local/", import.meta.url)
 );
+
+/** HTTP + request wire understood by the frozen pre-identity executable. */
+export const legacyWire = {
+  correctionsPath: "/api/d01/corrections",
+  csvFormat: "d01.csv.v1",
+  envelope: { purpose: "personal-records", schemaVersion: "d01.v1" },
+  executePath: "/api/d01/execute",
+} as const;
+
+/**
+ * Map a legacy request body to current worlds wire for post-transition
+ * SemanticExecutor decode/replay. Does not dual-read in product code.
+ */
+export const asCurrentWire = (request: object): Record<string, unknown> => {
+  const rewritten = JSON.stringify(request)
+    .replaceAll('"schemaVersion":"d01.v1"', '"schemaVersion":"worlds.v1"')
+    .replaceAll('"schemaVersion": "d01.v1"', '"schemaVersion": "worlds.v1"')
+    .replaceAll(
+      '\\"schemaVersion\\":\\"d01.v1\\"',
+      '\\"schemaVersion\\":\\"worlds.v1\\"'
+    )
+    .replaceAll('"format":"d01.csv.v1"', '"format":"worlds.csv.v1"')
+    .replaceAll('"format": "d01.csv.v1"', '"format": "worlds.csv.v1"')
+    .replaceAll('"format":"d01.json.v1"', '"format":"worlds.json.v1"')
+    .replaceAll('"format": "d01.json.v1"', '"format": "worlds.json.v1"')
+    .replaceAll("\\nd01.csv.v1,", "\\nworlds.csv.v1,")
+    .replaceAll("\\rd01.csv.v1,", "\\rworlds.csv.v1,");
+  return Schema.decodeUnknownSync(Schema.Record(Schema.String, Schema.Unknown))(
+    JSON.parse(rewritten)
+  );
+};
+
+/** Map legacy zoen-d01 cookie names to current zoen-worlds (test harness only). */
+export const asCurrentCredential = (credential: Redacted.Redacted) =>
+  Redacted.make(
+    Redacted.value(credential).replaceAll("zoen-d01.", "zoen-worlds.")
+  );
+
+/**
+ * Pre-launch rename replaced zoen:d01 intent digests with zoen:worlds (no dual-hash).
+ * Realign stored digests for a known legacy request so current idempotent replay works.
+ */
+
+export const realignIntentDigest = Effect.fn("basis.realignIntentDigest")(
+  function* realignIntentDigest(
+    principalId: string,
+    request: object,
+    worldRef?: { readonly realm: string; readonly worldId: string }
+  ) {
+    const wired = asCurrentWire(request);
+    const { operation, operationId } = wired;
+    if (typeof operationId !== "string" || typeof operation !== "string") {
+      return yield* Effect.die(
+        "realignIntentDigest requires operationId and operation"
+      );
+    }
+    const decoded = yield* decodeSemanticRequest(wired).pipe(
+      Effect.catchTag("SchemaError", (error) => Effect.die(error))
+    );
+    const digest = yield* intentDigest(decoded);
+    const sql = yield* SqlClient.SqlClient;
+    if (operation === "CreatePersonalWorld") {
+      yield* sql`UPDATE authority.bootstrap_operations
+        SET intent_digest = ${digest}
+        WHERE principal_id = ${principalId}::uuid
+          AND operation_id = ${operationId}::uuid`;
+      return digest;
+    }
+    if (worldRef === undefined) {
+      return yield* Effect.die(
+        "realignIntentDigest requires worldRef for non-bootstrap ops"
+      );
+    }
+    yield* sql`UPDATE authority.operations
+      SET intent_digest = ${digest}
+      WHERE world_id = ${worldRef.worldId}::uuid
+        AND realm = ${worldRef.realm}
+        AND principal_id = ${principalId}::uuid
+        AND semantic_operation = ${operation}
+        AND operation_id = ${operationId}::uuid`;
+    return digest;
+  }
+);
+
 const reservePort = Effect.sync(
   () => 45_000 + Math.floor(Math.random() * 10_000)
 );
@@ -125,6 +212,13 @@ export const withLegacyBasisHarness = <A, E, R>(
             restoreAfterErasure: false,
             retention: "while-pinned",
           });
+          // Frozen baseline (legacy-build revision) only admits d01-local-retained-v1.
+          // Write that literal into the installation file the legacy process reads;
+          // current-component policy after transition stays worlds-local-retained-v1.
+          const legacyInstallationPolicy = {
+            ...policy,
+            profileId: "d01-local-retained-v1" as const,
+          };
           const installation = yield* Schema.decodeEffect(
             AuthorityInstallationSchema
           )({
@@ -144,7 +238,7 @@ export const withLegacyBasisHarness = <A, E, R>(
           const installationPath = path.join(directory, "installation.json");
           yield* fs.writeFileString(
             installationPath,
-            encodeJson({ installation, policy }),
+            encodeJson({ installation, policy: legacyInstallationPolicy }),
             { flag: "wx", mode: 0o600 }
           );
           const mainJs = path.join(legacy.root, "apps/server/dist/main.js");
@@ -250,6 +344,25 @@ export const withLegacyBasisHarness = <A, E, R>(
                   Layer.mergeAll(database.migration, NodeServices.layer)
                 )
               );
+              // 011 stays on erasure migrator IDs for production; basis tests apply it here
+              // so legacy d01.* rows/policy ids are rewritten before current component runs.
+              yield* Effect.gen(function* applyRenameAlignment() {
+                const filesystem = yield* FileSystem.FileSystem;
+                const sql = yield* SqlClient.SqlClient;
+                const rename = yield* filesystem.readFileString(
+                  fileURLToPath(
+                    new URL(
+                      "../../../../ops/migrations/011_worlds_rename_alignment.sql",
+                      import.meta.url
+                    )
+                  )
+                );
+                yield* sql.withTransaction(sql.unsafe(rename));
+              }).pipe(
+                Effect.provide(
+                  Layer.mergeAll(database.migration, NodeServices.layer)
+                )
+              );
               const identity = makeTestIdentityLayer(
                 {
                   baseUrl: origin,
@@ -290,7 +403,21 @@ export const withLegacyBasisHarness = <A, E, R>(
       ),
     undefined,
     (database) =>
-      applyDisclosureMigrations(database.names).pipe(
+      Effect.gen(function* installLegacyCompatibleSchema() {
+        yield* applyDisclosureMigrations(database.names);
+        // Fresh 004 is worlds-only; frozen legacy executable still inserts d01.*.
+        // Keep d01 CHECK until applyIdentityBasisMigrations runs 011 on transition.
+        const sql = yield* SqlClient.SqlClient;
+        yield* sql.unsafe(`
+ALTER TABLE jobs.captures
+  DROP CONSTRAINT IF EXISTS captures_document_format_check;
+ALTER TABLE jobs.captures
+  ALTER COLUMN document_format SET DEFAULT 'd01.json.v1';
+ALTER TABLE jobs.captures
+  ADD CONSTRAINT captures_document_format_check
+    CHECK (document_format IN ('d01.json.v1', 'd01.csv.v1'));
+`);
+      }).pipe(
         Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
       )
   );

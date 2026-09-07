@@ -19,11 +19,13 @@ import {
   jsonBody,
   responseCookie,
   withLegacyBasisHarness,
+  asCurrentCredential,
+  asCurrentWire,
+  legacyWire,
 } from "./harness.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
-const executePath = "/api/worlds/execute";
+const { envelope, executePath } = legacyWire;
 const validTime = {
   _tag: "DateInterval" as const,
   from: "2026-09-01",
@@ -40,7 +42,7 @@ const jsonDocument = (revision: string, amount: string) =>
         value: { _tag: "Known", amount, currency: "BRL" },
       },
     ],
-    schemaVersion: "worlds.v1",
+    schemaVersion: "d01.v1",
     source: {
       externalId: "billing-json",
       label: "JSON source",
@@ -98,6 +100,7 @@ it.live(
         );
 
         const { runtime } = yield* harness.transitionToCurrentComponent();
+        const current_owner = asCurrentCredential(owner);
 
         return yield* Effect.scoped(
           Effect.gen(function* withCurrentExecutor() {
@@ -110,13 +113,15 @@ it.live(
 
             const inspected = yield* executor
               .execute(
-                owner,
-                yield* bytes({
-                  ...envelope,
-                  input: { atFrame: null, subjectKey: "invoice-a" },
-                  operation: "Inspect",
-                  worldRef,
-                })
+                current_owner,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: { atFrame: null, subjectKey: "invoice-a" },
+                    operation: "Inspect",
+                    worldRef,
+                  })
+                )
               )
               .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
             const selected = inspected.frame.claims.find(
@@ -127,24 +132,26 @@ it.live(
             }
             const proposed = yield* executor
               .executeCorrection(
-                owner,
-                yield* bytes({
-                  ...envelope,
-                  input: {
-                    consequence: {
-                      choice: {
-                        _tag: "selectClaim",
-                        claimRef: selected.claimRef,
+                current_owner,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: {
+                      consequence: {
+                        choice: {
+                          _tag: "selectClaim",
+                          claimRef: selected.claimRef,
+                        },
+                        subjectKey: "invoice-a",
+                        validTime,
                       },
-                      subjectKey: "invoice-a",
-                      validTime,
+                      frameRef: inspected.frame.frameRef,
                     },
-                    frameRef: inspected.frame.frameRef,
-                  },
-                  operation: "ProposeCorrection",
-                  operationId: randomUUID(),
-                  worldRef,
-                })
+                    operation: "ProposeCorrection",
+                    operationId: randomUUID(),
+                    worldRef,
+                  })
+                )
               )
               .pipe(
                 Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
@@ -162,18 +169,20 @@ it.live(
               yield* Deferred.await(gate);
               return yield* executor
                 .executeCorrection(
-                  owner,
-                  yield* bytes({
-                    ...envelope,
-                    input: {
-                      answer: "confirm",
-                      consequenceDigest: proposed.consequenceDigest,
-                      questionRef: proposed.questionRef,
-                    },
-                    operation: "AnswerQuestion",
-                    operationId: randomUUID(),
-                    worldRef,
-                  })
+                  current_owner,
+                  yield* bytes(
+                    asCurrentWire({
+                      ...envelope,
+                      input: {
+                        answer: "confirm",
+                        consequenceDigest: proposed.consequenceDigest,
+                        questionRef: proposed.questionRef,
+                      },
+                      operation: "AnswerQuestion",
+                      operationId: randomUUID(),
+                      worldRef,
+                    })
+                  )
                 )
                 .pipe(Effect.result);
             }).pipe(Effect.forkScoped);
@@ -216,13 +225,15 @@ it.live(
 
             const again = yield* executor
               .execute(
-                owner,
-                yield* bytes({
-                  ...envelope,
-                  input: { atFrame: null, subjectKey: "invoice-a" },
-                  operation: "Inspect",
-                  worldRef,
-                })
+                current_owner,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: { atFrame: null, subjectKey: "invoice-a" },
+                    operation: "Inspect",
+                    worldRef,
+                  })
+                )
               )
               .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
             const againSelected = again.frame.claims.find(
@@ -233,24 +244,26 @@ it.live(
             }
             const pending = yield* executor
               .executeCorrection(
-                owner,
-                yield* bytes({
-                  ...envelope,
-                  input: {
-                    consequence: {
-                      choice: {
-                        _tag: "selectClaim",
-                        claimRef: againSelected.claimRef,
+                current_owner,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: {
+                      consequence: {
+                        choice: {
+                          _tag: "selectClaim",
+                          claimRef: againSelected.claimRef,
+                        },
+                        subjectKey: "invoice-a",
+                        validTime,
                       },
-                      subjectKey: "invoice-a",
-                      validTime,
+                      frameRef: again.frame.frameRef,
                     },
-                    frameRef: again.frame.frameRef,
-                  },
-                  operation: "ProposeCorrection",
-                  operationId: randomUUID(),
-                  worldRef,
-                })
+                    operation: "ProposeCorrection",
+                    operationId: randomUUID(),
+                    worldRef,
+                  })
+                )
               )
               .pipe(
                 Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
@@ -266,18 +279,20 @@ it.live(
               yield* Deferred.await(gate2);
               return yield* executor
                 .executeCorrection(
-                  owner,
-                  yield* bytes({
-                    ...envelope,
-                    input: {
-                      answer: "confirm",
-                      consequenceDigest: pending.consequenceDigest,
-                      questionRef: pending.questionRef,
-                    },
-                    operation: "AnswerQuestion",
-                    operationId: randomUUID(),
-                    worldRef,
-                  })
+                  current_owner,
+                  yield* bytes(
+                    asCurrentWire({
+                      ...envelope,
+                      input: {
+                        answer: "confirm",
+                        consequenceDigest: pending.consequenceDigest,
+                        questionRef: pending.questionRef,
+                      },
+                      operation: "AnswerQuestion",
+                      operationId: randomUUID(),
+                      worldRef,
+                    })
+                  )
                 )
                 .pipe(Effect.result);
             }).pipe(Effect.forkScoped);
@@ -285,14 +300,16 @@ it.live(
               yield* Deferred.await(gate2);
               return yield* executor
                 .execute(
-                  owner,
-                  yield* bytes({
-                    ...envelope,
-                    input: { document: jsonDocument("2", "110.00") },
-                    operation: "ImportEvidence",
-                    operationId: randomUUID(),
-                    worldRef,
-                  })
+                  current_owner,
+                  yield* bytes(
+                    asCurrentWire({
+                      ...envelope,
+                      input: { document: jsonDocument("2", "110.00") },
+                      operation: "ImportEvidence",
+                      operationId: randomUUID(),
+                      worldRef,
+                    })
+                  )
                 )
                 .pipe(Effect.result);
             }).pipe(Effect.forkScoped);

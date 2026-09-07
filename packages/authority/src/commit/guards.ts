@@ -12,7 +12,7 @@ import {
   SourceDependency,
 } from "../ports/worlds/basis.js";
 import type { VerifiedRequestContext } from "../ports/worlds/context.js";
-import { structuredDigest } from "../values/canonical.js";
+import { legacyReadSetDigest, structuredDigest } from "../values/canonical.js";
 
 const DomainRow = Schema.Struct({
   domain_key: DomainKey,
@@ -72,14 +72,17 @@ export const validateBasisSnapshot = Effect.fn(
   const retained = yield* Schema.decodeEffect(InternalBasis)(basis).pipe(
     Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
   );
-  const digest = yield* structuredDigest("read-set", retained.readSet);
   if (!("schemaVersion" in retained)) {
-    if (digest !== retained.readSetDigest) {
+    // Historical seals used zoen:d01; verify with that separator only, then Stale
+    // for new acts (v2 basis required). Mismatch means corruption → Unavailable.
+    const legacyDigest = yield* legacyReadSetDigest(retained.readSet);
+    if (legacyDigest !== retained.readSetDigest) {
       return yield* new Unavailable({ code: "UNAVAILABLE" });
     }
     return yield* new Stale({ code: "STALE" });
   }
   const saved = retained;
+  const digest = yield* structuredDigest("read-set", saved.readSet);
   const principalRef = yield* Schema.decodeEffect(PrincipalRef)(
     current.principalId
   ).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));

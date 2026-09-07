@@ -23,15 +23,17 @@ import {
   jsonBody,
   responseCookie,
   withLegacyBasisHarness,
+  asCurrentCredential,
+  asCurrentWire,
+  legacyWire,
 } from "./harness.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const { envelope, executePath } = legacyWire;
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
 };
-const executePath = "/api/worlds/execute";
 const sharingPath = "/api/d03/sharing";
 const validTime = {
   _tag: "DateInterval" as const,
@@ -52,7 +54,7 @@ const jsonDocument = (revision: string, amount: string) =>
         value: { _tag: "Known", amount, currency: "BRL" },
       },
     ],
-    schemaVersion: "worlds.v1",
+    schemaVersion: "d01.v1",
     source: {
       externalId: "billing-json",
       label: "JSON source",
@@ -216,6 +218,9 @@ it.live(
         );
 
         const { runtime } = yield* harness.transitionToCurrentComponent();
+        const current_owner = asCurrentCredential(owner);
+        const current_stranger = asCurrentCredential(stranger);
+        const current_viewer = asCurrentCredential(viewer);
 
         return yield* Effect.gen(function* withCurrentExecutor() {
           const executor = yield* SemanticExecutor;
@@ -231,7 +236,10 @@ it.live(
           };
 
           const viewerLive = yield* executor
-            .execute(viewer, yield* bytes(inspectRequest))
+            .execute(
+              current_viewer,
+              yield* bytes(asCurrentWire(inspectRequest))
+            )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
           expect(publicFrame(viewerLive.frame)).toStrictEqual(
             publicFrame(viewerLegacy.frame)
@@ -240,8 +248,8 @@ it.live(
           let emitted: Uint8Array | null = null;
           yield* Effect.scoped(
             executor.executeWithEmission(
-              viewer,
-              yield* bytes(inspectRequest),
+              current_viewer,
+              yield* bytes(asCurrentWire(inspectRequest)),
               (body) => {
                 emitted = body;
                 return "submitted";
@@ -259,28 +267,33 @@ it.live(
 
           expect(
             yield* executor
-              .execute(stranger, yield* bytes(inspectRequest))
+              .execute(
+                current_stranger,
+                yield* bytes(asCurrentWire(inspectRequest))
+              )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "NotFoundOrDenied" });
           expect(
             yield* executor
               .execute(
-                viewer,
-                yield* bytes({
-                  ...envelope,
-                  input: {
-                    atFrame: ownerLegacy.frame.frameRef,
-                    subjectKey: "invoice-a",
-                  },
-                  operation: "Inspect",
-                  worldRef,
-                })
+                current_viewer,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: {
+                      atFrame: ownerLegacy.frame.frameRef,
+                      subjectKey: "invoice-a",
+                    },
+                    operation: "Inspect",
+                    worldRef,
+                  })
+                )
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "NotFoundOrDenied" });
 
           const ownerLive = yield* executor
-            .execute(owner, yield* bytes(inspectRequest))
+            .execute(current_owner, yield* bytes(asCurrentWire(inspectRequest)))
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
           const selected = ownerLive.frame.claims.find(
             (claim) => claim.recordId === "invoice-a"
@@ -290,76 +303,9 @@ it.live(
           }
           const proposed = yield* executor
             .executeCorrection(
-              owner,
-              yield* bytes({
-                ...envelope,
-                input: {
-                  consequence: {
-                    choice: {
-                      _tag: "selectClaim",
-                      claimRef: selected.claimRef,
-                    },
-                    subjectKey: "invoice-a",
-                    validTime,
-                  },
-                  frameRef: ownerLive.frame.frameRef,
-                },
-                operation: "ProposeCorrection",
-                operationId: randomUUID(),
-                worldRef,
-              })
-            )
-            .pipe(
-              Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
-            );
-          const applied = yield* executor
-            .executeCorrection(
-              owner,
-              yield* bytes({
-                ...envelope,
-                input: {
-                  answer: "confirm",
-                  consequenceDigest: proposed.consequenceDigest,
-                  questionRef: proposed.questionRef,
-                },
-                operation: "AnswerQuestion",
-                operationId: randomUUID(),
-                worldRef,
-              })
-            )
-            .pipe(
-              Effect.flatMap(Schema.decodeUnknownEffect(CorrectionApplied))
-            );
-          expect(applied.correctionRef).toBeTruthy();
-
-          const ownerAfter = yield* executor
-            .execute(owner, yield* bytes(inspectRequest))
-            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
-          expect(ownerAfter.frame.scopedCorrections.length).toBeGreaterThan(0);
-          const viewerFrozen = yield* executor
-            .execute(
-              viewer,
-              yield* bytes({
-                ...envelope,
-                input: {
-                  atFrame: viewerLegacy.frame.frameRef,
-                  subjectKey: "invoice-a",
-                },
-                operation: "Inspect",
-                worldRef,
-              })
-            )
-            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
-          expect(publicFrame(viewerFrozen.frame)).toStrictEqual(
-            publicFrame(viewerLegacy.frame)
-          );
-          expect(viewerFrozen.frame.scopedCorrections).toStrictEqual([]);
-
-          expect(
-            yield* executor
-              .executeCorrection(
-                viewer,
-                yield* bytes({
+              current_owner,
+              yield* bytes(
+                asCurrentWire({
                   ...envelope,
                   input: {
                     consequence: {
@@ -376,6 +322,81 @@ it.live(
                   operationId: randomUUID(),
                   worldRef,
                 })
+              )
+            )
+            .pipe(
+              Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
+            );
+          const applied = yield* executor
+            .executeCorrection(
+              current_owner,
+              yield* bytes(
+                asCurrentWire({
+                  ...envelope,
+                  input: {
+                    answer: "confirm",
+                    consequenceDigest: proposed.consequenceDigest,
+                    questionRef: proposed.questionRef,
+                  },
+                  operation: "AnswerQuestion",
+                  operationId: randomUUID(),
+                  worldRef,
+                })
+              )
+            )
+            .pipe(
+              Effect.flatMap(Schema.decodeUnknownEffect(CorrectionApplied))
+            );
+          expect(applied.correctionRef).toBeTruthy();
+
+          const ownerAfter = yield* executor
+            .execute(current_owner, yield* bytes(asCurrentWire(inspectRequest)))
+            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
+          expect(ownerAfter.frame.scopedCorrections.length).toBeGreaterThan(0);
+          const viewerFrozen = yield* executor
+            .execute(
+              current_viewer,
+              yield* bytes(
+                asCurrentWire({
+                  ...envelope,
+                  input: {
+                    atFrame: viewerLegacy.frame.frameRef,
+                    subjectKey: "invoice-a",
+                  },
+                  operation: "Inspect",
+                  worldRef,
+                })
+              )
+            )
+            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
+          expect(publicFrame(viewerFrozen.frame)).toStrictEqual(
+            publicFrame(viewerLegacy.frame)
+          );
+          expect(viewerFrozen.frame.scopedCorrections).toStrictEqual([]);
+
+          expect(
+            yield* executor
+              .executeCorrection(
+                current_viewer,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: {
+                      consequence: {
+                        choice: {
+                          _tag: "selectClaim",
+                          claimRef: selected.claimRef,
+                        },
+                        subjectKey: "invoice-a",
+                        validTime,
+                      },
+                      frameRef: ownerLive.frame.frameRef,
+                    },
+                    operation: "ProposeCorrection",
+                    operationId: randomUUID(),
+                    worldRef,
+                  })
+                )
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "NotFoundOrDenied" });
@@ -395,17 +416,19 @@ it.live(
 
           const revoked = yield* executor
             .executeSharing(
-              owner,
-              yield* bytes({
-                ...sharing,
-                input: {
-                  expectedRevision: "0",
-                  principalRef: viewerAccount.user.id,
-                },
-                operation: "RevokeWorldReadAccess",
-                operationId: randomUUID(),
-                worldRef,
-              })
+              current_owner,
+              yield* bytes(
+                asCurrentWire({
+                  ...sharing,
+                  input: {
+                    expectedRevision: "0",
+                    principalRef: viewerAccount.user.id,
+                  },
+                  operation: "RevokeWorldReadAccess",
+                  operationId: randomUUID(),
+                  worldRef,
+                })
+              )
             )
             .pipe(
               Effect.flatMap(Schema.decodeUnknownEffect(WorldReadAccessRevoked))
@@ -415,8 +438,8 @@ it.live(
           expect(
             yield* Effect.scoped(
               executor.executeWithEmission(
-                viewer,
-                yield* bytes(inspectRequest),
+                current_viewer,
+                yield* bytes(asCurrentWire(inspectRequest)),
                 () => {
                   afterRevoke = true;
                   return "submitted";
