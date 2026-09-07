@@ -37,22 +37,26 @@ const evidenceRef = Schema.decodeSync(EvidenceRef)(
 );
 
 describe("EX41 eve journal stub port", () => {
-  it("marks real-model and voice admissions as live-blocked; Zen/stub admitted", () => {
+  it("marks real-model and voice-blocked as live-blocked; Zen/stub/web-speech admitted", () => {
     expect({
+      admittedSpeech: isAdmittedProvider("web-speech"),
       admittedStub: isAdmittedProvider("stub-local"),
-      admittedVoice: isAdmittedProvider("voice-blocked"),
+      admittedVoiceBlocked: isAdmittedProvider("voice-blocked"),
       admittedZen: isAdmittedProvider("opencode-zen"),
       liveReal: isLiveProviderBlocked("real-model-blocked"),
+      liveSpeech: isLiveProviderBlocked("web-speech"),
       liveStub: isLiveProviderBlocked("stub-local"),
-      liveVoice: isLiveProviderBlocked("voice-blocked"),
+      liveVoiceBlocked: isLiveProviderBlocked("voice-blocked"),
       liveZen: isLiveProviderBlocked("opencode-zen"),
     }).toStrictEqual({
+      admittedSpeech: true,
       admittedStub: true,
-      admittedVoice: false,
+      admittedVoiceBlocked: false,
       admittedZen: true,
       liveReal: true,
+      liveSpeech: false,
       liveStub: false,
-      liveVoice: true,
+      liveVoiceBlocked: true,
       liveZen: false,
     });
   });
@@ -75,7 +79,7 @@ describe("EX41 eve journal stub port", () => {
     }).pipe(Effect.provide(EveJournal.stubMemoryLayer))
   );
 
-  it.effect("blocks voice accept path", () =>
+  it.effect("blocks voice-blocked accept path", () =>
     Effect.gen(function* blocked() {
       const journal = yield* EveJournal;
       const voice = yield* Effect.exit(

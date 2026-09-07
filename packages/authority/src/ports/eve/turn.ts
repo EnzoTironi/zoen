@@ -45,6 +45,8 @@ type TurnFailure = Blocked | Conflict | NotFoundOrDenied | Unavailable;
 
 /**
  * Product turn path: accept → live model → settle.
+ * Text: `opencode-zen`. Voice journal admission `web-speech` still settles via
+ * OpenCode Zen text completion (STT/TTS live in the browser surface).
  * Cancel (or AbortSignal) must abort before settle — never fabricate Visible.
  */
 export const runEveTurn = (
@@ -67,6 +69,12 @@ export const runEveTurn = (
     if (
       input.providerAdmission === "opencode-zen" &&
       input.profileId !== "eve-opencode-zen-v1"
+    ) {
+      return yield* new Blocked({ code: "PROFILE_BLOCKED" });
+    }
+    if (
+      input.providerAdmission === "web-speech" &&
+      input.profileId !== "eve-web-speech-v1"
     ) {
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
     }

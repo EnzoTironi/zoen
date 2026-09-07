@@ -27,8 +27,9 @@ import type { Effect as EffectType } from "effect";
  * and never OpenCode / authority API keys (INV-01).
  *
  * EX41: in-memory disposable layer proves recoverability.
- * EX42+: admits `opencode-zen` / `eve-opencode-zen-v1` as the product path.
- * Voice and unqualified real-model admissions stay fail-closed Blocked (F05/F06).
+ * EX42+: admits `opencode-zen` / `eve-opencode-zen-v1` as the text product path.
+ * EX44+: admits `web-speech` / `eve-web-speech-v1` as the browser voice I/O path.
+ * Unqualified real-model / voice-blocked stay fail-closed Blocked (F05/F06).
  */
 export interface AcceptTurnInput {
   readonly conversationId: ConversationId;
@@ -76,7 +77,9 @@ export const isLiveProviderBlocked = (
 
 /** Admitted product / proof admissions that may mutate the journal. */
 export const isAdmittedProvider = (admission: EveProviderAdmission): boolean =>
-  admission === "opencode-zen" || admission === "stub-local";
+  admission === "opencode-zen" ||
+  admission === "web-speech" ||
+  admission === "stub-local";
 
 const profileMatchesAdmission = (
   profileId: EveProfileId,
@@ -84,6 +87,9 @@ const profileMatchesAdmission = (
 ): boolean => {
   if (admission === "opencode-zen") {
     return profileId === "eve-opencode-zen-v1";
+  }
+  if (admission === "web-speech") {
+    return profileId === "eve-web-speech-v1";
   }
   if (admission === "stub-local") {
     return profileId === "eve-local-stub-v1";

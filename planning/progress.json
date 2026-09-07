@@ -902,13 +902,59 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "b011fdfcc9cddd769515f9d6c1e5da35d0921ae5",
+      "commit": "e735650ada0f600759a25cee9e643369d5325489",
       "packages": ["EX44"],
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds; Object Lock at provision; restoreAfterErasure false)",
       "evidence": "docs/verification/erasure-storage-qualification.md",
       "scope": "RustFS local Object Lock/retention/legal hold qualified; ErasureObjectInventory + ErasurePurgeStore fail-closed (no EvidenceObjectStore.remove); erasable provision ObjectLockEnabledForBucket. Does NOT conclude Closing→Erased, Fly controller independence, backup catalog, ER-R02, restoreAfterErasure, or live Fly re-probe.",
       "notes": "verified_for_profile ONLY for local RustFS Object Lock + S3 inventory/purge ports. Closing/register remains prior tip; Erased still blocked."
+    },
+    {
+      "date": "2026-09-07",
+      "commit": "bd689582c33c38e2c71ec709fa04e5ac2ba7a6c9",
+      "packages": ["EX44"],
+      "state": "eve_web_speech_voice_profile_landed",
+      "profile": "eve-web-speech-v1 / admission web-speech",
+      "evidence": "docs/verification/eve-web-speech.md",
+      "scope": "EX44 Web Speech STT/TTS + runEveVoiceTurn transcript→Zen settle→speakText; ZN-0063 voice artifact. Does NOT conclude D05.",
+      "unit_tests": [
+        "packages/authority/test/ports/eve/voice.EX44.test.ts",
+        "apps/web/test/features/eve/web-speech.EX44.test.ts",
+        "packages/contracts/test/eve/operations.EX40.test.ts"
+      ],
+      "not_full_d05": true,
+      "live_model": true,
+      "voice": true
+    },
+    {
+      "date": "2026-09-07",
+      "commit": "bd689582c33c38e2c71ec709fa04e5ac2ba7a6c9",
+      "packages": ["EX40", "EX41", "EX42", "EX43", "EX44"],
+      "state": "verified_for_profile",
+      "profile": "eve-web-speech-v1 (browser Web Speech voice I/O; text via OpenCode Zen)",
+      "evidence": "docs/verification/eve-web-speech.md",
+      "scope": "Eve EX44 verified_for_profile: freeze F05 updated, web-speech schemas/ports/web adapter, ZN-0063 voice qualification with Chromium probe. Does NOT conclude D05: cloud STT/TTS, full turn machine/streaming/tools, separate Eve process, legacy zoen cutover remain blocked. Structural execution.json statuses remain planned/not_run.",
+      "tests": {
+        "unit_ex40_schemas": "pass",
+        "unit_ex41_journal": "pass",
+        "unit_ex42_opencode_zen": "pass",
+        "unit_ex43_turn": "pass",
+        "unit_ex44_voice": "pass",
+        "browser_probe_ex44": "pass_chromium_headless"
+      },
+      "verified_for_profile": true,
+      "not_full_d05": true,
+      "live_model": true,
+      "voice": true,
+      "fly_deployed": false,
+      "blockers": [
+        "Cloud STT/TTS keys not present",
+        "Full SPEC-009 turn machine / streaming / tools not landed",
+        "Separate Eve process not landed",
+        "No legacy zoen cutover"
+      ],
+      "notes": "verified_for_profile for Web Speech voice I/O. NOT full D05 / ZN-0281."
     }
   ],
   "verified_deliveries": [],
@@ -928,13 +974,13 @@
     {
       "id": "eve-real-model-provider",
       "delivery": "D05",
-      "detail": "OpenCode Zen free qualified for profile eve-opencode-zen-v1 when ZOEN_OPENCODE_API_KEY (or ZOEN_OPENCODE_*) present — see docs/verification/eve-opencode-zen.md. Broader multi-provider routing / paid tiers and full D05 remain open; voice still blocked.",
+      "detail": "OpenCode Zen free qualified for eve-opencode-zen-v1 when ZOEN_OPENCODE_API_KEY (or ZOEN_OPENCODE_*) present — see docs/verification/eve-opencode-zen.md. Broader multi-provider routing / paid tiers and full D05 remain open. Voice I/O: see eve-web-speech.md.",
       "since": "2026-09-07"
     },
     {
       "id": "eve-voice-provider",
       "delivery": "D05",
-      "detail": "Voice/transcript provider profile blocked until own qualification (freeze F05 / ZN-0063).",
+      "detail": "Web Speech API qualified for eve-web-speech-v1 (see docs/verification/eve-web-speech.md). Cloud STT/TTS still absent (no keys). Full D05 / continuous listening / Eve process remain open.",
       "since": "2026-09-07"
     }
   ],

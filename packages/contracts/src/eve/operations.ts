@@ -52,8 +52,9 @@ export type CancelConversationTurn = typeof CancelConversationTurn.Type;
 
 /**
  * Settle a visible grounded message.
- * Live product path uses `opencode-zen`; stub-local is offline proofs only.
- * Voice / unqualified real-model admissions are rejected by the port (F05/F06).
+ * Live text path uses `opencode-zen`; voice I/O surface uses `web-speech`.
+ * stub-local is offline proofs only.
+ * voice-blocked / real-model-blocked stay fail-closed (F05/F06).
  */
 export const SettleConversationMessage = Schema.Struct({
   ...envelope,

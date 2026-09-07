@@ -11,7 +11,7 @@ Data: 2026-09-07 (PT). Tip de partida: `90ad08e`. Tip verificado: `48c7c21` (`48
 | Client OpenAI-compatible + headers free-tier | Landed — `packages/authority/src/ports/eve/opencode-zen.ts` |
 | Turn path accept → model → settle / cancel-abort | Landed — `packages/authority/src/ports/eve/turn.ts` |
 | Journal recoverability + INV-01 (sem API key) | Landed — unit + live smoke |
-| Voz | **Blocked** (F05) |
+| Voz | Ver `docs/verification/eve-web-speech.md` (EX44 / Web Speech) |
 | D05 integral / processo Eve separado / streaming prod | **Não** alegado |
 
 ## Endpoint e modelo
@@ -67,7 +67,7 @@ Journal snapshots set `authorityCredentialPresent: false` and never store OpenCo
 
 ## Não alegado
 
-- Voice / transcript provider.
+- Cloud STT/TTS (Web Speech covered separately).
 - Streaming provisional production surface, tool dispatch completo, leases CAS multi-worker.
 - Separate Eve process with minimal credentials.
 - Cutover of legacy Fly app `zoen`.
