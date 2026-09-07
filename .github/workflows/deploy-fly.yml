@@ -18,6 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Wait for Verify success on this commit
+        id: verify_gate
         if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -32,9 +33,17 @@ jobs:
             echo "status=${status:-none} conclusion=${conclusion:-none}"
             if [ "${status}" = "completed" ]; then
               if [ "${conclusion}" = "success" ]; then
+                echo "deploy=true" >> "$GITHUB_OUTPUT"
                 exit 0
               fi
-              echo "Verify did not succeed (conclusion=${conclusion}); refusing deploy."
+              # Rapid main pushes cancel Verify via concurrency; this SHA is
+              # superseded — skip deploy without failing. Newer tip Deploy matters.
+              if [ "${conclusion}" = "cancelled" ] || [ "${conclusion}" = "skipped" ]; then
+                echo "Verify ${conclusion} for ${SHA} (superseded); skipping deploy without failure."
+                echo "deploy=false" >> "$GITHUB_OUTPUT"
+                exit 0
+              fi
+              echo "Verify failed for ${SHA} (conclusion=${conclusion}); refusing deploy."
               exit 1
             fi
             sleep 30
@@ -43,18 +52,22 @@ jobs:
           exit 1
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        if: github.event_name != 'push' || steps.verify_gate.outputs.deploy == 'true'
 
       - name: Setup flyctl
+        if: github.event_name != 'push' || steps.verify_gate.outputs.deploy == 'true'
         uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1
         with:
           version: "0.4.99"
 
       - name: Deploy zoen-rebuild
+        if: github.event_name != 'push' || steps.verify_gate.outputs.deploy == 'true'
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: flyctl deploy -a zoen-rebuild --config ops/fly/fly.toml
 
       - name: Health check (fail closed)
+        if: github.event_name != 'push' || steps.verify_gate.outputs.deploy == 'true'
         run: |
           set -euo pipefail
           # Verify also runs on main; this post-deploy probe fails closed if the
