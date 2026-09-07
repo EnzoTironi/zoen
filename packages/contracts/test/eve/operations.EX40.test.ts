@@ -102,16 +102,20 @@ describe("EX40 eve schemas", () => {
       input: {
         conversationId,
         ingressId,
+        messageId,
         profileId: "eve-web-speech-v1",
         providerAdmission: "web-speech",
         relationshipId,
+        turnId,
         userText: "quanto gastei?",
       },
       operation: "AcceptConversationTurn",
       purpose: "personal-records",
       schemaVersion: "eve.v1",
+      worldRef,
     });
     expect(request.input.providerAdmission).toBe("web-speech");
+    expect(request.worldRef.worldId).toBe(worldRef.worldId);
     expect(Schema.decodeSync(EveProviderAdmission)("web-speech")).toBe(
       "web-speech"
     );
