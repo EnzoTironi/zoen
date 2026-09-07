@@ -6,6 +6,18 @@ Uma pessoa entra por autenticação real, cria um World, importa dois arquivos C
 
 A primeira composição pode aceitar apenas um formato e uma operação estreita. Isso é um incremento de D01, não conclusão de todos os requisitos associados. Expandir formatos, correção, isolamento, retenção e recuperação com suas respectivas provas. Manter os cenários doméstico, confeitaria, clínica e finanças na ambição, sem escolher um novo público comercial por inferência.
 
+## Fronteira de execução pós-auditoria (#74+)
+
+D01–D22 continuam o mapa de ambição do produto. A auditoria pós-#74 define a fronteira de execução atual (fatias ZA), o mapa tip→target de ownership e a anti-lista do que não inventar agora.
+
+Imagens Atlas/arquitetura são ambição **não normativa** — não são lista de materiais. O detalhe condensado vive em [docs/architecture-audit/](architecture-audit/).
+
+Gramática de produto: web/CLI sobre Worlds; Eve = framework de agente opcional só em D05; ICPs household / bakery / clinic / finance já nomeados; sem packs inventados.
+
+A política Pre-launch Evolution em `AGENTS.md` substitui conselhos de shim, dual-read ou dual-write. IDs D0x são apenas planejamento — não caminhos de código nem ownership de fonte.
+
+Status honesto: `planning/progress.json` registra incrementos verificados; `deliveries.json` pode continuar dizendo planned.
+
 ## Seis fases
 
 | Fase | Resultado | Entregas e condição de saída |

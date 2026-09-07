@@ -1010,6 +1010,25 @@
         "Hosted Closing\u2192Erased on live retained install",
         "restoreAfterErasure (F04 closed)"
       ]
+    },
+    {
+      "date": "2026-09-07",
+      "commit": "edbf72f",
+      "packages": [],
+      "state": "tip_hosted_release_digest_aligned",
+      "profile": "fly zoen-rebuild all-in-one / tip after #82",
+      "evidence": "docs/architecture-audit/README.md",
+      "scope": "Tip edbf72f (#82 RELEASE_MISMATCH / releaseDigest alignment on all-in-one redeploy). Fly Deploy succeeded; prod verified at v13 with /ready 200 on 2026-09-07 (New Bot verified). docs/architecture-audit/ documents the post-#74 execution frontier (ZA slices, tip\u2192target, anti-list); 0 ZA accepted; architecture-repair HOLD. Does NOT fill verified_deliveries with D01\u2013D22 or claim full D04 activation.",
+      "notes": "Honesty checkpoint only. Post-audit tip includes #75\u2013#82 (rename hang fixes, vitest integration split, #82). G-TIP rebind required before executing ZA on tip. deliveries.json may still say planned.",
+      "fly_deploy": {
+        "app": "zoen-rebuild",
+        "verified_ready": true,
+        "ready_status": 200,
+        "release": "v13",
+        "verified_on": "2026-09-07",
+        "verifier": "New Bot"
+      },
+      "za_accepted": 0
     }
   ],
   "verified_deliveries": [],
@@ -1017,7 +1036,7 @@
     {
       "id": "fly-hosted-retained-gaps",
       "delivery": "D04",
-      "detail": "Fly app zoen-rebuild is live all-in-one (PG+RustFS+app on volume, min_machines_running=1, https://zoen-rebuild.fly.dev; secrets include ZOEN_OPENCODE_*). MPG/Tigris destroyed by design \u2014 do not revive. Remaining gaps block full D04: backup catalog for admitted restore beyond disposable, sensitive pilot (needs D03 purge/restore-after-erasure), and legacy zoen / DNS cutover (explicit human decision).",
+      "detail": "Fly app zoen-rebuild exists and tip is deployed (all-in-one PG+RustFS+app on volume; https://zoen-rebuild.fly.dev; tip edbf72f / #82; /ready 200 verified at v13 on 2026-09-07). MPG/Tigris remain destroyed by design \u2014 do not revive. Full D04 activation still not claimed: Managed Postgres/Tigris are not the topology; remaining gaps include backup catalog for admitted restore beyond disposable, sensitive pilot (needs D03 purge/restore-after-erasure), and legacy zoen / DNS cutover (explicit human decision).",
       "since": "2026-09-07"
     },
     {
@@ -1062,7 +1081,7 @@
       "fly_legacy_app": "zoen (not cut over)",
       "stubs": ["ops/fly/fly.toml", "ops/fly/README.md"],
       "dockerfile": "ops/containers/application.Dockerfile",
-      "deployed": false,
+      "deployed": true,
       "hosted_retained_policy_schemas": true,
       "profile_id": "d04-hosted-retained-v1",
       "data_policy_union": true,
@@ -1073,7 +1092,15 @@
       "hosted_admission_flags": true,
       "hosted_local_compose": true,
       "verified_for_profile_local_bootstrap": true,
-      "not_production_fly": true
+      "not_production_fly": true,
+      "deployed_app": "zoen-rebuild",
+      "deployed_tip": "edbf72f",
+      "deployed_ready_verified": true,
+      "deployed_ready_status": 200,
+      "deployed_release": "v13",
+      "deployed_verified_on": "2026-09-07",
+      "full_d04_activation_claimed": false,
+      "notes": "Tip deployed on zoen-rebuild and /ready verified; not_production_fly remains true because legacy zoen cutover, Managed Postgres/Tigris (intentionally absent), backup catalog, and sensitive-pilot qualification still block claiming full D04."
     }
   }
 }
