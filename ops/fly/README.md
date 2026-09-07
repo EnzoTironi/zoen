@@ -31,11 +31,11 @@ URLs DB/S3 de loopback ficam no `[env]` do `fly.toml` / volume (`runtime.env`). 
 fly volumes create zoen_data --region gru --size 10 -a zoen-rebuild --yes   # uma vez
 fly deploy -a zoen-rebuild --config ops/fly/fly.toml
 fly status -a zoen-rebuild
-# se min_machines=0: fly scale count 1 -a zoen-rebuild
+# scale: fly scale count 1 -a zoen-rebuild
 curl -fsS "https://zoen-rebuild.fly.dev/ready"
 ```
 
-VM: shared-cpu-1x / 2GB RAM; volume exemplo **10GB**. Custo baixo; `min_machines_running = 0` (scale up para prova).
+VM: shared-cpu-1x / 2GB RAM; volume exemplo **10GB**. Custo baixo; `min_machines_running = 1` (VM quente; evita cold start lento do all-in-one).
 
 ## Regras
 
