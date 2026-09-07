@@ -65,7 +65,6 @@ ZOEN_LOCAL_PROFILE=erasable-v1 \
 - Catálogo de backups/cópias; controlador/anti-rollback; ER-R02; forensic wipe; hosted Erased.
 - ~~Re-prova Object Lock na VM Fly live~~ — **cleared** 2026-09-07 (`erasure-fly-object-lock.md`).
 
-Cleared localmente (2026-09-07): Object Lock/retention/hold no RustFS compose; `ErasureObjectInventory` + `ErasurePurgeStore`; provision erasable com Object Lock.
-Cleared no Fly (2026-09-07): Object Lock/retention/hold no RustFS all-in-one loopback (`zoen-rebuild`).
+Cleared localmente (2026-09-07): Object Lock/retention/hold no RustFS compose; `ErasureObjectInventory` + `ErasurePurgeStore`; provision erasable com Object Lock. Cleared no Fly (2026-09-07): Object Lock/retention/hold no RustFS all-in-one loopback (`zoen-rebuild`).
 
 Isto **não** marca D03 completo nem autoriza Erased em produção.

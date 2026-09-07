@@ -1,8 +1,6 @@
 # Erasure storage — Fly all-in-one RustFS Object Lock re-probe
 
-Date observed: **2026-09-07 (PT)** / probe UTC **2026-09-07T13:27:24Z–13:27:25Z**.
-Live app: **`zoen-rebuild`** (machine `48e3626fd21e78`, region `gru`), public `/ready` → `{"status":"ready"}` on `https://zoen.tironi.xyz/ready`.
-Topology: all-in-one Dockerfile — Postgres + **RustFS `1.0.0-rc.5`** (`git 40a2470…`) + Zoen server on volume `zoen_data` → `/data`. Object store is **loopback only** (`ZOEN_S3_ENDPOINT=http://127.0.0.1:9000`); not Tigris; not publicly exposed.
+Date observed: **2026-09-07 (PT)** / probe UTC **2026-09-07T13:27:24Z–13:27:25Z**. Live app: **`zoen-rebuild`** (machine `48e3626fd21e78`, region `gru`), public `/ready` → `{"status":"ready"}` on `https://zoen.tironi.xyz/ready`. Topology: all-in-one Dockerfile — Postgres + **RustFS `1.0.0-rc.5`** (`git 40a2470…`) + Zoen server on volume `zoen_data` → `/data`. Object store is **loopback only** (`ZOEN_S3_ENDPOINT=http://127.0.0.1:9000`); not Tigris; not publicly exposed.
 
 This report **re-probes Object Lock on the live Fly RustFS process**. It does **not** claim hosted Erased, independent controller, backup catalog, ER-R02, or `restoreAfterErasure`.
 
@@ -27,7 +25,7 @@ Local qualification remains [`erasure-storage-qualification.md`](./erasure-stora
 | Install bucket `zoen` Object Lock | `GetObjectLockConfiguration` | **404** `ObjectLockConfigurationNotFoundError` | Expected: Worlds policy `d04-hosted-retained-v1` (erasure:false). Not migrated. |
 | Versioning enable + list | `PutBucketVersioning`, `ListObjectVersions`, … | **PASS** | Disposable bucket |
 | Object Lock at `CreateBucket` | `ObjectLockEnabledForBucket: true` | **PASS** | Get showed `Enabled` |
-| Object Lock Put on existing bucket **without** versioning | `PutObjectLockConfiguration` | **OBSERVED 409** `InvalidBucketState` — *Object Lock configuration cannot be enabled on existing buckets* | Matches AWS create-time intuition when versioning is off |
+| Object Lock Put on existing bucket **without** versioning | `PutObjectLockConfiguration` | **OBSERVED 409** `InvalidBucketState` — _Object Lock configuration cannot be enabled on existing buckets_ | Matches AWS create-time intuition when versioning is off |
 | Object Lock Put on existing bucket **after** versioning Enabled | `PutBucketVersioning` then `PutObjectLockConfiguration` | **PASS** | Supplemental probe: status 200, Get `Enabled` |
 | Retention put/get + enforce | `PutObjectRetention`, `GetObjectRetention`, `DeleteObject` | **PASS** (isolated lock bucket) | Delete without bypass → **403**; `BypassGovernanceRetention: true` → **204** (cleanup only — **not** product path) |
 | Legal hold put/get + enforce | `PutObjectLegalHold`, … | **PASS** | Delete while ON → **403**; release OFF then delete OK |
