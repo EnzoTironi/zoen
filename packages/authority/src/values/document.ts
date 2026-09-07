@@ -1,5 +1,5 @@
-import { InvalidInput } from "@zoen/contracts/d01/errors";
-import { ImportEvidence } from "@zoen/contracts/d01/operations";
+import { InvalidInput } from "@zoen/contracts/worlds/errors";
+import { ImportEvidence } from "@zoen/contracts/worlds/operations";
 import { Effect, Schema } from "effect";
 
 import { parseCsvText } from "./csv.js";

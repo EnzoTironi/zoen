@@ -1,8 +1,8 @@
-import { Conflict, Stale, Unavailable } from "@zoen/contracts/d01/errors";
-import { Revision, exact } from "@zoen/contracts/d01/values";
 import { WorldContentPurged } from "@zoen/contracts/erasure/operations";
 import type { PurgeWorldContent } from "@zoen/contracts/erasure/operations";
 import { WorldErasurePhase } from "@zoen/contracts/erasure/values";
+import { Conflict, Stale, Unavailable } from "@zoen/contracts/worlds/errors";
+import { Revision, exact } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -13,10 +13,10 @@ import {
   commitMutation,
   readMutationReplay,
 } from "../../../commit/mutation.js";
-import type { VerifiedRequestContext } from "../../../ports/d01/context.js";
 import { ErasureAttemptRegister } from "../../../ports/erasure/attempt-register.js";
 import { ErasureObjectInventory } from "../../../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../../../ports/erasure/purge.js";
+import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
 import { requireErasablePolicy } from "../policy.js";
 import { purgeWorldSqlContent } from "../sql-purge.js";
 

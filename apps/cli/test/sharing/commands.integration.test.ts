@@ -74,7 +74,7 @@ it.live(
       }
       const legacy = yield* cli(["import", "--help"]);
       expect(legacy.exitCode).toBe(0);
-      expect(legacy.stdout).toContain("json (legacy D01)");
+      expect(legacy.stdout).toContain("json (legacy worlds JSON)");
       expect(legacy.stdout).toContain("--format csv --file -");
     }).pipe(Effect.provide(NodeServices.layer))
 );

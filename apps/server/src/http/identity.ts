@@ -1,11 +1,11 @@
 import { parseJsonBytes } from "@zoen/authority/values/json";
-import { Expired, InvalidInput } from "@zoen/contracts/d01/errors";
+import { Expired, InvalidInput } from "@zoen/contracts/worlds/errors";
 import type {
   NotFoundOrDenied,
   QuotaExceeded,
   Unavailable,
-} from "@zoen/contracts/d01/errors";
-import { D01_LIMITS } from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/errors";
+import { D01_LIMITS } from "@zoen/contracts/worlds/values";
 import { Effect, Layer } from "effect";
 import {
   HttpRouter,
@@ -13,7 +13,7 @@ import {
   HttpServerResponse,
 } from "effect/unstable/http";
 
-import { D01Auth } from "../identity/d01/identity.ts";
+import { D01Auth } from "../identity/worlds/identity.ts";
 import { checkRequestAudience, readJsonBody } from "./request.ts";
 
 const errorResponse = (

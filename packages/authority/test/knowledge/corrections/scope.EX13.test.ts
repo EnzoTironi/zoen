@@ -1,6 +1,6 @@
 import { expect, it } from "@effect/vitest";
-import { VisibleFrame } from "@zoen/contracts/d01/evidence";
-import { CorrectionConsequence } from "@zoen/contracts/d01/operations";
+import { VisibleFrame } from "@zoen/contracts/worlds/evidence";
+import { CorrectionConsequence } from "@zoen/contracts/worlds/operations";
 import { Effect, Schema } from "effect";
 
 import {

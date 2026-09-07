@@ -5,16 +5,16 @@ import { expect, it } from "@effect/vitest";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { canonicalJson } from "@zoen/authority/values/canonical";
 import {
+  WorldReadAccessGranted,
+  WorldReadAccessRevoked,
+} from "@zoen/contracts/sharing/operations";
+import {
   CorrectionApplied,
   CorrectionProposed,
   EvidenceImported,
   FrameInspected,
   WorldCreated,
-} from "@zoen/contracts/d01/operations";
-import {
-  WorldReadAccessGranted,
-  WorldReadAccessRevoked,
-} from "@zoen/contracts/sharing/operations";
+} from "@zoen/contracts/worlds/operations";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -26,12 +26,12 @@ import {
 } from "./harness.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const envelope = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
 };
-const executePath = "/api/d01/execute";
+const executePath = "/api/worlds/execute";
 const sharingPath = "/api/d03/sharing";
 const validTime = {
   _tag: "DateInterval" as const,
@@ -52,7 +52,7 @@ const jsonDocument = (revision: string, amount: string) =>
         value: { _tag: "Known", amount, currency: "BRL" },
       },
     ],
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
     source: {
       externalId: "billing-json",
       label: "JSON source",

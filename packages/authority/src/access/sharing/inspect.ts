@@ -1,11 +1,11 @@
-import { InvalidInput, Unavailable } from "@zoen/contracts/d01/errors";
 import {
   InspectWorldAccess,
   WorldAccessInspected,
 } from "@zoen/contracts/sharing/operations";
+import { InvalidInput, Unavailable } from "@zoen/contracts/worlds/errors";
 import { Effect, Schema } from "effect";
 
-import type { VerifiedRequestContext } from "../../ports/d01/context.js";
+import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
 import { authorizeWorld } from "../world.js";
 import { principalIdFromRef, readMembership } from "./membership.js";
 

@@ -2,9 +2,9 @@ import { createHash, randomUUID } from "node:crypto";
 
 import { NodeHttpServer, NodeHttpServerRequest } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { VerifiedPresence } from "@zoen/authority/ports/d01/context";
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
-import { Instant, WorldRef } from "@zoen/contracts/d01/values";
+import { VerifiedPresence } from "@zoen/authority/ports/worlds/context";
+import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
 import { DateTime, Deferred, Effect, Layer, Schema } from "effect";
 import {
   HttpClient,
@@ -17,7 +17,7 @@ import { SqlClient } from "effect/unstable/sql";
 import { makeDisclosureFenceLayer } from "../../../src/adapters/postgres/disclosure/fence.ts";
 import { makePrivateJsonEmitter } from "../../../src/http/disclosure.ts";
 import { responseSecurity } from "../../../src/http/security.ts";
-import { withD01Database } from "../../adapters/postgres/d01/database.ts";
+import { withD01Database } from "../../adapters/postgres/worlds/database.ts";
 
 const digest = (bytes: Uint8Array) =>
   createHash("sha256").update(bytes).digest("hex");

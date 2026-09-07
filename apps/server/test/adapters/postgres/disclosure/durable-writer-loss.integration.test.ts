@@ -2,10 +2,10 @@ import { randomUUID } from "node:crypto";
 
 import { NodeHttpServer, NodeHttpServerRequest } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { VerifiedPresence } from "@zoen/authority/ports/d01/context";
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import { sessionDisclosureKey } from "@zoen/authority/ports/disclosure/keys";
-import { Instant, WorldRef } from "@zoen/contracts/d01/values";
+import { VerifiedPresence } from "@zoen/authority/ports/worlds/context";
+import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
 import { DateTime, Deferred, Effect, Fiber, Layer, Schema } from "effect";
 import {
   HttpClient,
@@ -18,7 +18,7 @@ import { SqlClient } from "effect/unstable/sql";
 import { makeDisclosureFenceLayer } from "../../../../src/adapters/postgres/disclosure/fence.ts";
 import { makePrivateJsonEmitter } from "../../../../src/http/disclosure.ts";
 import { ResponseSecurityHeaders } from "../../../../src/http/security.ts";
-import { withD01Database } from "../d01/database.ts";
+import { withD01Database } from "../worlds/database.ts";
 
 it.live(
   "EX22 coordinator loss retains pending until native submission ACK; confirmed closing forbids subsequent HTTP private bytes",

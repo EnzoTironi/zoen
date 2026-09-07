@@ -3,9 +3,9 @@ import { Effect, Layer } from "effect";
 import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
 
-import { S3Health } from "../adapters/object-storage/d01/health.ts";
-import { checkD01AuthorityRole } from "../adapters/postgres/d01/authority-role.ts";
-import { D01Auth } from "../identity/d01/identity.ts";
+import { S3Health } from "../adapters/object-storage/worlds/health.ts";
+import { checkD01AuthorityRole } from "../adapters/postgres/worlds/authority-role.ts";
+import { D01Auth } from "../identity/worlds/identity.ts";
 
 export const readinessRoutes = Layer.effectDiscard(
   Effect.gen(function* buildReadinessRoutes() {

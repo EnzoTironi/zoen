@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@effect/vitest";
-import { SubjectKey } from "@zoen/contracts/d01/values";
+import { SubjectKey } from "@zoen/contracts/worlds/values";
 import { Effect, Result, Schema } from "effect";
 
 import {

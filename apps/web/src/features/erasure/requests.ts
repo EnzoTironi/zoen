@@ -1,13 +1,13 @@
-import { InvalidInput } from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
 import {
   InspectWorldErasure,
   RequestWorldErasure,
 } from "@zoen/contracts/erasure/operations";
 import type { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
+import { InvalidInput } from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
-import { newOperationId } from "../d01/requests.ts";
+import { newOperationId } from "../worlds/requests.ts";
 
 const envelope = {
   purpose: "personal-records",

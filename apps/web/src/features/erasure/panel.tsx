@@ -1,5 +1,5 @@
-import type { WorkspaceState } from "../d01/model.ts";
-import type { WorkspaceController } from "../d01/state.ts";
+import type { WorkspaceState } from "../worlds/model.ts";
+import type { WorkspaceController } from "../worlds/state.ts";
 import { entireWorldScope, noRestoreNotice } from "./model.ts";
 
 export const ErasurePanel = ({
@@ -22,7 +22,7 @@ export const ErasurePanel = ({
   return (
     <section
       aria-label="Exclusão do espaço"
-      className="d01-workspace d01-context"
+      className="worlds-workspace d01-context"
     >
       <div className="d01-context-inner">
         <h2>Exclusão autorizada deste espaço</h2>

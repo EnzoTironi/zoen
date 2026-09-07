@@ -1,16 +1,20 @@
+import { IdentityAnswer } from "@zoen/contracts/subject-identity/values";
 import {
   Digest,
   FrameRef,
   LocalDate,
   QuestionRef,
   SubjectKey,
-} from "@zoen/contracts/d01/values";
-import type { OperationId, Realm, WorldId } from "@zoen/contracts/d01/values";
-import { IdentityAnswer } from "@zoen/contracts/subject-identity/values";
+} from "@zoen/contracts/worlds/values";
+import type {
+  OperationId,
+  Realm,
+  WorldId,
+} from "@zoen/contracts/worlds/values";
 import { Effect, Option, Schema } from "effect";
 import { Command, Flag } from "effect/unstable/cli";
 
-import { CliFailure } from "../d01/output.js";
+import { CliFailure } from "../worlds/output.js";
 
 interface SharedFlags {
   readonly operationId: Flag.Flag<typeof OperationId.Type>;

@@ -3,11 +3,11 @@ import { fileURLToPath } from "node:url";
 
 import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { WorldCreated } from "@zoen/contracts/d01/operations";
 import {
   WorldErasureInspected,
   WorldErasureRequested,
 } from "@zoen/contracts/erasure/operations";
+import { WorldCreated } from "@zoen/contracts/worlds/operations";
 import { Effect, FileSystem, Schema, Stream } from "effect";
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 
@@ -16,8 +16,8 @@ import {
   jsonBody,
   responseCookie,
   withErasableHttp,
-} from "../../../server/test/composition/d01/fixture.ts";
-import { saveSession } from "../../src/d01/session.js";
+} from "../../../server/test/composition/worlds/fixture.ts";
+import { saveSession } from "../../src/worlds/session.js";
 
 const read = <E, R>(stream: Stream.Stream<Uint8Array, E, R>) =>
   stream.pipe(
@@ -27,7 +27,7 @@ const read = <E, R>(stream: Stream.Stream<Uint8Array, E, R>) =>
   );
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 
 it.live(
   "EX33 compiled CLI inspects then confirms Closing over real erasable HTTP; viewer denied; replay stays Closing",
@@ -94,7 +94,7 @@ it.live(
 
         const worldResponse = yield* http(
           origin,
-          "/api/d01/execute",
+          "/api/worlds/execute",
           json({
             ...d01,
             input: {},

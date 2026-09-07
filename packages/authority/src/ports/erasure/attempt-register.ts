@@ -1,15 +1,15 @@
-import { Unavailable } from "@zoen/contracts/d01/errors";
-import type { Conflict } from "@zoen/contracts/d01/errors";
+import type { ErasureAttemptExternalState } from "@zoen/contracts/erasure/values";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
+import type { Conflict } from "@zoen/contracts/worlds/errors";
 import type {
   OperationId,
   Revision,
   WorldRef,
-} from "@zoen/contracts/d01/values";
-import type { ErasureAttemptExternalState } from "@zoen/contracts/erasure/values";
+} from "@zoen/contracts/worlds/values";
 import { Context, Effect, Layer } from "effect";
 import type { Effect as EffectType } from "effect";
 
-import type { PrincipalId } from "../d01/context.js";
+import type { PrincipalId } from "../worlds/context.js";
 
 /**
  * External attempt register (ER-R01 / freeze F01).

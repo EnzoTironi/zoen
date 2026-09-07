@@ -1,6 +1,6 @@
-import { InvalidInput, QuotaExceeded } from "@zoen/contracts/d01/errors";
-import { decodeImportDocument } from "@zoen/contracts/d01/evidence";
-import { D01_LIMITS } from "@zoen/contracts/d01/values";
+import { InvalidInput, QuotaExceeded } from "@zoen/contracts/worlds/errors";
+import { decodeImportDocument } from "@zoen/contracts/worlds/evidence";
+import { D01_LIMITS } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { validUnicode } from "./json.js";
@@ -136,7 +136,7 @@ const projectRows = (rows: readonly (readonly string[])[]) => {
       from,
       to,
     ] = row;
-    if (version !== "d01.csv.v1") {
+    if (version !== "worlds.csv.v1") {
       return invalid();
     }
     if (source === undefined) {
@@ -175,7 +175,7 @@ const projectRows = (rows: readonly (readonly string[])[]) => {
           : { _tag: "Unknown" },
     };
   });
-  return { records, schemaVersion: "d01.v1", source };
+  return { records, schemaVersion: "worlds.v1", source };
 };
 
 export const parseCsvBytes = (bytes: Uint8Array) =>

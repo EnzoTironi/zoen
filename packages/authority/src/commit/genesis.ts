@@ -1,24 +1,24 @@
 import { randomUUID } from "node:crypto";
 
-import { InvalidInput, Unavailable } from "@zoen/contracts/d01/errors";
+import { InvalidInput, Unavailable } from "@zoen/contracts/worlds/errors";
 import {
   CreatePersonalWorld,
   WorldCreated,
-} from "@zoen/contracts/d01/operations";
+} from "@zoen/contracts/worlds/operations";
 import {
   Digest,
   ReceiptRef,
   WorldRef,
   exact,
-} from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { validateContext, withinRequestDeadline } from "../access/context.js";
 import { authorizeWorld } from "../access/world.js";
-import { DomainCut } from "../ports/d01/basis.js";
-import { DataPolicy } from "../ports/d01/context.js";
-import type { VerifiedRequestContext } from "../ports/d01/context.js";
+import { DomainCut } from "../ports/worlds/basis.js";
+import { DataPolicy } from "../ports/worlds/context.js";
+import type { VerifiedRequestContext } from "../ports/worlds/context.js";
 import { intentDigest } from "../values/canonical.js";
 import {
   AuthorityInstallation,

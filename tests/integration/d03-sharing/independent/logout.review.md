@@ -61,7 +61,7 @@ import { setTimeout } from "node:timers/promises";
 
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
-import { WorldId } from "@zoen/contracts/d01/values";
+import { WorldId } from "@zoen/contracts/worlds/values";
 import { Config, Effect, Schema } from "effect";
 
 
@@ -117,7 +117,7 @@ const sourceFile = (subject: string, label: string, amount: string) => ({
           value: { _tag: "Known", amount, currency: "BRL" },
         },
       ],
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       source: {
         externalId: randomUUID(),
         label,

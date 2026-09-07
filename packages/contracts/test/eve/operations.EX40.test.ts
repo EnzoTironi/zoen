@@ -44,7 +44,7 @@ describe("EX40 eve schemas", () => {
     expect(
       Result.isFailure(
         Schema.decodeUnknownResult(EveLocalStubProfileId)(
-          "d01-local-retained-v1"
+          "worlds-local-retained-v1"
         )
       )
     ).toBeTruthy();

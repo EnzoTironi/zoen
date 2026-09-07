@@ -1,7 +1,7 @@
 import {
   RetryableInfrastructureFailure,
   Unavailable,
-} from "@zoen/contracts/d01/errors";
+} from "@zoen/contracts/worlds/errors";
 import { Cause, Effect } from "effect";
 import { SqlClient, SqlError } from "effect/unstable/sql";
 

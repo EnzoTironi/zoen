@@ -5,8 +5,8 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
-import { seedEvidence } from "../../../../apps/server/test/adapters/postgres/d01/seed.ts";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { seedEvidence } from "../../../../apps/server/test/adapters/postgres/worlds/seed.ts";
 import {
   applyDisclosureMigrations,
   applySharingMigrations,

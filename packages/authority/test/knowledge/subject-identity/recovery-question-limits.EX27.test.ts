@@ -1,11 +1,11 @@
 import { describe, expect, it } from "@effect/vitest";
-import { D01_LIMITS, SubjectKey } from "@zoen/contracts/d01/values";
 import { IdentityRecoveryFrame } from "@zoen/contracts/subject-identity/frame";
 import { IdentityQuestion } from "@zoen/contracts/subject-identity/question";
 import {
   IdentityEffectRef,
   SUBJECT_IDENTITY_LIMITS,
 } from "@zoen/contracts/subject-identity/values";
+import { D01_LIMITS, SubjectKey } from "@zoen/contracts/worlds/values";
 import { Effect, Result, Schema } from "effect";
 
 import { maximalIdentityCells } from "../../../src/knowledge/subject-identity/pure/cells.js";

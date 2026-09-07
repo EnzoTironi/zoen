@@ -1,5 +1,3 @@
-import { InvalidInput } from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
 import {
   InspectIdentityRecovery,
   InspectSubjectIdentity,
@@ -9,9 +7,11 @@ import {
   ResolveIdentity,
 } from "@zoen/contracts/subject-identity/operations";
 import { IdentityPartitions } from "@zoen/contracts/subject-identity/question";
+import { InvalidInput } from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
-import { newOperationId } from "../d01/requests.ts";
+import { newOperationId } from "../worlds/requests.ts";
 import type { IdentityAnswerValue, IdentityInspectedFrame } from "./model.ts";
 
 const envelope = {

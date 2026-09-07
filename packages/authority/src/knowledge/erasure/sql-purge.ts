@@ -1,5 +1,5 @@
-import { Unavailable } from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

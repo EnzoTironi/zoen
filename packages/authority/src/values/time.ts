@@ -1,9 +1,9 @@
-import { InvalidInput } from "@zoen/contracts/d01/errors";
+import { InvalidInput } from "@zoen/contracts/worlds/errors";
 import {
   DateInterval,
   InstantInterval,
   UnknownTime,
-} from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 const Interval = Schema.Union([DateInterval, InstantInterval, UnknownTime]);

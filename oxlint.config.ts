@@ -152,8 +152,8 @@ export default defineConfig({
     {
       files: [
         "packages/authority/src/semantic/executor.ts",
-        "apps/cli/src/d01/transport.ts",
-        "apps/web/src/features/d01/client.ts",
+        "apps/cli/src/worlds/transport.ts",
+        "apps/web/src/features/worlds/client.ts",
       ],
       rules: {
         "eslint/complexity": ["error", { max: 28 }],

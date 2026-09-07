@@ -1,14 +1,14 @@
 import { randomUUID } from "node:crypto";
 
-import { Unavailable } from "@zoen/contracts/d01/errors";
-import { ReceiptRef } from "@zoen/contracts/d01/values";
-import type { WorldRef } from "@zoen/contracts/d01/values";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
+import { ReceiptRef } from "@zoen/contracts/worlds/values";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { DomainCut } from "../ports/d01/basis.js";
-import type { VerifiedRequestContext } from "../ports/d01/context.js";
-import { StoredOperationResult } from "../ports/d01/persistence.js";
+import { DomainCut } from "../ports/worlds/basis.js";
+import type { VerifiedRequestContext } from "../ports/worlds/context.js";
+import { StoredOperationResult } from "../ports/worlds/persistence.js";
 import { canonicalJson } from "../values/canonical.js";
 
 const resultTags = {

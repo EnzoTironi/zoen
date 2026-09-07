@@ -5,7 +5,7 @@ import {
 } from "@zoen/contracts/sharing/operations";
 import { Schema } from "effect";
 
-import { formatSuccess } from "../../src/d01/output.js";
+import { formatSuccess } from "../../src/worlds/output.js";
 
 describe("EX23 sharing JSON output", () => {
   it("EX23 formatting preserves a historical grant receipt separately from a current revoked membership", () => {

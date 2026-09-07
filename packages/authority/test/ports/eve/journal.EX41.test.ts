@@ -1,5 +1,4 @@
 import { describe, expect, it } from "@effect/vitest";
-import { EvidenceRef } from "@zoen/contracts/d01/values";
 import {
   ConversationId,
   IngressId,
@@ -7,6 +6,7 @@ import {
   RelationshipId,
   TurnId,
 } from "@zoen/contracts/eve/values";
+import { EvidenceRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import {

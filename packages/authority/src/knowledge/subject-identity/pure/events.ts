@@ -1,15 +1,15 @@
-import { InvalidInput } from "@zoen/contracts/d01/errors";
+import { PrincipalRef } from "@zoen/contracts/sharing/operations";
+import { IdentityEffects } from "@zoen/contracts/subject-identity/effects";
+import type { IdentityEffect } from "@zoen/contracts/subject-identity/effects";
+import { IdentityDecisionRef } from "@zoen/contracts/subject-identity/values";
+import { InvalidInput } from "@zoen/contracts/worlds/errors";
 import {
   DateInterval,
   Purpose,
   Revision,
   WorldRef,
   exact,
-} from "@zoen/contracts/d01/values";
-import { PrincipalRef } from "@zoen/contracts/sharing/operations";
-import { IdentityEffects } from "@zoen/contracts/subject-identity/effects";
-import type { IdentityEffect } from "@zoen/contracts/subject-identity/effects";
-import { IdentityDecisionRef } from "@zoen/contracts/subject-identity/values";
+} from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { covers, subtractIntervals } from "./intervals.js";

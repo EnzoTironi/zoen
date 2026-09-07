@@ -5,12 +5,12 @@ import {
   membershipDisclosureKey,
   sessionDisclosureKey,
 } from "@zoen/authority/ports/disclosure/keys";
-import { Expired, Unavailable } from "@zoen/contracts/d01/errors";
-import type { Instant } from "@zoen/contracts/d01/values";
+import { Expired, Unavailable } from "@zoen/contracts/worlds/errors";
+import type { Instant } from "@zoen/contracts/worlds/values";
 import { Clock, Effect, Layer, Redacted } from "effect";
 import { Pool } from "pg";
 
-import type { D01PostgresConfig } from "../d01/postgres.ts";
+import type { D01PostgresConfig } from "../worlds/postgres.ts";
 import { reserve } from "./connection.ts";
 import type { Lock } from "./connection.ts";
 import { checkDisclosurePool } from "./health.ts";

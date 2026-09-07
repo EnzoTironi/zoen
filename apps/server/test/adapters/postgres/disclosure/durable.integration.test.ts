@@ -1,16 +1,16 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { VerifiedPresence } from "@zoen/authority/ports/d01/context";
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import type { DisclosurePermit } from "@zoen/authority/ports/disclosure/fence";
-import { Instant, WorldRef } from "@zoen/contracts/d01/values";
+import { VerifiedPresence } from "@zoen/authority/ports/worlds/context";
+import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
 import { DateTime, Deferred, Effect, Exit, Fiber, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { makeDisclosureFenceLayer } from "../../../../src/adapters/postgres/disclosure/fence.ts";
-import { withD01Database } from "../d01/database.ts";
-import type { D01TestDatabase } from "../d01/database.ts";
+import { withD01Database } from "../worlds/database.ts";
+import type { D01TestDatabase } from "../worlds/database.ts";
 
 const context = Effect.gen(function* testContext() {
   const now = yield* DateTime.now;

@@ -1,6 +1,6 @@
 # Compartilhamento local — evidência de EX20–EX23
 
-Em 2026-09-05, owner/viewer, grant/revoke e emissão privada estão compostos no mesmo executor usado por HTTP, Web e CLI. O perfil permanece `d01-local-retained-v1`: dados admitidos não sensíveis, sem apagamento ou restore após apagamento. Isto não conclui D03, D01/D02 integrais ou as 22 entregas.
+Em 2026-09-05, owner/viewer, grant/revoke e emissão privada estão compostos no mesmo executor usado por HTTP, Web e CLI. O perfil permanece `worlds-local-retained-v1`: dados admitidos não sensíveis, sem apagamento ou restore após apagamento. Isto não conclui D03, D01/D02 integrais ou as 22 entregas.
 
 O build local de `767f757` foi provisionado em um novo profile `sharing-v2`, na origem `http://127.0.0.1:4316`. Seu manifesto tem SHA-256 `f680f198334537bccc0f4b39b1cd55cb28eb9b73fd091506682e2b5bae799537`. Os profiles anteriores, seus bancos, buckets, configurações e evidências foram preservados; nenhum World antigo recebeu outro release digest. O build anterior `a236ebb` foi arquivado antes da parada e reconstrução, e o baseline de Web continua separado.
 

@@ -1,4 +1,4 @@
-import { DecimalText, ExactAmount } from "@zoen/contracts/d01/values";
+import { DecimalText, ExactAmount } from "@zoen/contracts/worlds/values";
 import { Effect, Result, Schema } from "effect";
 import { describe, expect, it } from "vitest";
 

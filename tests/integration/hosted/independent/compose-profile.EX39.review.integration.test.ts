@@ -3,7 +3,7 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { hostedAdmissionLayer } from "../../../../apps/server/src/composition.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { resolveLocalWorldPolicy } from "../../../../ops/local/world-policy.ts";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import {
@@ -15,7 +15,7 @@ import {
   requireAdmittedCapability,
   requireChannelReadiness,
 } from "../../../../packages/authority/src/hosted/admission/flags.js";
-import { HostedRetainedDataPolicySchema } from "../../../../packages/authority/src/ports/d01/context.js";
+import { HostedRetainedDataPolicySchema } from "../../../../packages/authority/src/ports/worlds/context.js";
 import {
   hostedConfiguration,
   hostedRetainedPolicy,
@@ -71,11 +71,11 @@ it.live("EX39 default local retained remains distinct (no hosted rebind)", () =>
             SELECT data_policy_id FROM authority.worlds
             WHERE world_id = ${created.worldRef.worldId}
           `
-      ).toStrictEqual([{ data_policy_id: "d01-local-retained-v1" }]);
-      expect(localRetainedPolicy.profileId).toBe("d01-local-retained-v1");
-      expect(resolveLocalWorldPolicy("d01-local-retained-v1")?.profileId).toBe(
-        "d01-local-retained-v1"
-      );
+      ).toStrictEqual([{ data_policy_id: "worlds-local-retained-v1" }]);
+      expect(localRetainedPolicy.profileId).toBe("worlds-local-retained-v1");
+      expect(
+        resolveLocalWorldPolicy("worlds-local-retained-v1")?.profileId
+      ).toBe("worlds-local-retained-v1");
       // Local retained compose must not select the hosted profile id.
       expect(localRetainedPolicy.profileId).not.toBe(
         hostedRetainedPolicy.profileId

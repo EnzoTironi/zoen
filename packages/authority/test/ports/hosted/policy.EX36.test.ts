@@ -1,12 +1,12 @@
 import { describe, expect, it } from "@effect/vitest";
 import { Result, Schema } from "effect";
 
+import { HostedRetainedDataPolicySchema } from "../../../src/ports/hosted/policy.js";
 import {
   DataPolicySchema,
   ErasableDataPolicySchema,
   RetainedDataPolicySchema,
-} from "../../../src/ports/d01/context.js";
-import { HostedRetainedDataPolicySchema } from "../../../src/ports/hosted/policy.js";
+} from "../../../src/ports/worlds/context.js";
 
 const retainedLocal = {
   dataScope: "admitted-non-sensitive" as const,
@@ -14,7 +14,7 @@ const retainedLocal = {
   erasure: false as const,
   legalHold: false as const,
   licensedExpiry: false as const,
-  profileId: "d01-local-retained-v1" as const,
+  profileId: "worlds-local-retained-v1" as const,
   restoreAfterErasure: false as const,
   retention: "while-pinned" as const,
 };
@@ -64,7 +64,7 @@ describe("EX36 DataPolicy union includes hosted retained", () => {
     const retained = Schema.decodeSync(DataPolicySchema)(retainedLocal);
     expect(Schema.is(RetainedDataPolicySchema)(retained)).toBeTruthy();
     expect(Schema.is(HostedRetainedDataPolicySchema)(retained)).toBeFalsy();
-    expect(retained.profileId).toBe("d01-local-retained-v1");
+    expect(retained.profileId).toBe("worlds-local-retained-v1");
     expect(retained.erasure).toBeFalsy();
   });
 
@@ -80,7 +80,7 @@ describe("EX36 DataPolicy union includes hosted retained", () => {
     for (const amendment of [
       { erasure: true },
       { restoreAfterErasure: true },
-      { erasure: false, profileId: "d01-local-retained-v1" },
+      { erasure: false, profileId: "worlds-local-retained-v1" },
     ]) {
       expect(
         Result.isFailure(

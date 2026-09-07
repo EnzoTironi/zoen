@@ -1,10 +1,10 @@
-import { InvalidInput } from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
 import {
   AcceptConversationTurn,
   CancelConversationTurn,
   RecoverConversationJournal,
 } from "@zoen/contracts/eve/operations";
+import { InvalidInput } from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 const envelope = {

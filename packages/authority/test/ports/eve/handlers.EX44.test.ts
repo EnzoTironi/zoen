@@ -1,5 +1,4 @@
 import { describe, expect, it } from "@effect/vitest";
-import { WorldId } from "@zoen/contracts/d01/values";
 import {
   AcceptConversationTurn,
   CancelConversationTurn,
@@ -13,9 +12,9 @@ import {
   RelationshipId,
   TurnId,
 } from "@zoen/contracts/eve/values";
+import { WorldId } from "@zoen/contracts/worlds/values";
 import { Effect, Layer, Redacted, Schema } from "effect";
 
-import type { VerifiedRequestContext } from "../../../src/ports/d01/context.js";
 import {
   acceptConversationTurn,
   cancelConversationTurn,
@@ -25,6 +24,7 @@ import {
 import { EveJournal } from "../../../src/ports/eve/journal.js";
 import type { EveFetch } from "../../../src/ports/eve/opencode-zen.js";
 import { EveOpenCodeZen } from "../../../src/ports/eve/opencode-zen.js";
+import type { VerifiedRequestContext } from "../../../src/ports/worlds/context.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
   "00000000-0000-4000-8000-000000000501"

@@ -84,7 +84,7 @@ const program = Effect.gen(function* provisionLocalApplication() {
   // F02/H01: erasable/hosted retained only for NEW installs; default remains local retained.
   // No rebind of existing Worlds. Hosted profile is local compose stand-in (no Fly deploy).
   const worldPolicy = yield* Config.string("ZOEN_LOCAL_WORLD_POLICY").pipe(
-    Config.withDefault("d01-local-retained-v1")
+    Config.withDefault("worlds-local-retained-v1")
   );
   const policy = resolveLocalWorldPolicy(worldPolicy);
   if (policy === null) {

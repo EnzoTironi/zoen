@@ -6,30 +6,29 @@ import {
   HostedAdmissionFlags,
   d04HostedRetainedAdmissionFlags,
 } from "@zoen/authority/hosted/admission/flags";
-import {
-  DataPolicy,
-  DataPolicySchema,
-} from "@zoen/authority/ports/d01/context";
 import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
 import { EveJournal } from "@zoen/authority/ports/eve/journal";
 import {
   DEFAULT_OPENCODE_USER_AGENT,
   EveOpenCodeZen,
 } from "@zoen/authority/ports/eve/opencode-zen";
+import {
+  DataPolicy,
+  DataPolicySchema,
+} from "@zoen/authority/ports/worlds/context";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
-import { ApplicationApi } from "@zoen/contracts/d01/api";
+import { ApplicationApi } from "@zoen/contracts/worlds/api";
 import { Effect, Layer, Schema } from "effect";
 import type { Redacted } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
-import type { S3EvidenceConfig } from "./adapters/object-storage/d01/config.ts";
-import { layer as s3EvidenceLayer } from "./adapters/object-storage/d01/s3.ts";
 import { layer as erasureStorageLayer } from "./adapters/object-storage/erasure/s3.ts";
-import { checkD01AuthorityRole } from "./adapters/postgres/d01/authority-role.ts";
-import { makeD01PostgresLayer } from "./adapters/postgres/d01/postgres.ts";
+import type { S3EvidenceConfig } from "./adapters/object-storage/worlds/config.ts";
+import { layer as s3EvidenceLayer } from "./adapters/object-storage/worlds/s3.ts";
 import { makeDisclosureFenceLayer } from "./adapters/postgres/disclosure/fence.ts";
+import { checkD01AuthorityRole } from "./adapters/postgres/worlds/authority-role.ts";
+import { makeD01PostgresLayer } from "./adapters/postgres/worlds/postgres.ts";
 import { makeCorrectionHttpGroup } from "./http/corrections.ts";
-import { makeD01HttpGroup } from "./http/d01.ts";
 import { makeErasureHttpGroup } from "./http/erasure.ts";
 import { makeEveHttpGroup } from "./http/eve.ts";
 import { makeIdentityRoutes } from "./http/identity.ts";
@@ -37,8 +36,9 @@ import { readinessRoutes } from "./http/readiness.ts";
 import { responseSecurity } from "./http/security.ts";
 import { makeSharingHttpGroup } from "./http/sharing.ts";
 import { makeSubjectIdentityHttpGroup } from "./http/subject-identity.ts";
-import { D01IdentityConfig } from "./identity/d01/configuration.ts";
-import { makeD01IdentityLayer } from "./identity/d01/identity.ts";
+import { makeD01HttpGroup } from "./http/worlds.ts";
+import { D01IdentityConfig } from "./identity/worlds/configuration.ts";
+import { makeD01IdentityLayer } from "./identity/worlds/identity.ts";
 import { captureMaintenance } from "./maintenance/captures.ts";
 
 export interface D01ApplicationConfig {

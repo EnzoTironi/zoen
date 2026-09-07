@@ -1,4 +1,4 @@
-import { D01_LIMITS } from "@zoen/contracts/d01/values";
+import { D01_LIMITS } from "@zoen/contracts/worlds/values";
 import { Effect, Result } from "effect";
 import { describe, expect, it } from "vitest";
 
@@ -35,7 +35,7 @@ const document = JSON.stringify({
       value: { _tag: "Known", amount: "0.10", currency: "BRL" },
     },
   ],
-  schemaVersion: "d01.v1",
+  schemaVersion: "worlds.v1",
   source: {
     externalId: "source-1",
     label: "Ledger",
@@ -52,7 +52,7 @@ const importRequest = (documentText: string) =>
           operation: "ImportEvidence",
           operationId: "c4b14bfd-2f39-4fd9-967e-13aebf0f4e14",
           purpose: "personal-records",
-          schemaVersion: "d01.v1",
+          schemaVersion: "worlds.v1",
           worldRef: {
             realm: "live",
             worldId: "c4b14bfd-2f39-4fd9-967e-13aebf0f4e14",
@@ -177,7 +177,7 @@ describe("EX04 strict JSON bytes", () => {
 
   it("applies envelope Schema after strict parsing", () => {
     const request =
-      '{"schemaVersion":"d01.v1","purpose":"personal-records","operation":"CreatePersonalWorld","operationId":"c4b14bfd-2f39-4fd9-967e-13aebf0f4e14","input":{}}';
+      '{"schemaVersion":"worlds.v1","purpose":"personal-records","operation":"CreatePersonalWorld","operationId":"c4b14bfd-2f39-4fd9-967e-13aebf0f4e14","input":{}}';
     expect(Effect.runSync(parseEnvelopeBytes(bytes(request))).operation).toBe(
       "CreatePersonalWorld"
     );
@@ -250,7 +250,7 @@ describe("EX04 canonical bytes and domain-separated digests", () => {
     const request = Effect.runSync(
       parseEnvelopeBytes(
         bytes(
-          '{"schemaVersion":"d01.v1","purpose":"personal-records","operation":"CreatePersonalWorld","operationId":"c4b14bfd-2f39-4fd9-967e-13aebf0f4e14","input":{}}'
+          '{"schemaVersion":"worlds.v1","purpose":"personal-records","operation":"CreatePersonalWorld","operationId":"c4b14bfd-2f39-4fd9-967e-13aebf0f4e14","input":{}}'
         )
       )
     );

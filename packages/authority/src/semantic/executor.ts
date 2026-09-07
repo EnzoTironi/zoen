@@ -1,22 +1,22 @@
-import type { D01Error } from "@zoen/contracts/d01/errors";
+import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
+import { EveConversationSuccess } from "@zoen/contracts/eve/operations";
+import { SharingSuccess } from "@zoen/contracts/sharing/operations";
+import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
+import type { D01Error } from "@zoen/contracts/worlds/errors";
 import {
   InvalidInput,
   Unauthenticated,
   Unavailable,
   Expired,
   Unsupported,
-} from "@zoen/contracts/d01/errors";
+} from "@zoen/contracts/worlds/errors";
 import {
   CorrectionSuccess,
   D01Success,
   WorldCreated,
-} from "@zoen/contracts/d01/operations";
-import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
-import { D01_LIMITS, Instant } from "@zoen/contracts/d01/values";
-import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
-import { EveConversationSuccess } from "@zoen/contracts/eve/operations";
-import { SharingSuccess } from "@zoen/contracts/sharing/operations";
-import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
+} from "@zoen/contracts/worlds/operations";
+import type { SemanticSuccess } from "@zoen/contracts/worlds/operations";
+import { D01_LIMITS, Instant } from "@zoen/contracts/worlds/values";
 import type { Redacted } from "effect";
 import { Clock, Context, DateTime, Effect, Layer, Schema, Scope } from "effect";
 
@@ -29,13 +29,12 @@ import {
 import { parseSharingBytes } from "../access/sharing/request.js";
 import { authorizeWorld, operationCapability } from "../access/world.js";
 import { createPersonalWorld } from "../commit/genesis.js";
-import { importEvidence } from "../evidence/d01/import.js";
-import { openEvidence } from "../evidence/d01/open.js";
+import { importEvidence } from "../evidence/worlds/import.js";
+import { openEvidence } from "../evidence/worlds/open.js";
 import { answerQuestion } from "../knowledge/corrections/answer.js";
 import { proposeCorrection } from "../knowledge/corrections/propose.js";
 import { parseCorrectionBytes } from "../knowledge/corrections/request.js";
 import { undoCorrection } from "../knowledge/corrections/undo.js";
-import { inspect } from "../knowledge/d01/inspect.js";
 import { inspectWorldErasure } from "../knowledge/erasure/handlers/inspect.js";
 import { purgeWorldContent } from "../knowledge/erasure/handlers/purge.js";
 import { requestWorldErasure } from "../knowledge/erasure/handlers/request.js";
@@ -51,7 +50,7 @@ import {
 } from "../knowledge/subject-identity/handlers/propose.js";
 import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.js";
 import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
-import { Presence } from "../ports/d01/context.js";
+import { inspect } from "../knowledge/worlds/inspect.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
 import { ErasureObjectInventory } from "../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../ports/erasure/purge.js";
@@ -64,11 +63,12 @@ import {
 import { EveJournal } from "../ports/eve/journal.js";
 import { EveOpenCodeZen } from "../ports/eve/opencode-zen.js";
 import { parseEveBytes } from "../ports/eve/request.js";
+import { Presence } from "../ports/worlds/context.js";
 import { canonicalJson } from "../values/canonical.js";
 import { parseEnvelopeBytes } from "../values/json.js";
 
 type Family =
-  | "d01"
+  | "worlds"
   | "correction"
   | "sharing"
   | "subject-identity"
@@ -83,7 +83,7 @@ type ExecuteWithEmission = (
 
 const parseRequest = (family: Family, bytes: Uint8Array) => {
   switch (family) {
-    case "d01": {
+    case "worlds": {
       return parseEnvelopeBytes(bytes);
     }
     case "correction": {
@@ -111,7 +111,7 @@ const decodeSuccess = (
   result: unknown
 ): Effect.Effect<SemanticSuccess, Schema.SchemaError | Unsupported> => {
   switch (family) {
-    case "d01": {
+    case "worlds": {
       return Schema.decodeUnknownEffect(D01Success)(result);
     }
     case "correction": {
@@ -429,7 +429,7 @@ export class SemanticExecutor extends Context.Service<
         });
       return SemanticExecutor.of({
         execute: (credential, bytes) =>
-          execute("d01", credential, bytes).pipe(
+          execute("worlds", credential, bytes).pipe(
             Effect.flatMap(Schema.decodeUnknownEffect(D01Success)),
             Effect.catchTag("SchemaError", schemaUnavailable)
           ),
@@ -469,7 +469,7 @@ export class SemanticExecutor extends Context.Service<
         executeSubjectIdentityWithEmission: (credential, bytes, emit) =>
           withEmission("subject-identity", credential, bytes, emit),
         executeWithEmission: (credential, bytes, emit) =>
-          withEmission("d01", credential, bytes, emit),
+          withEmission("worlds", credential, bytes, emit),
       });
     })
   );

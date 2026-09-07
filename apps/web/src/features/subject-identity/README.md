@@ -8,7 +8,7 @@ Stale clears the pending Question and requires a fresh inspect plus explicit con
 
 Root-owned wiring required so surfaces can call handlers:
 
-- `packages/contracts/src/d01/api.ts` — `SubjectIdentityApiGroup` → `POST /api/d02/subject-identity`
+- `packages/contracts/src/worlds/api.ts` — `SubjectIdentityApiGroup` → `POST /api/subject-identity/execute`
 - `apps/server/src/http/subject-identity.ts` + `composition.ts`
-- `apps/cli/src/d01/transport.ts` + `command.ts` registration
-- `apps/web/src/features/d01/{client,model,state,feature}.tsx` routing into this feature
+- `apps/cli/src/worlds/transport.ts` + `command.ts` registration
+- `apps/web/src/features/worlds/{client,model,state,feature}.tsx` routing into this feature

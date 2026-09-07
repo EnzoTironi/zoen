@@ -1,9 +1,9 @@
-import { OperationId, Revision } from "@zoen/contracts/d01/values";
-import type { Realm, WorldId } from "@zoen/contracts/d01/values";
+import { OperationId, Revision } from "@zoen/contracts/worlds/values";
+import type { Realm, WorldId } from "@zoen/contracts/worlds/values";
 import { Effect, Option, Schema } from "effect";
 import { Command, Flag } from "effect/unstable/cli";
 
-import { CliFailure } from "../d01/output.js";
+import { CliFailure } from "../worlds/output.js";
 
 interface SharedFlags {
   readonly operationId: Flag.Flag<typeof OperationId.Type>;

@@ -1,9 +1,9 @@
-import type { Expired, Unavailable } from "@zoen/contracts/d01/errors";
-import type { Instant, WorldRef } from "@zoen/contracts/d01/values";
+import type { Expired, Unavailable } from "@zoen/contracts/worlds/errors";
+import type { Instant, WorldRef } from "@zoen/contracts/worlds/values";
 import { Context } from "effect";
 import type { Effect, Scope } from "effect";
 
-import type { VerifiedPresence } from "../d01/context.js";
+import type { VerifiedPresence } from "../worlds/context.js";
 
 /** Only a trusted emitter may acknowledge completion or prove it cannot begin. */
 export interface DisclosurePermit {

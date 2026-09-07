@@ -3,24 +3,24 @@ import { setTimeout } from "node:timers/promises";
 
 import { expect, request, test } from "@playwright/test";
 import {
-  EvidenceImported,
-  EvidenceOpened,
-  FrameInspected,
-  WorldCreated,
-} from "@zoen/contracts/d01/operations";
-import {
   WorldAccessInspected,
   WorldReadAccessGranted,
   WorldReadAccessRevoked,
 } from "@zoen/contracts/sharing/operations";
+import {
+  EvidenceImported,
+  EvidenceOpened,
+  FrameInspected,
+  WorldCreated,
+} from "@zoen/contracts/worlds/operations";
 import { Config, Effect, Schema } from "effect";
 
-import { BrowserSession } from "../../../src/features/d01/client.ts";
+import { BrowserSession } from "../../../src/features/worlds/client.ts";
 import {
   cli,
   makeSessionDirectory,
   removeSessionDirectory,
-} from "../d02/real-cli.ts";
+} from "../corrections/real-cli.ts";
 
 const baseURL = Effect.runSync(Config.string("ZOEN_TEST_SHARING_WEB_URL"));
 const success = <A>(
@@ -128,7 +128,7 @@ test("EX23 real CLI sharing preserves historical receipts and reauthorizes viewe
           value: { _tag: "Known", amount: "123.45", currency: "BRL" },
         },
       ],
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       source: {
         externalId: randomUUID(),
         label: `CLI exact evidence ${randomUUID()}`,

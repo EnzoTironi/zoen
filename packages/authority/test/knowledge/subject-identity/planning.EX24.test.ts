@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
-import { SubjectKey } from "@zoen/contracts/d01/values";
 import { IdentityFrame } from "@zoen/contracts/subject-identity/frame";
+import { SubjectKey } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { maximalIdentityCells } from "../../../src/knowledge/subject-identity/pure/cells.js";

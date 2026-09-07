@@ -1,13 +1,18 @@
 import { randomBytes, randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { WorldCreated } from "@zoen/contracts/d01/operations";
+import { WorldCreated } from "@zoen/contracts/worlds/operations";
 import { Effect, Redacted, Schema } from "effect";
 
-import { http, jsonBody, responseCookie, withD01Http } from "../d01/fixture.ts";
+import {
+  http,
+  jsonBody,
+  responseCookie,
+  withD01Http,
+} from "../worlds/fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const eve = { purpose: "personal-records", schemaVersion: "eve.v1" };
 
 it.live(
@@ -27,7 +32,7 @@ it.live(
 
         const created = yield* http(
           origin,
-          "/api/d01/execute",
+          "/api/worlds/execute",
           json({
             ...d01,
             input: {},

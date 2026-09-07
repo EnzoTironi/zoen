@@ -167,11 +167,11 @@
         "Inspeção estática do export público não expõe portas privadas nem módulos de infraestrutura."
       ],
       "owns": [
-        "packages/contracts/src/d01/**",
-        "packages/contracts/test/d01/**",
-        "packages/authority/src/ports/d01/**",
-        "packages/authority/test/ports/d01/**",
-        "docs/contracts/d01.md"
+        "packages/contracts/src/worlds/**",
+        "packages/contracts/test/worlds/**",
+        "packages/authority/src/ports/worlds/**",
+        "packages/authority/test/ports/worlds/**",
+        "docs/contracts/worlds.md"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -198,12 +198,12 @@
         "EX13"
       ],
       "outputs": [
-        "Schemas/HttpApi públicos importáveis em packages/contracts/src/d01; nenhuma operação exposta sem handler real.",
-        "Contratos privados específicos em packages/authority/src/ports/d01; SQL continua usando SqlClient Effect.",
-        "docs/contracts/d01.md: contrato curto congelado do incremento, consumido por EX05/EX06/EX08/EX09 e validado pelo integrador."
+        "Schemas/HttpApi públicos importáveis em packages/contracts/src/worlds; nenhuma operação exposta sem handler real.",
+        "Contratos privados específicos em packages/authority/src/ports/worlds; SQL continua usando SqlClient Effect.",
+        "docs/contracts/worlds.md: contrato curto congelado do incremento, consumido por EX05/EX06/EX08/EX09 e validado pelo integrador."
       ],
       "persistence_handoff": {
-        "artifact": "docs/contracts/d01.md",
+        "artifact": "docs/contracts/worlds.md",
         "producer": "EX02",
         "consumers": ["EX05", "EX06", "EX08", "EX09"],
         "required_content": [
@@ -257,8 +257,8 @@
         "Inspecionar tab order e layout em navegador real sem ativar rota operacional."
       ],
       "owns": [
-        "apps/web/src/components/d01/**",
-        "apps/web/test/components/d01/**"
+        "apps/web/src/components/worlds/**",
+        "apps/web/test/components/worlds/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -438,9 +438,9 @@
         "Dois clientes reais fazem corrida e rollback; observar constraints e estados sem inferir sucesso por log."
       ],
       "owns": [
-        "apps/server/src/adapters/postgres/d01/**",
-        "apps/server/sql/proposals/d01/**",
-        "apps/server/test/adapters/postgres/d01/**"
+        "apps/server/src/adapters/postgres/worlds/**",
+        "apps/server/sql/proposals/worlds/**",
+        "apps/server/test/adapters/postgres/worlds/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -495,8 +495,8 @@
         "Negar/retirar acesso ao storage no ambiente isolado e observar erro tipado sem segredo no diagnóstico."
       ],
       "owns": [
-        "apps/server/src/adapters/object-storage/d01/**",
-        "apps/server/test/adapters/object-storage/d01/**"
+        "apps/server/src/adapters/object-storage/worlds/**",
+        "apps/server/test/adapters/object-storage/worlds/**"
       ],
       "status": "planned",
       "reviewer": "worker-2",
@@ -530,7 +530,7 @@
       },
       "acceptance_requires": ["EX06", "EX07"],
       "contracts_consumed": [
-        "Commit/access/executor EX05; SqlClient Effect real; storage privado EX02/EX07; Frame/VisibleFrame EX02; contrato de persistência e política docs/contracts/d01.md"
+        "Commit/access/executor EX05; SqlClient Effect real; storage privado EX02/EX07; Frame/VisibleFrame EX02; contrato de persistência e política docs/contracts/worlds.md"
       ],
       "scope": "Formato inicial JSON ou CSV explícito decidido em EX02; aceitar apenas esse formato até seu teste real. Não contar formato futuro como entregue. Frame é parte desta implementação antes de sua prova integrada.",
       "acceptance": [
@@ -549,10 +549,10 @@
         "Fazer GC concorrente e falha de staging no store real; preservar objetos pinned e limpar somente órfãos elegíveis."
       ],
       "owns": [
-        "packages/authority/src/evidence/d01/**",
-        "packages/authority/src/knowledge/d01/**",
-        "packages/authority/test/evidence/d01/**",
-        "packages/authority/test/knowledge/d01/**"
+        "packages/authority/src/evidence/worlds/**",
+        "packages/authority/src/knowledge/worlds/**",
+        "packages/authority/test/evidence/worlds/**",
+        "packages/authority/test/knowledge/worlds/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -614,8 +614,8 @@
         "Verificar cookies/CSRF/origin conforme fluxo real adotado no navegador durante EX15."
       ],
       "owns": [
-        "apps/server/src/identity/d01/**",
-        "apps/server/test/identity/d01/**"
+        "apps/server/src/identity/worlds/**",
+        "apps/server/test/identity/worlds/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -679,7 +679,7 @@
         "ops/migrations/**",
         "packages/contracts/src/index.ts",
         "packages/authority/src/index.ts",
-        "apps/server/test/composition/d01/**"
+        "apps/server/test/composition/worlds/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -739,7 +739,7 @@
         "Executar processo CLI real contra EX10 com as mesmas operações e base usadas no browser.",
         "Alterar identidade/corte/retry e observar denials/idempotência reais."
       ],
-      "owns": ["apps/cli/src/d01/**", "apps/cli/test/d01/**"],
+      "owns": ["apps/cli/src/worlds/**", "apps/cli/test/worlds/**"],
       "status": "planned",
       "reviewer": "worker-2",
       "model": "gpt-6-astra",
@@ -795,7 +795,10 @@
         "Jornada Playwright contra app+server+SQL+S3 reais, sem interceptação de respostas.",
         "Duas sessões reais, logout/back e erro de autorização; keyboard e zoom 200%."
       ],
-      "owns": ["apps/web/src/features/d01/**", "apps/web/test/features/d01/**"],
+      "owns": [
+        "apps/web/src/features/worlds/**",
+        "apps/web/test/features/worlds/**"
+      ],
       "status": "planned",
       "reviewer": "worker-3",
       "model": "gpt-6-astra",
@@ -919,11 +922,11 @@
         "apps/server/src/composition.ts",
         "apps/server/src/http/**",
         "ops/migrations/**",
-        "apps/web/src/integration/d02/**",
-        "apps/cli/src/integration/d02/**",
+        "apps/web/src/integration/corrections/**",
+        "apps/cli/src/integration/corrections/**",
         "apps/web/src/main.*",
         "apps/cli/src/main.*",
-        "apps/server/test/composition/d02/**"
+        "apps/server/test/composition/corrections/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -983,7 +986,7 @@
       ],
       "owns": [
         "tests/acceptance/d01-d02/**",
-        "tests/integration/d01-d02-independent/**",
+        "tests/integration/worlds-corrections-independent/**",
         "tests/security/d01-d02/**"
       ],
       "status": "planned",
@@ -1050,7 +1053,7 @@
       },
       "acceptance_requires": [],
       "contracts_consumed": [
-        "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
+        "docs/contracts/worlds-csv.md congelado; contratos e composição D01/D02 reais"
       ],
       "scope": "Congelar handoff CSV e migração aditiva real",
       "acceptance": [
@@ -1062,11 +1065,11 @@
         "Typecheck do handoff existente; JSON legado continua compilável."
       ],
       "owns": [
-        "docs/contracts/d01-csv.md",
-        "packages/contracts/src/d01/values.ts",
-        "packages/authority/src/ports/d01/storage.ts",
+        "docs/contracts/worlds-csv.md",
+        "packages/contracts/src/worlds/values.ts",
+        "packages/authority/src/ports/worlds/storage.ts",
         "ops/migrations/**",
-        "apps/server/test/adapters/postgres/d01/database.ts"
+        "apps/server/test/adapters/postgres/worlds/database.ts"
       ],
       "status": "planned",
       "reviewer": "worker-1",
@@ -1099,7 +1102,7 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d01-csv.md",
+        "docs/contracts/worlds-csv.md",
         "planning/execution.json#packages/EX16"
       ]
     },
@@ -1113,7 +1116,7 @@
       },
       "acceptance_requires": ["EX18"],
       "contracts_consumed": [
-        "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
+        "docs/contracts/worlds-csv.md congelado; contratos e composição D01/D02 reais"
       ],
       "scope": "Parser CSV limitado e admissão pelo executor existente",
       "acceptance": [
@@ -1125,12 +1128,12 @@
         "CSV-07–12 com PostgreSQL/S3 reais, incluindo bytes/MIME/dup/replay/retention."
       ],
       "owns": [
-        "packages/contracts/src/d01/operations.ts",
-        "packages/contracts/test/d01/**",
+        "packages/contracts/src/worlds/operations.ts",
+        "packages/contracts/test/worlds/**",
         "packages/authority/src/values/**",
         "packages/authority/test/values/**",
-        "packages/authority/src/evidence/d01/**",
-        "tests/integration/d01/evidence/**"
+        "packages/authority/src/evidence/worlds/**",
+        "tests/integration/worlds/evidence/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -1168,7 +1171,7 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d01-csv.md",
+        "docs/contracts/worlds-csv.md",
         "planning/execution.json#packages/EX17"
       ]
     },
@@ -1182,7 +1185,7 @@
       },
       "acceptance_requires": [],
       "contracts_consumed": [
-        "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
+        "docs/contracts/worlds-csv.md congelado; contratos e composição D01/D02 reais"
       ],
       "scope": "Storage S3 com formato vinculado à captura",
       "acceptance": [
@@ -1194,9 +1197,9 @@
         "Contraprovas JSON existentes continuam passando sem mudar expectativas."
       ],
       "owns": [
-        "apps/server/src/adapters/object-storage/d01/**",
-        "apps/server/test/adapters/object-storage/d01/**",
-        "packages/authority/src/ports/d01/storage.ts"
+        "apps/server/src/adapters/object-storage/worlds/**",
+        "apps/server/test/adapters/object-storage/worlds/**",
+        "packages/authority/src/ports/worlds/storage.ts"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -1216,7 +1219,7 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d01-csv.md",
+        "docs/contracts/worlds-csv.md",
         "planning/execution.json#packages/EX18"
       ]
     },
@@ -1230,7 +1233,7 @@
       },
       "acceptance_requires": ["EX15"],
       "contracts_consumed": [
-        "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
+        "docs/contracts/worlds-csv.md congelado; contratos e composição D01/D02 reais"
       ],
       "scope": "Expor CSV explícito em web/CLI e provar jornada mista",
       "acceptance": [
@@ -1242,11 +1245,11 @@
         "pnpm build e pnpm test:container com profileCSVnovo; preservação de perfis anteriores."
       ],
       "owns": [
-        "apps/web/src/features/d01/**",
-        "apps/web/test/features/d01/**",
-        "apps/web/test/integration/d02/**",
-        "apps/cli/src/d01/**",
-        "apps/cli/test/d01/**",
+        "apps/web/src/features/worlds/**",
+        "apps/web/test/features/worlds/**",
+        "apps/web/test/integration/corrections/**",
+        "apps/cli/src/worlds/**",
+        "apps/cli/test/worlds/**",
         "tests/acceptance/d01-d02/**",
         "apps/server/src/composition.ts",
         "apps/server/src/http/**",
@@ -1280,7 +1283,7 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d01-csv.md",
+        "docs/contracts/worlds-csv.md",
         "planning/execution.json#packages/EX19"
       ]
     },
@@ -1345,7 +1348,7 @@
         "packages/authority/src/ports/disclosure/**",
         "packages/authority/src/ports/sharing/**",
         "ops/migrations/**",
-        "apps/server/test/adapters/postgres/d01/database.ts",
+        "apps/server/test/adapters/postgres/worlds/database.ts",
         "apps/server/sql/proposals/disclosure/**"
       ]
     },
@@ -1408,19 +1411,19 @@
       "owns": [
         "packages/contracts/src/sharing/**",
         "packages/contracts/test/sharing/**",
-        "packages/contracts/src/d01/operations.ts",
+        "packages/contracts/src/worlds/operations.ts",
         "packages/authority/src/access/world.ts",
         "packages/authority/src/access/sharing/**",
         "packages/authority/src/commit/intent.ts",
         "packages/authority/src/commit/mutation.ts",
         "packages/authority/src/commit/receipt.ts",
-        "packages/authority/src/ports/d01/persistence.ts",
+        "packages/authority/src/ports/worlds/persistence.ts",
         "packages/authority/src/values/canonical.ts",
-        "packages/authority/src/knowledge/d01/inspect.ts",
+        "packages/authority/src/knowledge/worlds/inspect.ts",
         "packages/authority/src/knowledge/corrections/frame.ts",
         "packages/authority/src/knowledge/corrections/answer.ts",
-        "packages/authority/src/evidence/d01/policy.ts",
-        "packages/authority/src/evidence/d01/open.ts",
+        "packages/authority/src/evidence/worlds/policy.ts",
+        "packages/authority/src/evidence/worlds/open.ts",
         "tests/integration/d03-sharing/core/**"
       ]
     },
@@ -1484,7 +1487,7 @@
       "owns": [
         "apps/server/src/adapters/postgres/disclosure/**",
         "apps/server/test/adapters/postgres/disclosure/**",
-        "apps/server/src/identity/d01/**",
+        "apps/server/src/identity/worlds/**",
         "apps/server/test/identity/sharing/**"
       ]
     },
@@ -1546,16 +1549,16 @@
       ],
       "owns": [
         "packages/authority/src/semantic/executor.ts",
-        "packages/contracts/src/d01/api.ts",
+        "packages/contracts/src/worlds/api.ts",
         "apps/server/src/composition.ts",
         "apps/server/src/http/**",
-        "apps/server/src/adapters/postgres/d01/authority-role.ts",
-        "apps/server/src/adapters/postgres/d01/postgres.ts",
+        "apps/server/src/adapters/postgres/worlds/authority-role.ts",
+        "apps/server/src/adapters/postgres/worlds/postgres.ts",
         "apps/web/src/features/sharing/**",
-        "apps/web/src/features/d01/**",
+        "apps/web/src/features/worlds/**",
         "apps/web/test/integration/d03-sharing/**",
         "apps/cli/src/sharing/**",
-        "apps/cli/src/d01/**",
+        "apps/cli/src/worlds/**",
         "apps/cli/test/sharing/**",
         "tests/integration/d03-sharing/independent/**",
         "apps/server/test/composition/disclosure/**"
@@ -1584,8 +1587,8 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d02-subject-identity.md",
-        "docs/contracts/d02-subject-identity.review.md"
+        "docs/contracts/subject-identity.md",
+        "docs/contracts/subject-identity.review.md"
       ],
       "contracts_consumed": [
         "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
@@ -1635,8 +1638,8 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d02-subject-identity.md",
-        "docs/contracts/d02-subject-identity.review.md"
+        "docs/contracts/subject-identity.md",
+        "docs/contracts/subject-identity.review.md"
       ],
       "contracts_consumed": [
         "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
@@ -1655,13 +1658,13 @@
         "SERIALIZABLE e guards comuns preservados; própria proposta permite resposta imediata."
       ],
       "owns": [
-        "docs/contracts/d02-basis-compatibility.md",
-        "packages/authority/src/ports/d01/basis.ts",
+        "docs/contracts/corrections-basis-compatibility.md",
+        "packages/authority/src/ports/worlds/basis.ts",
         "packages/authority/src/commit/guards.ts",
         "packages/authority/src/commit/mutation.ts",
         "packages/authority/src/commit/genesis.ts",
         "packages/authority/src/commit/README.md",
-        "packages/authority/src/knowledge/d01/inspect.ts",
+        "packages/authority/src/knowledge/worlds/inspect.ts",
         "packages/authority/src/knowledge/corrections/**",
         "packages/authority/test/commit/**",
         "tests/integration/d02-identity/basis/**"
@@ -1704,8 +1707,8 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d02-subject-identity.md",
-        "docs/contracts/d02-subject-identity.review.md"
+        "docs/contracts/subject-identity.md",
+        "docs/contracts/subject-identity.review.md"
       ],
       "contracts_consumed": [
         "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
@@ -1750,8 +1753,8 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d02-subject-identity.md",
-        "docs/contracts/d02-subject-identity.review.md"
+        "docs/contracts/subject-identity.md",
+        "docs/contracts/subject-identity.review.md"
       ],
       "contracts_consumed": [
         "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
@@ -1815,8 +1818,8 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d02-subject-identity.md",
-        "docs/contracts/d02-subject-identity.review.md"
+        "docs/contracts/subject-identity.md",
+        "docs/contracts/subject-identity.review.md"
       ],
       "contracts_consumed": [
         "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
@@ -1866,8 +1869,8 @@
         "docs/invariants.md",
         "docs/architecture.md",
         "docs/quality.md",
-        "docs/contracts/d02-subject-identity.md",
-        "docs/contracts/d02-subject-identity.review.md"
+        "docs/contracts/subject-identity.md",
+        "docs/contracts/subject-identity.review.md"
       ],
       "contracts_consumed": [
         "D02 identidade semântica ratificada por root após c2d2b70; recuperação distinta e serialização completa de Frame/Question obrigatórias."
@@ -1887,14 +1890,14 @@
       ],
       "owns": [
         "packages/authority/src/semantic/**",
-        "packages/contracts/src/d01/api.ts",
-        "packages/contracts/src/d01/operations.ts",
+        "packages/contracts/src/worlds/api.ts",
+        "packages/contracts/src/worlds/operations.ts",
         "packages/contracts/src/index.ts",
         "packages/authority/src/index.ts",
         "apps/server/src/composition.ts",
         "apps/server/src/http/**",
         "apps/server/src/main.ts",
-        "apps/web/src/features/d01/**",
+        "apps/web/src/features/worlds/**",
         "apps/cli/src/main.ts",
         "ops/local/**",
         "docs/verification/subject-identity-local.md"
@@ -1939,7 +1942,7 @@
       ],
       "contracts_consumed": [
         "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
-        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; worlds-local-retained-v1 permanece sem erasure."
       ],
       "id": "EX30",
       "owner": "root",
@@ -2000,7 +2003,7 @@
       ],
       "contracts_consumed": [
         "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
-        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; worlds-local-retained-v1 permanece sem erasure."
       ],
       "id": "EX31",
       "owner": "worker-1",
@@ -2060,7 +2063,7 @@
       ],
       "contracts_consumed": [
         "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
-        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; worlds-local-retained-v1 permanece sem erasure."
       ],
       "id": "EX32",
       "owner": "worker-1",
@@ -2132,7 +2135,7 @@
       ],
       "contracts_consumed": [
         "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
-        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; worlds-local-retained-v1 permanece sem erasure."
       ],
       "id": "EX33",
       "owner": "worker-2",
@@ -2194,7 +2197,7 @@
       ],
       "contracts_consumed": [
         "Freeze mínimo em docs/contracts/d03-erasure-freeze.md: ER-R01 registro antes de Closing; perfil d03-local-erasable-v1 só Worlds novos; World-scoped; restoreAfterErasure bloqueado; Unavailable indefinido se desfecho perdido.",
-        "Sharing D03.1 (EX20–EX23) verified_for_profile; d01-local-retained-v1 permanece sem erasure."
+        "Sharing D03.1 (EX20–EX23) verified_for_profile; worlds-local-retained-v1 permanece sem erasure."
       ],
       "id": "EX34",
       "owner": "root",
@@ -2312,7 +2315,7 @@
         "docs/contracts/d04-hosted.md",
         "docs/contracts/d04-hosted-freeze.md",
         "docs/verification/hosted-bootstrap.md",
-        "docs/contracts/d01.md"
+        "docs/contracts/worlds.md"
       ],
       "contracts_consumed": [
         "Freeze H01–H08 em docs/contracts/d04-hosted-freeze.md: perfil d04-hosted-retained-v1 só Worlds novos; restore só escopo retained; sem cutover do app zoen; sem deploy/gasto neste freeze.",
@@ -2343,7 +2346,7 @@
         {
           "owner": "root",
           "trigger": "EX36 schemas exportados e testes de unidade verdes.",
-          "completion": "Exportar perfil hosted nos indexes e compor DataPolicy sem rebind de Worlds antigos (edição de ports/d01/context.ts sob root, fora do owns do worker).",
+          "completion": "Exportar perfil hosted nos indexes e compor DataPolicy sem rebind de Worlds antigos (edição de ports/worlds/context.ts sob root, fora do owns do worker).",
           "owns": [
             "packages/contracts/src/index.ts",
             "packages/authority/src/index.ts",

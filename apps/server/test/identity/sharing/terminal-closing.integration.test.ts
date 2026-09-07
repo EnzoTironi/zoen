@@ -1,15 +1,15 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { Presence } from "@zoen/authority/ports/d01/context";
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import { sessionDisclosureKey } from "@zoen/authority/ports/disclosure/keys";
-import { Instant, WorldRef } from "@zoen/contracts/d01/values";
+import { Presence } from "@zoen/authority/ports/worlds/context";
+import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
 import { DateTime, Deferred, Effect, Fiber, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01IdentityDatabase } from "../d01/database.ts";
-import { cookieCredential, createAccount, postAuth } from "../d01/http.ts";
+import { withD01IdentityDatabase } from "../worlds/database.ts";
+import { cookieCredential, createAccount, postAuth } from "../worlds/http.ts";
 
 const target = Effect.gen(function* disclosureTarget() {
   const now = yield* DateTime.now;
@@ -120,7 +120,7 @@ it.live(
             while (true) {
               const rows = yield* sql<{
                 blocked: boolean;
-              }>`SELECT EXISTS (SELECT FROM pg_stat_activity WHERE application_name = 'zoen-d01-identity' AND wait_event_type = 'Lock' AND query ILIKE '%delete%') AS blocked`;
+              }>`SELECT EXISTS (SELECT FROM pg_stat_activity WHERE application_name = 'zoen-worlds-identity' AND wait_event_type = 'Lock' AND query ILIKE '%delete%') AS blocked`;
               if (rows[0]?.blocked === true) {
                 break;
               }

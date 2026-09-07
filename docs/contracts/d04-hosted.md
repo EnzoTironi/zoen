@@ -21,7 +21,7 @@ All-in-one VM (`ops/containers/all-in-one.Dockerfile`): Postgres + RustFS + serv
 
 ## EX36 (schemas)
 
-Perfil `d04-hosted-retained-v1` compilável em `packages/contracts/src/hosted/policy/**` e união `DataPolicySchema` (authority). `erasure:false`, `restoreAfterErasure:false`, `dataScope: admitted-non-sensitive`. Composition/provision locais continuam default `d01-local-retained-v1` até escolha explícita. Sem rebind de Worlds existentes; sem deploy.
+Perfil `d04-hosted-retained-v1` compilável em `packages/contracts/src/hosted/policy/**` e união `DataPolicySchema` (authority). `erasure:false`, `restoreAfterErasure:false`, `dataScope: admitted-non-sensitive`. Composition/provision locais continuam default `worlds-local-retained-v1` até escolha explícita. Sem rebind de Worlds existentes; sem deploy.
 
 ## EX37 (restore disposable)
 

@@ -9,17 +9,17 @@ import {
 import { ErasureObjectInventory } from "@zoen/authority/ports/erasure/inventory";
 import { ErasurePurgeStore } from "@zoen/authority/ports/erasure/purge";
 import type { ErasureVersionTarget } from "@zoen/authority/ports/erasure/purge";
-import { Unavailable } from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
 import type {
   ErasureVersionEntry,
   ErasureVersionManifest,
   ErasureVersionPurgeOutcome,
 } from "@zoen/contracts/erasure/values";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Clock, Context, Effect, Layer, Redacted } from "effect";
 
-import { decodeConfig } from "../d01/config.js";
-import type { S3EvidenceConfig } from "../d01/config.js";
+import { decodeConfig } from "../worlds/config.js";
+import type { S3EvidenceConfig } from "../worlds/config.js";
 import { worldObjectPrefix } from "./prefix.js";
 
 const unavailable = () => new Unavailable({ code: "UNAVAILABLE" });
@@ -208,7 +208,7 @@ export const layer = (
 
       const inspectHold = (target: ErasureVersionTarget) =>
         Effect.gen(function* inspectObjectHold() {
-          if (!target.key.startsWith(`d01/${config.realm}/`)) {
+          if (!target.key.startsWith(`worlds/${config.realm}/`)) {
             return yield* unavailable();
           }
           const legal = yield* Effect.tryPromise({
@@ -301,7 +301,7 @@ export const layer = (
         Effect.gen(function* purgeOneVersion() {
           if (
             target.versionId.length === 0 ||
-            !target.key.startsWith(`d01/${config.realm}/`)
+            !target.key.startsWith(`worlds/${config.realm}/`)
           ) {
             return yield* unavailable();
           }

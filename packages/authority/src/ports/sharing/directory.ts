@@ -1,8 +1,8 @@
-import type { Unavailable } from "@zoen/contracts/d01/errors";
+import type { Unavailable } from "@zoen/contracts/worlds/errors";
 import { Context } from "effect";
 import type { Effect } from "effect";
 
-import type { PrincipalId } from "../d01/context.js";
+import type { PrincipalId } from "../worlds/context.js";
 
 /** Exact account eligibility; no directory, session or identity metadata. */
 export class PrincipalDirectory extends Context.Service<

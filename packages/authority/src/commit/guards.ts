@@ -1,17 +1,17 @@
-import { Stale, Unavailable } from "@zoen/contracts/d01/errors";
-import { Instant, Revision, exact } from "@zoen/contracts/d01/values";
 import { PrincipalRef } from "@zoen/contracts/sharing/operations";
+import { Stale, Unavailable } from "@zoen/contracts/worlds/errors";
+import { Instant, Revision, exact } from "@zoen/contracts/worlds/values";
 import { DateTime, Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import type { CurrentInternalBasis } from "../ports/d01/basis.js";
+import type { CurrentInternalBasis } from "../ports/worlds/basis.js";
 import {
   DomainCut,
   DomainKey,
   InternalBasis,
   SourceDependency,
-} from "../ports/d01/basis.js";
-import type { VerifiedRequestContext } from "../ports/d01/context.js";
+} from "../ports/worlds/basis.js";
+import type { VerifiedRequestContext } from "../ports/worlds/context.js";
 import { structuredDigest } from "../values/canonical.js";
 
 const DomainRow = Schema.Struct({

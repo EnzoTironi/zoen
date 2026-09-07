@@ -1,19 +1,5 @@
 import { randomUUID } from "node:crypto";
 
-import {
-  Conflict,
-  InvalidInput,
-  QuotaExceeded,
-  Stale,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
-import {
-  CaseRef,
-  D01_LIMITS,
-  QuestionRef,
-  Revision,
-} from "@zoen/contracts/d01/values";
 import { PrincipalRef } from "@zoen/contracts/sharing/operations";
 import type {
   IdentityFrame,
@@ -31,6 +17,20 @@ import {
   IdentityDecisionRef,
   IdentityEffectRef,
 } from "@zoen/contracts/subject-identity/values";
+import {
+  Conflict,
+  InvalidInput,
+  QuotaExceeded,
+  Stale,
+  Unavailable,
+} from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
+import {
+  CaseRef,
+  D01_LIMITS,
+  QuestionRef,
+  Revision,
+} from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -39,8 +39,11 @@ import {
   commitMutation,
   readMutationReplay,
 } from "../../../commit/mutation.js";
-import { CurrentInternalBasis, DomainKey } from "../../../ports/d01/basis.js";
-import type { VerifiedRequestContext } from "../../../ports/d01/context.js";
+import {
+  CurrentInternalBasis,
+  DomainKey,
+} from "../../../ports/worlds/basis.js";
+import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
 import { canonicalJson, structuredDigest } from "../../../values/canonical.js";
 import {
   identityScopeFrom,

@@ -1,11 +1,11 @@
-import { Unavailable } from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
 import { Membership } from "@zoen/contracts/sharing/operations";
 import type { PrincipalRef } from "@zoen/contracts/sharing/operations";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { PrincipalId } from "../../ports/d01/context.js";
+import { PrincipalId } from "../../ports/worlds/context.js";
 
 export const principalIdFromRef = (reference: PrincipalRef) =>
   Schema.decodeEffect(PrincipalId)(reference).pipe(

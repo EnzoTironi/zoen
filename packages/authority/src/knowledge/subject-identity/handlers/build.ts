@@ -1,13 +1,5 @@
 import { randomUUID } from "node:crypto";
 
-import {
-  InvalidInput,
-  QuotaExceeded,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
-import type { VisibleClaim } from "@zoen/contracts/d01/evidence";
-import { DateInterval, FrameRef, Instant } from "@zoen/contracts/d01/values";
-import type { Purpose, WorldRef, SubjectKey } from "@zoen/contracts/d01/values";
 import type { PrincipalRef } from "@zoen/contracts/sharing/operations";
 import {
   IdentityFrame,
@@ -15,6 +7,18 @@ import {
 } from "@zoen/contracts/subject-identity/frame";
 import type { IdentityDecisionRef } from "@zoen/contracts/subject-identity/values";
 import { IdentitySeeds } from "@zoen/contracts/subject-identity/values";
+import {
+  InvalidInput,
+  QuotaExceeded,
+  Unavailable,
+} from "@zoen/contracts/worlds/errors";
+import type { VisibleClaim } from "@zoen/contracts/worlds/evidence";
+import { DateInterval, FrameRef, Instant } from "@zoen/contracts/worlds/values";
+import type {
+  Purpose,
+  WorldRef,
+  SubjectKey,
+} from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -22,8 +26,11 @@ import {
   CurrentInternalBasis,
   IdentityDependency,
   ReadSet,
-} from "../../../ports/d01/basis.js";
-import type { DomainCut, SourceDependency } from "../../../ports/d01/basis.js";
+} from "../../../ports/worlds/basis.js";
+import type {
+  DomainCut,
+  SourceDependency,
+} from "../../../ports/worlds/basis.js";
 import { canonicalJson, structuredDigest } from "../../../values/canonical.js";
 import {
   maximalIdentityCells,

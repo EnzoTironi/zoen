@@ -2,34 +2,39 @@ import { randomBytes, randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
 import {
+  PrincipalRef,
+  WorldAccessInspected,
+  WorldReadAccessGranted,
+  WorldReadAccessRevoked,
+} from "@zoen/contracts/sharing/operations";
+import {
   CorrectionApplied,
   CorrectionProposed,
   EvidenceImported,
   EvidenceOpened,
   FrameInspected,
   WorldCreated,
-} from "@zoen/contracts/d01/operations";
-import {
-  PrincipalRef,
-  WorldAccessInspected,
-  WorldReadAccessGranted,
-  WorldReadAccessRevoked,
-} from "@zoen/contracts/sharing/operations";
+} from "@zoen/contracts/worlds/operations";
 import { Effect, Schema } from "effect";
 import type { HttpClientResponse } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
 
-import { http, jsonBody, responseCookie, withD01Http } from "../d01/fixture.ts";
+import {
+  http,
+  jsonBody,
+  responseCookie,
+  withD01Http,
+} from "../worlds/fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
 };
-const d01Path = "/api/d01/execute";
+const d01Path = "/api/worlds/execute";
 const sharingPath = "/api/d03/sharing";
-const correctionPath = "/api/d01/corrections";
+const correctionPath = "/api/corrections/execute";
 const denied = { _tag: "NotFoundOrDenied", code: "NOT_FOUND_OR_DENIED" };
 const validTime = {
   _tag: "DateInterval",
@@ -46,7 +51,7 @@ const document = json({
       value: { _tag: "Known", amount: "123.45", currency: "BRL" },
     },
   ],
-  schemaVersion: "d01.v1",
+  schemaVersion: "worlds.v1",
   source: {
     externalId: "billing",
     label: "Independent HTTP source — cobrança",

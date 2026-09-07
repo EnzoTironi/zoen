@@ -9,11 +9,11 @@ import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
 } from "@zoen/authority/commit/configuration";
+import { ErasureAttemptRegister } from "@zoen/authority/ports/erasure/attempt-register";
 import {
   DataPolicy,
   DataPolicySchema,
-} from "@zoen/authority/ports/d01/context";
-import { ErasureAttemptRegister } from "@zoen/authority/ports/erasure/attempt-register";
+} from "@zoen/authority/ports/worlds/context";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import {
@@ -24,15 +24,15 @@ import {
 } from "effect/unstable/http";
 import type { HttpClientResponse } from "effect/unstable/http";
 
-import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/d01/s3.ts";
-import type { D01Auth } from "../../../../apps/server/src/identity/d01/identity.ts";
+import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.ts";
+import type { D01Auth } from "../../../../apps/server/src/identity/worlds/identity.ts";
 import {
   sdk,
   withStorage,
-} from "../../../../apps/server/test/adapters/object-storage/d01/fixture.ts";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
-import type { D01TestDatabase } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
-import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/d01/database.ts";
+} from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import type { D01TestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/worlds/database.ts";
 import {
   applyDisclosureMigrations,
   applyIdentityBasisMigrations,
@@ -121,7 +121,7 @@ export const withLegacyBasisHarness = <A, E, R>(
             erasure: false,
             legalHold: false,
             licensedExpiry: false,
-            profileId: "d01-local-retained-v1",
+            profileId: "worlds-local-retained-v1",
             restoreAfterErasure: false,
             retention: "while-pinned",
           });

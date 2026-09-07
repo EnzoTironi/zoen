@@ -1,7 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
 import { Schema } from "effect";
 
-import { D01Request, CorrectionRequest } from "../../src/d01/operations.js";
 import { AssertIdentity } from "../../src/subject-identity/effects.js";
 import {
   IdentityFrame,
@@ -15,6 +14,7 @@ import {
   IdentityPartitions,
   IdentityQuestion,
 } from "../../src/subject-identity/question.js";
+import { D01Request, CorrectionRequest } from "../../src/worlds/operations.js";
 
 const id = "11111111-1111-4111-8111-111111111111";
 const otherId = "22222222-2222-4222-8222-222222222222";
@@ -176,7 +176,10 @@ describe("EX24 closed subject identity schemas", () => {
       ).toBeFalsy();
     }
     expect(
-      Schema.is(SubjectIdentityRequest)({ ...request, schemaVersion: "d01.v1" })
+      Schema.is(SubjectIdentityRequest)({
+        ...request,
+        schemaVersion: "worlds.v1",
+      })
     ).toBeFalsy();
   });
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@effect/vitest";
-import { WorldId } from "@zoen/contracts/d01/values";
+import { WorldId } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { ErasureObjectInventory } from "../../../src/ports/erasure/inventory.js";
@@ -25,7 +25,7 @@ describe("EX44 erasure purge ports (unqualified)", () => {
       const exit = yield* Effect.exit(
         purge.purgeVersion({
           deleteMarker: false,
-          key: "d01/live/00000000-0000-4000-8000-000000000044/captures/x",
+          key: "worlds/live/00000000-0000-4000-8000-000000000044/captures/x",
           versionId: "null",
         })
       );
