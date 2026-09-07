@@ -22,7 +22,7 @@ Cost is laptop Docker only.
 
 Scripts use `ZOEN_LOCAL_PROFILE=staging`. That creates `.env.staging` and `.local/staging/` with their own database, roles, and bucket. It does **not** overwrite the default `application` profile.
 
-Compose itself is shared (one Postgres / object-storage project). Profiles isolate installs inside that project.
+Compose itself is shared (one Postgres / object-storage project named `zoen-rebuild`). Profiles isolate installs inside that project via per-profile database, roles, bucket, and a `resources.json` ownership inventory. Default `staging:reset` removes only that inventory — never shared Compose volumes.
 
 ### Commands
 
@@ -38,12 +38,18 @@ Open `http://127.0.0.1:4310` and create a normal account.
 
 | Script | Behavior |
 | --- | --- |
-| `pnpm staging:up` | Create `.env.infra` if missing, `compose up -d --wait`, provision `staging` if `.env.staging` is absent |
+| `pnpm staging:up` | Create `.env.infra` if missing, `compose up -d --wait`, provision `staging` if `.env.staging` is absent; refuses incomplete/stale staging pointers |
 | `pnpm staging:down` | `compose down` — keeps volumes and profile files |
-| `pnpm staging:reset` | `compose down --volumes` and remove `.env.staging` + `.local/staging` only |
+| `pnpm staging:reset` | Drop **only** the staging profile's owned database/roles/bucket and remove `.env.staging` + `.local/staging`. Shared Compose volumes and other profiles (e.g. `application`) stay intact. Refuses symlinks, hosted URLs, and missing/foreign ownership inventory. |
 | `pnpm staging:logs` | Follow compose logs |
 
-After `staging:down`, bring the same install back with `pnpm staging:up` (skips provision when `.env.staging` exists) then start the server. After `staging:reset`, `staging:up` provisions a fresh staging install.
+After `staging:down`, bring the same install back with `pnpm staging:up` (reuses a complete `.env.staging` + ownership inventory) then start the server. After `staging:reset`, `staging:up` provisions a fresh staging install.
+
+Whole-infrastructure wipe (`compose down --volumes`) is **not** the staging default. It requires an explicit opt-in that enumerates affected local profiles:
+
+```bash
+python3 tooling/staging_reset.py --wipe-shared-volumes --i-accept-removing-all-local-profiles
+```
 
 ### Pre-merge / agent verify
 
