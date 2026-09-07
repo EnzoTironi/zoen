@@ -11,7 +11,10 @@ import {
   ReadSet,
 } from "../../src/ports/worlds/basis.js";
 import { PrincipalId } from "../../src/ports/worlds/context.js";
-import { structuredDigest } from "../../src/values/canonical.js";
+import {
+  legacyReadSetDigest,
+  structuredDigest,
+} from "../../src/values/canonical.js";
 
 // Synthetic inputs exercise schemas; they are not the real BC-01 migration baseline.
 const id = "c4b14bfd-2f39-4fd9-967e-13aebf0f4e14";
@@ -176,13 +179,12 @@ describe("EX25 identity scope and retained digests", () => {
     "keeps the legacy read-set digest and binds the new discriminator",
     () =>
       Effect.gen(function* preserveLegacyDigest() {
-        const old = yield* structuredDigest(
-          "read-set",
+        const old = yield* legacyReadSetDigest(
           yield* Schema.decodeEffect(LegacyReadSet)(legacyReadSet)
         );
-        // Independently calculated from the old canonical JSON and unchanged domain prefix.
+        // Independently calculated from the old canonical JSON and zoen:d01 prefix.
         expect(old).toBe(
-          "71aecc91b871442532bb734fecc20cb21db7d6299d2f6ab642569955d66be7b0"
+          "1a9d7909e3099cddf2e886c5ade4c0058ee3de60c77d5cde1e4bf0104969cd7e"
         );
         const fresh = yield* structuredDigest(
           "read-set",
@@ -203,8 +205,7 @@ describe("EX25 identity scope and retained digests", () => {
     () =>
       Effect.gen(function* rejectLegacyAct() {
         const fresh = yield* withDigest([]);
-        const readSetDigest = yield* structuredDigest(
-          "read-set",
+        const readSetDigest = yield* legacyReadSetDigest(
           yield* Schema.decodeEffect(LegacyReadSet)(legacyReadSet)
         );
         const result = yield* validateBasisSnapshot(
