@@ -1,6 +1,11 @@
 import { randomUUID } from "node:crypto";
 
+import {
+  proveProcessExited,
+  requireSupervisorContainment,
+} from "@zoen/authority/ports/disclosure/containment";
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
+import type { WriterContainment } from "@zoen/authority/ports/disclosure/fence";
 import {
   membershipDisclosureKey,
   sessionDisclosureKey,
@@ -15,7 +20,11 @@ import type { WorldsPostgresConfig } from "../worlds/postgres.ts";
 import { reserve } from "./connection.ts";
 import type { Lock } from "./connection.ts";
 import { checkDisclosurePool } from "./health.ts";
-import { registerPending, startSessionClosing } from "./state.ts";
+import {
+  recoverContainedPending,
+  registerPending,
+  startSessionClosing,
+} from "./state.ts";
 
 const unavailable = () => new Unavailable({ code: "UNAVAILABLE" });
 const expired = () => new Expired({ code: "EXPIRED" });
@@ -26,6 +35,9 @@ const remaining = (deadline: typeof Instant.Type) =>
       return millis > 0 ? Effect.succeed(millis) : Effect.fail(expired());
     })
   );
+
+/** Process-local send gate; durable retirement is authoritative across restarts. */
+const epochSendState = new Map<string, "authorized" | "retired">();
 
 /** A bounded, separate pool in the physical authority database. */
 export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
@@ -106,6 +118,36 @@ export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
             );
             yield* remaining(deadline);
           }),
+        recoverOrphaned: (containment: WriterContainment, deadline) =>
+          Effect.gen(function* recoverOrphan() {
+            const proven = yield* requireSupervisorContainment(containment);
+            yield* proveProcessExited(proven.pid);
+            yield* remaining(deadline);
+            const recoveryId = randomUUID();
+            const budget = yield* remaining(deadline);
+            const reservation = yield* Effect.acquireRelease(
+              reserve(pool, budget),
+              (held) => held.close(),
+              { interruptible: true }
+            );
+            const recoverBudget = yield* remaining(deadline);
+            yield* recoverContainedPending(
+              reservation,
+              recoveryId,
+              proven.permitId,
+              proven.writerEpoch,
+              proven.pid,
+              proven.exitStatus
+            ).pipe(
+              Effect.interruptible,
+              Effect.timeoutOrElse({
+                duration: recoverBudget,
+                orElse: () => Effect.fail(expired()),
+              })
+            );
+            epochSendState.set(proven.writerEpoch, "retired");
+            yield* remaining(deadline);
+          }),
         shared: (presence, world, deadline) =>
           Effect.gen(function* registerDisclosure() {
             const worldKey = worldDisclosureKey(world);
@@ -124,11 +166,13 @@ export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
               deadline
             );
             const permitId = randomUUID();
+            const writerEpoch = randomUUID();
             const budget = yield* remaining(deadline);
             yield* registerPending(
               reservation,
               permitId,
               worldKey,
+              writerEpoch,
               sessionKey,
               membershipKey
             ).pipe(
@@ -139,6 +183,7 @@ export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
               })
             );
             yield* remaining(deadline);
+            epochSendState.set(writerEpoch, "authorized");
             // ACK follows trusted end/cancellation proof. Releasing this reservation first
             // avoids starving a saturated pool; the durable row still blocks writers.
             const acknowledge = reservation.close().pipe(
@@ -162,7 +207,13 @@ export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
                 )
               )
             );
-            return { acknowledge };
+            return {
+              acknowledge,
+              authorizeSend: (): "authorized" | "retired" =>
+                epochSendState.get(writerEpoch) ?? "retired",
+              permitId,
+              writerEpoch,
+            };
           }),
       });
     })

@@ -88,13 +88,25 @@ export const applyDisclosureMigrations = Effect.fn(
   const disclosure = yield* fs.readFileString(
     fileURLToPath(new URL("006_durable_disclosure.sql", import.meta.url))
   );
-  const extension = yield* PgMigrator.run({
+  const durable = yield* PgMigrator.run({
     loader: PgMigrator.fromRecord({
       "6_durable_disclosure": sql.unsafe(disclosure).pipe(Effect.asVoid),
     }),
   });
+  const recovery = yield* fs.readFileString(
+    fileURLToPath(
+      new URL("012_orphaned_disclosure_recovery.sql", import.meta.url)
+    )
+  );
+  const orphaned = yield* PgMigrator.run({
+    loader: PgMigrator.fromRecord({
+      "12_orphaned_disclosure_recovery": sql
+        .unsafe(recovery)
+        .pipe(Effect.asVoid),
+    }),
+  });
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
-  return [...base, ...extension];
+  return [...base, ...durable, ...orphaned];
 });
 
 /** Basis v2 is an explicit transition; the five-domain executables retain migrations 001–006. */
