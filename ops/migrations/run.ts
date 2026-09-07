@@ -134,9 +134,13 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
     const closing = yield* fs.readFileString(
       fileURLToPath(new URL("010_world_erasure_closing.sql", import.meta.url))
     );
+    const rename = yield* fs.readFileString(
+      fileURLToPath(new URL("011_worlds_rename_alignment.sql", import.meta.url))
+    );
     const extension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
+        "11_worlds_rename_alignment": sql.unsafe(rename).pipe(Effect.asVoid),
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),
     });
