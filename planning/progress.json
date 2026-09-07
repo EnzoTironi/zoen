@@ -996,7 +996,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "2de195edb87e06d1b8cd7f36083cb201c4c3e9dd",
+      "commit": "e12721ac142989eaa2604c98499bff82b7a867fe",
       "packages": ["EX45"],
       "state": "verified_for_profile",
       "profile": "fly-all-in-one RustFS Object Lock (zoen-rebuild loopback; not hosted Erased)",
