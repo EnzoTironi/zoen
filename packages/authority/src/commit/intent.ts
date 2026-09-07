@@ -1,6 +1,9 @@
-import type { InvalidInput, QuotaExceeded } from "@zoen/contracts/d01/errors";
-import type { SemanticRequest } from "@zoen/contracts/d01/operations";
-import type { Digest } from "@zoen/contracts/d01/values";
+import type {
+  InvalidInput,
+  QuotaExceeded,
+} from "@zoen/contracts/worlds/errors";
+import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
+import type { Digest } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 
 import { intentDigest } from "../values/canonical.js";

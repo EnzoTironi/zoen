@@ -3,11 +3,11 @@ import {
   Expired,
   InvalidInput,
   Unauthenticated,
-} from "@zoen/contracts/d01/errors";
-import { D01_LIMITS } from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/errors";
+import { D01_LIMITS } from "@zoen/contracts/worlds/values";
 import { DateTime, Effect, Schema } from "effect";
 
-import { VerifiedRequestContext } from "../ports/d01/context.js";
+import { VerifiedRequestContext } from "../ports/worlds/context.js";
 
 export const validateContext = Effect.fn("authority.access.validateContext")(
   function* validateContext(input: unknown) {

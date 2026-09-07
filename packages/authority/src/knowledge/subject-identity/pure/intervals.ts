@@ -1,4 +1,4 @@
-import type { DateInterval, LocalDate } from "@zoen/contracts/d01/values";
+import type { DateInterval, LocalDate } from "@zoen/contracts/worlds/values";
 
 type Interval = typeof DateInterval.Type;
 type CivilDate = typeof LocalDate.Type;

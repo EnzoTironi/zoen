@@ -19,9 +19,9 @@ Exatamente cinco workspaces: `apps/server`, `apps/web`, `apps/cli`, `packages/co
 
 Workers usam GPT-6-Astra, esforço low. Cada pacote possui uma allowlist exclusiva no JSON. Globs são limites para trabalho real, não uma ordem de criar árvores vazias. O mesmo owner pode reutilizar um diretório em pacotes sucessivos; nenhum par de workers compartilha escrita. Alteração em contrato consumido exige coordenação e revisão, não modificação lateral pelo consumidor.
 
-Contratos privados de storage/presença ficam privadas em `packages/authority/src/ports/d01`; `packages/contracts` publica Schema/HttpApi e resultados transportáveis. Identity e adapters ficam privados em `apps/server`. Nenhum cliente recebe credencial de SQL/S3 ou um import capaz de furar a fronteira.
+Contratos privados de storage/presença ficam privadas em `packages/authority/src/ports/worlds`; `packages/contracts` publica Schema/HttpApi e resultados transportáveis. Identity e adapters ficam privados em `apps/server`. Nenhum cliente recebe credencial de SQL/S3 ou um import capaz de furar a fronteira.
 
-Worker-2 escreve **SQL candidato sem numbering** em `apps/server/sql/proposals/d01`. Pode aplicá-lo em namespace descartável para testar o adapter real; apenas root o publica como migração numerada em EX10. Esta distinção evita bloquear o teste SQL antes da composição e preserva dono único do histórico de migrações.
+Worker-2 escreve **SQL candidato sem numbering** em `apps/server/sql/proposals/worlds`. Pode aplicá-lo em namespace descartável para testar o adapter real; apenas root o publica como migração numerada em EX10. Esta distinção evita bloquear o teste SQL antes da composição e preserva dono único do histórico de migrações.
 
 ## Dependências e contratos
 
@@ -102,7 +102,7 @@ Ao despachar: transmitir resultado, contratos exatos, owns, dependências realme
 
 ## Handoffs que precedem a aceitação
 
-EX02 entrega `docs/contracts/d01.md` com tabelas/colunas/chaves/tipos mínimos, read set, locks, roles e política de dados. O integrador e os consumidores revisam esse contrato antes de EX05 escrever queries e EX06 produzir DDL candidato. Não criar uma interface transacional genérica: usar SqlClient e o driver Effect reais. Alteração de contrato coordena apenas os consumidores afetados.
+EX02 entrega `docs/contracts/worlds.md` com tabelas/colunas/chaves/tipos mínimos, read set, locks, roles e política de dados. O integrador e os consumidores revisam esse contrato antes de EX05 escrever queries e EX06 produzir DDL candidato. Não criar uma interface transacional genérica: usar SqlClient e o driver Effect reais. Alteração de contrato coordena apenas os consumidores afetados.
 
 EX11/EX12 têm um subpasso explícito de integração pelo root, registrado em `integrator_steps`: após o worker entregar exports reais em estado `implemented_unverified`, root conecta os respectivos entrypoints e ambos executam o cliente contra EX10. Isso ocorre antes da aceitação de EX11/EX12 e não espera EX14. Assim, a composição reservada não cria um ciclo de dependências escondido.
 

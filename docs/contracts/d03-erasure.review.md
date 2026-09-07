@@ -6,7 +6,7 @@ O revisor leu as invariantes, arquitetura, contratos de sharing/disclosure, pol�
 
 ## Decisões preservadas corretamente no candidato
 
-- Perfil novo somente para Worlds novos, com os gates admitidos; nenhum apagamento por mudança implícita de `d01-local-retained-v1`.
+- Perfil novo somente para Worlds novos, com os gates admitidos; nenhum apagamento por mudança implícita de `worlds-local-retained-v1`.
 - Escopo de World inteiro, sem apagar conta, outros Worlds ou prometer recolher cópias de terceiros. Pins e retenções incompatíveis precisam de decisão explícita.
 - Separação entre acesso fechado, testemunho durável e purge concluído. Nenhuma transação SQL ficticiamente engloba S3 e testemunho remoto.
 - Append e exclusões ambíguas permanecem Unknown; DELETE/HEAD não viram certificados de purge.

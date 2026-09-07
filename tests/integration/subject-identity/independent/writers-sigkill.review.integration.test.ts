@@ -10,15 +10,15 @@ import {
 import {
   DataPolicy,
   DataPolicySchema,
-} from "@zoen/authority/ports/d01/context";
+} from "@zoen/authority/ports/worlds/context";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { canonicalJson } from "@zoen/authority/values/canonical";
-import { WorldCreated } from "@zoen/contracts/d01/operations";
 import {
   IdentityProposed,
   IdentityResolved,
   SubjectIdentityInspected,
 } from "@zoen/contracts/subject-identity/operations";
+import { WorldCreated } from "@zoen/contracts/worlds/operations";
 import {
   Deferred,
   Effect,
@@ -33,11 +33,11 @@ import {
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/d01/database.js";
-import { createAccount } from "../../../../apps/server/test/identity/d01/http.js";
-import { makeProcessConfiguration } from "../../d01-d02-independent/process-configuration.ts";
-import { configuration } from "../../d01/commit/fixture.js";
+import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
+import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
+import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
+import { makeProcessConfiguration } from "../../worlds-corrections-independent/process-configuration.ts";
+import { configuration } from "../../worlds/commit/fixture.js";
 
 const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
   probe.pipe(
@@ -55,7 +55,7 @@ const bytes = (value: unknown) =>
 
 const d01 = {
   purpose: "personal-records" as const,
-  schemaVersion: "d01.v1" as const,
+  schemaVersion: "worlds.v1" as const,
 };
 const envelope = {
   purpose: "personal-records" as const,
@@ -75,7 +75,7 @@ const documentFor = (subjects: readonly { key: string; amount: string }[]) =>
       },
       value: { _tag: "Known", amount: subject.amount, currency: "BRL" },
     })),
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
     source: {
       externalId: "billing-sigkill",
       label: "Billing SIGKILL",
@@ -226,7 +226,7 @@ it.live(
                   [
                     fileURLToPath(
                       new URL(
-                        "../../d01-d02-independent/executor-process.ts",
+                        "../../worlds-corrections-independent/executor-process.ts",
                         import.meta.url
                       )
                     ),

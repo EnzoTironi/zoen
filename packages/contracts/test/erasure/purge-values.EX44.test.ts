@@ -26,13 +26,13 @@ describe("EX44 erasure purge value schemas", () => {
     const entry = Schema.decodeUnknownSync(ErasureVersionEntry)({
       deleteMarker: false,
       isLatest: true,
-      key: "d01/live/00000000-0000-4000-8000-000000000001/captures/a",
+      key: "worlds/live/00000000-0000-4000-8000-000000000001/captures/a",
       versionId: "null",
     });
     expect(entry.versionId).toBe("null");
     const manifest = Schema.decodeUnknownSync(ErasureVersionManifest)({
       entries: [entry],
-      prefix: "d01/live/00000000-0000-4000-8000-000000000001/",
+      prefix: "worlds/live/00000000-0000-4000-8000-000000000001/",
     });
     expect(manifest.entries).toHaveLength(1);
   });

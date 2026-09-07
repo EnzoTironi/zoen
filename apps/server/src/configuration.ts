@@ -1,7 +1,7 @@
 import { AuthorityInstallationSchema } from "@zoen/authority/commit/configuration";
-import { DataPolicySchema } from "@zoen/authority/ports/d01/context";
+import { DataPolicySchema } from "@zoen/authority/ports/worlds/context";
 import { parseJsonBytes } from "@zoen/authority/values/json";
-import { exact } from "@zoen/contracts/d01/values";
+import { exact } from "@zoen/contracts/worlds/values";
 import { Config, Effect, FileSystem, Option, Schema } from "effect";
 
 import type { D01ApplicationConfig } from "./composition.ts";

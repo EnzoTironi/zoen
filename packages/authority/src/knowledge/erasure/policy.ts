@@ -1,12 +1,12 @@
-import { Blocked, InvalidInput } from "@zoen/contracts/d01/errors";
 import { ErasurePolicyProfileId } from "@zoen/contracts/erasure/values";
+import { Blocked, InvalidInput } from "@zoen/contracts/worlds/errors";
 import { Effect, Schema } from "effect";
 
 import {
   DataPolicy,
   DataPolicySchema,
   ErasableDataPolicySchema,
-} from "../../ports/d01/context.js";
+} from "../../ports/worlds/context.js";
 
 /** Closing requires the candidate erasable profile; retained Worlds stay blocked. */
 export const requireErasablePolicy = Effect.fn("erasure.requireErasablePolicy")(

@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { VisibleClaim } from "../d01/evidence.js";
+import { VisibleClaim } from "../worlds/evidence.js";
 import {
   ClaimRef,
   DateInterval,
@@ -9,7 +9,7 @@ import {
   SubjectKey,
   WorldRef,
   exact,
-} from "../d01/values.js";
+} from "../worlds/values.js";
 import {
   IdentityAnchors,
   IdentityAssertionRef,

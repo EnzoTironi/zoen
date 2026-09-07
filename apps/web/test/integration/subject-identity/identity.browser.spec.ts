@@ -3,12 +3,12 @@ import { setTimeout } from "node:timers/promises";
 
 import { expect, test } from "@playwright/test";
 import type { Page } from "@playwright/test";
-import { SemanticRequest } from "@zoen/contracts/d01/operations";
 import {
   IdentityProposed,
   IdentityResolved,
   SubjectIdentityInspected,
 } from "@zoen/contracts/subject-identity/operations";
+import { SemanticRequest } from "@zoen/contracts/worlds/operations";
 import { Config, Effect, Option, Schema } from "effect";
 
 // Explicit subject-identity profile only: never fall back to a prior JSON/CSV/sharing install.
@@ -32,7 +32,7 @@ const waitForIdentity = (
     | "ResolveIdentity"
 ) =>
   page.waitForResponse((response) => {
-    if (!response.url().endsWith("/api/d02/subject-identity")) {
+    if (!response.url().endsWith("/api/subject-identity/execute")) {
       return false;
     }
     const request = Schema.decodeUnknownOption(SemanticRequest)(
@@ -105,7 +105,7 @@ const dualSubjectSource = (left: string, right: string, label: string) => ({
           value: { _tag: "Known", amount: "120.00", currency: "BRL" },
         },
       ],
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       source: {
         externalId: randomUUID(),
         label,
@@ -282,7 +282,7 @@ test("EX28 viewer cannot see private identity controls or drive subject-identity
     const denied = await reader.evaluate(async (worldId) => {
       // Browser page context: native fetch is the intentional private-control denial probe.
       // oxlint-disable-next-line effecttsgo/global-fetch -- Playwright page.evaluate runs in Chromium, not Effect HttpClient.
-      const response = await fetch("/api/d02/subject-identity", {
+      const response = await fetch("/api/subject-identity/execute", {
         body: JSON.stringify({
           input: {
             anchors: ["viewer-denied"],

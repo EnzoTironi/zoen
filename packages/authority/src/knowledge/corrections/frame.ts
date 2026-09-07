@@ -1,12 +1,12 @@
-import { NotFoundOrDenied, Unavailable } from "@zoen/contracts/d01/errors";
-import { VisibleFrame } from "@zoen/contracts/d01/evidence";
-import type { FrameRef, WorldRef } from "@zoen/contracts/d01/values";
+import { NotFoundOrDenied, Unavailable } from "@zoen/contracts/worlds/errors";
+import { VisibleFrame } from "@zoen/contracts/worlds/evidence";
+import type { FrameRef, WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { authorizeWorld } from "../../access/world.js";
-import { InternalBasis } from "../../ports/d01/basis.js";
-import type { VerifiedRequestContext } from "../../ports/d01/context.js";
+import { InternalBasis } from "../../ports/worlds/basis.js";
+import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
 
 export const loadCorrectionFrame = Effect.fn("authority.corrections.loadFrame")(
   function* loadCorrectionFrame(

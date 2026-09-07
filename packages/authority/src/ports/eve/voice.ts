@@ -1,5 +1,3 @@
-import { Blocked, Unavailable } from "@zoen/contracts/d01/errors";
-import type { Conflict, NotFoundOrDenied } from "@zoen/contracts/d01/errors";
 import type {
   ConversationId,
   EveEvidenceLink,
@@ -14,6 +12,8 @@ import {
   voiceRecognitionReady,
   voiceSynthesisReady,
 } from "@zoen/contracts/eve/web-speech";
+import { Blocked, Unavailable } from "@zoen/contracts/worlds/errors";
+import type { Conflict, NotFoundOrDenied } from "@zoen/contracts/worlds/errors";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 

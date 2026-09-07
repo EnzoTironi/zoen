@@ -12,7 +12,7 @@ Reapplying 006 reports no migration, preserves all six migration metadata rows, 
 
 The initial harness run failed with PostgreSQL 0A000 because its snapshot UNION sorted by a cast expression. Changing that snapshot query to order by the JSONB result column fixed the harness; no production assertion or expected result was relaxed. A subsequent lint check found unsorted object keys in the harness, corrected without behavioral changes.
 
-Focused lint passed afterward. Repository-wide `tsc --noEmit` on this exact base failed at `apps/cli/src/d01/transport.ts:48` because its grouped sharing payload does not satisfy the endpoint's discriminated parameter union. No diagnostic referred to the new test. The separately reviewed CLI commits split those switch branches and passed their independent build; they are not in this migration review base. This review does not claim a green whole-repository typecheck.
+Focused lint passed afterward. Repository-wide `tsc --noEmit` on this exact base failed at `apps/cli/src/worlds/transport.ts:48` because its grouped sharing payload does not satisfy the endpoint's discriminated parameter union. No diagnostic referred to the new test. The separately reviewed CLI commits split those switch branches and passed their independent build; they are not in this migration review base. This review does not claim a green whole-repository typecheck.
 
 ## Contract sampling
 

@@ -1,6 +1,10 @@
-import { Revision } from "@zoen/contracts/d01/values";
-import type { OperationId, Realm, WorldId } from "@zoen/contracts/d01/values";
 import { PrincipalRef } from "@zoen/contracts/sharing/operations";
+import { Revision } from "@zoen/contracts/worlds/values";
+import type {
+  OperationId,
+  Realm,
+  WorldId,
+} from "@zoen/contracts/worlds/values";
 import type { Effect } from "effect";
 import { Option, Schema } from "effect";
 import { Command, Flag } from "effect/unstable/cli";

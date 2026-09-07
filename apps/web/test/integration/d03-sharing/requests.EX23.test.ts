@@ -1,8 +1,8 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { WorldRef } from "@zoen/contracts/d01/values";
 import { Membership, PrincipalRef } from "@zoen/contracts/sharing/operations";
+import { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import {

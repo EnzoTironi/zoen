@@ -9,7 +9,7 @@ import {
 describe("ops/local world-policy (EX39)", () => {
   it("defaults retained and admits erasable + hosted retained only", () => {
     expect(LOCAL_WORLD_POLICY_IDS).toStrictEqual([
-      "d01-local-retained-v1",
+      "worlds-local-retained-v1",
       "d03-local-erasable-v1",
       "d04-hosted-retained-v1",
     ]);
@@ -29,6 +29,6 @@ describe("ops/local world-policy (EX39)", () => {
   });
 
   it("rejects unknown policy ids", () => {
-    expect(resolveLocalWorldPolicy("d01-local-retained-v2")).toBeNull();
+    expect(resolveLocalWorldPolicy("worlds-local-retained-v2")).toBeNull();
   });
 });

@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { D01_LIMITS, Digest, SubjectKey } from "../d01/values.js";
+import { D01_LIMITS, Digest, SubjectKey } from "../worlds/values.js";
 
 export const SUBJECT_IDENTITY_LIMITS = {
   anchors: 32,

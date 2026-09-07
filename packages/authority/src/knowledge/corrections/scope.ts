@@ -1,10 +1,10 @@
-import { InvalidInput, Unsupported } from "@zoen/contracts/d01/errors";
-import { VisibleFrame } from "@zoen/contracts/d01/evidence";
+import { InvalidInput, Unsupported } from "@zoen/contracts/worlds/errors";
+import { VisibleFrame } from "@zoen/contracts/worlds/evidence";
 import {
   CorrectionConsequence,
   QuestionAnswer,
-} from "@zoen/contracts/d01/operations";
-import type { DateInterval } from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/operations";
+import type { DateInterval } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 export const sameInterval = (

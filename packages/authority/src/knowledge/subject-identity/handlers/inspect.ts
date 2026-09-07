@@ -1,9 +1,3 @@
-import {
-  InvalidInput,
-  NotFoundOrDenied,
-  Stale,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
 import { PrincipalRef } from "@zoen/contracts/sharing/operations";
 import {
   IdentityFrame,
@@ -15,6 +9,12 @@ import {
   IdentityRecoveryInspected,
   SubjectIdentityInspected,
 } from "@zoen/contracts/subject-identity/operations";
+import {
+  InvalidInput,
+  NotFoundOrDenied,
+  Stale,
+  Unavailable,
+} from "@zoen/contracts/worlds/errors";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -29,7 +29,7 @@ import {
   restoreSqlDefect,
   sanitizeSqlFailure,
 } from "../../../commit/transaction.js";
-import type { VerifiedRequestContext } from "../../../ports/d01/context.js";
+import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
 import { readClosureClaims } from "../persistence/claims.js";
 import {
   identityScopeFrom,

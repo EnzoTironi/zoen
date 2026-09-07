@@ -1,5 +1,3 @@
-import { InvalidInput, QuotaExceeded, Stale } from "@zoen/contracts/d01/errors";
-import type { DateInterval, SubjectKey } from "@zoen/contracts/d01/values";
 import { IdentityEffects } from "@zoen/contracts/subject-identity/effects";
 import type { IdentityEffect } from "@zoen/contracts/subject-identity/effects";
 import type {
@@ -11,6 +9,12 @@ import type {
   IdentityPartitions,
 } from "@zoen/contracts/subject-identity/question";
 import { SUBJECT_IDENTITY_LIMITS } from "@zoen/contracts/subject-identity/values";
+import {
+  InvalidInput,
+  QuotaExceeded,
+  Stale,
+} from "@zoen/contracts/worlds/errors";
+import type { DateInterval, SubjectKey } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { canonicalJson } from "../../../values/canonical.js";

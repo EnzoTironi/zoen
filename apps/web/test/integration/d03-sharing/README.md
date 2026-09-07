@@ -9,7 +9,7 @@ Viewer presentation reuses `D01Workspace` with the optional `readOnly` prop, hid
 ## Executed on 2026-09-05
 
 - Baseline: restoring only the original `D01Workspace` from `c60eff8` while retaining the candidate component test made `viewer empty` fail on `expect(readonly).not.toContain('type="file"')`. The original also rendered the upload/correction invitation. Candidate source was restored in a `finally` block; no expected result was changed.
-- `pnpm test:unit apps/web/test/integration/d03-sharing apps/web/test/integration/d02/requests.EX14.test.ts`: 10 tests in 3 files passed at 17:40:39 local time. Seven tests belong to this change; three are existing correction-request regression tests. Synthetic inputs exercise real request builders and React server rendering, not an HTTP or identity service.
+- `pnpm test:unit apps/web/test/integration/d03-sharing apps/web/test/integration/corrections/requests.EX14.test.ts`: 10 tests in 3 files passed at 17:40:39 local time. Seven tests belong to this change; three are existing correction-request regression tests. Synthetic inputs exercise real request builders and React server rendering, not an HTTP or identity service.
 - `pnpm exec tsc --noEmit`: passed across the worktree.
 - Scoped `pnpm exec oxlint` over the changed components, D01/sharing features, and EX23 tests: passed without warnings or suppressions added.
 - `pnpm build:web`: passed in this isolated worktree. No root build, release profile, server, or activation was run.

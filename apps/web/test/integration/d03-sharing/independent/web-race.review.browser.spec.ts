@@ -3,11 +3,14 @@ import { setTimeout } from "node:timers/promises";
 
 import { expect, test } from "@playwright/test";
 import type { APIRequestContext, Page } from "@playwright/test";
-import { SemanticRequest, WorldCreated } from "@zoen/contracts/d01/operations";
+import {
+  SemanticRequest,
+  WorldCreated,
+} from "@zoen/contracts/worlds/operations";
 import { Config, Deferred, Effect, Schema } from "effect";
 
 const baseURL = Effect.runSync(Config.string("ZOEN_TEST_SHARING_WEB_URL"));
-const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
@@ -64,7 +67,7 @@ const send = async (api: APIRequestContext, path: string, data: unknown) => {
 const operation = (page: Page, name: string) =>
   page.waitForResponse((response) => {
     if (
-      !response.url().includes("/api/d01/") &&
+      !response.url().includes("/api/worlds/") &&
       !response.url().endsWith("/api/d03/sharing")
     ) {
       return false;
@@ -93,7 +96,7 @@ test("independent EX23 denial during another read clears data immediately and ig
     await signup(page.request);
     const principalRef = await signup(readerContext.request);
     const created = Schema.decodeUnknownSync(WorldCreated)(
-      await send(page.request, "/api/d01/execute", {
+      await send(page.request, "/api/worlds/execute", {
         ...d01,
         input: {},
         operation: "CreatePersonalWorld",
@@ -117,7 +120,7 @@ test("independent EX23 denial during another read clears data immediately and ig
           value: { _tag: "Known", amount: "712.45", currency: "BRL" },
         },
       ],
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       source: {
         externalId: randomUUID(),
         label: sourceLabel,
@@ -125,7 +128,7 @@ test("independent EX23 denial during another read clears data immediately and ig
         revision: "1",
       },
     });
-    await send(page.request, "/api/d01/execute", {
+    await send(page.request, "/api/worlds/execute", {
       ...d01,
       input: { document },
       operation: "ImportEvidence",
@@ -187,7 +190,7 @@ test("independent EX23 denial during another read clears data immediately and ig
       }
       await route.continue();
     });
-    await reader.route("**/api/d01/execute", async (route) => {
+    await reader.route("**/api/worlds/execute", async (route) => {
       const request = Schema.decodeUnknownSync(SemanticRequest)(
         route.request().postDataJSON()
       );
@@ -281,7 +284,7 @@ test("independent EX23 Stale requires a new confirmation and a replayed grant re
     await signup(page.request);
     const principalRef = await signup(recipient.request);
     const { worldRef } = Schema.decodeUnknownSync(WorldCreated)(
-      await send(page.request, "/api/d01/execute", {
+      await send(page.request, "/api/worlds/execute", {
         ...d01,
         input: {},
         operation: "CreatePersonalWorld",
@@ -463,7 +466,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
     await signup(page.request);
     const principalRef = await signup(readerContext.request);
     const created = Schema.decodeUnknownSync(WorldCreated)(
-      await send(page.request, "/api/d01/execute", {
+      await send(page.request, "/api/worlds/execute", {
         ...d01,
         input: {},
         operation: "CreatePersonalWorld",
@@ -487,7 +490,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
           value: { _tag: "Known", amount: "712.45", currency: "BRL" },
         },
       ],
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       source: {
         externalId: randomUUID(),
         label: sourceLabel,
@@ -495,7 +498,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
         revision: "1",
       },
     });
-    await send(page.request, "/api/d01/execute", {
+    await send(page.request, "/api/worlds/execute", {
       ...d01,
       input: { document },
       operation: "ImportEvidence",
@@ -539,7 +542,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
     const waiting = gate();
     let heldHistory = false;
     let priorFrame: string | null = null;
-    await reader.route("**/api/d01/execute", async (route) => {
+    await reader.route("**/api/worlds/execute", async (route) => {
       const request = Schema.decodeUnknownSync(SemanticRequest)(
         route.request().postDataJSON()
       );

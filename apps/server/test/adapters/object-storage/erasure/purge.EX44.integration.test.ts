@@ -12,16 +12,16 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 import { expect, it } from "@effect/vitest";
-import { StorageFailure } from "@zoen/authority/ports/d01/storage";
 import { ErasureObjectInventory } from "@zoen/authority/ports/erasure/inventory";
 import { ErasurePurgeStore } from "@zoen/authority/ports/erasure/purge";
-import { WorldId, WorldRef } from "@zoen/contracts/d01/values";
+import { StorageFailure } from "@zoen/authority/ports/worlds/storage";
+import { WorldId, WorldRef } from "@zoen/contracts/worlds/values";
 import { Config, Effect, Redacted, Schema } from "effect";
 import type { Scope } from "effect";
 
-import type { S3EvidenceConfig } from "../../../../src/adapters/object-storage/d01/config.js";
 import { worldObjectPrefix } from "../../../../src/adapters/object-storage/erasure/prefix.js";
 import { layer as erasureStorageLayer } from "../../../../src/adapters/object-storage/erasure/s3.js";
+import type { S3EvidenceConfig } from "../../../../src/adapters/object-storage/worlds/config.js";
 
 const sdk = <A>(run: (signal: AbortSignal) => Promise<A>) =>
   Effect.tryPromise({
@@ -179,7 +179,7 @@ it.effect(
         const keyA = `${prefix}captures/${randomUUID()}`;
         const keyB = `${prefix}captures/${randomUUID()}`;
         const otherWorld = Schema.decodeSync(WorldId)(randomUUID());
-        const otherKey = `d01/live/${otherWorld}/captures/${randomUUID()}`;
+        const otherKey = `worlds/live/${otherWorld}/captures/${randomUUID()}`;
 
         yield* sdk((signal) =>
           client.send(

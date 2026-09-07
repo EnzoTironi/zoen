@@ -1,14 +1,18 @@
-import { Unavailable } from "@zoen/contracts/d01/errors";
-import type { CaseRef, ReceiptRef, WorldRef } from "@zoen/contracts/d01/values";
+import { PrincipalRef } from "@zoen/contracts/sharing/operations";
+import { IdentityEffects } from "@zoen/contracts/subject-identity/effects";
+import { IdentityDecisionRef } from "@zoen/contracts/subject-identity/values";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
+import type {
+  CaseRef,
+  ReceiptRef,
+  WorldRef,
+} from "@zoen/contracts/worlds/values";
 import {
   LocalDate,
   Purpose,
   Revision,
   exact,
-} from "@zoen/contracts/d01/values";
-import { PrincipalRef } from "@zoen/contracts/sharing/operations";
-import { IdentityEffects } from "@zoen/contracts/subject-identity/effects";
-import { IdentityDecisionRef } from "@zoen/contracts/subject-identity/values";
+} from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

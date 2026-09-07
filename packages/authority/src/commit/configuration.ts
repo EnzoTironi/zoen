@@ -1,7 +1,7 @@
-import { Revision, exact } from "@zoen/contracts/d01/values";
+import { Revision, exact } from "@zoen/contracts/worlds/values";
 import { Context, Schema } from "effect";
 
-import { Head } from "../ports/d01/basis.js";
+import { Head } from "../ports/worlds/basis.js";
 
 export const AuthorityInstallationSchema = Schema.Struct({
   cellEpoch: Revision,

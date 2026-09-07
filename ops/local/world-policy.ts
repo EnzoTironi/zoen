@@ -1,11 +1,11 @@
 /**
  * Local provision World data-policy selection (EX34 / EX39).
- * Default remains d01-local-retained-v1. Erasable and hosted retained are
+ * Default remains worlds-local-retained-v1. Erasable and hosted retained are
  * explicit NEW-install choices only — never rebound onto existing Worlds.
  */
 
 export type LocalWorldPolicyId =
-  | "d01-local-retained-v1"
+  | "worlds-local-retained-v1"
   | "d03-local-erasable-v1"
   | "d04-hosted-retained-v1";
 
@@ -26,7 +26,7 @@ const RETAINED: LocalWorldPolicy = {
   erasure: false,
   legalHold: false,
   licensedExpiry: false,
-  profileId: "d01-local-retained-v1",
+  profileId: "worlds-local-retained-v1",
   restoreAfterErasure: false,
   retention: "while-pinned",
 };
@@ -55,13 +55,13 @@ const HOSTED_RETAINED: LocalWorldPolicy = {
 };
 
 const BY_ID: Record<LocalWorldPolicyId, LocalWorldPolicy> = {
-  "d01-local-retained-v1": RETAINED,
   "d03-local-erasable-v1": ERASABLE,
   "d04-hosted-retained-v1": HOSTED_RETAINED,
+  "worlds-local-retained-v1": RETAINED,
 };
 
 export const LOCAL_WORLD_POLICY_IDS: readonly LocalWorldPolicyId[] = [
-  "d01-local-retained-v1",
+  "worlds-local-retained-v1",
   "d03-local-erasable-v1",
   "d04-hosted-retained-v1",
 ];
@@ -69,7 +69,7 @@ export const LOCAL_WORLD_POLICY_IDS: readonly LocalWorldPolicyId[] = [
 export const isLocalWorldPolicyId = (
   value: string
 ): value is LocalWorldPolicyId =>
-  value === "d01-local-retained-v1" ||
+  value === "worlds-local-retained-v1" ||
   value === "d03-local-erasable-v1" ||
   value === "d04-hosted-retained-v1";
 

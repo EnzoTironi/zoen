@@ -4,21 +4,21 @@ import {
   Conflict,
   InvalidInput,
   Unavailable,
-} from "@zoen/contracts/d01/errors";
+} from "@zoen/contracts/worlds/errors";
 import {
   AnswerQuestion,
   CorrectionApplied,
-} from "@zoen/contracts/d01/operations";
-import { CorrectionRef, Revision } from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/operations";
+import { CorrectionRef, Revision } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { authorizeWorld } from "../../access/world.js";
 import { bindWorldIntent } from "../../commit/intent.js";
 import { commitMutation, readMutationReplay } from "../../commit/mutation.js";
-import { DomainKey } from "../../ports/d01/basis.js";
-import type { VerifiedRequestContext } from "../../ports/d01/context.js";
-import { CorrectionAnswer } from "../../ports/d01/persistence.js";
+import { DomainKey } from "../../ports/worlds/basis.js";
+import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
+import { CorrectionAnswer } from "../../ports/worlds/persistence.js";
 import { canonicalJson, structuredDigest } from "../../values/canonical.js";
 import { readCorrectionCase } from "./case.js";
 import { readScopedCorrections } from "./projection.js";

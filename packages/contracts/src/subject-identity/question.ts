@@ -9,7 +9,7 @@ import {
   SubjectKey,
   WorldRef,
   exact,
-} from "../d01/values.js";
+} from "../worlds/values.js";
 import { IdentityEffects } from "./effects.js";
 import {
   IdentityComparisonCells,

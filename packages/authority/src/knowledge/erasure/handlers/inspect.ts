@@ -1,16 +1,16 @@
-import { Blocked, Unavailable } from "@zoen/contracts/d01/errors";
-import { OperationId, Revision, exact } from "@zoen/contracts/d01/values";
 import { WorldErasureInspected } from "@zoen/contracts/erasure/operations";
 import type { InspectWorldErasure } from "@zoen/contracts/erasure/operations";
 import { WorldErasurePhase } from "@zoen/contracts/erasure/values";
+import { Blocked, Unavailable } from "@zoen/contracts/worlds/errors";
+import { OperationId, Revision, exact } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { authorizeWorld } from "../../../access/world.js";
 import { AuthorityInstallation } from "../../../commit/configuration.js";
-import type { VerifiedRequestContext } from "../../../ports/d01/context.js";
-import { DataPolicy, DataPolicySchema } from "../../../ports/d01/context.js";
 import { ErasureAttemptRegister } from "../../../ports/erasure/attempt-register.js";
+import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
+import { DataPolicy, DataPolicySchema } from "../../../ports/worlds/context.js";
 import { requireErasablePolicy } from "../policy.js";
 
 const ProgressRow = Schema.Struct({

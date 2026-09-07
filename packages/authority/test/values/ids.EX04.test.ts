@@ -1,5 +1,5 @@
-import type { EvidenceRef } from "@zoen/contracts/d01/values";
-import { OperationId, WorldId } from "@zoen/contracts/d01/values";
+import type { EvidenceRef } from "@zoen/contracts/worlds/values";
+import { OperationId, WorldId } from "@zoen/contracts/worlds/values";
 import { Result, Schema } from "effect";
 import { describe, expect, expectTypeOf, it } from "vitest";
 

@@ -3,14 +3,14 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { NodeServices } from "@effect/platform-node";
 import { DateTime, Effect, Layer, Redacted, Schema } from "effect";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
-import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/d01/database.js";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/worlds/database.js";
 import { applyIdentityBasisMigrations } from "../../../../ops/migrations/run.js";
 import {
   Presence,
   VerifiedRequestContext,
-} from "../../../../packages/authority/src/ports/d01/context.js";
-import { CreatePersonalWorld } from "../../../../packages/contracts/src/d01/operations.js";
+} from "../../../../packages/authority/src/ports/worlds/context.js";
+import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 
 type Database = Parameters<Parameters<typeof withD01Database>[0]>[0];
 export const withSharingDatabase = <A, E, R>(
@@ -64,7 +64,7 @@ export const genesisRequest = Effect.sync(randomUUID).pipe(
       operation: "CreatePersonalWorld",
       operationId,
       purpose: "personal-records",
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
     })
   )
 );

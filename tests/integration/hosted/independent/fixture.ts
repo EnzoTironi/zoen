@@ -11,9 +11,9 @@ import {
   HostedRetainedDataPolicySchema,
   RetainedDataPolicySchema,
   VerifiedRequestContext,
-} from "../../../../packages/authority/src/ports/d01/context.js";
+} from "../../../../packages/authority/src/ports/worlds/context.js";
 import { digestBytes } from "../../../../packages/authority/src/values/canonical.js";
-import { CreatePersonalWorld } from "../../../../packages/contracts/src/d01/operations.js";
+import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 
 export const installation = Schema.decodeSync(AuthorityInstallationSchema)({
   cellEpoch: "1",
@@ -43,7 +43,7 @@ export const localRetainedPolicy = Schema.decodeSync(RetainedDataPolicySchema)({
   erasure: false,
   legalHold: false,
   licensedExpiry: false,
-  profileId: "d01-local-retained-v1",
+  profileId: "worlds-local-retained-v1",
   restoreAfterErasure: false,
   retention: "while-pinned",
 });
@@ -84,7 +84,7 @@ export const makeCreateWorld = Effect.fn("EX39.makeCreateWorld")(
       operation: "CreatePersonalWorld",
       operationId: randomUUID(),
       purpose: "personal-records",
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
     });
   }
 );

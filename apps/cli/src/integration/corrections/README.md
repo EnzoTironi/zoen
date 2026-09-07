@@ -1,0 +1,7 @@
+# Scoped correction CLI
+
+The commands are composed by `worlds/command.ts` and send the public semantic request through the typed correction HTTP endpoint. Server authentication, transaction semantics, receipt replay, Frame validation, consent and authorization remain authoritative.
+
+Run `pnpm build:apps` before `pnpm cli <command> --help`. The commands are `propose-correction`, `answer-question`, and `undo-correction`; each requires an explicit operation UUID and World UUID. Preserve operation UUIDs on retry. Proposal requires the retained Frame, subject and civil interval; selecting a claim additionally requires its reference. Answer requires the exact Question reference and consequence digest returned by the proposal. Undo requires the effective correction and current Frame from Inspect. Successful results are public JSON on stdout; typed failures use stderr and a nonzero exit code.
+
+The process integration test at `apps/cli/test/integration/corrections/corrections.EX14.integration.test.ts` requires `pnpm build:apps` and the configured PostgreSQL/S3 infrastructure. It runs the compiled CLI against the actual authenticated HTTP composition and verifies proposal, confirmation, receipt replay, Undo, retained Frames, stale consent, revoked access and invalid claim selection. It uses an actual signup session saved in the normal private session format. This is CLI/HTTP integration evidence, not independent acceptance or browser evidence.

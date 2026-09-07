@@ -1,10 +1,3 @@
-import {
-  Blocked,
-  Conflict,
-  NotFoundOrDenied,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
 import type {
   ConversationId,
   EveEvidenceLink,
@@ -17,6 +10,13 @@ import type {
   RelationshipId,
   TurnId,
 } from "@zoen/contracts/eve/values";
+import {
+  Blocked,
+  Conflict,
+  NotFoundOrDenied,
+  Unavailable,
+} from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 

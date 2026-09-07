@@ -7,7 +7,7 @@ import {
   Revision,
   WorldRef,
   exact,
-} from "../d01/values.js";
+} from "../worlds/values.js";
 
 export const PrincipalRef = Schema.String.check(Schema.isUUID()).pipe(
   Schema.brand("zoen/PrincipalRef")

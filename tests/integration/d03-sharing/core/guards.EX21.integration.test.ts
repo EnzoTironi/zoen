@@ -3,28 +3,28 @@ import { randomUUID } from "node:crypto";
 import { expect, it } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 
-import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
-import { createAccount } from "../../../../apps/server/test/identity/d01/http.js";
+import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
+import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
 import {
   grantWorldReadAccess,
   revokeWorldReadAccess,
 } from "../../../../packages/authority/src/access/sharing/mutation.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { importEvidence } from "../../../../packages/authority/src/evidence/d01/import.js";
+import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.js";
 import { answerQuestion } from "../../../../packages/authority/src/knowledge/corrections/answer.js";
 import { proposeCorrection } from "../../../../packages/authority/src/knowledge/corrections/propose.js";
-import { inspect } from "../../../../packages/authority/src/knowledge/d01/inspect.js";
+import { inspect } from "../../../../packages/authority/src/knowledge/worlds/inspect.js";
+import {
+  GrantWorldReadAccess,
+  RevokeWorldReadAccess,
+} from "../../../../packages/contracts/src/sharing/operations.js";
 import {
   AnswerQuestion,
   ImportEvidence,
   Inspect,
   ProposeCorrection,
-} from "../../../../packages/contracts/src/d01/operations.js";
-import {
-  GrantWorldReadAccess,
-  RevokeWorldReadAccess,
-} from "../../../../packages/contracts/src/sharing/operations.js";
-import { configuration } from "../../d01/commit/fixture.js";
+} from "../../../../packages/contracts/src/worlds/operations.js";
+import { configuration } from "../../worlds/commit/fixture.js";
 import {
   genesisRequest,
   verifiedContext,
@@ -48,7 +48,7 @@ it.live(
               ...genesis,
               input: {
                 document:
-                  '{"schemaVersion":"d01.v1","source":{"namespace":"manual","externalId":"guard","revision":"1","label":"Guard source"},"records":[{"externalId":"row-1","subjectKey":"unknown-billing","predicate":"obligation.amount","value":{"_tag":"Unknown"},"validTime":{"_tag":"DateInterval","from":"2026-09-01","to":"2026-10-01"}}]}',
+                  '{"schemaVersion":"worlds.v1","source":{"namespace":"manual","externalId":"guard","revision":"1","label":"Guard source"},"records":[{"externalId":"row-1","subjectKey":"unknown-billing","predicate":"obligation.amount","value":{"_tag":"Unknown"},"validTime":{"_tag":"DateInterval","from":"2026-09-01","to":"2026-10-01"}}]}',
               },
               operation: "ImportEvidence",
               operationId: randomUUID(),
@@ -68,7 +68,7 @@ it.live(
             input: { atFrame: null, subjectKey: "unknown-billing" },
             operation: "Inspect",
             purpose: "personal-records",
-            schemaVersion: "d01.v1",
+            schemaVersion: "worlds.v1",
             worldRef,
           });
           for (const transition of ["no-op", "revoke"] as const) {

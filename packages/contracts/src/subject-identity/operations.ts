@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { D01Error } from "../d01/errors.js";
+import { D01Error } from "../worlds/errors.js";
 import {
   CaseRef,
   DateInterval,
@@ -13,7 +13,7 @@ import {
   SubjectKey,
   WorldRef,
   exact,
-} from "../d01/values.js";
+} from "../worlds/values.js";
 import {
   IdentityControlFramePointer,
   IdentityFrame,

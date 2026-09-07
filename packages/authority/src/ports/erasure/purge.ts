@@ -1,10 +1,10 @@
-import { Unavailable } from "@zoen/contracts/d01/errors";
 import type {
   ErasureObjectHoldState,
   ErasureObjectVersionId,
   ErasureVersionEntry,
   ErasureVersionPurgeOutcome,
 } from "@zoen/contracts/erasure/values";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
 import { Context, Effect, Layer } from "effect";
 import type { Effect as EffectType } from "effect";
 

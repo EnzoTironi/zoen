@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { exact } from "../../d01/values.js";
+import { exact } from "../../worlds/values.js";
 import {
   HostedRetainedPolicyProfileId,
   HostedSchemaVersion,

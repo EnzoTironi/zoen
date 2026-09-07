@@ -2,7 +2,7 @@ import { describe, expect, it } from "@effect/vitest";
 import {
   CreatePersonalWorld,
   ImportEvidence,
-} from "@zoen/contracts/d01/operations";
+} from "@zoen/contracts/worlds/operations";
 import { Effect, Schema } from "effect";
 
 import { requireSameIntent } from "../../src/commit/idempotency.js";
@@ -13,10 +13,10 @@ const operationId = "00000000-0000-4000-8000-000000000002";
 const envelope = {
   operationId,
   purpose: "personal-records",
-  schemaVersion: "d01.v1",
+  schemaVersion: "worlds.v1",
 } as const;
 const originalDocument =
-  '{"schemaVersion":"d01.v1","source":{"namespace":"test","externalId":"test","revision":"1","label":"test"},"records":[{"externalId":"one","subjectKey":"one","predicate":"obligation.amount","validTime":{"_tag":"Unknown"},"value":{"_tag":"Known","amount":"100.00","currency":"BRL"}}]}';
+  '{"schemaVersion":"worlds.v1","source":{"namespace":"test","externalId":"test","revision":"1","label":"test"},"records":[{"externalId":"one","subjectKey":"one","predicate":"obligation.amount","validTime":{"_tag":"Unknown"},"value":{"_tag":"Known","amount":"100.00","currency":"BRL"}}]}';
 
 describe("EX05 bound intent", () => {
   it.effect("binds equal requests to one digest", () =>

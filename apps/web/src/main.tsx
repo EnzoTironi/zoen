@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 
-import { D01Feature } from "./features/d01/feature.tsx";
+import { D01Feature } from "./features/worlds/feature.tsx";
 
 const root = document.querySelector("#root");
 if (root === null) {

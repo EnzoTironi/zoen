@@ -1,4 +1,4 @@
-import { Unavailable } from "@zoen/contracts/d01/errors";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
 import { Effect, Schema } from "effect";
 
 import type { Reservation } from "./connection.ts";

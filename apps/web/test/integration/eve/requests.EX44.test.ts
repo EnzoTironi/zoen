@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@effect/vitest";
-import { WorldId } from "@zoen/contracts/d01/values";
+import { WorldId } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import {

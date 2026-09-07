@@ -6,7 +6,7 @@ Stale clears pending confirmation and requires a fresh inspect plus explicit con
 
 ## Integrator touches (EX33)
 
-- `packages/contracts/src/d01/api.ts` — `ErasureApiGroup` → `POST /api/erasure/execute`
+- `packages/contracts/src/worlds/api.ts` — `ErasureApiGroup` → `POST /api/erasure/execute`
 - `apps/server/src/http/erasure.ts` + `composition.ts`
-- `apps/cli/src/d01/transport.ts` + `command.ts` registration
-- `apps/web/src/features/d01/{client,model,state,feature}.tsx` routing into this feature
+- `apps/cli/src/worlds/transport.ts` + `command.ts` registration
+- `apps/web/src/features/worlds/{client,model,state,feature}.tsx` routing into this feature

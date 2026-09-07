@@ -1,4 +1,3 @@
-import { Blocked } from "@zoen/contracts/d01/errors";
 import {
   HostedCapabilityId,
   HostedChannelId,
@@ -12,6 +11,7 @@ import type {
   HostedDisabledReason,
   HostedRetainedAdmissionFlags as HostedRetainedAdmissionFlagsType,
 } from "@zoen/contracts/hosted/admission/values";
+import { Blocked } from "@zoen/contracts/worlds/errors";
 import { Context, Effect, Schema } from "effect";
 
 export {

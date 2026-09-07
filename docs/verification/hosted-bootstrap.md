@@ -23,7 +23,7 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 ## EX36 schemas
 
 - `packages/contracts/src/hosted/policy/values.ts` — `d04-hosted-retained-v1`
-- `packages/authority/src/ports/hosted/policy.ts` + união em `ports/d01/context.ts`
+- `packages/authority/src/ports/hosted/policy.ts` + união em `ports/worlds/context.ts`
 - Unidade: `*.EX36.test.ts` sob contracts/authority `hosted/policy`
 - Composition default permanece local retained; sem `fly deploy`
 

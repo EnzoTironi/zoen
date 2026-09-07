@@ -13,12 +13,12 @@ import { Effect, Layer, Schema } from "effect";
 import type { Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { grantD01Roles } from "../../../../apps/server/sql/proposals/d01/grants.js";
-import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
+import { grantD01Roles } from "../../../../apps/server/sql/proposals/worlds/grants.js";
+import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { authorizeWorld } from "../../../../packages/authority/src/access/world.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { HostedRetainedDataPolicySchema } from "../../../../packages/authority/src/ports/d01/context.js";
+import { HostedRetainedDataPolicySchema } from "../../../../packages/authority/src/ports/worlds/context.js";
 import {
   DisposableRestoreFailure,
   roleUrlForDatabase,
@@ -201,7 +201,7 @@ it.live(
           ORDER BY data_policy_id
         `;
         expect(policies).toStrictEqual([
-          { count: 1, data_policy_id: "d01-local-retained-v1" },
+          { count: 1, data_policy_id: "worlds-local-retained-v1" },
           { count: 1, data_policy_id: "d04-hosted-retained-v1" },
         ]);
 

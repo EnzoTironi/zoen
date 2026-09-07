@@ -1,0 +1,415 @@
+import { randomUUID } from "node:crypto";
+
+import {
+  GetObjectCommand,
+  PutBucketVersioningCommand,
+} from "@aws-sdk/client-s3";
+import { expect, it } from "@effect/vitest";
+import { DateTime, Effect, Layer, Schema } from "effect";
+import { SqlClient } from "effect/unstable/sql";
+
+import {
+  sdk,
+  withStorage,
+} from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
+import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
+import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
+import {
+  reserveCapture,
+  stageCapture,
+} from "../../../../packages/authority/src/evidence/worlds/capture.js";
+import { sweepExpiredCaptures } from "../../../../packages/authority/src/evidence/worlds/cleanup.js";
+import {
+  Presence,
+  VerifiedRequestContext,
+} from "../../../../packages/authority/src/ports/worlds/context.js";
+import {
+  EvidenceObjectStore,
+  ObjectLocation,
+} from "../../../../packages/authority/src/ports/worlds/storage.js";
+import { SemanticExecutor } from "../../../../packages/authority/src/semantic/executor.js";
+import {
+  canonicalJson,
+  digestBytes,
+} from "../../../../packages/authority/src/values/canonical.js";
+import { parseImportDocument } from "../../../../packages/authority/src/values/document.js";
+import {
+  EvidenceImported,
+  EvidenceOpened,
+  FrameInspected,
+  WorldCreated,
+} from "../../../../packages/contracts/src/worlds/operations.js";
+import { configuration } from "../commit/fixture.js";
+
+const bytes = (value: unknown) =>
+  canonicalJson(value).pipe(
+    Effect.map((json) => new TextEncoder().encode(json))
+  );
+const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const document =
+  'schemaVersion,sourceNamespace,sourceExternalId,sourceRevision,sourceLabel,recordExternalId,subjectKey,predicate,valueTag,amount,currency,validTimeTag,validFrom,validTo\r\nworlds.csv.v1,manual,billing,1,"Fatura, ""setembro""\r\noriginal",row-1,invoice-1,obligation.amount,Known,100.00,BRL,DateInterval,2026-09-01,2026-10-01\r\nworlds.csv.v1,manual,billing,1,"Fatura, ""setembro""\r\noriginal",row-2,invoice-1,obligation.amount,Unknown,,,Unknown,,\r\n';
+
+it.live(
+  "CSV-07–10 real signup retains versioned CSV bytes, logical records and replay under current authority",
+  () =>
+    withD01IdentityDatabase((fixture) =>
+      withStorage(({ client, config }) =>
+        Effect.gen(function* realCsvJourney() {
+          yield* sdk((signal) =>
+            client.send(
+              new PutBucketVersioningCommand({
+                Bucket: config.bucket,
+                VersioningConfiguration: { Status: "Enabled" },
+              }),
+              { abortSignal: signal }
+            )
+          );
+          const account = yield* createAccount(fixture.config.baseUrl);
+          const executor = yield* SemanticExecutor;
+          const sql = yield* SqlClient.SqlClient;
+          const created = yield* executor
+            .execute(
+              account.credential,
+              yield* bytes({
+                ...envelope,
+                input: {},
+                operation: "CreatePersonalWorld",
+                operationId: randomUUID(),
+              })
+            )
+            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(WorldCreated)));
+          const { worldRef } = created;
+          const request = {
+            ...envelope,
+            input: { document, format: "worlds.csv.v1" },
+            operation: "ImportEvidence",
+            operationId: randomUUID(),
+            worldRef,
+          };
+          const encoded = yield* bytes(request);
+          const [first, concurrent] = yield* Effect.all(
+            [
+              executor.execute(account.credential, encoded),
+              executor.execute(account.credential, encoded),
+            ],
+            { concurrency: "unbounded" }
+          );
+          const imported =
+            yield* Schema.decodeUnknownEffect(EvidenceImported)(first);
+          expect(concurrent).toStrictEqual(imported);
+          expect(
+            yield* sql`SELECT (SELECT count(*)::int FROM authority.evidence) AS evidence, (SELECT count(*)::int FROM authority.claims) AS claims, (SELECT count(*)::int FROM authority.receipts) AS receipts, (SELECT count(*)::int FROM jobs.outbox) AS outbox`
+          ).toStrictEqual([{ claims: 2, evidence: 1, outbox: 2, receipts: 2 }]);
+          const inspected = yield* executor
+            .execute(
+              account.credential,
+              yield* bytes({
+                ...envelope,
+                input: { atFrame: null, subjectKey: "invoice-1" },
+                operation: "Inspect",
+                worldRef,
+              })
+            )
+            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
+          expect(inspected.frame.verification).toBe("unverified");
+          const ordered = inspected.frame.claims.toSorted(
+            (left, right) => left.recordIndex - right.recordIndex
+          );
+          expect(ordered).toMatchObject([
+            {
+              recordId: "row-1",
+              recordIndex: 0,
+              source: { label: 'Fatura, "setembro"\r\noriginal' },
+              validTime: {
+                _tag: "DateInterval",
+                from: "2026-09-01",
+                to: "2026-10-01",
+              },
+              value: { _tag: "Known", amount: "100", currency: "BRL" },
+            },
+            {
+              recordId: "row-2",
+              recordIndex: 1,
+              validTime: { _tag: "Unknown" },
+              value: { _tag: "Unknown" },
+            },
+          ]);
+          const open = {
+            ...envelope,
+            input: { evidenceRef: imported.evidenceRef },
+            operation: "OpenEvidence",
+            worldRef,
+          };
+          const opened = yield* executor
+            .execute(account.credential, yield* bytes(open))
+            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(EvidenceOpened)));
+          expect(opened).toStrictEqual({
+            _tag: "EvidenceOpened",
+            document,
+            evidenceRef: imported.evidenceRef,
+            mediaType: "text/csv",
+          });
+          const [stored] =
+            yield* sql`SELECT c.document_format, c.object_location FROM jobs.captures c JOIN authority.evidence e USING (world_id, realm, capture_id) WHERE e.evidence_id = ${imported.evidenceRef}`.pipe(
+              Effect.flatMap(
+                Schema.decodeUnknownEffect(
+                  Schema.Tuple([
+                    Schema.Struct({
+                      document_format: Schema.Literal("worlds.csv.v1"),
+                      object_location: ObjectLocation,
+                    }),
+                  ])
+                )
+              )
+            );
+          expect(stored.object_location.documentFormat).toBe("worlds.csv.v1");
+          expect(stored.object_location.versionId).not.toBeNull();
+          const object = yield* sdk((signal) =>
+            client.send(
+              new GetObjectCommand({
+                Bucket: config.bucket,
+                Key: stored.object_location.key,
+                VersionId: stored.object_location.versionId ?? undefined,
+              }),
+              { abortSignal: signal }
+            )
+          );
+          const body = yield* Effect.fromNullishOr(object.Body);
+          const retained = yield* sdk(() => body.transformToByteArray());
+          expect({
+            bytes: retained,
+            digest: stored.object_location.digest,
+            length: object.ContentLength,
+            mime: object.ContentType,
+          }).toStrictEqual({
+            bytes: new TextEncoder().encode(document),
+            digest: digestBytes(retained),
+            length: new TextEncoder().encode(document).byteLength,
+            mime: "text/csv",
+          });
+          // SQL and the retained object must agree on the original representation.
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET document_format = 'worlds.json.v1' WHERE capture_id = ${stored.object_location.captureId}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          expect(
+            yield* executor
+              .execute(account.credential, yield* bytes(open))
+              .pipe(Effect.flip)
+          ).toMatchObject({ _tag: "Unavailable" });
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET document_format = 'worlds.csv.v1' WHERE capture_id = ${stored.object_location.captureId}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET object_location = object_location - 'documentFormat' WHERE capture_id = ${stored.object_location.captureId}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          expect(
+            yield* executor
+              .execute(account.credential, yield* bytes(open))
+              .pipe(Effect.flip)
+          ).toMatchObject({ _tag: "Unavailable" });
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET object_location = object_location || '{"documentFormat":"worlds.csv.v1"}'::jsonb WHERE capture_id = ${stored.object_location.captureId}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          const presence = yield* Presence;
+          const now = yield* DateTime.now;
+          const context = yield* Schema.decodeUnknownEffect(
+            VerifiedRequestContext
+          )({
+            deadline: DateTime.formatIso(DateTime.add(now, { seconds: 30 })),
+            presence: yield* presence.verify(account.credential),
+            purpose: envelope.purpose,
+          });
+          const store = yield* EvidenceObjectStore;
+          const orphans: ObjectLocation[] = [];
+          for (const format of ["worlds.csv.v1", "worlds.json.v1"] as const) {
+            const raw = new TextEncoder().encode(
+              format === "worlds.csv.v1" ? document : '{"orphan":true}'
+            );
+            const reservation = yield* reserveCapture(
+              context,
+              worldRef,
+              raw,
+              format
+            );
+            orphans.push(yield* stageCapture(context, reservation, raw));
+          }
+          yield* SqlClient.SqlClient.use(
+            (migration) =>
+              migration`UPDATE jobs.captures SET expires_at = clock_timestamp() - interval '1 second' WHERE capture_id IN ${migration.in([stored.object_location.captureId, ...orphans.map((orphan) => orphan.captureId)])}`
+          ).pipe(Effect.provide(fixture.database.migration));
+          expect(yield* sweepExpiredCaptures(worldRef, null)).toStrictEqual({
+            nextCursor: null,
+            visited: 2,
+          });
+          for (const orphan of orphans) {
+            expect(yield* store.read(orphan).pipe(Effect.flip)).toMatchObject({
+              _tag: "StorageFailure",
+              reason: "NotFound",
+            });
+          }
+          expect(
+            yield* executor.execute(account.credential, yield* bytes(open))
+          ).toStrictEqual(opened);
+          const duplicate = yield* executor
+            .execute(
+              account.credential,
+              yield* bytes({ ...request, operationId: randomUUID() })
+            )
+            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(EvidenceImported)));
+          expect(duplicate.evidenceRef).toBe(imported.evidenceRef);
+          expect(duplicate.receiptRef).not.toBe(imported.receiptRef);
+          expect(
+            yield* executor
+              .execute(
+                account.credential,
+                yield* bytes({
+                  ...request,
+                  input: {
+                    ...request.input,
+                    document: document.replace("100.00", "200.00"),
+                  },
+                })
+              )
+              .pipe(Effect.flip)
+          ).toMatchObject({ _tag: "Conflict" });
+          const equivalentJson = yield* canonicalJson(
+            yield* parseImportDocument(request.input)
+          );
+          expect(
+            yield* executor
+              .execute(
+                account.credential,
+                yield* bytes({
+                  ...request,
+                  input: { document: equivalentJson },
+                  operationId: randomUUID(),
+                })
+              )
+              .pipe(Effect.flip)
+          ).toMatchObject({ _tag: "Conflict" });
+          const stranger = yield* createAccount(fixture.config.baseUrl);
+          const foreignWorld = yield* executor
+            .execute(
+              stranger.credential,
+              yield* bytes({
+                ...envelope,
+                input: {},
+                operation: "CreatePersonalWorld",
+                operationId: randomUUID(),
+              })
+            )
+            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(WorldCreated)));
+          for (const foreignRequest of [
+            open,
+            { ...open, worldRef: foreignWorld.worldRef },
+            request,
+          ]) {
+            expect(
+              yield* executor
+                .execute(stranger.credential, yield* bytes(foreignRequest))
+                .pipe(Effect.flip)
+            ).toMatchObject({ _tag: "NotFoundOrDenied" });
+          }
+          yield* sql`UPDATE authority.memberships SET state = 'revoked', revision = revision + 1 WHERE world_id = ${worldRef.worldId} AND principal_id = ${account.user.id}`;
+          expect(
+            yield* executor
+              .execute(account.credential, encoded)
+              .pipe(Effect.flip)
+          ).toMatchObject({ _tag: "NotFoundOrDenied" });
+          expect(
+            yield* executor
+              .execute(account.credential, yield* bytes(open))
+              .pipe(Effect.flip)
+          ).toMatchObject({ _tag: "NotFoundOrDenied" });
+        }).pipe(
+          Effect.provide(
+            Layer.provideMerge(
+              SemanticExecutor.layer,
+              Layer.mergeAll(
+                configuration,
+                fixture.database.authority,
+                fixture.runtime
+              )
+            )
+          )
+        )
+      )
+    )
+);
+
+it.live(
+  "CSV-05 and CSV-11 reject the complete invalid document before any reservation or semantic publication",
+  () =>
+    withD01IdentityDatabase((fixture) =>
+      withStorage(() =>
+        Effect.gen(function* invalidCsvIsAtomic() {
+          const account = yield* createAccount(fixture.config.baseUrl);
+          const executor = yield* SemanticExecutor;
+          const sql = yield* SqlClient.SqlClient;
+          const created = yield* executor
+            .execute(
+              account.credential,
+              yield* bytes({
+                ...envelope,
+                input: {},
+                operation: "CreatePersonalWorld",
+                operationId: randomUUID(),
+              })
+            )
+            .pipe(Effect.flatMap(Schema.decodeUnknownEffect(WorldCreated)));
+          const invalidDocuments = [
+            document.replace("row-2", "row-1"),
+            document.replace("Unknown,,,Unknown", "Known,1e3,BRL,Unknown"),
+            `${document}\n`,
+            "界".repeat(90_000),
+          ];
+          for (const invalidDocument of invalidDocuments) {
+            const rejected = yield* executor
+              .execute(
+                account.credential,
+                yield* bytes({
+                  ...envelope,
+                  input: { document: invalidDocument, format: "worlds.csv.v1" },
+                  operation: "ImportEvidence",
+                  operationId: randomUUID(),
+                  worldRef: created.worldRef,
+                })
+              )
+              .pipe(Effect.flip);
+            expect(rejected._tag).toBe(
+              invalidDocument === invalidDocuments.at(-1)
+                ? "QuotaExceeded"
+                : "InvalidInput"
+            );
+          }
+          expect(
+            yield* sql`SELECT (SELECT count(*)::int FROM jobs.captures) AS captures, (SELECT count(*)::int FROM authority.evidence) AS evidence, (SELECT count(*)::int FROM authority.claims) AS claims, (SELECT count(*)::int FROM authority.pins) AS pins, (SELECT count(*)::int FROM authority.receipts) AS receipts, (SELECT count(*)::int FROM jobs.outbox) AS outbox`
+          ).toStrictEqual([
+            {
+              captures: 0,
+              claims: 0,
+              evidence: 0,
+              outbox: 1,
+              pins: 0,
+              receipts: 1,
+            },
+          ]);
+        }).pipe(
+          Effect.provide(
+            Layer.provideMerge(
+              SemanticExecutor.layer,
+              Layer.mergeAll(
+                configuration,
+                fixture.database.authority,
+                fixture.runtime
+              )
+            )
+          )
+        )
+      )
+    )
+);

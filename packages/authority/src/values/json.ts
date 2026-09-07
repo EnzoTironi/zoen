@@ -1,7 +1,7 @@
-import { InvalidInput, QuotaExceeded } from "@zoen/contracts/d01/errors";
-import { decodeImportDocument } from "@zoen/contracts/d01/evidence";
-import { decodeD01Request } from "@zoen/contracts/d01/operations";
-import { D01_LIMITS } from "@zoen/contracts/d01/values";
+import { InvalidInput, QuotaExceeded } from "@zoen/contracts/worlds/errors";
+import { decodeImportDocument } from "@zoen/contracts/worlds/evidence";
+import { decodeD01Request } from "@zoen/contracts/worlds/operations";
+import { D01_LIMITS } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 export type JsonValue =

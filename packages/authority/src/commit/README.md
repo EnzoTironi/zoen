@@ -14,7 +14,7 @@ Lock order is World head `FOR SHARE`, operation advisory lock, declared domains 
 
 ## Evidence and limits
 
-Tests in `tests/integration/d01/commit` use the actual EX06 adapter, restricted authority role, candidate DDL and invocation-owned temporary database. Their configuration hashes real synthetic fixture bytes and uses random IDs; it is test input, not a fabricated release admission. They call the explicit private verified-context boundary without mocking Presence. Authentication and end-to-end executor acceptance await EX09/EX10.
+Tests in `tests/integration/worlds/commit` use the actual EX06 adapter, restricted authority role, candidate DDL and invocation-owned temporary database. Their configuration hashes real synthetic fixture bytes and uses random IDs; it is test input, not a fabricated release admission. They call the explicit private verified-context boundary without mocking Presence. Authentication and end-to-end executor acceptance await EX09/EX10.
 
 The tests cover duplicate concurrent genesis, retained replay, revocation, identical denial envelopes for another principal and an absent World, stale predicate/domain guard before writing, rollback at a real outbox constraint, a real deferred FK error at COMMIT, exactly three actual serialization conflicts, and a write-skew conflict emitted only at COMMIT followed by one successful retry. The write-skew test witnesses both completed SQL bodies and one persisted increment. A real division-by-zero SQL failure is attempted only once and returns no SQL detail.
 

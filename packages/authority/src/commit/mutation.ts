@@ -1,21 +1,21 @@
-import { Conflict, Stale, Unavailable } from "@zoen/contracts/d01/errors";
-import type { D01Error } from "@zoen/contracts/d01/errors";
+import { Conflict, Stale, Unavailable } from "@zoen/contracts/worlds/errors";
+import type { D01Error } from "@zoen/contracts/worlds/errors";
 import {
   Digest,
   ReceiptRef,
   Revision,
   exact,
-} from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import type { SqlError } from "effect/unstable/sql";
 
 import { validateContext, withinRequestDeadline } from "../access/context.js";
 import { authorizeWorld, operationCapability } from "../access/world.js";
-import { DomainKey } from "../ports/d01/basis.js";
-import type { DomainCut, InternalBasis } from "../ports/d01/basis.js";
-import type { VerifiedRequestContext } from "../ports/d01/context.js";
-import type { StoredOperationResult } from "../ports/d01/persistence.js";
+import { DomainKey } from "../ports/worlds/basis.js";
+import type { DomainCut, InternalBasis } from "../ports/worlds/basis.js";
+import type { VerifiedRequestContext } from "../ports/worlds/context.js";
+import type { StoredOperationResult } from "../ports/worlds/persistence.js";
 import { intentDigest } from "../values/canonical.js";
 import { AuthorityInstallation } from "./configuration.js";
 import { readCut, validateBasis } from "./guards.js";

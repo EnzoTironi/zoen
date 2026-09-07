@@ -2,16 +2,16 @@ import {
   Blocked,
   NotFoundOrDenied,
   Unavailable,
-} from "@zoen/contracts/d01/errors";
-import type { SemanticRequest } from "@zoen/contracts/d01/operations";
-import { Revision, exact } from "@zoen/contracts/d01/values";
-import type { WorldRef } from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/errors";
+import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
+import { Revision, exact } from "@zoen/contracts/worlds/values";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { Head } from "../ports/d01/basis.js";
-import { DataPolicy } from "../ports/d01/context.js";
-import type { VerifiedRequestContext } from "../ports/d01/context.js";
+import { Head } from "../ports/worlds/basis.js";
+import { DataPolicy } from "../ports/worlds/context.js";
+import type { VerifiedRequestContext } from "../ports/worlds/context.js";
 import { validateContext } from "./context.js";
 
 const AccessRow = Schema.Struct({

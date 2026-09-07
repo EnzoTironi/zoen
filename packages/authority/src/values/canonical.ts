@@ -1,9 +1,9 @@
 import { createHash } from "node:crypto";
 
-import { InvalidInput, QuotaExceeded } from "@zoen/contracts/d01/errors";
-import { decodeSemanticRequest } from "@zoen/contracts/d01/operations";
-import type { SemanticRequest } from "@zoen/contracts/d01/operations";
-import { D01_LIMITS, Digest } from "@zoen/contracts/d01/values";
+import { InvalidInput, QuotaExceeded } from "@zoen/contracts/worlds/errors";
+import { decodeSemanticRequest } from "@zoen/contracts/worlds/operations";
+import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
+import { D01_LIMITS, Digest } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { parseImportDocument } from "./document.js";
@@ -153,7 +153,7 @@ export type DigestDomain =
 const domainDigest = (domain: DigestDomain | "intent", value: unknown) =>
   canonicalJson(value).pipe(
     Effect.map((canonical) =>
-      digestBytes(encoder.encode(`zoen:d01:${domain}:v1\n${canonical}`))
+      digestBytes(encoder.encode(`zoen:worlds:${domain}:v1\n${canonical}`))
     )
   );
 

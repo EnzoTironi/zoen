@@ -20,7 +20,7 @@ import type * as Pg from "pg";
 
 import type * as ApplicationModule from "../../../../apps/server/src/composition.ts";
 import type * as InstallationModule from "../../../../packages/authority/src/commit/configuration.ts";
-import type * as PolicyModule from "../../../../packages/authority/src/ports/d01/context.ts";
+import type * as PolicyModule from "../../../../packages/authority/src/ports/worlds/context.ts";
 import {
   Barrier,
   makeHttpProcessConfiguration,
@@ -156,7 +156,7 @@ const program = Effect.scoped(
       (): Promise<typeof PolicyModule> =>
         import(
           new URL(
-            "../../../../packages/authority/dist/ports/d01/context.js",
+            "../../../../packages/authority/dist/ports/worlds/context.js",
             import.meta.url
           ).href
         )

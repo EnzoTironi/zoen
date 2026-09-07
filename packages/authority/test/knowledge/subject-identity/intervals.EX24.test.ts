@@ -1,5 +1,5 @@
 import { describe, expect, it } from "@effect/vitest";
-import { DateInterval } from "@zoen/contracts/d01/values";
+import { DateInterval } from "@zoen/contracts/worlds/values";
 import { Schema } from "effect";
 
 import {

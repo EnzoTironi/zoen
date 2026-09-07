@@ -4,8 +4,8 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { makeD01PostgresLayer } from "../../../../apps/server/src/adapters/postgres/d01/postgres.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.js";
+import { makeD01PostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { inspectWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/inspect.js";
 import { purgeWorldContent } from "../../../../packages/authority/src/knowledge/erasure/handlers/purge.js";
@@ -17,12 +17,12 @@ import {
   localErasureAttemptRegisterLayer,
 } from "../../../../packages/authority/src/ports/erasure/local-pg.js";
 import { ErasurePurgeStore } from "../../../../packages/authority/src/ports/erasure/purge.js";
-import { CreatePersonalWorld } from "../../../../packages/contracts/src/d01/operations.js";
 import {
   InspectWorldErasure,
   PurgeWorldContent,
   RequestWorldErasure,
 } from "../../../../packages/contracts/src/erasure/operations.js";
+import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 import {
   erasableConfiguration,
   makeContext,
@@ -36,7 +36,7 @@ const emptyObjectLayers = Layer.mergeAll(
       listWorldVersions: (worldRef) =>
         Effect.succeed({
           entries: [],
-          prefix: `d01/${worldRef.realm}/${worldRef.worldId.toLowerCase()}/`,
+          prefix: `worlds/${worldRef.realm}/${worldRef.worldId.toLowerCase()}/`,
         }),
     })
   ),
@@ -120,7 +120,7 @@ const createWorld = Effect.fn("EX45.createWorld")(function* createWorld(
     operation: "CreatePersonalWorld",
     operationId: randomUUID(),
     purpose: "personal-records",
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
   });
   return yield* createPersonalWorld(context, request);
 });

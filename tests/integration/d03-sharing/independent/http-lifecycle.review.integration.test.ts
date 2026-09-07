@@ -11,13 +11,13 @@ import {
 import {
   DataPolicy,
   DataPolicySchema,
-} from "@zoen/authority/ports/d01/context";
-import { WorldCreated } from "@zoen/contracts/d01/operations";
+} from "@zoen/authority/ports/worlds/context";
 import {
   PrincipalRef,
   WorldReadAccessGranted,
   WorldReadAccessRevoked,
 } from "@zoen/contracts/sharing/operations";
+import { WorldCreated } from "@zoen/contracts/worlds/operations";
 import {
   Deferred,
   Effect,
@@ -40,10 +40,10 @@ import { SqlClient } from "effect/unstable/sql";
 import {
   sdk,
   withStorage,
-} from "../../../../apps/server/test/adapters/object-storage/d01/fixture.ts";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
+} from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { applyIdentityBasisMigrations } from "../../../../ops/migrations/run.ts";
-import { configuration } from "../../d01/commit/fixture.ts";
+import { configuration } from "../../worlds/commit/fixture.ts";
 import { makeHttpProcessConfiguration } from "./http-process-configuration.ts";
 
 const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
@@ -54,12 +54,12 @@ const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
     }),
     Effect.timeout("8 seconds")
   );
-const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
 };
-const path = "/api/d01/execute";
+const path = "/api/worlds/execute";
 const sharingPath = "/api/d03/sharing";
 const post = Effect.fn("review.publicHttp")(function* post(
   origin: string,

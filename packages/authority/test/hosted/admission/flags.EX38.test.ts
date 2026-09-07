@@ -102,7 +102,7 @@ describe("EX38 hosted retained admission flags", () => {
       Result.isFailure(
         Schema.decodeUnknownResult(HostedRetainedAdmissionFlags)({
           ...d04HostedRetainedAdmissionFlags,
-          profileId: "d01-local-retained-v1",
+          profileId: "worlds-local-retained-v1",
         })
       )
     ).toBeTruthy();

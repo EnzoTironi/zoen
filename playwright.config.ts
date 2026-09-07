@@ -6,7 +6,7 @@ export default defineConfig({
   outputDir: `test-results/components-${Effect.runSync(Clock.currentTimeMillis)}`,
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   retries: 0,
-  testDir: "apps/web/test/components/d01",
+  testDir: "apps/web/test/components/worlds",
   testMatch: "**/*.spec.ts",
   use: {
     baseURL: "http://127.0.0.1:4174",

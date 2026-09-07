@@ -20,7 +20,7 @@ Em 2026-09-06 (PT), o **congelamento mínimo** de erasure está em [`docs/contra
 | Object Lock / retention (RustFS local) | **Qualificado** — `docs/verification/erasure-storage-qualification.md` |
 | restoreAfterErasure | **false** / fechado |
 
-Worlds `d01-local-retained-v1` continuam **sem** erasure. Perfil candidato `d03-local-erasable-v1` só via provisionamento explícito de instalação **nova** (`ZOEN_LOCAL_WORLD_POLICY=d03-local-erasable-v1`). Sem rebind/migração de Worlds retidos (F02).
+Worlds `worlds-local-retained-v1` continuam **sem** erasure. Perfil candidato `d03-local-erasable-v1` só via provisionamento explícito de instalação **nova** (`ZOEN_LOCAL_WORLD_POLICY=d03-local-erasable-v1`). Sem rebind/migração de Worlds retidos (F02).
 
 ## Provisionamento local (EX34)
 

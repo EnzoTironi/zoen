@@ -1,8 +1,8 @@
 import { useId } from "react";
 
-import { field } from "../d01/form.ts";
-import type { WorkspaceState } from "../d01/model.ts";
-import type { WorkspaceController } from "../d01/state.ts";
+import { field } from "../worlds/form.ts";
+import type { WorkspaceState } from "../worlds/model.ts";
+import type { WorkspaceController } from "../worlds/state.ts";
 import type { AccessTarget } from "./model.ts";
 import { audience } from "./model.ts";
 
@@ -116,7 +116,7 @@ export const SharingPanel = ({
   return (
     <section
       aria-label="Compartilhar leitura"
-      className="d01-workspace d01-context"
+      className="worlds-workspace d01-context"
     >
       <div className="d01-context-inner">
         <h2>Compartilhar leitura deste espaço</h2>
