@@ -11,7 +11,7 @@ Em 2026-09-06 (PT), tip verificado: `7e91940` (`7e9194024a551f2ba99faf00d726b4bb
 | Restore disposable escopo retained | Landed (EX37); compose PG/S3 local |
 | Admission flags (H06 / ZN-0288) | Landed (EX38); web/cli/file ready; canais/providers disabled/Blocked |
 | Compose/provision local (EX39) | Landed — perfil hosted só em **Worlds novos** via `ZOEN_LOCAL_WORLD_POLICY`; retained default |
-| `ops/fly/**` | Stubs apenas; **sem** `fly deploy` / apps create / MPG / Tigris |
+| `ops/fly/**` | All-in-one VM (PG+RustFS+app no volume); **sem** MPG/Tigris |
 | D04 ativado / cutover `zoen` | **Não** |
 | D03 purge / restore-após-erasure | **Bloqueado** |
 
@@ -52,20 +52,23 @@ pnpm exec vitest run --project integration \
 python3 tooling/verify_plan.py
 ```
 
-## Checklist de bloqueadores Fly (próxima aprovação humana)
+## Hosted path (ativação): all-in-one VM
 
-1. Criar app Fly `zoen-rebuild` (custo consciente) — **proibido neste pacote**.
-2. Provisionar Managed Postgres e/ou object store (Tigris) na org.
-3. Definir e setar secrets do redesign (`ZOEN_*` authority/identity/S3/Better Auth) via `fly secrets` — **não** reutilizar secrets do legado `zoen`.
-4. Build/push da imagem (`ops/containers/application.Dockerfile`) e `fly deploy` sob EX de ativação.
-5. Prova de health `/ready` + restore admitido além do disposable local.
-6. Decisão explícita de cutover DNS/legado (fora deste incremento).
-7. Para piloto **sensível**: D03 purge + restore-após-erasure (ZN-0116) ainda blocked.
+Enzo rejeitou Managed Postgres e Managed S3/Tigris. Persistência = **volume único** na VM:
+
+1. App Fly `zoen-rebuild` (já criado; pending até o primeiro deploy).
+2. Volume `zoen_data` (ex. 10GB) montado em `/data` — PG + object bytes.
+3. Imagem `ops/containers/all-in-one.Dockerfile` (Postgres + RustFS + server).
+4. Secret mínimo: `ZOEN_AUTH_SECRET` via `fly secrets set` (DB/S3 loopback no `[env]` / volume).
+5. `fly deploy -a zoen-rebuild --config ops/fly/fly.toml --dockerfile ops/containers/all-in-one.Dockerfile`
+6. Prova: `fly status` + `curl https://zoen-rebuild.fly.dev/ready` (scale count 1 se `min_machines=0`).
+7. **Não** recriar MPG/Tigris; **não** cutover do legado `zoen` sem decisão explícita.
+8. Piloto **sensível**: D03 purge + restore-após-erasure (ZN-0116) ainda blocked.
 
 ## Não alegado
 
-- D04 `activated` / produção hospedada.
+- D04 `activated` / piloto sensível completo.
 - Cutover do app `zoen` / DNS `zoen.tironi.xyz`.
-- MPG/Tigris/secrets provisionados.
+- MPG/Tigris (rejeitados; all-in-one substitui).
 - WhatsApp real ou providers saudáveis.
 - ZN-0116 / restore-após-erasure.

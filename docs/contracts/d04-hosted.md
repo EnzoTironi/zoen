@@ -9,6 +9,10 @@ Status: candidato. Congelamento mínimo executável em `docs/contracts/d04-hoste
 3. Manter canais/providers não admitidos desabilitados de forma explícita.
 4. Separar stubs/ops do ato de deploy (deploy exige EX de ativação posterior e recursos reais).
 
+## Persistência Fly (ativação)
+
+All-in-one VM (`ops/containers/all-in-one.Dockerfile`): Postgres + RustFS + server, volume único `/data`. **Sem** Managed Postgres / Tigris.
+
 ## Fora de escopo deste incremento
 
 - Cutover do app legado `zoen` / DNS de produção.

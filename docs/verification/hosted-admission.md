@@ -13,4 +13,4 @@ Perfil `d04-hosted-retained-v1` declara admission flags honestos: só superfíci
 
 ## Não alegado
 
-- D04 ativado, Fly deploy/MPG/Tigris, cutover do app `zoen`, WhatsApp real, restore-após-erasure
+- D04 ativado, cutover do app `zoen`, WhatsApp real, restore-após-erasure; MPG/Tigris rejeitados (all-in-one)

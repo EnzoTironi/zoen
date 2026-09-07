@@ -13,7 +13,7 @@ Fonte tip de partida: `bb608c4` (Closing/register local EX30–EX34 verificado e
 | `ops/fly/**` | Ausente até este incremento — stubs sem deploy. |
 | CLI `fly` / auth | Presente (`enzo.tironi.2001@gmail.com`, org personal). |
 | App Fly legado `zoen` | Existe em `gru`; imagem/legado distinto; health check critical; secrets de produto antigo (Restate/WhatsApp/MinIO loopback). **Não é destino de cutover.** |
-| Fly Postgres / Tigris (org) | Nenhum cluster/bucket listado na org. |
+| Persistência hosted | All-in-one VM+volume (PG+RustFS); MPG/Tigris **rejeitados** (não recriar). |
 | Secrets do rebuild | Não provisionados (autoridade/identity/S3/Better Auth do monólito modular). |
 | Perfis Worlds | `d01-local-retained-v1` e candidato `d03-local-erasable-v1` (local); candidato hosted `d04-hosted-retained-v1` (EX36 schemas; sem ativação/deploy). |
 
@@ -27,16 +27,16 @@ Fonte tip de partida: `bb608c4` (Closing/register local EX30–EX34 verificado e
 | H04 | Sem cutover implícito: app/host novos ≠ substituir `zoen` legado nem DNS `zoen.tironi.xyz` sem decisão explícita. | Stubs usam app candidato `zoen-rebuild` (criar só em EX posterior com custo consciente). |
 | H05 | Docker local / imagem CI ≠ operação Fly. | Deploy, persistência gerenciada, backup e recover exigem provas próprias. |
 | H06 | Admission flags: canais/modelos/conectores ausentes ficam **explicitamente desabilitados**, nunca mock-saudáveis (ZN-0288). | Web/CLI/file do núcleo D01 no perfil; WhatsApp/Telegram/etc. fora. |
-| H07 | `ops/fly/fly.toml` e Dockerfile path são stubs revisáveis; **proibido** `fly deploy` / `fly apps create` / provisionar MPG/Tigris neste freeze. | Auth presente não autoriza gasto; bloqueio documentado até EX de ativação. |
+| H07 | Hosted = all-in-one Dockerfile+volume; **proibido** provisionar MPG/Tigris. Deploy do `zoen-rebuild` exige confirmação de custo. | Auth presente ≠ MPG/Tigris; cutover `zoen` continua bloqueado. |
 | H08 | Paths de domínio: `hosted/**`, `ops/fly/**`. | Sem rename em massa de rotas/pastas `d0x`. |
 
 ## Ainda bloqueado (gates antes de ativar D04 / piloto sensível)
 
 | Gate | Por quê |
 | --- | --- |
-| Conta de persistência hospedada (PG + object store) | Org sem MPG/Tigris; credenciais rebuild não criadas. |
-| App Fly `zoen-rebuild` | Não criado (evita cobrança/recurso ocioso). |
-| Deploy + health real | Stubs apenas; máquina legada `zoen` não é prova do rebuild. |
+| Conta de persistência hospedada | All-in-one volume (não MPG/Tigris). |
+| App Fly `zoen-rebuild` | Criado (pending) — deploy all-in-one sob ativação. |
+| Deploy + health real | Provar `/ready` na VM all-in-one; legado `zoen` não conta. |
 | Catálogo de backup/cópias do host | Necessário para restore admitido além do disposable. |
 | D03 purge + restore-after-erasure (ZN-0116) | Pré-requisito do **piloto sensível** D04; Closing/register local ≠ D03 integral. |
 | Cutover DNS/legado | Decisão humana explícita; fora deste incremento. |

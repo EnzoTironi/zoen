@@ -18,7 +18,7 @@ Evidência de código: `tests/integration/hosted/restore/**` (harness `dump-rest
 ## O que NÃO foi alegado
 
 - Catálogo de backup hospedado / RPO/RTO / restore online de produção
-- Fly app `zoen-rebuild`, Managed Postgres, Tigris, secrets managed
+- Operação Fly all-in-one de produção; MPG/Tigris (rejeitados); secrets além do mínimo
 - Cutover DNS/`zoen` legado
 - D03 purge, fencing ER-R02, ou restore-após-erasure (ZN-0116)
 - Rebind/migração de Worlds `d01-*` / `d03-*` existentes

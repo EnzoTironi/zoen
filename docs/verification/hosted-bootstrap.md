@@ -7,14 +7,14 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 - Fly auth: yes (`fly auth whoami` → signed-in personal org).
 - Dockerfile de aplicação: `ops/containers/application.Dockerfile`.
 - Compose local PG/S3: `ops/compose.yaml`.
-- Stubs: `ops/fly/fly.toml`, `ops/fly/README.md` (sem `fly deploy`).
+- All-in-one: `ops/fly/fly.toml`, `ops/fly/README.md`, `ops/containers/all-in-one.Dockerfile` (PG+RustFS+app; sem MPG/Tigris).
 
-## Ausente / bloqueadores para deploy
+## Hosted persistence (decisão)
 
-- App Fly `zoen-rebuild` não criado (proposital; evita gasto).
-- Sem Fly Managed Postgres / Tigris na org no inventário desta data.
-- Secrets do redesign não provisionados no Fly.
-- App legado `zoen` não é evidência do monólito modular (topologia/segredos distintos; check critical).
+- **All-in-one VM** com volume único — **não** MPG, **não** Tigris (rejeitados).
+- App Fly `zoen-rebuild` existe (pending até deploy da imagem all-in-one).
+- Secret mínimo esperado: `ZOEN_AUTH_SECRET`; URLs DB/S3 loopback no container/volume.
+- App legado `zoen` não é evidência do monólito modular (topologia/segredos distintos; sem cutover).
 
 ## Não alegado
 
@@ -46,5 +46,5 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 - Composition: `hostedAdmissionLayerFor` → `HostedAdmissionFlags` when hosted policy
 - Doc: `docs/verification/hosted-local.md`
 - Independent: `tests/integration/hosted/independent/**`
-- `ops/fly/**` permanece stub; **sem** Fly deploy/MPG/Tigris
+- `ops/fly/**` all-in-one; **sem** MPG/Tigris
 - `verified_for_profile` **somente** bootstrap local hosted-retained — não produção Fly

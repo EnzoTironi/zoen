@@ -1,7 +1,13 @@
-# STUB ONLY — D04 / EX35. Do not `fly deploy` or `fly apps create` from this file
-# without an explicit activation package. Candidate app name is not provisioned yet.
-#
+# Zoen rebuild — all-in-one Fly VM (app + Postgres + RustFS on one volume).
+# Hosted path rejected Managed Postgres and Managed S3/Tigris (Enzo).
 # Legacy app `zoen` is a different product topology; do not cut over here.
+#
+# Deploy from repository root:
+#   fly deploy -a zoen-rebuild --config ops/fly/fly.toml
+# (build context = repo root cwd; dockerfile path is relative to ops/fly/)
+#
+# Requires volume `zoen_data` mounted at /data (create once):
+#   fly volumes create zoen_data --region gru --size 10 -a zoen-rebuild --yes
 
 app = "zoen-rebuild"
 primary_region = "gru"
@@ -9,13 +15,21 @@ kill_signal = "SIGTERM"
 kill_timeout = "45s"
 
 [build]
-dockerfile = "ops/containers/application.Dockerfile"
+dockerfile = "../containers/all-in-one.Dockerfile"
 
 [env]
 ZOEN_LISTEN_HOST = "0.0.0.0"
 ZOEN_PORT = "4310"
-# Secrets (DATABASE_URL / S3 / Better Auth / etc.) must be set via `fly secrets`
-# after an activation EX — never commit credentials.
+ZOEN_PUBLIC_URL = "https://zoen-rebuild.fly.dev"
+ZOEN_S3_ENDPOINT = "http://127.0.0.1:9000"
+ZOEN_S3_REGION = "us-east-1"
+ZOEN_S3_BUCKET = "zoen"
+ZOEN_INSTALLATION_FILE = "/data/zoen/installation.json"
+ZOEN_RUNTIME_ENV_FILE = "/data/zoen/runtime.env"
+ZOEN_WORLD_POLICY = "d04-hosted-retained-v1"
+ZOEN_BOOTSTRAP_ADMIN_URL = "postgresql://zoen_infra@127.0.0.1:5432/postgres"
+# DB role URLs are minted on first boot onto the volume (not secrets).
+# Set ZOEN_AUTH_SECRET via `fly secrets set` (never commit).
 
 [http_service]
 internal_port = 4310
@@ -23,7 +37,6 @@ force_https = true
 auto_stop_machines = "stop"
 auto_start_machines = true
 min_machines_running = 0
-processes = ["app"]
 
 [http_service.concurrency]
 type = "connections"
@@ -33,6 +46,15 @@ soft_limit = 80
 [[http_service.checks]]
 interval = "15s"
 timeout = "5s"
-grace_period = "2m"
+grace_period = "1m"
 method = "GET"
 path = "/ready"
+
+[[mounts]]
+source = "zoen_data"
+destination = "/data"
+
+[[vm]]
+size = "shared-cpu-1x"
+memory = "2048mb"
+cpus = 1
