@@ -111,18 +111,18 @@ export const parseHostedInstallationFile = (
 export type ReleaseAlignPlan =
   | { readonly kind: "skip" }
   | {
-      readonly kind: "align";
       readonly authorityUrl: string;
+      readonly kind: "align";
       readonly next: HostedInstallationFile;
       readonly previousDigest: string;
       readonly releaseDigest: string;
     }
   | {
-      readonly kind: "error";
       readonly code:
         | "INVALID_INSTALLATION_FILE"
         | "RUNTIME_ENV_MISSING_AUTHORITY"
         | "RUNTIME_ENV_MALFORMED";
+      readonly kind: "error";
     };
 
 /**
@@ -138,11 +138,11 @@ export const planReleaseAlign = (
   try {
     installedUnknown = JSON.parse(installationText);
   } catch {
-    return { kind: "error", code: "INVALID_INSTALLATION_FILE" };
+    return { code: "INVALID_INSTALLATION_FILE", kind: "error" };
   }
   const hosted = parseHostedInstallationFile(installedUnknown);
   if (hosted === null) {
-    return { kind: "error", code: "INVALID_INSTALLATION_FILE" };
+    return { code: "INVALID_INSTALLATION_FILE", kind: "error" };
   }
   const releaseDigest = digestReleaseBytes(releaseBytes);
   const aligned = alignInstallationRelease(hosted, releaseDigest);
@@ -151,15 +151,15 @@ export const planReleaseAlign = (
   }
   const runtimeEnv = parseQuotedEnvFile(runtimeEnvText);
   if (runtimeEnv === null) {
-    return { kind: "error", code: "RUNTIME_ENV_MALFORMED" };
+    return { code: "RUNTIME_ENV_MALFORMED", kind: "error" };
   }
   const authorityUrl = runtimeEnv.ZOEN_AUTHORITY_DATABASE_URL;
   if (authorityUrl === undefined || authorityUrl.length === 0) {
-    return { kind: "error", code: "RUNTIME_ENV_MISSING_AUTHORITY" };
+    return { code: "RUNTIME_ENV_MISSING_AUTHORITY", kind: "error" };
   }
   return {
-    kind: "align",
     authorityUrl,
+    kind: "align",
     next: aligned.next,
     previousDigest: hosted.installation.releaseDigest,
     releaseDigest,

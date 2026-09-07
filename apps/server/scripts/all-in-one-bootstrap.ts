@@ -1,4 +1,4 @@
-import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 import {
@@ -23,11 +23,9 @@ import { SqlClient } from "effect/unstable/sql";
 import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
 import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
 import {
-  alignInstallationRelease,
   digestReleaseBytes,
-  parseHostedInstallationFile,
-  parseQuotedEnvFile,
-} from "../dist/all-in-one-release-align.js";
+  planReleaseAlign,
+} from "../src/all-in-one-release-align.ts";
 
 class BootstrapError extends Schema.TaggedError<BootstrapError>()(
   "BootstrapError",
@@ -61,45 +59,27 @@ const alignExistingHostedRelease = (input: {
       releaseFile,
       runtimeEnvPath,
     } = input;
-    const releaseDigest = digestReleaseBytes(yield* fs.readFile(releaseFile));
-    const installationText = yield* fs.readFileString(installationPath);
-    const installedUnknown = yield* Schema.decodeEffect(
-      Schema.fromJsonString(Schema.Unknown)
-    )(installationText).pipe(
-      Effect.mapError(
-        () => new BootstrapError({ code: "INVALID_INSTALLATION_FILE" })
-      )
-    );
-    const hosted = parseHostedInstallationFile(installedUnknown);
-    if (hosted === null) {
-      return yield* new BootstrapError({ code: "INVALID_INSTALLATION_FILE" });
-    }
-    const aligned = alignInstallationRelease(hosted, releaseDigest);
-    if (!aligned.changed) {
-      return yield* Effect.logInfo({ event: "all-in-one.bootstrap.skip" });
-    }
-    const runtimeEnv = parseQuotedEnvFile(
+    const plan = planReleaseAlign(
+      yield* fs.readFileString(installationPath),
+      yield* fs.readFile(releaseFile),
       yield* fs.readFileString(runtimeEnvPath)
     );
-    const authorityUrl = runtimeEnv?.ZOEN_AUTHORITY_DATABASE_URL;
-    if (authorityUrl === undefined) {
-      return yield* new BootstrapError({
-        code: "RUNTIME_ENV_MISSING_AUTHORITY",
-      });
+    if (plan.kind === "error") {
+      return yield* new BootstrapError({ code: plan.code });
     }
-    const {
-      cellId,
-      generationId,
-      releaseDigest: previousDigest,
-    } = hosted.installation;
+    if (plan.kind === "skip") {
+      return yield* Effect.logInfo({ event: "all-in-one.bootstrap.skip" });
+    }
+    const { authorityUrl, next, previousDigest, releaseDigest } = plan;
+    const { cellId, generationId } = next.installation;
     yield* Effect.gen(function* rewriteWorldsReleaseDigest() {
       const sql = yield* SqlClient.SqlClient;
+      // Pre-launch: force cell/generation onto the image digest (no dual-read).
       yield* sql`
         UPDATE authority.worlds
         SET release_digest = ${releaseDigest}
         WHERE cell_id = ${cellId}::uuid
           AND generation_id = ${generationId}::uuid
-          AND release_digest = ${previousDigest}
       `;
     }).pipe(
       Effect.provide(
@@ -109,7 +89,7 @@ const alignExistingHostedRelease = (input: {
         })
       )
     );
-    const encoded = yield* encodeInstallation(aligned.next);
+    const encoded = yield* encodeInstallation(next);
     const tmpPath = `${installationPath}.tmp`;
     if (yield* fs.exists(tmpPath)) {
       yield* fs.remove(tmpPath);
@@ -193,7 +173,7 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     cellEpoch: "1",
     cellId: randomUUID(),
     generationId: randomUUID(),
-    releaseDigest: createHash("sha256").update(release).digest("hex"),
+    releaseDigest: digestReleaseBytes(release),
   };
 
   yield* fs.makeDirectory(stateDir, { mode: 0o700, recursive: true });
