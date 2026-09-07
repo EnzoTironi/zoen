@@ -109,13 +109,21 @@ export const parseHostedInstallationFile = (
 };
 
 export type ReleaseAlignPlan =
-  | { readonly kind: "skip" }
   | {
       readonly authorityUrl: string;
-      readonly kind: "align";
-      readonly next: HostedInstallationFile;
-      readonly previousDigest: string;
+      readonly cellId: string;
+      readonly generationId: string;
+      readonly kind: "ready";
       readonly releaseDigest: string;
+      /**
+       * When non-null, atomically replace installation.json after worlds
+       * reconcile. When null, installation already matches the image — still
+       * reconcile worlds (crash/rollback recovery).
+       */
+      readonly rewriteInstallation: {
+        readonly next: HostedInstallationFile;
+        readonly previousDigest: string;
+      } | null;
     }
   | {
       readonly code:
@@ -125,9 +133,50 @@ export type ReleaseAlignPlan =
       readonly kind: "error";
     };
 
+export type ReleaseAlignStep =
+  | {
+      readonly authorityUrl: string;
+      readonly cellId: string;
+      readonly generationId: string;
+      readonly releaseDigest: string;
+      readonly step: "reconcile-worlds";
+    }
+  | {
+      readonly next: HostedInstallationFile;
+      readonly previousDigest: string;
+      readonly step: "rewrite-installation";
+    };
+
 /**
- * Decide whether a volume with `.bootstrap-complete` must rewrite digests for a
- * new image release.json. Pure — bootstrap applies FS/SQL side effects.
+ * Ordered side effects for a ready plan. Worlds reconcile always runs first so
+ * a crash after DB update + image rollback still heals on the next boot of the
+ * restored image (installation matches → rewrite null → worlds forced back).
+ */
+export const releaseAlignSteps = (
+  plan: Extract<ReleaseAlignPlan, { readonly kind: "ready" }>
+): readonly ReleaseAlignStep[] => {
+  const steps: ReleaseAlignStep[] = [
+    {
+      authorityUrl: plan.authorityUrl,
+      cellId: plan.cellId,
+      generationId: plan.generationId,
+      releaseDigest: plan.releaseDigest,
+      step: "reconcile-worlds",
+    },
+  ];
+  if (plan.rewriteInstallation !== null) {
+    steps.push({
+      next: plan.rewriteInstallation.next,
+      previousDigest: plan.rewriteInstallation.previousDigest,
+      step: "rewrite-installation",
+    });
+  }
+  return steps;
+};
+
+/**
+ * Decide how a volume with `.bootstrap-complete` aligns to the image
+ * release.json. Pure — bootstrap applies FS/SQL from {@link releaseAlignSteps}.
  */
 export const planReleaseAlign = (
   installationText: string,
@@ -144,11 +193,6 @@ export const planReleaseAlign = (
   if (hosted === null) {
     return { code: "INVALID_INSTALLATION_FILE", kind: "error" };
   }
-  const releaseDigest = digestReleaseBytes(releaseBytes);
-  const aligned = alignInstallationRelease(hosted, releaseDigest);
-  if (!aligned.changed) {
-    return { kind: "skip" };
-  }
   const runtimeEnv = parseQuotedEnvFile(runtimeEnvText);
   if (runtimeEnv === null) {
     return { code: "RUNTIME_ENV_MALFORMED", kind: "error" };
@@ -157,11 +201,28 @@ export const planReleaseAlign = (
   if (authorityUrl === undefined || authorityUrl.length === 0) {
     return { code: "RUNTIME_ENV_MISSING_AUTHORITY", kind: "error" };
   }
+  const releaseDigest = digestReleaseBytes(releaseBytes);
+  const aligned = alignInstallationRelease(hosted, releaseDigest);
+  const { cellId, generationId } = hosted.installation;
+  if (!aligned.changed) {
+    return {
+      authorityUrl,
+      cellId,
+      generationId,
+      kind: "ready",
+      releaseDigest,
+      rewriteInstallation: null,
+    };
+  }
   return {
     authorityUrl,
-    kind: "align",
-    next: aligned.next,
-    previousDigest: hosted.installation.releaseDigest,
+    cellId,
+    generationId,
+    kind: "ready",
     releaseDigest,
+    rewriteInstallation: {
+      next: aligned.next,
+      previousDigest: hosted.installation.releaseDigest,
+    },
   };
 };

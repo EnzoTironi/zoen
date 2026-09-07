@@ -25,6 +25,7 @@ import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
 import {
   digestReleaseBytes,
   planReleaseAlign,
+  releaseAlignSteps,
 } from "../src/all-in-one-release-align.ts";
 
 class BootstrapError extends Schema.TaggedError<BootstrapError>()(
@@ -67,39 +68,52 @@ const alignExistingHostedRelease = (input: {
     if (plan.kind === "error") {
       return yield* new BootstrapError({ code: plan.code });
     }
-    if (plan.kind === "skip") {
-      return yield* Effect.logInfo({ event: "all-in-one.bootstrap.skip" });
+    const steps = releaseAlignSteps(plan);
+    let rewritten = false;
+    let previousDigest: string | null = null;
+    for (const step of steps) {
+      if (step.step === "reconcile-worlds") {
+        yield* Effect.gen(function* rewriteWorldsReleaseDigest() {
+          const sql = yield* SqlClient.SqlClient;
+          // Always force cell/generation onto the running image digest so a
+          // crash after UPDATE + image rollback still heals on next boot.
+          yield* sql`
+            UPDATE authority.worlds
+            SET release_digest = ${step.releaseDigest}
+            WHERE cell_id = ${step.cellId}::uuid
+              AND generation_id = ${step.generationId}::uuid
+          `;
+        }).pipe(
+          Effect.provide(
+            PgClient.layer({
+              maxConnections: 1,
+              url: Redacted.make(step.authorityUrl),
+            })
+          )
+        );
+        continue;
+      }
+      const { next, previousDigest: fromDigest } = step;
+      const encoded = yield* encodeInstallation(next);
+      const tmpPath = `${installationPath}.tmp`;
+      if (yield* fs.exists(tmpPath)) {
+        yield* fs.remove(tmpPath);
+      }
+      yield* fs.writeFileString(tmpPath, encoded, { flag: "wx", mode: 0o600 });
+      yield* fs.rename(tmpPath, installationPath);
+      rewritten = true;
+      previousDigest = fromDigest;
     }
-    const { authorityUrl, next, previousDigest, releaseDigest } = plan;
-    const { cellId, generationId } = next.installation;
-    yield* Effect.gen(function* rewriteWorldsReleaseDigest() {
-      const sql = yield* SqlClient.SqlClient;
-      // Pre-launch: force cell/generation onto the image digest (no dual-read).
-      yield* sql`
-        UPDATE authority.worlds
-        SET release_digest = ${releaseDigest}
-        WHERE cell_id = ${cellId}::uuid
-          AND generation_id = ${generationId}::uuid
-      `;
-    }).pipe(
-      Effect.provide(
-        PgClient.layer({
-          maxConnections: 1,
-          url: Redacted.make(authorityUrl),
-        })
-      )
-    );
-    const encoded = yield* encodeInstallation(next);
-    const tmpPath = `${installationPath}.tmp`;
-    if (yield* fs.exists(tmpPath)) {
-      yield* fs.remove(tmpPath);
+    if (!rewritten) {
+      return yield* Effect.logInfo({
+        event: "all-in-one.bootstrap.release-reconciled",
+        releaseDigest: plan.releaseDigest,
+      });
     }
-    yield* fs.writeFileString(tmpPath, encoded, { flag: "wx", mode: 0o600 });
-    yield* fs.rename(tmpPath, installationPath);
     return yield* Effect.logInfo({
       event: "all-in-one.bootstrap.release-aligned",
       from: previousDigest,
-      to: releaseDigest,
+      to: plan.releaseDigest,
     });
   });
 

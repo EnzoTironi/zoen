@@ -6,6 +6,7 @@ import {
   parseHostedInstallationFile,
   parseQuotedEnvFile,
   planReleaseAlign,
+  releaseAlignSteps,
 } from "../src/all-in-one-release-align.ts";
 import { ServerConfigurationError } from "../src/configuration.ts";
 
@@ -80,7 +81,85 @@ describe("all-in-one release align", () => {
     expect(parseHostedInstallationFile(null)).toBeNull();
   });
 
-  it("plans skip when volume digest already matches release.json", () => {
+  it("plans ready with rewrite null when volume digest matches", () => {
+    const digest = digestReleaseBytes(new TextEncoder().encode("same\n"));
+    const installed = {
+      ...sampleInstallation,
+      installation: {
+        ...sampleInstallation.installation,
+        releaseDigest: digest,
+      },
+    };
+    const plan = planReleaseAlign(
+      `${JSON.stringify(installed)}\n`,
+      new TextEncoder().encode("same\n"),
+      authorityEnv
+    );
+    expect(plan).toStrictEqual({
+      authorityUrl: "postgresql://auth@127.0.0.1/zoen",
+      cellId: "11111111-1111-4111-8111-111111111111",
+      generationId: "22222222-2222-4222-8222-222222222222",
+      kind: "ready",
+      releaseDigest: digest,
+      rewriteInstallation: null,
+    });
+    if (plan.kind !== "ready") {
+      return;
+    }
+    expect(releaseAlignSteps(plan)).toStrictEqual([
+      {
+        authorityUrl: "postgresql://auth@127.0.0.1/zoen",
+        cellId: "11111111-1111-4111-8111-111111111111",
+        generationId: "22222222-2222-4222-8222-222222222222",
+        releaseDigest: digest,
+        step: "reconcile-worlds",
+      },
+    ]);
+  });
+
+  it("plans ready with rewrite when release.json digest changes", () => {
+    const releaseBytes = new TextEncoder().encode('{"format":"next"}\n');
+    const releaseDigest = digestReleaseBytes(releaseBytes);
+    const plan = planReleaseAlign(
+      `${JSON.stringify(sampleInstallation)}\n`,
+      releaseBytes,
+      authorityEnv
+    );
+    expect(plan).toStrictEqual({
+      authorityUrl: "postgresql://auth@127.0.0.1/zoen",
+      cellId: "11111111-1111-4111-8111-111111111111",
+      generationId: "22222222-2222-4222-8222-222222222222",
+      kind: "ready",
+      releaseDigest,
+      rewriteInstallation: {
+        next: {
+          installation: {
+            cellEpoch: "1",
+            cellId: "11111111-1111-4111-8111-111111111111",
+            generationId: "22222222-2222-4222-8222-222222222222",
+            releaseDigest,
+          },
+          policy: { profileId: "d04-hosted-retained-v1" },
+        },
+        previousDigest: "a".repeat(64),
+      },
+    });
+    if (plan.kind !== "ready") {
+      return;
+    }
+    expect(releaseAlignSteps(plan).map((step) => step.step)).toStrictEqual([
+      "reconcile-worlds",
+      "rewrite-installation",
+    ]);
+  });
+
+  it("plans INVALID_INSTALLATION_FILE for bad JSON", () => {
+    expect(
+      planReleaseAlign("{", new TextEncoder().encode("x"), authorityEnv)
+    ).toStrictEqual({ code: "INVALID_INSTALLATION_FILE", kind: "error" });
+  });
+
+  it("plans RUNTIME_ENV_MALFORMED when digests would match", () => {
     const digest = digestReleaseBytes(new TextEncoder().encode("same\n"));
     const installed = {
       ...sampleInstallation,
@@ -93,48 +172,6 @@ describe("all-in-one release align", () => {
       planReleaseAlign(
         `${JSON.stringify(installed)}\n`,
         new TextEncoder().encode("same\n"),
-        authorityEnv
-      )
-    ).toStrictEqual({ kind: "skip" });
-  });
-
-  it("plans align with authority URL when release.json digest changes", () => {
-    const releaseBytes = new TextEncoder().encode('{"format":"next"}\n');
-    const releaseDigest = digestReleaseBytes(releaseBytes);
-    expect(
-      planReleaseAlign(
-        `${JSON.stringify(sampleInstallation)}\n`,
-        releaseBytes,
-        authorityEnv
-      )
-    ).toStrictEqual({
-      authorityUrl: "postgresql://auth@127.0.0.1/zoen",
-      kind: "align",
-      next: {
-        installation: {
-          cellEpoch: "1",
-          cellId: "11111111-1111-4111-8111-111111111111",
-          generationId: "22222222-2222-4222-8222-222222222222",
-          releaseDigest,
-        },
-        policy: { profileId: "d04-hosted-retained-v1" },
-      },
-      previousDigest: "a".repeat(64),
-      releaseDigest,
-    });
-  });
-
-  it("plans INVALID_INSTALLATION_FILE for bad JSON", () => {
-    expect(
-      planReleaseAlign("{", new TextEncoder().encode("x"), authorityEnv)
-    ).toStrictEqual({ code: "INVALID_INSTALLATION_FILE", kind: "error" });
-  });
-
-  it("plans RUNTIME_ENV_MALFORMED for unquoted env", () => {
-    expect(
-      planReleaseAlign(
-        `${JSON.stringify(sampleInstallation)}\n`,
-        new TextEncoder().encode("x"),
         "KEY=unquoted\n"
       )
     ).toStrictEqual({ code: "RUNTIME_ENV_MALFORMED", kind: "error" });
@@ -150,10 +187,62 @@ describe("all-in-one release align", () => {
     ).toStrictEqual({ code: "RUNTIME_ENV_MISSING_AUTHORITY", kind: "error" });
   });
 
-  it("scripted repro: install once → new release digest → align → skip", () => {
-    const firstBytes = new TextEncoder().encode(
-      `{"format":"zoen-local-build-v1","lock_sha256":"${"c".repeat(64)}","files":[]}\n`
+  it("rollback after tip UPDATE still reconciles worlds to restored digest", () => {
+    const tipBytes = new TextEncoder().encode('{"format":"tip"}\n');
+    const tipDigest = digestReleaseBytes(tipBytes);
+    const rollbackBytes = new TextEncoder().encode('{"format":"v12"}\n');
+    const rollbackDigest = digestReleaseBytes(rollbackBytes);
+    const installed = {
+      ...sampleInstallation,
+      installation: {
+        ...sampleInstallation.installation,
+        releaseDigest: rollbackDigest,
+      },
+    };
+    const plan = planReleaseAlign(
+      `${JSON.stringify(installed)}\n`,
+      rollbackBytes,
+      authorityEnv
     );
+    expect(plan.kind).toBe("ready");
+    if (plan.kind !== "ready") {
+      return;
+    }
+    expect(plan.rewriteInstallation).toBeNull();
+    expect(plan.releaseDigest).toBe(rollbackDigest);
+    expect(plan.releaseDigest).not.toBe(tipDigest);
+    expect(releaseAlignSteps(plan).map((step) => step.step)).toStrictEqual([
+      "reconcile-worlds",
+    ]);
+  });
+
+  it("matching digest plans reconcile-worlds only", () => {
+    const bytes = new TextEncoder().encode('{"format":"one"}\n');
+    const digest = digestReleaseBytes(bytes);
+    const installed = {
+      ...sampleInstallation,
+      installation: {
+        ...sampleInstallation.installation,
+        releaseDigest: digest,
+      },
+    };
+    const plan = planReleaseAlign(
+      `${JSON.stringify(installed)}\n`,
+      bytes,
+      authorityEnv
+    );
+    expect(plan.kind).toBe("ready");
+    if (plan.kind !== "ready") {
+      return;
+    }
+    expect(plan.rewriteInstallation).toBeNull();
+    expect(releaseAlignSteps(plan).map((step) => step.step)).toStrictEqual([
+      "reconcile-worlds",
+    ]);
+  });
+
+  it("digest change plans reconcile then rewrite", () => {
+    const firstBytes = new TextEncoder().encode('{"format":"one"}\n');
     const firstDigest = digestReleaseBytes(firstBytes);
     const installed = {
       ...sampleInstallation,
@@ -162,30 +251,30 @@ describe("all-in-one release align", () => {
         releaseDigest: firstDigest,
       },
     };
-    const installationText = `${JSON.stringify(installed)}\n`;
-    expect(
-      planReleaseAlign(installationText, firstBytes, authorityEnv)
-    ).toStrictEqual({ kind: "skip" });
-
-    const secondBytes = new TextEncoder().encode(
-      `{"format":"zoen-local-build-v1","lock_sha256":"${"d".repeat(64)}","files":[]}\n`
+    const secondBytes = new TextEncoder().encode('{"format":"two"}\n');
+    const plan = planReleaseAlign(
+      `${JSON.stringify(installed)}\n`,
+      secondBytes,
+      authorityEnv
     );
-    const plan = planReleaseAlign(installationText, secondBytes, authorityEnv);
-    expect(plan).toMatchObject({
-      kind: "align",
-      previousDigest: firstDigest,
-      releaseDigest: digestReleaseBytes(secondBytes),
-    });
-    if (plan.kind !== "align") {
+    expect(plan.kind).toBe("ready");
+    if (plan.kind !== "ready" || plan.rewriteInstallation === null) {
       return;
     }
-    expect(
-      planReleaseAlign(
-        `${JSON.stringify(plan.next)}\n`,
-        secondBytes,
-        authorityEnv
-      )
-    ).toStrictEqual({ kind: "skip" });
+    expect(releaseAlignSteps(plan).map((step) => step.step)).toStrictEqual([
+      "reconcile-worlds",
+      "rewrite-installation",
+    ]);
+    const after = planReleaseAlign(
+      `${JSON.stringify(plan.rewriteInstallation.next)}\n`,
+      secondBytes,
+      authorityEnv
+    );
+    expect(after.kind).toBe("ready");
+    if (after.kind !== "ready") {
+      return;
+    }
+    expect(after.rewriteInstallation).toBeNull();
   });
 });
 

@@ -14,7 +14,7 @@ Integrador (`ops/fly/**`). App **`zoen-rebuild`**: **uma VM** com Postgres + Rus
 
 ## Release digest on redeploy
 
-`installation.json` on the volume pins `releaseDigest` to the first-boot `release.json`. Each new image rebuilds `release.json`, so bootstrap **aligns** the volume digest (and `authority.worlds.release_digest` for the same cell/generation) before the server starts. Without that step, tip boots fail with `server.failed` / `ServerConfigurationError: RELEASE_MISMATCH`. Pre-launch: disposable hosted data — no dual-read shim.
+`installation.json` on the volume pins `releaseDigest` to the first-boot `release.json`. Each new image rebuilds `release.json`, so bootstrap **aligns** the volume digest and always reconciles `authority.worlds.release_digest` for the same cell/generation to the running image before the server starts (even when the installation file already matches — recovers crash-after-UPDATE + image rollback). Without alignment, tip boots fail with `server.failed` / `ServerConfigurationError: RELEASE_MISMATCH`. Pre-launch: disposable hosted data — no dual-read shim.
 
 ## Secrets
 
