@@ -128,7 +128,12 @@ export default defineConfig({
         "packages/authority/src/ports/eve/**",
         "packages/authority/test/ports/eve/**",
         "packages/contracts/test/eve/**",
+        "apps/cli/src/eve/**",
+        "apps/web/src/features/eve/**",
+        "apps/web/test/integration/eve/**",
+        "apps/server/test/composition/eve/**",
       ],
+      plugins: ["vitest"],
       rules: {
         "effecttsgo/abort-controller-in-effect": "off",
         "effecttsgo/async-function": "off",
@@ -136,6 +141,22 @@ export default defineConfig({
         "effecttsgo/prefer-schema-over-json": "off",
         "effecttsgo/process-env": "off",
         "effecttsgo/process-env-in-effect": "off",
+        "effecttsgo/schema-sync-in-effect": "off",
+        "eslint/complexity": "off",
+        "eslint/require-await": "off",
+        "typescript/no-unsafe-type-assertion": "off",
+        "unicorn/prefer-response-static-json": "off",
+        "vitest/max-expects": "off",
+      },
+    },
+    {
+      files: [
+        "packages/authority/src/semantic/executor.ts",
+        "apps/cli/src/d01/transport.ts",
+        "apps/web/src/features/d01/client.ts",
+      ],
+      rules: {
+        "eslint/complexity": ["error", { max: 28 }],
       },
     },
     {

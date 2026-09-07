@@ -8,6 +8,10 @@ import {
   WorldErasureRequest,
   WorldErasureSuccess,
 } from "../erasure/operations.js";
+import {
+  EveConversationRequest,
+  EveConversationSuccess,
+} from "../eve/operations.js";
 import { SharingRequest, SharingSuccess } from "../sharing/operations.js";
 import {
   SubjectIdentityRequest,
@@ -58,9 +62,18 @@ export const ErasureApiGroup = HttpApiGroup.make("erasure").add(
     success: WorldErasureSuccess,
   })
 );
+/** Domain path — /api/eve (no /api/d05 segment). */
+export const EveApiGroup = HttpApiGroup.make("eve").add(
+  HttpApiEndpoint.post("execute", "/api/eve/execute", {
+    error: D01Error.members,
+    payload: EveConversationRequest,
+    success: EveConversationSuccess,
+  })
+);
 export const ApplicationApi = D01Api.add(
   CorrectionApiGroup,
   SharingApiGroup,
   SubjectIdentityApiGroup,
-  ErasureApiGroup
+  ErasureApiGroup,
+  EveApiGroup
 );

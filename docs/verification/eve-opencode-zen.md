@@ -13,6 +13,7 @@ Data: 2026-09-07 (PT). Tip de partida: `90ad08e`. Tip verificado: `48c7c21` (`48
 | Journal recoverability + INV-01 (sem API key) | Landed — unit + live smoke |
 | Voz | Ver `docs/verification/eve-web-speech.md` (EX44 / Web Speech) |
 | D05 integral / processo Eve separado / streaming prod | **Não** alegado |
+| HTTP/CLI surface (EX44) | Ver `docs/verification/eve-http-surface.md` |
 
 ## Endpoint e modelo
 

@@ -131,6 +131,18 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
         case "RequestWorldErasure": {
           return yield* api.erasure.execute({ payload });
         }
+        case "AcceptConversationTurn": {
+          return yield* api.eve.execute({ payload });
+        }
+        case "CancelConversationTurn": {
+          return yield* api.eve.execute({ payload });
+        }
+        case "RecoverConversationJournal": {
+          return yield* api.eve.execute({ payload });
+        }
+        case "SettleConversationMessage": {
+          return yield* api.eve.execute({ payload });
+        }
         default: {
           return yield* new Unavailable({ code: "UNAVAILABLE" });
         }

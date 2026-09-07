@@ -14,6 +14,7 @@ import {
 import type { SemanticSuccess } from "@zoen/contracts/d01/operations";
 import { D01_LIMITS, Instant } from "@zoen/contracts/d01/values";
 import { WorldErasureSuccess } from "@zoen/contracts/erasure/operations";
+import { EveConversationSuccess } from "@zoen/contracts/eve/operations";
 import { SharingSuccess } from "@zoen/contracts/sharing/operations";
 import { SubjectIdentitySuccess } from "@zoen/contracts/subject-identity/operations";
 import type { Redacted } from "effect";
@@ -51,10 +52,25 @@ import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.
 import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
 import { Presence } from "../ports/d01/context.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
+import {
+  acceptConversationTurn,
+  cancelConversationTurn,
+  recoverConversationJournal,
+  settleConversationMessage,
+} from "../ports/eve/handlers.js";
+import { EveJournal } from "../ports/eve/journal.js";
+import { EveOpenCodeZen } from "../ports/eve/opencode-zen.js";
+import { parseEveBytes } from "../ports/eve/request.js";
 import { canonicalJson } from "../values/canonical.js";
 import { parseEnvelopeBytes } from "../values/json.js";
 
-type Family = "d01" | "correction" | "sharing" | "subject-identity" | "erasure";
+type Family =
+  | "d01"
+  | "correction"
+  | "sharing"
+  | "subject-identity"
+  | "erasure"
+  | "eve";
 type Emit = (jsonBytes: Uint8Array) => "submitted";
 type ExecuteWithEmission = (
   credential: Redacted.Redacted,
@@ -78,6 +94,9 @@ const parseRequest = (family: Family, bytes: Uint8Array) => {
     }
     case "erasure": {
       return parseErasureBytes(bytes);
+    }
+    case "eve": {
+      return parseEveBytes(bytes);
     }
     default: {
       return Effect.fail(new Unsupported({ code: "UNSUPPORTED" }));
@@ -103,6 +122,9 @@ const decodeSuccess = (
     }
     case "erasure": {
       return Schema.decodeUnknownEffect(WorldErasureSuccess)(result);
+    }
+    case "eve": {
+      return Schema.decodeUnknownEffect(EveConversationSuccess)(result);
     }
     default: {
       return Effect.fail(new Unsupported({ code: "UNSUPPORTED" }));
@@ -135,14 +157,20 @@ export class SemanticExecutor extends Context.Service<
       credential: Redacted.Redacted,
       bytes: Uint8Array
     ) => Effect.Effect<WorldErasureSuccess, D01Error>;
+    readonly executeEve: (
+      credential: Redacted.Redacted,
+      bytes: Uint8Array
+    ) => Effect.Effect<EveConversationSuccess, D01Error>;
     readonly executeWithEmission: ExecuteWithEmission;
     readonly executeCorrectionWithEmission: ExecuteWithEmission;
     readonly executeSharingWithEmission: ExecuteWithEmission;
     readonly executeSubjectIdentityWithEmission: ExecuteWithEmission;
     readonly executeErasureWithEmission: ExecuteWithEmission;
+    readonly executeEveWithEmission: ExecuteWithEmission;
   }
 >()("zoen/authority/semantic/SemanticExecutor") {
-  static readonly layer = Layer.effect(
+  /** Requires EveJournal + EveOpenCodeZen from the caller (composition provides live/blocked). */
+  static readonly layerWithoutEve = Layer.effect(
     SemanticExecutor,
     Effect.gen(function* makeSemanticExecutor() {
       const presence = yield* Presence;
@@ -166,6 +194,7 @@ export class SemanticExecutor extends Context.Service<
             | ReturnType<typeof resolveIdentity>
             | ReturnType<typeof requestWorldErasure>
             | ReturnType<typeof inspectWorldErasure>
+            | ReturnType<typeof acceptConversationTurn>
           >
         >()
       );
@@ -245,6 +274,18 @@ export class SemanticExecutor extends Context.Service<
               }
               case "InspectWorldErasure": {
                 return yield* inspectWorldErasure(context, request);
+              }
+              case "AcceptConversationTurn": {
+                return yield* acceptConversationTurn(context, request);
+              }
+              case "CancelConversationTurn": {
+                return yield* cancelConversationTurn(context, request);
+              }
+              case "RecoverConversationJournal": {
+                return yield* recoverConversationJournal(context, request);
+              }
+              case "SettleConversationMessage": {
+                return yield* settleConversationMessage(context, request);
               }
               default: {
                 return yield* new Unsupported({ code: "UNSUPPORTED" });
@@ -399,6 +440,13 @@ export class SemanticExecutor extends Context.Service<
           ),
         executeErasureWithEmission: (credential, bytes, emit) =>
           withEmission("erasure", credential, bytes, emit),
+        executeEve: (credential, bytes) =>
+          execute("eve", credential, bytes).pipe(
+            Effect.flatMap(Schema.decodeUnknownEffect(EveConversationSuccess)),
+            Effect.catchTag("SchemaError", schemaUnavailable)
+          ),
+        executeEveWithEmission: (credential, bytes, emit) =>
+          withEmission("eve", credential, bytes, emit),
         executeSharing: (credential, bytes) =>
           execute("sharing", credential, bytes).pipe(
             Effect.flatMap(Schema.decodeUnknownEffect(SharingSuccess)),
@@ -417,5 +465,11 @@ export class SemanticExecutor extends Context.Service<
           withEmission("d01", credential, bytes, emit),
       });
     })
+  );
+
+  /** Default Eve surface: in-memory journal + fail-closed Zen (tests / installs without key). */
+  static readonly layer = SemanticExecutor.layerWithoutEve.pipe(
+    Layer.provide(EveJournal.stubMemoryLayer),
+    Layer.provide(EveOpenCodeZen.blockedLayer)
   );
 }

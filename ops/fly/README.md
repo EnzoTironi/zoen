@@ -47,6 +47,30 @@ Ver **`CUTOVER.md`**. Resumo Pre-launch Evolution:
 
 Scripts: `ops/fly/scripts/{inventory,ready-check,certs-add-hostname,scale-stop-legacy}.sh`.
 
+## Continuous deploy (GitHub Actions)
+
+Push to `main` runs **Verify** and **Deploy Fly** in parallel; Deploy waits for Verify success on the **same commit**, then:
+
+```bash
+flyctl deploy -a zoen-rebuild --config ops/fly/fly.toml
+curl -fsS https://zoen-rebuild.fly.dev/ready   # fail closed
+```
+
+Workflow: `.github/workflows/deploy-fly.yml` (`push` to `main` + `workflow_dispatch`). Concurrency group `deploy-fly-zoen-rebuild` with `cancel-in-progress: false` so a mid-deploy is never cancelled by a newer push (newer pushes queue until the current deploy finishes).
+
+### One-time: `FLY_API_TOKEN` repo secret
+
+Create a deploy token scoped to this app, then store it as a GitHub Actions secret (names only in CI logs):
+
+```bash
+fly tokens create deploy -x 999999h -a zoen-rebuild
+gh secret set FLY_API_TOKEN --repo EnzoTironi/zoen
+```
+
+Paste the token value into `gh secret set` when prompted (or pipe it). Without `FLY_API_TOKEN`, the Deploy job fails closed at `flyctl deploy`.
+
+Manual run: Actions → **Deploy Fly** → **Run workflow** (skips the Verify wait; still health-checks after deploy).
+
 ## Regras
 
 1. **Não** provisionar MPG / Tigris / storage gerenciado para este app.
