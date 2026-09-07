@@ -49,12 +49,18 @@ Scripts: `ops/fly/scripts/{inventory,ready-check,certs-add-hostname,scale-stop-l
 
 ## Continuous deploy (GitHub Actions)
 
-Push to `main` runs **Verify** and **Deploy Fly** in parallel; Deploy waits for Verify success on the **same commit**, then:
+Push to `main` runs **Verify** and **Deploy Fly** in parallel; Deploy waits for Verify on the **same commit SHA**, then:
 
 ```bash
 flyctl deploy -a zoen-rebuild --config ops/fly/fly.toml
 curl -fsS https://zoen-rebuild.fly.dev/ready   # fail closed
 ```
+
+Verify gate (exact SHA):
+
+- **success** → deploy proceeds
+- **cancelled** / **skipped** (rapid `main` pushes cancel Verify via `cancel-in-progress`) → Deploy exits **success without deploying**; the newer tip's Deploy run is the one that matters
+- **failure** (or other non-success) → Deploy **fails closed**
 
 Workflow: `.github/workflows/deploy-fly.yml` (`push` to `main` + `workflow_dispatch`). Concurrency group `deploy-fly-zoen-rebuild` with `cancel-in-progress: false` so a mid-deploy is never cancelled by a newer push (newer pushes queue until the current deploy finishes).
 
