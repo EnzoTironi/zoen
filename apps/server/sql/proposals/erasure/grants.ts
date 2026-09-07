@@ -8,5 +8,13 @@ export const grantErasureRole = Effect.fn("grantErasureRole")(
     yield* sql`GRANT USAGE ON SCHEMA erasure_attempt TO ${sql(authorityRole)}`;
     yield* sql`GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA erasure_attempt TO ${sql(authorityRole)}`;
     yield* sql`GRANT SELECT, INSERT, UPDATE ON authority.world_erasure_progress, authority.world_erasure_receipts TO ${sql(authorityRole)}`;
+    const role = authorityRole.replaceAll('"', "");
+    yield* sql.unsafe(
+      `GRANT DELETE ON authority.frames, authority.cases, authority.corrections,
+        authority.claims, authority.pins, authority.evidence, authority.sources,
+        authority.receipts, authority.operations, authority.bootstrap_operations,
+        authority.memberships, authority.identity_decisions TO "${role}";
+       GRANT DELETE ON jobs.captures, jobs.outbox TO "${role}"`
+    );
   }
 );

@@ -128,6 +128,9 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
         case "InspectWorldErasure": {
           return yield* api.erasure.execute({ payload });
         }
+        case "PurgeWorldContent": {
+          return yield* api.erasure.execute({ payload });
+        }
         case "RequestWorldErasure": {
           return yield* api.erasure.execute({ payload });
         }

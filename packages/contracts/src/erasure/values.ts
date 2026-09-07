@@ -81,3 +81,12 @@ export const ErasureVersionPurgeOutcome = Schema.Literals([
   "Unknown",
 ]);
 export type ErasureVersionPurgeOutcome = typeof ErasureVersionPurgeOutcome.Type;
+
+/**
+ * Honest scope for local Erased: controlled SQL + object versions under the
+ * World prefix only. Not backups, controller, or forensic media destruction.
+ */
+export const ErasureAttestationScope = Schema.Literal(
+  "local-controlled-copies"
+).annotate(exact);
+export type ErasureAttestationScope = typeof ErasureAttestationScope.Type;

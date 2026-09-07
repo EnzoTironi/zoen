@@ -132,4 +132,47 @@ export const makeErasureCommands = <E, R>(
         },
       ])
     ),
+    Command.make(
+      "purge-world-content",
+      {
+        ...shared,
+        closingOperationId: Flag.string("closing-operation-id").pipe(
+          Flag.withSchema(OperationId),
+          Flag.withDescription(
+            "Closing operation UUID from request-world-erasure / inspect"
+          )
+        ),
+        expectedRevision: Flag.string("expected-revision").pipe(
+          Flag.withSchema(Revision),
+          Flag.withDescription(
+            "Erasure revision from inspect while phase is Closing/Purging"
+          )
+        ),
+      },
+      (flags) =>
+        report(
+          send({
+            ...envelope,
+            input: {
+              closingOperationId: flags.closingOperationId,
+              expectedErasureRevision: flags.expectedRevision,
+            },
+            operation: "PurgeWorldContent",
+            operationId: flags.operationId,
+            worldRef: { realm: flags.realm, worldId: flags.worldId },
+          })
+        )
+    ).pipe(
+      Command.withDescription(
+        "Owner: purge local controlled SQL content + World object versions after Closing+Confirmada. Attests local-controlled-copies only; restore-after-erasure stays false. Does not claim backups/controller/Fly."
+      ),
+      Command.withExamples([
+        {
+          command:
+            "zoen --base-url http://localhost:3000 purge-world-content --world-id <uuid> --closing-operation-id <uuid> --expected-revision 1 --operation-id <uuid>",
+          description:
+            "Advance Closing→Erased for disposable local copies after inspect shows Closing+Confirmed",
+        },
+      ])
+    ),
   ] as const;

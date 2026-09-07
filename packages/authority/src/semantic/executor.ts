@@ -37,6 +37,7 @@ import { parseCorrectionBytes } from "../knowledge/corrections/request.js";
 import { undoCorrection } from "../knowledge/corrections/undo.js";
 import { inspect } from "../knowledge/d01/inspect.js";
 import { inspectWorldErasure } from "../knowledge/erasure/handlers/inspect.js";
+import { purgeWorldContent } from "../knowledge/erasure/handlers/purge.js";
 import { requestWorldErasure } from "../knowledge/erasure/handlers/request.js";
 import { parseErasureBytes } from "../knowledge/erasure/request.js";
 import {
@@ -52,6 +53,8 @@ import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.
 import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
 import { Presence } from "../ports/d01/context.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
+import { ErasureObjectInventory } from "../ports/erasure/inventory.js";
+import { ErasurePurgeStore } from "../ports/erasure/purge.js";
 import {
   acceptConversationTurn,
   cancelConversationTurn,
@@ -194,6 +197,7 @@ export class SemanticExecutor extends Context.Service<
             | ReturnType<typeof resolveIdentity>
             | ReturnType<typeof requestWorldErasure>
             | ReturnType<typeof inspectWorldErasure>
+            | ReturnType<typeof purgeWorldContent>
             | ReturnType<typeof acceptConversationTurn>
           >
         >()
@@ -274,6 +278,9 @@ export class SemanticExecutor extends Context.Service<
               }
               case "InspectWorldErasure": {
                 return yield* inspectWorldErasure(context, request);
+              }
+              case "PurgeWorldContent": {
+                return yield* purgeWorldContent(context, request);
               }
               case "AcceptConversationTurn": {
                 return yield* acceptConversationTurn(context, request);
@@ -467,9 +474,14 @@ export class SemanticExecutor extends Context.Service<
     })
   );
 
-  /** Default Eve surface: in-memory journal + fail-closed Zen (tests / installs without key). */
+  /**
+   * Default test/local surface: in-memory journal + fail-closed Zen + unqualified
+   * erasure inventory/purge (composition overrides with real Object Lock ports).
+   */
   static readonly layer = SemanticExecutor.layerWithoutEve.pipe(
     Layer.provide(EveJournal.stubMemoryLayer),
-    Layer.provide(EveOpenCodeZen.blockedLayer)
+    Layer.provide(EveOpenCodeZen.blockedLayer),
+    Layer.provide(ErasureObjectInventory.unqualifiedLayer),
+    Layer.provide(ErasurePurgeStore.unqualifiedLayer)
   );
 }

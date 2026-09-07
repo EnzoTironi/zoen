@@ -20,6 +20,7 @@ const resultTags = {
   ProposeIdentityResolution: "IdentityProposed",
   ProposeIdentitySplit: "IdentityProposed",
   ProposeIdentityUndo: "IdentityProposed",
+  PurgeWorldContent: "WorldContentPurged",
   RequestWorldErasure: "WorldErasureRequested",
   ResolveIdentity: "IdentityResolved",
   RevokeWorldReadAccess: "WorldReadAccessRevoked",

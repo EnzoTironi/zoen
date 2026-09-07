@@ -72,6 +72,9 @@ export const execute = Effect.fn(function* execute(
     case "InspectWorldErasure": {
       return yield* client.erasure.execute({ payload });
     }
+    case "PurgeWorldContent": {
+      return yield* client.erasure.execute({ payload });
+    }
     case "RequestWorldErasure": {
       return yield* client.erasure.execute({ payload });
     }
