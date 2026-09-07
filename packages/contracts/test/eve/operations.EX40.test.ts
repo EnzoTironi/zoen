@@ -11,6 +11,8 @@ import {
   EveAuthorityCredentialForbidden,
   EveJournalSnapshot,
   EveLocalStubProfileId,
+  EveOpenCodeZenProfileId,
+  EveProfileId,
   EveProviderAdmission,
   EveSchemaVersion,
 } from "../../src/eve/values.js";
@@ -23,9 +25,15 @@ const messageId = "00000000-0000-4000-8000-000000000105";
 const evidenceRef = "00000000-0000-4000-8000-000000000106";
 
 describe("EX40 eve schemas", () => {
-  it("freezes local stub profile and eve.v1 wire tag", () => {
+  it("freezes stub + OpenCode Zen profiles and eve.v1 wire tag", () => {
     expect(Schema.decodeSync(EveLocalStubProfileId)("eve-local-stub-v1")).toBe(
       "eve-local-stub-v1"
+    );
+    expect(
+      Schema.decodeSync(EveOpenCodeZenProfileId)("eve-opencode-zen-v1")
+    ).toBe("eve-opencode-zen-v1");
+    expect(Schema.decodeSync(EveProfileId)("eve-opencode-zen-v1")).toBe(
+      "eve-opencode-zen-v1"
     );
     expect(Schema.decodeSync(EveSchemaVersion)("eve.v1")).toBe("eve.v1");
     expect(
@@ -42,13 +50,13 @@ describe("EX40 eve schemas", () => {
     ).toBeTruthy();
   });
 
-  it("encodes AcceptConversationTurn under stub-local admission", () => {
+  it("encodes AcceptConversationTurn under opencode-zen admission", () => {
     const request = Schema.decodeSync(AcceptConversationTurn)({
       input: {
         conversationId,
         ingressId,
-        profileId: "eve-local-stub-v1",
-        providerAdmission: "stub-local",
+        profileId: "eve-opencode-zen-v1",
+        providerAdmission: "opencode-zen",
         relationshipId,
         userText: "quanto gastei?",
       },
@@ -57,6 +65,23 @@ describe("EX40 eve schemas", () => {
       schemaVersion: "eve.v1",
     });
     expect(request.operation).toBe("AcceptConversationTurn");
+    expect(request.input.providerAdmission).toBe("opencode-zen");
+  });
+
+  it("still encodes stub-local Accept for offline unit proofs", () => {
+    const request = Schema.decodeSync(AcceptConversationTurn)({
+      input: {
+        conversationId,
+        ingressId,
+        profileId: "eve-local-stub-v1",
+        providerAdmission: "stub-local",
+        relationshipId,
+        userText: "offline",
+      },
+      operation: "AcceptConversationTurn",
+      purpose: "personal-records",
+      schemaVersion: "eve.v1",
+    });
     expect(request.input.providerAdmission).toBe("stub-local");
   });
 
@@ -98,6 +123,9 @@ describe("EX40 eve schemas", () => {
   });
 
   it("admits blocked provider literals and forbids authority credentials", () => {
+    expect(Schema.decodeSync(EveProviderAdmission)("opencode-zen")).toBe(
+      "opencode-zen"
+    );
     expect(Schema.decodeSync(EveProviderAdmission)("real-model-blocked")).toBe(
       "real-model-blocked"
     );
@@ -119,14 +147,14 @@ describe("EX40 eve schemas", () => {
       authorityCredentialPresent: false,
       conversation: {
         conversationId,
-        profileId: "eve-local-stub-v1",
+        profileId: "eve-opencode-zen-v1",
         relationshipId,
         revision: "1",
         schemaVersion: "eve.v1",
         worldRef: null,
       },
       messages: [],
-      providerAdmission: "stub-local",
+      providerAdmission: "opencode-zen",
       turns: [
         {
           conversationId,
@@ -139,7 +167,7 @@ describe("EX40 eve schemas", () => {
     });
     expect(snapshot.authorityCredentialPresent).toBeFalsy();
     expect(snapshot.turns).toHaveLength(1);
-    expect(snapshot.providerAdmission).toBe("stub-local");
+    expect(snapshot.providerAdmission).toBe("opencode-zen");
   });
 
   it("rejects foreign profile ids and healthy-looking provider literals", () => {

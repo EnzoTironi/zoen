@@ -6,7 +6,7 @@ import {
   ConversationId,
   EveEvidenceLink,
   EveJournalSnapshot,
-  EveLocalStubProfileId,
+  EveProfileId,
   EveProviderAdmission,
   EveSchemaVersion,
   IngressId,
@@ -27,7 +27,7 @@ export const AcceptConversationTurn = Schema.Struct({
   input: Schema.Struct({
     conversationId: ConversationId,
     ingressId: IngressId,
-    profileId: EveLocalStubProfileId,
+    profileId: EveProfileId,
     providerAdmission: EveProviderAdmission,
     relationshipId: RelationshipId,
     userText: Schema.String.check(
@@ -51,8 +51,9 @@ export const CancelConversationTurn = Schema.Struct({
 export type CancelConversationTurn = typeof CancelConversationTurn.Type;
 
 /**
- * Settle a visible grounded message under the stub provider only.
- * Real-model / voice admissions are rejected by the port (F05/F06).
+ * Settle a visible grounded message.
+ * Live product path uses `opencode-zen`; stub-local is offline proofs only.
+ * Voice / unqualified real-model admissions are rejected by the port (F05/F06).
  */
 export const SettleConversationMessage = Schema.Struct({
   ...envelope,

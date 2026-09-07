@@ -66,5 +66,31 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
       ? { erasureAttemptDatabaseUrl: erasureAttemptDatabaseUrl.value }
       : {}),
   };
-  return { application, listenHost, listenPort };
+  const openCodeApiKey = yield* Config.redacted("ZOEN_OPENCODE_API_KEY").pipe(
+    Config.option
+  );
+  const openCodeBaseUrl = yield* Config.string("ZOEN_OPENCODE_BASE_URL").pipe(
+    Config.withDefault("https://opencode.ai/zen/v1"),
+    Config.option
+  );
+  const openCodeModel = yield* Config.string("ZOEN_OPENCODE_MODEL").pipe(
+    Config.withDefault("big-pickle"),
+    Config.option
+  );
+  const applicationWithOpenCode =
+    Option.isSome(openCodeApiKey)
+      ? {
+          ...application,
+          openCodeZen: {
+            apiKey: openCodeApiKey.value,
+            baseUrl: Option.isSome(openCodeBaseUrl)
+              ? openCodeBaseUrl.value
+              : "https://opencode.ai/zen/v1",
+            model: Option.isSome(openCodeModel)
+              ? openCodeModel.value
+              : "big-pickle",
+          },
+        }
+      : application;
+  return { application: applicationWithOpenCode, listenHost, listenPort };
 });

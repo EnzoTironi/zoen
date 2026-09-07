@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "planned",
-  "scope": "Pacotes D01/D02, CSV, compartilhamento local, primeiro incremento de erasure (contrato) e primeiro incremento hosted D04 (freeze/stubs); estados planejados são requisitos, progresso executado fica em planning/progress.json; primeiro incremento Eve D05 (freeze/schemas/journal stub)",
+  "scope": "Pacotes D01/D02, CSV, compartilhamento local, primeiro incremento de erasure (contrato), primeiro incremento hosted D04 (freeze/stubs), Eve D05 freeze/schemas/journal + OpenCode Zen free (EX40–EX43); estados planejados são requisitos, progresso executado fica em planning/progress.json",
   "workers": {
     "worker-1": {
       "model": "gpt-6-astra",
@@ -2871,6 +2871,150 @@
           ]
         }
       ]
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX41"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "OpenCode Zen client + schemas eve-opencode-zen-v1 landed; execution remains planned/not_run for verify_plan; progress in progress.json. Voice still blocked.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0063",
+        "ZN-0052",
+        "ZN-0056"
+      ],
+      "source_semantics": "D05: admitir OpenCode Zen free como path de produto (perfil eve-opencode-zen-v1 / admission opencode-zen); client OpenAI-compatible com headers free-tier; stub só proofs offline. Não conclui D05 integral nem voz.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/contracts/eve.md",
+        "docs/contracts/eve-freeze.md",
+        "docs/verification/eve-opencode-zen.md"
+      ],
+      "contracts_consumed": [
+        "Freeze F06/F07: OpenCode Zen free quando ZOEN_OPENCODE_API_KEY presente; stub-local só unit offline; voz Blocked.",
+        "INV-01: journal nunca armazena API key OpenCode."
+      ],
+      "id": "EX42",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Cliente OpenCode Zen free e schemas eve-opencode-zen-v1",
+      "scope": "Estender schemas Eve + porta EveOpenCodeZen com headers free-tier; key só env/Fly secret; falhas honestas Blocked/Unavailable.",
+      "acceptance": [
+        "Schemas admitem eve-opencode-zen-v1 / opencode-zen; stub permanece só offline.",
+        "Client envia User-Agent opencode/*, x-opencode-client/session/request; nunca fabrica sucesso sem upstream."
+      ],
+      "planned_direct_checks": [
+        "pnpm exec vitest run --project unit packages/contracts/test/eve packages/authority/test/ports/eve/opencode-zen.EX42.test.ts",
+        "python3 tooling/verify_plan.py"
+      ],
+      "owns": [
+        "packages/contracts/src/eve/**",
+        "packages/contracts/test/eve/**",
+        "packages/authority/src/ports/eve/opencode-zen.ts",
+        "packages/authority/test/ports/eve/opencode-zen.EX42.test.ts"
+      ],
+      "model": null,
+      "reasoning_effort": null,
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "EX42 client unit green.",
+          "completion": "Wire optional ZOEN_OPENCODE_* into server configuration / D01ApplicationConfig without committing secrets.",
+          "owns": [
+            "apps/server/src/configuration.ts",
+            "apps/server/src/composition.ts"
+          ]
+        }
+      ]
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX42"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Turn path + ZN-0063 qualification artifact landed; execution remains planned/not_run for verify_plan; progress in progress.json. Not full D05; voice blocked.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0063",
+        "ZN-0052",
+        "ZN-0056",
+        "ZN-0061"
+      ],
+      "source_semantics": "D05: turn path accept→OpenCode Zen→settle com incerteza honesta; cancel/abort antes de settle; qualificação ZN-0063 documentada. Não conclui D05 integral, voz, streaming prod, nem processo Eve separado.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/contracts/eve-freeze.md",
+        "docs/verification/eve-opencode-zen.md",
+        "docs/verification/eve-local.md"
+      ],
+      "contracts_consumed": [
+        "Freeze F02/F03/F06: chat textual grounded, journal recuperável, Zen free admitido com key.",
+        "EX42 client OpenCode Zen."
+      ],
+      "id": "EX43",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Turn path Eve live Zen e artefato de qualificação ZN-0063",
+      "scope": "runEveTurn accept→model→settle; cancel abort; journal recoverability + INV-01 no path live; docs/verification/eve-opencode-zen.md.",
+      "acceptance": [
+        "Turn path settle com texto do modelo (mock unit + smoke live opcional).",
+        "Cancel/abort não settle Visible; snapshot nunca contém API key.",
+        "Artefato ZN-0063 registra headers free-tier, model big-pickle, key só env/Fly."
+      ],
+      "planned_direct_checks": [
+        "pnpm exec vitest run --project unit packages/authority/test/ports/eve",
+        "python3 tooling/verify_plan.py"
+      ],
+      "owns": [
+        "packages/authority/src/ports/eve/turn.ts",
+        "packages/authority/src/ports/eve/journal.ts",
+        "packages/authority/test/ports/eve/turn.EX43.test.ts",
+        "packages/authority/test/ports/eve/opencode-zen.EX43.integration.test.ts",
+        "packages/authority/test/ports/eve/journal.EX41.test.ts",
+        "docs/verification/eve-opencode-zen.md",
+        "docs/contracts/eve-freeze.md",
+        "docs/contracts/eve.md",
+        "docs/verification/eve-local.md"
+      ],
+      "model": null,
+      "reasoning_effort": null,
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "EX43 unit green + live smoke optional.",
+          "completion": "Opcional: compor EveOpenCodeZen no servidor quando openCodeZen config presente — sem cutover legado zoen.",
+          "owns": [
+            "apps/server/src/composition.ts",
+            "apps/server/src/configuration.ts"
+          ]
+        }
+      ]
     }
   ],
   "suggested_schedule": [
@@ -2987,7 +3131,9 @@
     {
       "wave": "H-eve",
       "worker-1": [
-        "EX41"
+        "EX41",
+        "EX42",
+        "EX43"
       ],
       "worker-2": [
         "preparar contraprovas de turn fence quando EX41 verde"
@@ -2997,7 +3143,7 @@
       ],
       "root": [
         "EX40 freeze/schemas",
-        "compor evidência eve-local sem modelo real"
+        "compor evidência eve-opencode-zen (ZN-0063) sem cutover zoen"
       ]
     }
   ],
@@ -3006,7 +3152,7 @@
     "D02 merge/split reversível de identidade, workbench/priorização e closure para futuros consumers permanecem no mapa original; subject-identity-v2 verified_for_profile não conta como D02 integral.",
     "D03 erasure: freeze mínimo EX30+; purge real, controlador, Object Lock, catálogo de backups e restore após erasure continuam bloqueados.",
     "D04 hosted: EX35 freeze/stubs; app zoen-rebuild, MPG/Tigris, secrets redesign, deploy real e cutover do legado zoen não feitos; Docker local não prova cloud.",
-    "D05 Eve: EX40 freeze/schemas + EX41 journal stub local; modelo/API real, voz, máquina de turnos completa, processo Eve separado e D05 integral não feitos; sem spend de LLM.",
+    "D05 Eve: EX40–EX43 freeze/schemas/journal + OpenCode Zen free product path; voz, máquina de turnos completa, processo Eve separado e D05 integral não feitos; stub só offline.",
     "Modelos, canais, fontes externas, efeitos, runners e finanças seguem fora da primeira composição; indisponíveis, nunca simulados."
   ],
   "max_active_workers": 3,
@@ -3035,6 +3181,7 @@
     "ops/fly/**",
     "apps/server/src/main.ts",
     "apps/server/src/composition.ts",
+    "apps/server/src/configuration.ts",
     "apps/server/src/http/**",
     "apps/web/src/main.*",
     "apps/cli/src/main.*",

@@ -1,0 +1,167 @@
+import {
+  Blocked,
+  Conflict,
+  NotFoundOrDenied,
+  Unavailable,
+} from "@zoen/contracts/d01/errors";
+import type {
+  ConversationId,
+  EveEvidenceLink,
+  EveProfileId,
+  EveProviderAdmission,
+  EveTurn,
+  EveVisibleMessage,
+  IngressId,
+  MessageId,
+  RelationshipId,
+  TurnId,
+} from "@zoen/contracts/eve/values";
+import { Effect } from "effect";
+import type { Effect as EffectType } from "effect";
+
+import { EveJournal } from "./journal.js";
+import { EveOpenCodeZen } from "./opencode-zen.js";
+
+export interface RunEveTurnInput {
+  readonly conversationId: ConversationId;
+  readonly evidenceLinks?: readonly EveEvidenceLink[];
+  readonly ingressId: IngressId;
+  readonly messageId: MessageId;
+  readonly profileId: EveProfileId;
+  readonly providerAdmission: EveProviderAdmission;
+  readonly relationshipId: RelationshipId;
+  readonly signal?: AbortSignal;
+  readonly systemText?: string;
+  readonly turnId: TurnId;
+  readonly userText: string;
+}
+
+export interface RunEveTurnResult {
+  readonly message: EveVisibleMessage;
+  readonly turn: EveTurn;
+}
+
+type TurnFailure = Blocked | Conflict | NotFoundOrDenied | Unavailable;
+
+/**
+ * Product turn path: accept → live model → settle.
+ * Cancel (or AbortSignal) must abort before settle — never fabricate Visible.
+ */
+export const runEveTurn = (
+  input: RunEveTurnInput
+): EffectType.Effect<RunEveTurnResult, TurnFailure, EveJournal | EveOpenCodeZen> =>
+  Effect.gen(function* turn() {
+    const journal = yield* EveJournal;
+    const model = yield* EveOpenCodeZen;
+
+    if (input.providerAdmission === "voice-blocked") {
+      return yield* new Blocked({ code: "PROFILE_BLOCKED" });
+    }
+    if (input.providerAdmission === "real-model-blocked") {
+      return yield* new Blocked({ code: "PROFILE_BLOCKED" });
+    }
+    if (
+      input.providerAdmission === "opencode-zen" &&
+      input.profileId !== "eve-opencode-zen-v1"
+    ) {
+      return yield* new Blocked({ code: "PROFILE_BLOCKED" });
+    }
+    if (
+      input.providerAdmission === "stub-local" &&
+      input.profileId !== "eve-local-stub-v1"
+    ) {
+      return yield* new Blocked({ code: "PROFILE_BLOCKED" });
+    }
+
+    const accepted = yield* journal.acceptTurn({
+      conversationId: input.conversationId,
+      ingressId: input.ingressId,
+      profileId: input.profileId,
+      providerAdmission: input.providerAdmission,
+      relationshipId: input.relationshipId,
+      turnId: input.turnId,
+      userText: input.userText,
+    });
+
+    if (input.signal?.aborted) {
+      yield* journal.cancelTurn({
+        conversationId: input.conversationId,
+        turnId: input.turnId,
+      });
+      return yield* new Unavailable({ code: "UNAVAILABLE" });
+    }
+
+    // Stub-local offline proofs settle a deterministic placeholder without network.
+    if (input.providerAdmission === "stub-local") {
+      const message = yield* journal.settleMessage({
+        conversationId: input.conversationId,
+        evidenceLinks: [...(input.evidenceLinks ?? [])],
+        messageId: input.messageId,
+        turnId: input.turnId,
+        uncertainty: "Partial",
+        visibleText: "[stub-local] offline proof — not a live model reply",
+      });
+      return {
+        message,
+        turn: { ...accepted, phase: "Settled" as const },
+      };
+    }
+
+    const chatInput = {
+      conversationId: input.conversationId,
+      userText: input.userText,
+      ...(input.signal !== undefined ? { signal: input.signal } : {}),
+      ...(input.systemText !== undefined
+        ? { systemText: input.systemText }
+        : {}),
+    };
+    const completion = yield* model
+      .completeChat(chatInput)
+      .pipe(
+        Effect.catch((error) =>
+          Effect.gen(function* onModelFail() {
+            yield* journal
+              .cancelTurn({
+                conversationId: input.conversationId,
+                turnId: input.turnId,
+              })
+              .pipe(Effect.catch(() => Effect.void));
+            return yield* Effect.fail(error);
+          })
+        )
+      );
+
+    if (input.signal?.aborted) {
+      yield* journal
+        .cancelTurn({
+          conversationId: input.conversationId,
+          turnId: input.turnId,
+        })
+        .pipe(Effect.catch(() => Effect.void));
+      return yield* new Unavailable({ code: "UNAVAILABLE" });
+    }
+
+    // Re-check journal phase — cancel may have won the race.
+    const snapshot = yield* journal.recover(input.conversationId);
+    const current = snapshot.turns.find((t) => t.turnId === input.turnId);
+    if (current === undefined) {
+      return yield* new NotFoundOrDenied({ code: "NOT_FOUND_OR_DENIED" });
+    }
+    if (current.phase === "Cancelled") {
+      return yield* new Conflict({ code: "CONFLICT" });
+    }
+
+    const message = yield* journal.settleMessage({
+      conversationId: input.conversationId,
+      evidenceLinks: [...(input.evidenceLinks ?? [])],
+      messageId: input.messageId,
+      turnId: input.turnId,
+      uncertainty: completion.uncertainty,
+      visibleText: completion.visibleText,
+    });
+
+    return {
+      message,
+      turn: { ...accepted, phase: "Settled" as const },
+    };
+  });

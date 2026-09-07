@@ -8,7 +8,7 @@ import type {
   EveConversation,
   EveEvidenceLink,
   EveJournalSnapshot,
-  EveLocalStubProfileId,
+  EveProfileId,
   EveProviderAdmission,
   EveTurn,
   EveVisibleMessage,
@@ -23,15 +23,17 @@ import type { Effect as EffectType } from "effect";
 
 /**
  * Operational interaction journal (architecture + INV-01).
- * Owns conversation/turn/message recoverability — never domain authority credentials.
+ * Owns conversation/turn/message recoverability — never domain authority credentials
+ * and never OpenCode / authority API keys (INV-01).
  *
- * EX41: in-memory disposable layer proves recoverability without a live model.
- * Real-model and voice admissions stay fail-closed Blocked (freeze F05/F06).
+ * EX41: in-memory disposable layer proves recoverability.
+ * EX42+: admits `opencode-zen` / `eve-opencode-zen-v1` as the product path.
+ * Voice and unqualified real-model admissions stay fail-closed Blocked (F05/F06).
  */
 export interface AcceptTurnInput {
   readonly conversationId: ConversationId;
   readonly ingressId: IngressId;
-  readonly profileId: EveLocalStubProfileId;
+  readonly profileId: EveProfileId;
   readonly providerAdmission: EveProviderAdmission;
   readonly relationshipId: RelationshipId;
   readonly turnId: TurnId;
@@ -66,11 +68,29 @@ const blockedProfile = new Blocked({ code: "PROFILE_BLOCKED" });
 const notFound = new NotFoundOrDenied({ code: "NOT_FOUND_OR_DENIED" });
 const conflict = new Conflict({ code: "CONFLICT" });
 
-/** True when admission forbids live inference in this increment. */
+/** True when admission forbids inference in this increment. */
 export const isLiveProviderBlocked = (
   admission: EveProviderAdmission
 ): boolean =>
   admission === "real-model-blocked" || admission === "voice-blocked";
+
+/** Admitted product / proof admissions that may mutate the journal. */
+export const isAdmittedProvider = (
+  admission: EveProviderAdmission
+): boolean => admission === "opencode-zen" || admission === "stub-local";
+
+const profileMatchesAdmission = (
+  profileId: EveProfileId,
+  admission: EveProviderAdmission
+): boolean => {
+  if (admission === "opencode-zen") {
+    return profileId === "eve-opencode-zen-v1";
+  }
+  if (admission === "stub-local") {
+    return profileId === "eve-local-stub-v1";
+  }
+  return false;
+};
 
 export class EveJournal extends Context.Service<
   EveJournal,
@@ -100,7 +120,10 @@ export class EveJournal extends Context.Service<
     })
   );
 
-  /** Disposable in-memory journal for local stub proofs (no PG / no LLM). */
+  /**
+   * In-memory journal for local proofs and live OpenCode Zen turn path.
+   * Does not persist PG/S3; does not embed API keys in snapshots.
+   */
   static readonly stubMemoryLayer = Layer.effect(
     EveJournal,
     Effect.gen(function* memory() {
@@ -122,10 +145,15 @@ export class EveJournal extends Context.Service<
             if (isLiveProviderBlocked(input.providerAdmission)) {
               return yield* blockedProfile;
             }
-            if (input.providerAdmission !== "stub-local") {
+            if (!isAdmittedProvider(input.providerAdmission)) {
               return yield* blockedProfile;
             }
-            if (input.profileId !== "eve-local-stub-v1") {
+            if (
+              !profileMatchesAdmission(
+                input.profileId,
+                input.providerAdmission
+              )
+            ) {
               return yield* blockedProfile;
             }
 
@@ -222,7 +250,7 @@ export class EveJournal extends Context.Service<
         settleMessage: (input) =>
           Effect.gen(function* settle() {
             const row = yield* getOrFail(input.conversationId);
-            if (row.providerAdmission !== "stub-local") {
+            if (!isAdmittedProvider(row.providerAdmission)) {
               return yield* blockedProfile;
             }
             const turn = row.turns.find(

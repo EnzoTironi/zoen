@@ -11,6 +11,7 @@ import { Effect, Schema } from "effect";
 
 import {
   EveJournal,
+  isAdmittedProvider,
   isLiveProviderBlocked,
 } from "../../../src/ports/eve/journal.js";
 
@@ -36,10 +37,14 @@ const evidenceRef = Schema.decodeSync(EvidenceRef)(
 );
 
 describe("EX41 eve journal stub port", () => {
-  it("marks real-model and voice admissions as live-blocked", () => {
+  it("marks real-model and voice admissions as live-blocked; Zen/stub admitted", () => {
     expect(isLiveProviderBlocked("stub-local")).toBeFalsy();
+    expect(isLiveProviderBlocked("opencode-zen")).toBeFalsy();
     expect(isLiveProviderBlocked("real-model-blocked")).toBeTruthy();
     expect(isLiveProviderBlocked("voice-blocked")).toBeTruthy();
+    expect(isAdmittedProvider("opencode-zen")).toBeTruthy();
+    expect(isAdmittedProvider("stub-local")).toBeTruthy();
+    expect(isAdmittedProvider("voice-blocked")).toBeFalsy();
   });
 
   it.effect("blocks real-model accept path", () =>
@@ -211,5 +216,28 @@ describe("EX41 eve journal stub port", () => {
       );
       expect(exit._tag).toBe("Failure");
     }).pipe(Effect.provide(EveJournal.blockedProvidersLayer))
+  );
+
+  it.effect("admits opencode-zen profile on the journal path", () =>
+    Effect.gen(function* zen() {
+      const journal = yield* EveJournal;
+      const accepted = yield* journal.acceptTurn({
+        conversationId,
+        ingressId: ingressA,
+        profileId: "eve-opencode-zen-v1",
+        providerAdmission: "opencode-zen",
+        relationshipId,
+        turnId: turnA,
+        userText: "live path accept",
+      });
+      expect(accepted.phase).toBe("Accepted");
+      const recovered = yield* journal.recover(conversationId);
+      expect(recovered.providerAdmission).toBe("opencode-zen");
+      expect(recovered.conversation.profileId).toBe("eve-opencode-zen-v1");
+      expect(recovered.authorityCredentialPresent).toBeFalsy();
+      const serialized = JSON.stringify(recovered);
+      expect(serialized.includes("sk-")).toBeFalsy();
+      expect(serialized.toLowerCase().includes("apikey")).toBeFalsy();
+    }).pipe(Effect.provide(EveJournal.stubMemoryLayer))
   );
 });

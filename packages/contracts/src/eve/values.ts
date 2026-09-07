@@ -7,11 +7,25 @@ export const EveSchemaVersion = Schema.Literal("eve.v1");
 export type EveSchemaVersion = typeof EveSchemaVersion.Type;
 
 /**
- * Candidate local stub profile for disposable Eve proofs only (freeze F07).
- * Does not rebind Worlds / DataPolicy; does not admit real model routing.
+ * Offline/local stub profile for disposable unit proofs only (freeze F07).
+ * Not the product default when OpenCode Zen is admitted.
  */
 export const EveLocalStubProfileId = Schema.Literal("eve-local-stub-v1");
 export type EveLocalStubProfileId = typeof EveLocalStubProfileId.Type;
+
+/**
+ * Product profile for OpenCode Zen free (ZN-0063 qualified when key present).
+ * Live chat completions via OpenAI-compatible Zen endpoint.
+ */
+export const EveOpenCodeZenProfileId = Schema.Literal("eve-opencode-zen-v1");
+export type EveOpenCodeZenProfileId = typeof EveOpenCodeZenProfileId.Type;
+
+/** Admitted Eve profiles for this increment. */
+export const EveProfileId = Schema.Union([
+  EveLocalStubProfileId,
+  EveOpenCodeZenProfileId,
+]);
+export type EveProfileId = typeof EveProfileId.Type;
 
 const Uuid = Schema.String.check(Schema.isUUID());
 
@@ -58,10 +72,13 @@ export const UncertaintyKind = Schema.Literals(["Known", "Partial", "Unknown"]);
 export type UncertaintyKind = typeof UncertaintyKind.Type;
 
 /**
- * Provider admission for this increment (F05/F06).
- * Only stub-local may run inference-shaped work in proofs.
+ * Provider admission (F05/F06).
+ * Product path: `opencode-zen` when ZOEN_OPENCODE_API_KEY is present.
+ * `stub-local` remains only for offline unit proofs.
+ * Voice and unqualified real-model stay fail-closed.
  */
 export const EveProviderAdmission = Schema.Literals([
+  "opencode-zen",
   "stub-local",
   "real-model-blocked",
   "voice-blocked",
@@ -77,7 +94,7 @@ export type EveEvidenceLink = typeof EveEvidenceLink.Type;
 
 /**
  * Journal must not carry authority credentials (INV-01).
- * This literal false is the frozen product default for the stub profile.
+ * This literal false is the frozen product default.
  */
 export const EveAuthorityCredentialForbidden =
   Schema.Literal(false).annotate(exact);
@@ -87,7 +104,7 @@ export type EveAuthorityCredentialForbidden =
 /** Conversation header stored in the interaction journal. */
 export const EveConversation = Schema.Struct({
   conversationId: ConversationId,
-  profileId: EveLocalStubProfileId,
+  profileId: EveProfileId,
   relationshipId: RelationshipId,
   revision: Schema.String.check(Schema.isPattern(/^(?:0|[1-9][0-9]{0,17})$/u)),
   schemaVersion: EveSchemaVersion,

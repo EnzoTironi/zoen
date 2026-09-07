@@ -40,6 +40,15 @@ export interface D01ApplicationConfig {
   readonly erasureAttemptDatabaseUrl?: Redacted.Redacted;
   readonly identity: D01IdentityConfig;
   readonly installation: typeof AuthorityInstallationSchema.Type;
+  /**
+   * Optional OpenCode Zen free credentials (D05 / ZN-0063).
+   * Present only when ZOEN_OPENCODE_API_KEY is set; never logged or journaled.
+   */
+  readonly openCodeZen?: {
+    readonly apiKey: Redacted.Redacted;
+    readonly baseUrl: string;
+    readonly model: string;
+  };
   readonly policy: DataPolicySchema;
   readonly storage: S3EvidenceConfig;
 }
