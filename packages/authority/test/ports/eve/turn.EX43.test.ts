@@ -102,7 +102,7 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
         messageCount: 1,
         phase: "Settled",
         state: "Visible",
-        uncertainty: "Known",
+        uncertainty: "Partial",
         visibleHasEveOk: true,
         wireHasAuthHeader: false,
         wireHasKey: false,

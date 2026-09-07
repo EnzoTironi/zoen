@@ -7,11 +7,12 @@ import {
   d04HostedRetainedAdmissionFlags,
 } from "@zoen/authority/hosted/admission/flags";
 import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
-import { EveJournal } from "@zoen/authority/ports/eve/journal";
 import {
-  DEFAULT_OPENCODE_USER_AGENT,
-  EveOpenCodeZen,
-} from "@zoen/authority/ports/eve/opencode-zen";
+  currentProductEveAdmissionInput,
+  isProductEveAdmitted,
+} from "@zoen/authority/ports/eve/admission";
+import { EveJournal } from "@zoen/authority/ports/eve/journal";
+import { EveOpenCodeZen } from "@zoen/authority/ports/eve/opencode-zen";
 import {
   DataPolicy,
   DataPolicySchema,
@@ -50,6 +51,7 @@ export interface D01ApplicationConfig {
   /**
    * Optional OpenCode Zen free credentials (D05 / ZN-0063).
    * Present only when ZOEN_OPENCODE_API_KEY is set; never logged or journaled.
+   * Presence does **not** admit product Eve until ZA-18/19/20 safety proofs (ZA-17).
    */
   readonly openCodeZen?: {
     readonly apiKey: Redacted.Redacted;
@@ -110,18 +112,21 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
       const erasureRegister = localErasureAttemptRegisterLayer.pipe(
         Layer.provide(erasureAttemptPg)
       );
-      const eveOpenCode =
-        config.openCodeZen === undefined
-          ? EveOpenCodeZen.blockedLayer
-          : EveOpenCodeZen.liveLayer({
-              apiKey: config.openCodeZen.apiKey,
-              baseUrl: config.openCodeZen.baseUrl,
-              model: config.openCodeZen.model,
-              userAgent: DEFAULT_OPENCODE_USER_AGENT,
-            });
+      // ZA-17: key alone must not admit stubMemory or live Zen. Product Eve stays
+      // fail-closed until durable journal + grounding + profile acceptance (ZA-18/19/20).
+      const eveAdmission = currentProductEveAdmissionInput(
+        config.openCodeZen !== undefined
+      );
+      const productEveAdmitted = isProductEveAdmitted(eveAdmission);
+      if (productEveAdmitted) {
+        // Tripwire: flipping admission flags without durable/live layers is unsafe.
+        return yield* Effect.die(
+          "ZA-17: product Eve admitted without durable journal/grounding layers"
+        );
+      }
       const eveSurface = Layer.mergeAll(
-        EveJournal.stubMemoryLayer,
-        eveOpenCode
+        EveJournal.blockedProvidersLayer,
+        EveOpenCodeZen.blockedLayer
       );
       const infrastructure = Layer.mergeAll(
         Layer.effectDiscard(checkD01AuthorityRole).pipe(

@@ -30,16 +30,18 @@ describe("EX42 OpenCode Zen client", () => {
     );
   });
 
-  it("maps model text to honest uncertainty", () => {
+  it("maps model text without prose-length Known (ZA-17-02)", () => {
     expect({
       empty: uncertaintyFromModelText(""),
-      known: uncertaintyFromModelText("eve-ok from big-pickle"),
-      partial: uncertaintyFromModelText("ok"),
+      long: uncertaintyFromModelText(
+        "eve-ok from big-pickle and much more prose"
+      ),
+      short: uncertaintyFromModelText("ok"),
       whitespace: uncertaintyFromModelText("   "),
     }).toStrictEqual({
       empty: "Unknown",
-      known: "Known",
-      partial: "Partial",
+      long: "Partial",
+      short: "Partial",
       whitespace: "Unknown",
     });
   });

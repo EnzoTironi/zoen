@@ -77,7 +77,7 @@ describe("EX40 eve schemas", () => {
     expect(request.worldRef.worldId).toBe(worldRef.worldId);
   });
 
-  it("still encodes stub-local Accept for offline unit proofs", () => {
+  it("encodes stub-local Accept for offline unit proofs only (not product)", () => {
     const request = Schema.decodeSync(AcceptConversationTurn)({
       input: {
         conversationId,

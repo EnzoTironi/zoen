@@ -10,7 +10,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-ex24-subject-identity",
       "state": "verified_for_profile_subject_identity_v2",
-      "notes": "Schemas/pure laws consumed by EX27\u2013EX29. Vertical proofs + Main Verify green at cae72de (run 34062093334). Part of subject-identity-v2 verified_for_profile; not full D02 delivery."
+      "notes": "Schemas/pure laws consumed by EX27–EX29. Vertical proofs + Main Verify green at cae72de (run 34062093334). Part of subject-identity-v2 verified_for_profile; not full D02 delivery."
     },
     {
       "agent": "roadmap_redesign",
@@ -19,7 +19,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_subject_identity_v2",
-      "notes": "BC-01..09 + additive basis in composed identity increment. verified_for_profile with EX24\u2013EX29 at cae72de; merge/split stewardship beyond this increment may remain."
+      "notes": "BC-01..09 + additive basis in composed identity increment. verified_for_profile with EX24–EX29 at cae72de; merge/split stewardship beyond this increment may remain."
     },
     {
       "agent": "tickets_redesign",
@@ -55,7 +55,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_subject_identity_v2",
-      "notes": "Compose+verify closed for subject-identity-v2: vertical EX24\u2013EX28 proofs + Main Verify https://github.com/EnzoTironi/zoen/actions/runs/34062093334 @ cae72de (incl. container). Does NOT claim full D02 delivery. Next: D03 erasure freeze EX30+."
+      "notes": "Compose+verify closed for subject-identity-v2: vertical EX24–EX28 proofs + Main Verify https://github.com/EnzoTironi/zoen/actions/runs/34062093334 @ cae72de (incl. container). Does NOT claim full D02 delivery. Next: D03 erasure freeze EX30+."
     },
     {
       "agent": "architecture_redesign",
@@ -64,7 +64,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Freeze+schemas part of local Closing/register surface verified_for_profile with EX30\u2013EX34. NOT full D03 (no purge/Erased/restore). execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
+      "notes": "Freeze+schemas part of local Closing/register surface verified_for_profile with EX30–EX34. NOT full D03 (no purge/Erased/restore). execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "roadmap_redesign",
@@ -73,7 +73,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Web/CLI Closing surfaces verified_for_profile with EX30\u2013EX34 local Closing/register only. Default retained compose preserved; erasable via ZOEN_LOCAL_WORLD_POLICY. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
+      "notes": "Web/CLI Closing surfaces verified_for_profile with EX30–EX34 local Closing/register only. Default retained compose preserved; erasable via ZOEN_LOCAL_WORLD_POLICY. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -82,7 +82,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Compose+verify d03-local-erasable-v1 for NEW Worlds only; numbered migrations 009/010; independent Closing/retained oracles; executor fixture ErasureAttemptRegister debt cleared. verified_for_profile ONLY for local Closing/register surface \u2014 NOT full D03 (no purge/Erased/restore). execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
+      "notes": "Compose+verify d03-local-erasable-v1 for NEW Worlds only; numbered migrations 009/010; independent Closing/retained oracles; executor fixture ErasureAttemptRegister debt cleared. verified_for_profile ONLY for local Closing/register surface — NOT full D03 (no purge/Erased/restore). execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -91,7 +91,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Register port part of EX30\u2013EX34 local Closing/register verified_for_profile. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
+      "notes": "Register port part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -100,7 +100,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "verified_for_profile_erasure_local_closing_register",
-      "notes": "Closing handlers part of EX30\u2013EX34 local Closing/register verified_for_profile. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
+      "notes": "Closing handlers part of EX30–EX34 local Closing/register verified_for_profile. NOT full D03. execution.json kept planned/not_run for verify_plan (progress tracked here). Tip 66b958b."
     },
     {
       "agent": "architecture_redesign",
@@ -109,7 +109,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "freeze_landed_no_deploy",
-      "notes": "D04 first increment freeze H01\u2013H08 + ops/fly stubs + inventory. Fly auth present; no apps create/deploy/MPG/Tigris. Legacy zoen not cut over. NOT full D03; NOT D04 activated."
+      "notes": "D04 first increment freeze H01–H08 + ops/fly stubs + inventory. Fly auth present; no apps create/deploy/MPG/Tigris. Legacy zoen not cut over. NOT full D03; NOT D04 activated."
     },
     {
       "agent": "architecture_redesign",
@@ -127,7 +127,7 @@
       "effort": "low",
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "disposable_restore_proof_green",
-      "notes": "Disposable dump\u2192restore of d04-hosted-retained-v1 World/install on compose PG; scoped restore excludes local-retained neighbor; S3 marker round-trip; restoreAfterErasure closed; no World rebind; no Fly/MPG/Tigris/ZN-0116. execution.json kept planned/not_run for verify_plan."
+      "notes": "Disposable dump→restore of d04-hosted-retained-v1 World/install on compose PG; scoped restore excludes local-retained neighbor; S3 marker round-trip; restoreAfterErasure closed; no World rebind; no Fly/MPG/Tigris/ZN-0116. execution.json kept planned/not_run for verify_plan."
     },
     {
       "agent": "architecture_redesign",
@@ -145,7 +145,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "planned",
-      "notes": "Compose after EX36\u2013EX38; still no fly deploy."
+      "notes": "Compose after EX36–EX38; still no fly deploy."
     }
   ],
   "temporary_ownership": [
@@ -154,42 +154,42 @@
       "path": "tests/integration/worlds/commit/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em su\u00edte transversal, sem import de servidor nas fontes authority."
+      "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em suíte transversal, sem import de servidor nas fontes authority."
     },
     {
       "task": "EX08",
       "path": "packages/authority/src/semantic/executor.ts",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Registrar opera\u00e7\u00f5es reais e prazo comum no dispatcher existente."
+      "reason": "Registrar operações reais e prazo comum no dispatcher existente."
     },
     {
       "task": "EX08",
       "path": "tests/integration/worlds/evidence/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Provar publica\u00e7\u00e3o, leitura e GC com PostgreSQL e S3 reais."
+      "reason": "Provar publicação, leitura e GC com PostgreSQL e S3 reais."
     },
     {
       "task": "EX08",
       "path": "packages/authority/src/commit/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Refinar changedDomains e valida\u00e7\u00e3o de prazo mantendo a primitiva \u00fanica."
+      "reason": "Refinar changedDomains e validação de prazo mantendo a primitiva única."
     },
     {
       "task": "EX09",
       "path": "apps/server/src/adapters/postgres/worlds/postgres.ts",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Compartilhar admiss\u00e3o com a conex\u00e3o real de identidade e corrigir escalada por roles."
+      "reason": "Compartilhar admissão com a conexão real de identidade e corrigir escalada por roles."
     },
     {
       "task": "EX10",
       "path": "apps/server/test/adapters/postgres/worlds/database.ts",
       "owner": "root",
       "integration_owner": "root",
-      "reason": "Permitir instala\u00e7\u00e3o numerada em banco vazio reutilizando provisionamento isolado."
+      "reason": "Permitir instalação numerada em banco vazio reutilizando provisionamento isolado."
     },
     {
       "task": "EX05-EX06-review",
@@ -210,35 +210,35 @@
       "path": "tooling/test_prepare_infra.py",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Contraprova independente de cria\u00e7\u00e3o exclusiva, modo0600 e recusa de symlinks."
+      "reason": "Contraprova independente de criação exclusiva, modo0600 e recusa de symlinks."
     },
     {
       "task": "D03-sharing-contract",
       "path": "docs/contracts/d03-sharing.md",
       "owner": "worker-3",
       "integration_owner": "root",
-      "reason": "Contrato candidato do pr\u00f3ximo incremento; implementa\u00e7\u00e3o depende de congelamento e revis\u00e3o."
+      "reason": "Contrato candidato do próximo incremento; implementação depende de congelamento e revisão."
     },
     {
       "task": "D01-CSV-contract",
       "path": "docs/contracts/worlds-csv.md",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Contrato candidato de importa\u00e7\u00e3o CSV pelo mesmo executor; n\u00e3o autoriza parser heur\u00edstico."
+      "reason": "Contrato candidato de importação CSV pelo mesmo executor; não autoriza parser heurístico."
     },
     {
       "task": "EX19-web",
       "path": "apps/web/src/features/worlds/**",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "SeletorCSV expl\u00edcito no mesmo cliente; entrypoints/config permanecem root."
+      "reason": "SeletorCSV explícito no mesmo cliente; entrypoints/config permanecem root."
     },
     {
       "task": "EX16-independent-migration-review",
       "path": "tests/integration/worlds/independent/document-format-migration.review.integration.test.ts",
       "owner": "worker-3",
       "integration_owner": "root",
-      "reason": "Contraprova real da migra\u00e7\u00e3o004 e preserva\u00e7\u00e3o JSON hist\u00f3rica."
+      "reason": "Contraprova real da migração004 e preservação JSON histórica."
     },
     {
       "task": "EX22",
@@ -252,70 +252,70 @@
       "path": "packages/authority/src/ports/disclosure/fence.ts",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Aplicar somente DisclosurePermit/retorno shared congelados por root junto ao adapter compil\u00e1vel; n\u00e3o ampliar o port."
+      "reason": "Aplicar somente DisclosurePermit/retorno shared congelados por root junto ao adapter compilável; não ampliar o port."
     },
     {
       "task": "EX23-cli",
       "path": "apps/cli/src/sharing/**",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "CLI compartilhamento implementada e revisada por worker-3; integra\u00e7\u00e3o HTTP viva depende do profile novo."
+      "reason": "CLI compartilhamento implementada e revisada por worker-3; integração HTTP viva depende do profile novo."
     },
     {
       "task": "EX23-web",
       "path": "apps/web/src/components/worlds/{worlds-workspace.tsx,presentation.ts}",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Permitir readOnly no componente existente e ocultar importa\u00e7\u00e3o e ajustes para viewer; extens\u00e3o autorizada antes da implementa\u00e7\u00e3o."
+      "reason": "Permitir readOnly no componente existente e ocultar importação e ajustes para viewer; extensão autorizada antes da implementação."
     },
     {
       "task": "EX23-independent-web-review",
       "path": "apps/web/test/integration/d03-sharing/independent/**",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Reproduzir descarte de nega\u00e7\u00e3o com leitura concorrente no navegador real; n\u00e3o fabricar respostas."
+      "reason": "Reproduzir descarte de negação com leitura concorrente no navegador real; não fabricar respostas."
     },
     {
       "task": "EX26-independent-basis-review",
       "path": "tests/integration/subject-identity/independent/**",
       "owner": "worker-3",
       "integration_owner": "root",
-      "reason": "Contraprovas independentes de compatibilidade de base e identidade; path de dom\u00ednio (n\u00e3o d02-*)."
+      "reason": "Contraprovas independentes de compatibilidade de base e identidade; path de domínio (não d02-*)."
     },
     {
       "task": "EX27",
       "path": "packages/authority/src/knowledge/subject-identity/handlers/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Handlers de identidade no commit sem\u00e2ntico."
+      "reason": "Handlers de identidade no commit semântico."
     },
     {
       "task": "EX27",
       "path": "packages/authority/src/knowledge/subject-identity/persistence/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "SQL privado e proje\u00e7\u00e3o de decis\u00f5es de identidade."
+      "reason": "SQL privado e projeção de decisões de identidade."
     },
     {
       "task": "EX27",
       "path": "tests/integration/subject-identity/core/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Provas de integra\u00e7\u00e3o EX27 core."
+      "reason": "Provas de integração EX27 core."
     },
     {
       "task": "D03-erasure-freeze",
       "path": "docs/contracts/d03-erasure-freeze.md",
       "owner": "root",
       "integration_owner": "root",
-      "reason": "Congelamento m\u00ednimo ER-R01 e gates bloqueados; n\u00e3o autoriza purge."
+      "reason": "Congelamento mínimo ER-R01 e gates bloqueados; não autoriza purge."
     },
     {
       "task": "EX30",
       "path": "packages/contracts/src/erasure/**",
       "owner": "root",
       "integration_owner": "root",
-      "reason": "Schemas Request/Inspect WorldErasure; dom\u00ednio erasure/**."
+      "reason": "Schemas Request/Inspect WorldErasure; domínio erasure/**."
     },
     {
       "task": "EX31",
@@ -329,28 +329,28 @@
       "path": "packages/authority/src/knowledge/erasure/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Closing local sem\u00e2ntico; sem purge at\u00e9 gates do freeze."
+      "reason": "Closing local semântico; sem purge até gates do freeze."
     },
     {
       "task": "EX33",
       "path": "apps/web/src/features/erasure/**",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Confirma\u00e7\u00e3o Web de erasure; composi\u00e7\u00e3o root."
+      "reason": "Confirmação Web de erasure; composição root."
     },
     {
       "task": "EX33",
       "path": "apps/cli/src/erasure/**",
       "owner": "worker-2",
       "integration_owner": "root",
-      "reason": "Confirma\u00e7\u00e3o CLI de erasure."
+      "reason": "Confirmação CLI de erasure."
     },
     {
       "task": "EX34",
       "path": "tests/integration/erasure/**",
       "owner": "worker-3",
       "integration_owner": "root",
-      "reason": "Or\u00e1culos/contraprovas; paths de dom\u00ednio erasure/**."
+      "reason": "Oráculos/contraprovas; paths de domínio erasure/**."
     }
   ],
   "checkpoints": [
@@ -368,7 +368,7 @@
       "unit_tests": 67,
       "infrastructure_tests": 4,
       "browser_component_tests": 7,
-      "scope": "Bootstrap, contratos e componentes puros; n\u00e3o conclui D01 ou D02."
+      "scope": "Bootstrap, contratos e componentes puros; não conclui D01 ou D02."
     },
     {
       "date": "2026-09-05",
@@ -378,7 +378,7 @@
       "unit_tests": 152,
       "integration_tests": 36,
       "browser_component_tests": 7,
-      "scope": "Componentes de dom\u00ednio e adapters reais; EX05/EX06 receberam corre\u00e7\u00f5es posteriores com contraprovas independentes. EX07 ainda requer revis\u00e3o cruzada; EX08/EX09/EX10 em composi\u00e7\u00e3o."
+      "scope": "Componentes de domínio e adapters reais; EX05/EX06 receberam correções posteriores com contraprovas independentes. EX07 ainda requer revisão cruzada; EX08/EX09/EX10 em composição."
     },
     {
       "date": "2026-09-05",
@@ -387,7 +387,7 @@
       "state": "independently_reviewed_and_verified_locally",
       "reviewer": "worker-3",
       "witness_commits": ["0dd65c8", "70d0cbd", "a0955d0"],
-      "scope": "Prazo interrompe lock SQL sem persist\u00eancia; runtime n\u00e3o escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem altera\u00e7\u00e3o de UI posterior.",
+      "scope": "Prazo interrompe lock SQL sem persistência; runtime não escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem alteração de UI posterior.",
       "unit_tests": 152,
       "integration_tests": 41
     },
@@ -415,7 +415,7 @@
       "browser_component_tests": 7,
       "browser_acceptance_tests": 4,
       "tooling_tests": 6,
-      "scope": "Jornada JSON, identidade real, PostgreSQL/S3, corre\u00e7\u00e3o/unknown/undo, replay e revoga\u00e7\u00e3o com revis\u00e3o cruzada. Build, typecheck e lint passaram. Aceita\u00e7\u00e3o combinada atual51.9s; cont\u00eainer/CI nova ainda n\u00e3o executados. N\u00e3o conclui D01/D02 completos nem 22 entregas."
+      "scope": "Jornada JSON, identidade real, PostgreSQL/S3, correção/unknown/undo, replay e revogação com revisão cruzada. Build, typecheck e lint passaram. Aceitação combinada atual51.9s; contêiner/CI nova ainda não executados. Não conclui D01/D02 completos nem 22 entregas."
     },
     {
       "date": "2026-09-05",
@@ -449,7 +449,7 @@
       "browser_component_tests": 7,
       "browser_acceptance_tests": 4,
       "tooling_tests": 6,
-      "scope": "Primeiro incremento JSOND01/D02 com revis\u00e3o cruzada e imagemreal; n\u00e3o concluiD01/D02integrais, apagamento, cloud ou22entregas. CSV/logoutevolu\u00e7\u00f5esposteriores ainda possuemseusgates."
+      "scope": "Primeiro incremento JSOND01/D02 com revisão cruzada e imagemreal; não concluiD01/D02integrais, apagamento, cloud ou22entregas. CSV/logoutevoluçõesposteriores ainda possuemseusgates."
     },
     {
       "date": "2026-09-05",
@@ -460,7 +460,7 @@
       "evidence": "docs/verification/csv-local.md",
       "browser_acceptance_tests": 7,
       "browser_component_tests": 7,
-      "scope": "CSV expl\u00edcito, bytes/intent/replay, reten\u00e7\u00e3o e SIGKILL com revis\u00e3o independente; migra\u00e7\u00e3o hist\u00f3rica SQL/S3 parcial. A CI da imagem nova ainda est\u00e1 pendente. Compartilhamento segue em implementa\u00e7\u00e3o sem ativa\u00e7\u00e3o."
+      "scope": "CSV explícito, bytes/intent/replay, retenção e SIGKILL com revisão independente; migração histórica SQL/S3 parcial. A CI da imagem nova ainda está pendente. Compartilhamento segue em implementação sem ativação."
     },
     {
       "date": "2026-09-05",
@@ -478,7 +478,7 @@
       "integration_tests": 110,
       "browser_component_tests": 7,
       "browser_acceptance_tests": 7,
-      "scope": "Imagem nova constru\u00edda e provisionada no CI; sete cen\u00e1rios de aceita\u00e7\u00e3o passaram. N\u00e3o prova upgrade de instala\u00e7\u00e3o antiga, cerca de emiss\u00e3o, D03 ou as entregas integrais."
+      "scope": "Imagem nova construída e provisionada no CI; sete cenários de aceitação passaram. Não prova upgrade de instalação antiga, cerca de emissão, D03 ou as entregas integrais."
     },
     {
       "date": "2026-09-05",
@@ -495,7 +495,7 @@
         "2487c65"
       ],
       "evidence": "docs/contracts/disclosure-durable.md",
-      "scope": "Membership, audience privada, guards de replay, SIGKILL e migra\u00e7\u00f5es possuem provas reais por recorte. CLI revisada sem HTTP vivo. Perda do coordenador reproduziu emiss\u00e3o tardia; snapshot antigo tamb\u00e9m foi refutado. Contrato dur\u00e1vel revisado, SQL006 e tratamento do snapshot provados; adapter, executor, writer e ordena\u00e7\u00f5es HTTP seguem em integra\u00e7\u00e3o sem ativa\u00e7\u00e3o."
+      "scope": "Membership, audience privada, guards de replay, SIGKILL e migrações possuem provas reais por recorte. CLI revisada sem HTTP vivo. Perda do coordenador reproduziu emissão tardia; snapshot antigo também foi refutado. Contrato durável revisado, SQL006 e tratamento do snapshot provados; adapter, executor, writer e ordenações HTTP seguem em integração sem ativação."
     },
     {
       "date": "2026-09-05",
@@ -510,7 +510,7 @@
       "browser_component_tests": 7,
       "browser_acceptance_tests": 12,
       "container_acceptance_tests": 12,
-      "scope": "Migra\u00e7\u00f5es005/006, core, emiss\u00e3o nativa dur\u00e1vel, 12 ordena\u00e7\u00f5es de leitura/revoke/logout e 2 concorr\u00eancias de grant em processos reais, Web/CLI e imagem nova com revis\u00e3o independente. CI remota pendente; n\u00e3o conclui D03 integral, apagamento, restore, cloud ou 22entregas."
+      "scope": "Migrações005/006, core, emissão nativa durável, 12 ordenações de leitura/revoke/logout e 2 concorrências de grant em processos reais, Web/CLI e imagem nova com revisão independente. CI remota pendente; não conclui D03 integral, apagamento, restore, cloud ou 22entregas."
     },
     {
       "date": "2026-09-05",
@@ -528,7 +528,7 @@
       "browser_component_tests": 7,
       "container_acceptance_passed": 11,
       "container_acceptance_failed": 1,
-      "scope": "Qualidade e integra\u00e7\u00e3o passaram; EX12 falhou no retorno ap\u00f3s logout, sem Frame/evid\u00eancia restaurados. Causa sob revis\u00e3o independente; n\u00e3o contar CI como verde."
+      "scope": "Qualidade e integração passaram; EX12 falhou no retorno após logout, sem Frame/evidência restaurados. Causa sob revisão independente; não contar CI como verde."
     },
     {
       "date": "2026-09-05",
@@ -544,7 +544,7 @@
       "integration_tests": 168,
       "browser_component_tests": 7,
       "container_acceptance_tests": 12,
-      "scope": "Logout confirmado corrigiu a testemunha; todas as provas comportamentais passaram. Qualidade reprovou somente tabela n\u00e3o formatada no relat\u00f3rio; corre\u00e7\u00e3o preserva os bytes da fonte diagn\u00f3stica. Agregador n\u00e3o foi verde."
+      "scope": "Logout confirmado corrigiu a testemunha; todas as provas comportamentais passaram. Qualidade reprovou somente tabela não formatada no relatório; correção preserva os bytes da fonte diagnóstica. Agregador não foi verde."
     },
     {
       "date": "2026-09-05",
@@ -562,7 +562,7 @@
       "integration_tests": 168,
       "browser_component_tests": 7,
       "container_acceptance_tests": 12,
-      "scope": "Qualidade, build, unidade, integra\u00e7\u00e3o real, componentes e imagem nova passaram no CI com revis\u00e3o independente. As duas falhas remotas anteriores e sua contraprova est\u00e3o preservadas. N\u00e3o conclui D03 integral, erasure, restore, upgrade, cloud ou as22entregas."
+      "scope": "Qualidade, build, unidade, integração real, componentes e imagem nova passaram no CI com revisão independente. As duas falhas remotas anteriores e sua contraprova estão preservadas. Não conclui D03 integral, erasure, restore, upgrade, cloud ou as22entregas."
     },
     {
       "date": "2026-09-06",
@@ -627,7 +627,7 @@
         "result": "success",
         "url": "https://github.com/EnzoTironi/zoen/actions/runs/34062093334"
       },
-      "scope": "Subject-identity-v2 increment verified for local/container profile via EX24\u2013EX29 vertical proofs + Main Verify (incl. container). Does NOT conclude full D02 (merge/split stewardship breadth beyond identity, cloud, etc.). Erasure not included.",
+      "scope": "Subject-identity-v2 increment verified for local/container profile via EX24–EX29 vertical proofs + Main Verify (incl. container). Does NOT conclude full D02 (merge/split stewardship breadth beyond identity, cloud, etc.). Erasure not included.",
       "tests": {
         "writers_sigkill": "pass",
         "writers_concurrency": "pass",
@@ -665,7 +665,7 @@
       "state": "erasure_closing_local_green",
       "profile": "d03-local-erasable-v1 (candidate Closing; restoreAfterErasure blocked)",
       "evidence": "docs/verification/erasure-local.md",
-      "scope": "Semantic Closing after ErasureAttemptRegister: Active\u2192Closing with immutable receipt+outbox; success only after Confirmada; retained Worlds blocked; no S3 purge/Erased.",
+      "scope": "Semantic Closing after ErasureAttemptRegister: Active→Closing with immutable receipt+outbox; success only after Confirmada; retained Worlds blocked; no S3 purge/Erased.",
       "tests": {
         "integration_closing_happy": "pass",
         "integration_retained_blocked": "pass",
@@ -680,7 +680,7 @@
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds only) / Closing+register local surface; worlds-local-retained-v1 default preserved",
       "evidence": "docs/verification/erasure-local.md",
-      "scope": "Local Closing/register surface verified_for_profile for EX30\u2013EX34: numbered migrations 009/010, erasable provision for NEW Worlds only, independent Closing/retained oracles, Web/CLI confirmation. Does NOT conclude full D03: purge/Erased, qualified controller, Object Lock, backup catalog, World fence ER-R02, restoreAfterErasure remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
+      "scope": "Local Closing/register surface verified_for_profile for EX30–EX34: numbered migrations 009/010, erasable provision for NEW Worlds only, independent Closing/retained oracles, Web/CLI confirmation. Does NOT conclude full D03: purge/Erased, qualified controller, Object Lock, backup catalog, World fence ER-R02, restoreAfterErasure remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
       "tests": {
         "unit_ex30": "pass",
         "integration_local_register_ex31": "pass",
@@ -701,7 +701,7 @@
       "state": "d04_freeze_and_stubs_landed",
       "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; no deploy; restore-after-erasure blocked)",
       "evidence": "docs/contracts/d04-hosted-freeze.md",
-      "scope": "Freeze H01\u2013H08; inventory Fly auth yes, Dockerfile yes, ops/fly stubs, legacy zoen not cut over; MPG/Tigris/app zoen-rebuild/secrets redesign absent. EX36\u2013EX39 planned. Does NOT conclude D04 or full D03.",
+      "scope": "Freeze H01–H08; inventory Fly auth yes, Dockerfile yes, ops/fly stubs, legacy zoen not cut over; MPG/Tigris/app zoen-rebuild/secrets redesign absent. EX36–EX39 planned. Does NOT conclude D04 or full D03.",
       "fly_auth_present": true,
       "fly_deployed": false,
       "not_full_d03": true,
@@ -734,7 +734,7 @@
       "state": "d04_hosted_retained_restore_disposable_landed",
       "profile": "d04-hosted-retained-v1 (candidate; disposable restore of enabled retained scope only)",
       "evidence": "tests/integration/hosted/restore/**; docs/verification/hosted-retained-restore.md",
-      "scope": "EX37 local stand-in for hosted restore path: pg_dump\u2192restore discarded after proof; scoped copy excludes worlds-local-retained-v1; S3 disposable marker; erasure/restoreAfterErasure stay closed. No Fly deploy/MPG/Tigris; no ZN-0116. Does NOT conclude D04 or full D03.",
+      "scope": "EX37 local stand-in for hosted restore path: pg_dump→restore discarded after proof; scoped copy excludes worlds-local-retained-v1; S3 disposable marker; erasure/restoreAfterErasure stay closed. No Fly deploy/MPG/Tigris; no ZN-0116. Does NOT conclude D04 or full D03.",
       "fly_deployed": false,
       "integration_tests": [
         "tests/integration/hosted/restore/retained-restore.EX37.integration.test.ts"
@@ -761,7 +761,7 @@
       "state": "verified_for_profile",
       "profile": "d04-hosted-retained-v1 (new Worlds only) / local hosted-retained bootstrap; worlds-local-retained-v1 default preserved; ops/fly stubs only",
       "evidence": "docs/verification/hosted-local.md",
-      "scope": "Local hosted-retained bootstrap verified_for_profile for EX35\u2013EX39: freeze/stubs, DataPolicy schemas, disposable restore, admission flags, provision/composition wiring for NEW Worlds only, independent oracles. Does NOT conclude D04 activated or production Fly: no apps create/deploy/MPG/Tigris/secrets redesign/cutover. D03 purge/restore-after-erasure remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
+      "scope": "Local hosted-retained bootstrap verified_for_profile for EX35–EX39: freeze/stubs, DataPolicy schemas, disposable restore, admission flags, provision/composition wiring for NEW Worlds only, independent oracles. Does NOT conclude D04 activated or production Fly: no apps create/deploy/MPG/Tigris/secrets redesign/cutover. D03 purge/restore-after-erasure remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
       "tests": {
         "unit_ex36_policy": "pass",
         "unit_ex38_admission_flags": "pass",
@@ -776,7 +776,7 @@
       "not_full_d03": true,
       "not_full_d04": true,
       "blockers": [
-        "zoen-rebuild Fly app not created (cost gate \u2014 needs user approval)",
+        "zoen-rebuild Fly app not created (cost gate — needs user approval)",
         "No Fly Managed Postgres / Tigris in org inventory",
         "Rebuild secrets not provisioned on Fly",
         "D03 purge + restore-after-erasure still blocked for sensitive pilot",
@@ -791,7 +791,7 @@
       "state": "eve_minimum_freeze_and_schemas_landed",
       "profile": "eve-local-stub-v1 (candidate; local stub proofs only; real model/voice blocked)",
       "evidence": "docs/contracts/eve-freeze.md",
-      "scope": "Frozen F01\u2013F09: text chat with facts/uncertainty/cancel/recoverable journal; INV-01 no authority credentials in journal; voice blocked; real provider blocked; paths eve/**. Does NOT conclude D05.",
+      "scope": "Frozen F01–F09: text chat with facts/uncertainty/cancel/recoverable journal; INV-01 no authority credentials in journal; voice blocked; real provider blocked; paths eve/**. Does NOT conclude D05.",
       "unit_tests": ["packages/contracts/test/eve/operations.EX40.test.ts"],
       "not_full_d05": true,
       "live_model": false,
@@ -822,7 +822,7 @@
       "state": "verified_for_profile",
       "profile": "eve-local-stub-v1 (local journal stub only)",
       "evidence": "docs/verification/eve-local.md",
-      "scope": "Local Eve first increment verified_for_profile for EX40\u2013EX41: freeze F01\u2013F09, eve.v1 schemas, in-memory journal recoverability without live model. Does NOT conclude D05: real model/API spend, voice, full turn fence/tools/streaming, separate Eve process, Fly redeploy remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
+      "scope": "Local Eve first increment verified_for_profile for EX40–EX41: freeze F01–F09, eve.v1 schemas, in-memory journal recoverability without live model. Does NOT conclude D05: real model/API spend, voice, full turn fence/tools/streaming, separate Eve process, Fly redeploy remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
       "tests": {
         "unit_ex40_schemas": "pass",
         "unit_ex41_journal_stub": "pass"
@@ -863,7 +863,7 @@
       "state": "eve_opencode_zen_turn_path_landed",
       "profile": "eve-opencode-zen-v1",
       "evidence": "docs/verification/eve-opencode-zen.md",
-      "scope": "EX43 runEveTurn accept\u2192model\u2192settle; cancel abort; journal INV-01; ZN-0063 artifact. Does NOT conclude D05.",
+      "scope": "EX43 runEveTurn accept→model→settle; cancel abort; journal INV-01; ZN-0063 artifact. Does NOT conclude D05.",
       "unit_tests": [
         "packages/authority/test/ports/eve/turn.EX43.test.ts",
         "packages/authority/test/ports/eve/journal.EX41.test.ts"
@@ -879,7 +879,7 @@
       "state": "verified_for_profile",
       "profile": "eve-opencode-zen-v1 (OpenCode Zen free product path; stub offline only)",
       "evidence": "docs/verification/eve-opencode-zen.md",
-      "scope": "Eve EX40\u2013EX43 verified_for_profile: freeze F01\u2013F09 updated, Zen client+turn path, ZN-0063 qualification. Does NOT conclude D05: voice, full turn machine/streaming/tools, separate Eve process, legacy zoen cutover remain blocked. Structural execution.json statuses remain planned/not_run.",
+      "scope": "Eve EX40–EX43 verified_for_profile: freeze F01–F09 updated, Zen client+turn path, ZN-0063 qualification. Does NOT conclude D05: voice, full turn machine/streaming/tools, separate Eve process, legacy zoen cutover remain blocked. Structural execution.json statuses remain planned/not_run.",
       "tests": {
         "unit_ex40_schemas": "pass",
         "unit_ex41_journal": "pass",
@@ -907,7 +907,7 @@
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds; Object Lock at provision; restoreAfterErasure false)",
       "evidence": "docs/verification/erasure-storage-qualification.md",
-      "scope": "RustFS local Object Lock/retention/legal hold qualified; ErasureObjectInventory + ErasurePurgeStore fail-closed (no EvidenceObjectStore.remove); erasable provision ObjectLockEnabledForBucket. Does NOT conclude Closing\u2192Erased, Fly controller independence, backup catalog, ER-R02, restoreAfterErasure, or live Fly re-probe.",
+      "scope": "RustFS local Object Lock/retention/legal hold qualified; ErasureObjectInventory + ErasurePurgeStore fail-closed (no EvidenceObjectStore.remove); erasable provision ObjectLockEnabledForBucket. Does NOT conclude Closing→Erased, Fly controller independence, backup catalog, ER-R02, restoreAfterErasure, or live Fly re-probe.",
       "notes": "verified_for_profile ONLY for local RustFS Object Lock + S3 inventory/purge ports. Closing/register remains prior tip; Erased still blocked."
     },
     {
@@ -917,7 +917,7 @@
       "state": "eve_web_speech_voice_profile_landed",
       "profile": "eve-web-speech-v1 / admission web-speech",
       "evidence": "docs/verification/eve-web-speech.md",
-      "scope": "EX44 Web Speech STT/TTS + runEveVoiceTurn transcript\u2192Zen settle\u2192speakText; ZN-0063 voice artifact. Does NOT conclude D05.",
+      "scope": "EX44 Web Speech STT/TTS + runEveVoiceTurn transcript→Zen settle→speakText; ZN-0063 voice artifact. Does NOT conclude D05.",
       "unit_tests": [
         "packages/authority/test/ports/eve/voice.EX44.test.ts",
         "apps/web/test/features/eve/web-speech.EX44.test.ts",
@@ -982,15 +982,15 @@
       "commit": "cadd16faf2040945335ee54efdb0a8fd7db12e75",
       "packages": ["EX45"],
       "state": "verified_for_profile",
-      "profile": "d03-local-erasable-v1 (new Worlds; Closing\u2192Erased local-controlled-copies; restoreAfterErasure false)",
+      "profile": "d03-local-erasable-v1 (new Worlds; Closing→Erased local-controlled-copies; restoreAfterErasure false)",
       "evidence": "docs/verification/erasure-local.md",
       "scope": "EX45 PurgeWorldContent: after Closing+Confirmada, SQL content purge + World-prefix object purge via EX44 ports; phase Erased with attestationScope local-controlled-copies; Closing receipt immutable; restoreAfterErasure remains false. Does NOT conclude full D03: controller/anti-rollback, backup catalog, ER-R02 World fence, hosted Erased, forensic wipe, restoreAfterErasure.",
-      "notes": "verified_for_profile ONLY for local Closing\u2192Erased controlled copies. execution.json kept planned/not_run for verify_plan. Fly Object Lock re-probe cleared 2026-09-07 (see later checkpoint).",
+      "notes": "verified_for_profile ONLY for local Closing→Erased controlled copies. execution.json kept planned/not_run for verify_plan. Fly Object Lock re-probe cleared 2026-09-07 (see later checkpoint).",
       "blockers_remaining": [
         "Qualified independent controller / anti-rollback anchor",
         "Backup/copy catalog",
         "ER-R02 World fence + in-flight PUT/multipart containment",
-        "Hosted Closing\u2192Erased on live retained install (needs erasable hosted path)",
+        "Hosted Closing→Erased on live retained install (needs erasable hosted path)",
         "restoreAfterErasure (F04 closed)"
       ]
     },
@@ -1007,7 +1007,7 @@
         "Qualified independent controller / anti-rollback anchor",
         "Backup/copy catalog",
         "ER-R02 World fence + in-flight PUT/multipart containment",
-        "Hosted Closing\u2192Erased on live retained install",
+        "Hosted Closing→Erased on live retained install",
         "restoreAfterErasure (F04 closed)"
       ]
     },
@@ -1018,8 +1018,8 @@
       "state": "tip_hosted_fly_deploy_ready",
       "profile": "fly zoen-rebuild all-in-one / tip after #82",
       "evidence": "https://github.com/EnzoTironi/zoen/actions/runs/34152681282",
-      "scope": "Tip edbf72f (#82 code landed: RELEASE_MISMATCH / releaseDigest alignment on all-in-one redeploy). Fly Deploy GitHub Actions succeeded for headSha edbf72f2a3ae652f11ff6a753f3ec39e1e31fa6b: https://github.com/EnzoTironi/zoen/actions/runs/34152681282. Operator observation 2026-09-07: Fly image deployment-01M1YKZRT31AB9TXJCBGDXXE3J / release v13 and /ready HTTP 200 (body {\"status\":\"ready\"} only \u2014 does NOT prove running commit or releaseDigest identity). docs/architecture-audit/ documents the post-#74 execution frontier (ZA slices, tip\u2192target, anti-list); 0 ZA accepted; architecture-repair HOLD. Does NOT fill verified_deliveries with D01\u2013D22 or claim full D04 activation.",
-      "notes": "Honesty checkpoint only. #82 landed and Deploy succeeded + /ready 200 observed; do not treat /ready as tip_hosted_release_digest_aligned proof. Post-audit tip includes #75\u2013#82. G-TIP rebind required before executing ZA on tip. deliveries.json may still say planned.",
+      "scope": "Tip edbf72f (#82 code landed: RELEASE_MISMATCH / releaseDigest alignment on all-in-one redeploy). Fly Deploy GitHub Actions succeeded for headSha edbf72f2a3ae652f11ff6a753f3ec39e1e31fa6b: https://github.com/EnzoTironi/zoen/actions/runs/34152681282. Operator observation 2026-09-07: Fly image deployment-01M1YKZRT31AB9TXJCBGDXXE3J / release v13 and /ready HTTP 200 (body {\"status\":\"ready\"} only — does NOT prove running commit or releaseDigest identity). docs/architecture-audit/ documents the post-#74 execution frontier (ZA slices, tip→target, anti-list); 0 ZA accepted; architecture-repair HOLD. Does NOT fill verified_deliveries with D01–D22 or claim full D04 activation.",
+      "notes": "Honesty checkpoint only. #82 landed and Deploy succeeded + /ready 200 observed; do not treat /ready as tip_hosted_release_digest_aligned proof. Post-audit tip includes #75–#82. G-TIP rebind required before executing ZA on tip. deliveries.json may still say planned.",
       "fly_deploy": {
         "app": "zoen-rebuild",
         "deploy_run": "https://github.com/EnzoTironi/zoen/actions/runs/34152681282",
@@ -1034,6 +1034,16 @@
         "verifier": "New Bot"
       },
       "za_accepted": 0
+    },
+    {
+      "date": "2026-09-07",
+      "commit": "pending-za17",
+      "packages": ["ZA-17"],
+      "state": "eve_product_fail_closed",
+      "profile": "eve unadmitted (blockedProviders + blocked Zen; stubMemory not product)",
+      "evidence": "docs/contracts/eve-freeze.md",
+      "scope": "ZA-17 honesty note only in progress: remove prose-length→Known; product composition no longer installs stubMemoryLayer/live Zen from key alone; Eve routes Blocked until ZA-18/19/20. Does NOT activate Eve or conclude D05. Does NOT claim activated because this PR merged.",
+      "notes": "Prior verified_for_profile Eve checkpoints remain historical unit/smoke evidence — not current product admission."
     }
   ],
   "verified_deliveries": [],
@@ -1041,19 +1051,19 @@
     {
       "id": "fly-hosted-retained-gaps",
       "delivery": "D04",
-      "detail": "Fly app zoen-rebuild exists; tip edbf72f (#82) Deploy succeeded (https://github.com/EnzoTironi/zoen/actions/runs/34152681282); operator observed release v13 + /ready 200 on 2026-09-07 (image deployment-01M1YKZRT31AB9TXJCBGDXXE3J; /ready does not expose digest). MPG/Tigris remain destroyed by design \u2014 do not revive. Full D04 activation still not claimed: Managed Postgres/Tigris are not the topology; remaining gaps include backup catalog for admitted restore beyond disposable, sensitive pilot (needs D03 purge/restore-after-erasure), and legacy zoen / DNS cutover (explicit human decision).",
+      "detail": "Fly app zoen-rebuild exists; tip edbf72f (#82) Deploy succeeded (https://github.com/EnzoTironi/zoen/actions/runs/34152681282); operator observed release v13 + /ready 200 on 2026-09-07 (image deployment-01M1YKZRT31AB9TXJCBGDXXE3J; /ready does not expose digest). MPG/Tigris remain destroyed by design — do not revive. Full D04 activation still not claimed: Managed Postgres/Tigris are not the topology; remaining gaps include backup catalog for admitted restore beyond disposable, sensitive pilot (needs D03 purge/restore-after-erasure), and legacy zoen / DNS cutover (explicit human decision).",
       "since": "2026-09-07"
     },
     {
       "id": "d03-purge-restore-after-erasure",
       "delivery": "D03",
-      "detail": "Local Closing/register + EX44 Object Lock/ports + EX45 Closing\u2192Erased (local-controlled-copies) landed. Fly RustFS Object Lock re-probe cleared 2026-09-07 (docs/verification/erasure-fly-object-lock.md). Still blocked for full D03/hosted Erased: independent controller/anti-rollback, backup catalog, ER-R02, restoreAfterErasure, hosted erasable install path (live zoen bucket remains retained).",
+      "detail": "Local Closing/register + EX44 Object Lock/ports + EX45 Closing→Erased (local-controlled-copies) landed. Fly RustFS Object Lock re-probe cleared 2026-09-07 (docs/verification/erasure-fly-object-lock.md). Still blocked for full D03/hosted Erased: independent controller/anti-rollback, backup catalog, ER-R02, restoreAfterErasure, hosted erasable install path (live zoen bucket remains retained).",
       "since": "2026-09-06"
     },
     {
       "id": "eve-real-model-provider",
       "delivery": "D05",
-      "detail": "OpenCode Zen free qualified for eve-opencode-zen-v1 when ZOEN_OPENCODE_API_KEY (or ZOEN_OPENCODE_*) present \u2014 see docs/verification/eve-opencode-zen.md. Broader multi-provider routing / paid tiers and full D05 remain open. Voice I/O: see eve-web-speech.md.",
+      "detail": "ZA-17 honesty: product Eve composition stays fail-closed (blockedProvidersLayer + blockedLayer) even when ZOEN_OPENCODE_API_KEY is present — key alone does not admit stubMemory or live Zen. Durable journal (ZA-18), evidence grounding (ZA-19), and narrow profile acceptance (ZA-20) remain required. Prior EX43/EX44 Zen smoke docs are not product admission. Worlds/web/CLI core remain usable.",
       "since": "2026-09-07"
     },
     {
@@ -1109,7 +1119,7 @@
       "deployed_verified_on": "2026-09-07",
       "digest_proven_by_ready": false,
       "full_d04_activation_claimed": false,
-      "notes": "Deploy succeeded for tip edbf72f (https://github.com/EnzoTironi/zoen/actions/runs/34152681282); /ready 200 observed. Image/release v13 are operator observations from the Deploy run \u2014 /ready body does not prove commit or releaseDigest identity. not_production_fly remains true because legacy zoen cutover, Managed Postgres/Tigris (intentionally absent), backup catalog, and sensitive-pilot qualification still block claiming full D04."
+      "notes": "Deploy succeeded for tip edbf72f (https://github.com/EnzoTironi/zoen/actions/runs/34152681282); /ready 200 observed. Image/release v13 are operator observations from the Deploy run — /ready body does not prove commit or releaseDigest identity. not_production_fly remains true because legacy zoen cutover, Managed Postgres/Tigris (intentionally absent), backup catalog, and sensitive-pilot qualification still block claiming full D04."
     }
   }
 }

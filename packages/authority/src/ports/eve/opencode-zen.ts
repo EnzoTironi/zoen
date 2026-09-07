@@ -58,18 +58,17 @@ const truncateVisible = (text: string): string =>
   text.length <= 16_384 ? text : text.slice(0, 16_384);
 
 /**
- * Map a successful model payload to honest uncertainty.
- * Empty / whitespace-only content is Unknown — never fake Known.
+ * Map a successful model payload to generation uncertainty.
+ * Text length is never an epistemic input (ZA-17 / F10): empty → Unknown;
+ * any non-empty generation without an evidence basis → Partial — never Known.
+ * Prefer `uncertaintyFromEvidenceBasis` at settle when citations exist.
  */
 export const uncertaintyFromModelText = (text: string): UncertaintyKind => {
   const trimmed = text.trim();
   if (trimmed.length === 0) {
     return "Unknown";
   }
-  if (trimmed.length < 8) {
-    return "Partial";
-  }
-  return "Known";
+  return "Partial";
 };
 
 const parseChatContent = (body: unknown): string | null => {

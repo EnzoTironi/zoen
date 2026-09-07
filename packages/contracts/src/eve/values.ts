@@ -7,15 +7,16 @@ export const EveSchemaVersion = Schema.Literal("eve.v1");
 export type EveSchemaVersion = typeof EveSchemaVersion.Type;
 
 /**
- * Offline/local stub profile for disposable unit proofs only (freeze F07).
- * Not the product default when OpenCode Zen is admitted.
+ * Offline/local stub profile for disposable unit proofs only (freeze F07 / ZA-17).
+ * Not a product profile — composition must not admit stub-local or stubMemory.
  */
 export const EveLocalStubProfileId = Schema.Literal("eve-local-stub-v1");
 export type EveLocalStubProfileId = typeof EveLocalStubProfileId.Type;
 
 /**
- * Product profile for OpenCode Zen free (ZN-0063 qualified when key present).
- * Live chat completions via OpenAI-compatible Zen endpoint.
+ * Candidate text profile for OpenCode Zen free (ZN-0063).
+ * A host key alone does not admit this profile until durable journal + grounding
+ * proofs land (ZA-17 → ZA-20). Live completions use the OpenAI-compatible Zen API.
  */
 export const EveOpenCodeZenProfileId = Schema.Literal("eve-opencode-zen-v1");
 export type EveOpenCodeZenProfileId = typeof EveOpenCodeZenProfileId.Type;
@@ -73,17 +74,18 @@ export const MessageState = Schema.Literals([
 export type MessageState = typeof MessageState.Type;
 
 /**
- * Honest uncertainty for grounded composition (freeze F02).
- * Summaries never become evidence (F04) — they may only mark Partial/Unknown.
+ * Honest uncertainty for grounded composition (freeze F02 / ZA-17).
+ * Summaries never become evidence (F04). Text length / model prose never set Known;
+ * Known requires an authorized evidence basis.
  */
 export const UncertaintyKind = Schema.Literals(["Known", "Partial", "Unknown"]);
 export type UncertaintyKind = typeof UncertaintyKind.Type;
 
 /**
- * Provider admission (F05/F06).
- * Product text path: `opencode-zen` when ZOEN_OPENCODE_API_KEY is present.
- * Product voice I/O path: `web-speech` (browser SpeechRecognition + speechSynthesis).
- * `stub-local` remains only for offline unit proofs.
+ * Provider admission (F05/F06 / ZA-17).
+ * Candidate text path: `opencode-zen` — not product-admitted from key alone.
+ * Voice I/O path: `web-speech` (browser SpeechRecognition + speechSynthesis).
+ * `stub-local` is offline unit proofs only — removed from product composition.
  * `voice-blocked` / `real-model-blocked` are fail-closed reject literals (not shims).
  */
 export const EveProviderAdmission = Schema.Literals([

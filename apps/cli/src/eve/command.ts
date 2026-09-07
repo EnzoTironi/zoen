@@ -90,14 +90,14 @@ export const makeEveCommands = <E, R>(
         )
     ).pipe(
       Command.withDescription(
-        "Owner: run one Eve turn on the OpenCode Zen product path (accept → model → settle). Fail-closed Blocked when ZOEN_OPENCODE_API_KEY is absent. Voice remains blocked. Reuse --ingress-id on Unavailable retry."
+        "Owner: run one Eve turn on the OpenCode Zen candidate path (accept → model → settle). Fail-closed Blocked until durable journal/grounding/key qualify (ZA-17); key alone does not admit. Voice remains blocked. Reuse --ingress-id on Unavailable retry."
       ),
       Command.withExamples([
         {
           command:
             "zoen --base-url http://localhost:3000 eve-turn --world-id <uuid> --conversation-id <uuid> --relationship-id <uuid> --ingress-id <uuid> --turn-id <uuid> --message-id <uuid> --text 'quanto gastei?'",
           description:
-            "Run a live Zen turn when the server has ZOEN_OPENCODE_API_KEY; otherwise expect Blocked",
+            "Expect Blocked until Eve journal/grounding/profile qualify (ZA-17); Worlds CLI stays usable",
         },
       ])
     ),
@@ -151,7 +151,7 @@ export const makeEveCommands = <E, R>(
         )
     ).pipe(
       Command.withDescription(
-        "Owner: recover the Eve conversation journal without calling a live model. Snapshots never contain API keys (INV-01)."
+        "Owner: recover the Eve conversation journal without calling a live model. Fail-closed when product Eve is unadmitted (ZA-17). Snapshots never contain API keys (INV-01)."
       ),
       Command.withExamples([
         {

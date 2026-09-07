@@ -58,7 +58,7 @@ export type CancelConversationTurn = typeof CancelConversationTurn.Type;
  * Live text path uses `opencode-zen`; voice I/O surface uses `web-speech`.
  * Product HTTP surface settles via AcceptConversationTurn → runEveTurn.
  * Client Settle over HTTP is rejected as Unsupported.
- * stub-local is offline proofs only.
+ * stub-local is offline unit proofs only — not product composition (ZA-17).
  * voice-blocked / real-model-blocked stay fail-closed (F05/F06).
  */
 export const SettleConversationMessage = Schema.Struct({

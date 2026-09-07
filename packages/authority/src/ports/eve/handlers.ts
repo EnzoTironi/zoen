@@ -47,6 +47,10 @@ const assertProductAdmission = (
 /**
  * Product accept: accept → OpenCode Zen → settle (or idempotent recover of settled ingress).
  * Voice / stub-local / missing key stay fail-closed Blocked.
+ *
+ * Settled-ingress replay avoids unconditional re-call of the model for the same
+ * ingressId. Durable intent / owner / race fencing is still absent (ZA-18); this
+ * in-memory shortcut is not ownership or crash-recovery proof.
  */
 export const acceptConversationTurn = (
   _context: VerifiedRequestContext,

@@ -20,6 +20,7 @@ import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 
+import { uncertaintyFromEvidenceBasis } from "./admission.js";
 import { EveJournal } from "./journal.js";
 import { EveOpenCodeZen } from "./opencode-zen.js";
 
@@ -166,12 +167,16 @@ export const runEveTurn = (
       return yield* new Conflict({ code: "CONFLICT" });
     }
 
+    const evidenceLinks = [...(input.evidenceLinks ?? [])];
     const message = yield* journal.settleMessage({
       conversationId: input.conversationId,
-      evidenceLinks: [...(input.evidenceLinks ?? [])],
+      evidenceLinks,
       messageId: input.messageId,
       turnId: input.turnId,
-      uncertainty: completion.uncertainty,
+      uncertainty: uncertaintyFromEvidenceBasis({
+        evidenceLinks,
+        generatedText: completion.visibleText,
+      }),
       visibleText: completion.visibleText,
     });
 
