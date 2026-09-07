@@ -201,8 +201,8 @@ it.live(
           ORDER BY data_policy_id
         `;
         expect(policies).toStrictEqual([
-          { count: 1, data_policy_id: "worlds-local-retained-v1" },
           { count: 1, data_policy_id: "d04-hosted-retained-v1" },
+          { count: 1, data_policy_id: "worlds-local-retained-v1" },
         ]);
 
         const world = requireDefined(

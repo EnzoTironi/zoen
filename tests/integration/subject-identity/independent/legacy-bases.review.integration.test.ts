@@ -20,11 +20,13 @@ import {
   jsonBody,
   responseCookie,
   withLegacyBasisHarness,
+  asCurrentCredential,
+  asCurrentWire,
+  legacyWire,
 } from "./harness.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
-const executePath = "/api/worlds/execute";
+const { envelope, executePath } = legacyWire;
 const validTime = {
   _tag: "DateInterval" as const,
   from: "2026-09-01",
@@ -52,7 +54,7 @@ const jsonDocument = (revision: string, amount: string, subject: string) =>
         value: { _tag: "Known", amount, currency: "BRL" },
       },
     ],
-    schemaVersion: "worlds.v1",
+    schemaVersion: "d01.v1",
     source: {
       externalId: `billing-${subject}`,
       label: "JSON source",
@@ -174,6 +176,9 @@ it.live(
         }
 
         const { runtime } = yield* harness.transitionToCurrentComponent();
+        for (const world of worlds) {
+          Object.assign(world, { owner: asCurrentCredential(world.owner) });
+        }
 
         const afterDomains = yield* sql`
           SELECT world_id::text AS world_id, domain_key, version::text AS version
@@ -267,15 +272,17 @@ it.live(
           const historical = yield* executor
             .execute(
               primary.owner,
-              yield* bytes({
-                ...envelope,
-                input: {
-                  atFrame: primary.frameRef,
-                  subjectKey: primary.subject,
-                },
-                operation: "Inspect",
-                worldRef: primary.worldRef,
-              })
+              yield* bytes(
+                asCurrentWire({
+                  ...envelope,
+                  input: {
+                    atFrame: primary.frameRef,
+                    subjectKey: primary.subject,
+                  },
+                  operation: "Inspect",
+                  worldRef: primary.worldRef,
+                })
+              )
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
           const selected = historical.frame.claims[0];
@@ -286,23 +293,25 @@ it.live(
             yield* executor
               .executeCorrection(
                 primary.owner,
-                yield* bytes({
-                  ...envelope,
-                  input: {
-                    consequence: {
-                      choice: {
-                        _tag: "selectClaim",
-                        claimRef: selected.claimRef,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: {
+                      consequence: {
+                        choice: {
+                          _tag: "selectClaim",
+                          claimRef: selected.claimRef,
+                        },
+                        subjectKey: primary.subject,
+                        validTime,
                       },
-                      subjectKey: primary.subject,
-                      validTime,
+                      frameRef: primary.frameRef,
                     },
-                    frameRef: primary.frameRef,
-                  },
-                  operation: "ProposeCorrection",
-                  operationId: randomUUID(),
-                  worldRef: primary.worldRef,
-                })
+                    operation: "ProposeCorrection",
+                    operationId: randomUUID(),
+                    worldRef: primary.worldRef,
+                  })
+                )
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Stale" });
@@ -324,15 +333,17 @@ it.live(
           const corruptedInspect = yield* executor
             .execute(
               secondary.owner,
-              yield* bytes({
-                ...envelope,
-                input: {
-                  atFrame: secondary.frameRef,
-                  subjectKey: secondary.subject,
-                },
-                operation: "Inspect",
-                worldRef: secondary.worldRef,
-              })
+              yield* bytes(
+                asCurrentWire({
+                  ...envelope,
+                  input: {
+                    atFrame: secondary.frameRef,
+                    subjectKey: secondary.subject,
+                  },
+                  operation: "Inspect",
+                  worldRef: secondary.worldRef,
+                })
+              )
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
           const claim = corruptedInspect.frame.claims[0];
@@ -343,23 +354,25 @@ it.live(
             yield* executor
               .executeCorrection(
                 secondary.owner,
-                yield* bytes({
-                  ...envelope,
-                  input: {
-                    consequence: {
-                      choice: {
-                        _tag: "selectClaim",
-                        claimRef: claim.claimRef,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: {
+                      consequence: {
+                        choice: {
+                          _tag: "selectClaim",
+                          claimRef: claim.claimRef,
+                        },
+                        subjectKey: secondary.subject,
+                        validTime,
                       },
-                      subjectKey: secondary.subject,
-                      validTime,
+                      frameRef: secondary.frameRef,
                     },
-                    frameRef: secondary.frameRef,
-                  },
-                  operation: "ProposeCorrection",
-                  operationId: randomUUID(),
-                  worldRef: secondary.worldRef,
-                })
+                    operation: "ProposeCorrection",
+                    operationId: randomUUID(),
+                    worldRef: secondary.worldRef,
+                  })
+                )
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Unavailable" });
@@ -367,12 +380,14 @@ it.live(
           const live = yield* executor
             .execute(
               primary.owner,
-              yield* bytes({
-                ...envelope,
-                input: { atFrame: null, subjectKey: primary.subject },
-                operation: "Inspect",
-                worldRef: primary.worldRef,
-              })
+              yield* bytes(
+                asCurrentWire({
+                  ...envelope,
+                  input: { atFrame: null, subjectKey: primary.subject },
+                  operation: "Inspect",
+                  worldRef: primary.worldRef,
+                })
+              )
             )
             .pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
           const liveRows = yield* sql`
@@ -400,23 +415,25 @@ it.live(
             yield* executor
               .executeCorrection(
                 primary.owner,
-                yield* bytes({
-                  ...envelope,
-                  input: {
-                    consequence: {
-                      choice: {
-                        _tag: "selectClaim",
-                        claimRef: liveClaim.claimRef,
+                yield* bytes(
+                  asCurrentWire({
+                    ...envelope,
+                    input: {
+                      consequence: {
+                        choice: {
+                          _tag: "selectClaim",
+                          claimRef: liveClaim.claimRef,
+                        },
+                        subjectKey: primary.subject,
+                        validTime,
                       },
-                      subjectKey: primary.subject,
-                      validTime,
+                      frameRef: live.frame.frameRef,
                     },
-                    frameRef: live.frame.frameRef,
-                  },
-                  operation: "ProposeCorrection",
-                  operationId: randomUUID(),
-                  worldRef: primary.worldRef,
-                })
+                    operation: "ProposeCorrection",
+                    operationId: randomUUID(),
+                    worldRef: primary.worldRef,
+                  })
+                )
               )
               .pipe(Effect.flip)
           ).toMatchObject({ _tag: "Stale" });
