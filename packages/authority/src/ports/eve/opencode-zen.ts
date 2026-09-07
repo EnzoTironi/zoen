@@ -1,12 +1,12 @@
-import {
-  Blocked,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
-import type { ConversationId } from "@zoen/contracts/eve/values";
-import type { UncertaintyKind } from "@zoen/contracts/eve/values";
+import { randomBytes } from "node:crypto";
+
+import { Blocked, Unavailable } from "@zoen/contracts/d01/errors";
+import type {
+  ConversationId,
+  UncertaintyKind,
+} from "@zoen/contracts/eve/values";
 import { Context, Effect, Layer, Redacted } from "effect";
 import type { Effect as EffectType } from "effect";
-import { randomBytes } from "node:crypto";
 
 /**
  * OpenCode Zen free — OpenAI-compatible chat client (ZN-0063 / D05 product path).
@@ -42,10 +42,7 @@ export interface EveChatCompletionResult {
 
 export type EveOpenCodeZenFailure = Blocked | Unavailable;
 
-export type EveFetch = (
-  input: string,
-  init?: RequestInit
-) => Promise<Response>;
+export type EveFetch = (input: string, init?: RequestInit) => Promise<Response>;
 
 const unavailable = () => new Unavailable({ code: "UNAVAILABLE" });
 const blocked = () => new Blocked({ code: "PROFILE_BLOCKED" });
@@ -64,9 +61,7 @@ const truncateVisible = (text: string): string =>
  * Map a successful model payload to honest uncertainty.
  * Empty / whitespace-only content is Unknown — never fake Known.
  */
-export const uncertaintyFromModelText = (
-  text: string
-): UncertaintyKind => {
+export const uncertaintyFromModelText = (text: string): UncertaintyKind => {
   const trimmed = text.trim();
   if (trimmed.length === 0) {
     return "Unknown";
@@ -81,24 +76,39 @@ const parseChatContent = (body: unknown): string | null => {
   if (body === null || typeof body !== "object") {
     return null;
   }
-  const choices = (body as { choices?: unknown }).choices;
+  if (!("choices" in body)) {
+    return null;
+  }
+  const choices: unknown = Reflect.get(body, "choices");
   if (!Array.isArray(choices) || choices.length === 0) {
     return null;
   }
-  const first = choices[0];
+  const first: unknown = choices[0];
   if (first === null || typeof first !== "object") {
     return null;
   }
-  const message = (first as { message?: unknown }).message;
+  if (!("message" in first)) {
+    return null;
+  }
+  const message: unknown = Reflect.get(first, "message");
   if (message === null || typeof message !== "object") {
     return null;
   }
-  const content = (message as { content?: unknown }).content;
+  if (!("content" in message)) {
+    return null;
+  }
+  const content: unknown = Reflect.get(message, "content");
   if (typeof content !== "string") {
     return null;
   }
   return content;
 };
+
+const isBlockedCause = (cause: unknown): boolean =>
+  typeof cause === "object" &&
+  cause !== null &&
+  "kind" in cause &&
+  (cause as { kind?: unknown }).kind === "blocked";
 
 export class EveOpenCodeZen extends Context.Service<
   EveOpenCodeZen,
@@ -125,8 +135,20 @@ export class EveOpenCodeZen extends Context.Service<
       EveOpenCodeZen.of({
         completeChat: (input) =>
           Effect.tryPromise({
+            catch: (cause) => {
+              if (
+                cause instanceof Error &&
+                (cause.name === "AbortError" || cause.message === "Aborted")
+              ) {
+                return unavailable();
+              }
+              if (isBlockedCause(cause)) {
+                return blocked();
+              }
+              return unavailable();
+            },
             try: async () => {
-              if (input.signal?.aborted) {
+              if (input.signal !== undefined && input.signal.aborted) {
                 throw new DOMException("Aborted", "AbortError");
               }
               const base = settings.baseUrl.endsWith("/")
@@ -134,24 +156,24 @@ export class EveOpenCodeZen extends Context.Service<
                 : settings.baseUrl;
               const url = `${base}/chat/completions`;
               const init: RequestInit = {
-                method: "POST",
+                body: JSON.stringify({
+                  messages: [
+                    ...(input.systemText === undefined
+                      ? []
+                      : [{ content: input.systemText, role: "system" }]),
+                    { content: input.userText, role: "user" },
+                  ],
+                  model: settings.model,
+                }),
                 headers: {
                   Authorization: `Bearer ${Redacted.value(settings.apiKey)}`,
                   "Content-Type": "application/json",
                   "User-Agent": settings.userAgent,
                   "x-opencode-client": "cli",
-                  "x-opencode-session": openCodeSessionId(input.conversationId),
                   "x-opencode-request": openCodeRequestId(),
+                  "x-opencode-session": openCodeSessionId(input.conversationId),
                 },
-                body: JSON.stringify({
-                  model: settings.model,
-                  messages: [
-                    ...(input.systemText === undefined
-                      ? []
-                      : [{ role: "system", content: input.systemText }]),
-                    { role: "user", content: input.userText },
-                  ],
-                }),
+                method: "POST",
               };
               if (input.signal !== undefined) {
                 init.signal = input.signal;
@@ -180,23 +202,6 @@ export class EveOpenCodeZen extends Context.Service<
                 visibleText,
               } satisfies EveChatCompletionResult;
             },
-            catch: (cause) => {
-              if (
-                cause instanceof Error &&
-                (cause.name === "AbortError" || cause.message === "Aborted")
-              ) {
-                return unavailable();
-              }
-              if (
-                typeof cause === "object" &&
-                cause !== null &&
-                "kind" in cause &&
-                (cause as { kind: string }).kind === "blocked"
-              ) {
-                return blocked();
-              }
-              return unavailable();
-            },
           }),
       })
     );
@@ -206,16 +211,29 @@ export class EveOpenCodeZen extends Context.Service<
 export const readOpenCodeZenSettingsFromEnv = (
   env: NodeJS.ProcessEnv = process.env
 ): EveOpenCodeZenSettings | null => {
-  const apiKey =
-    env.ZOEN_OPENCODE_API_KEY?.trim() || env.OPENCODE_API_KEY?.trim();
-  if (apiKey === undefined || apiKey.length === 0) {
+  const fromZoen = env.ZOEN_OPENCODE_API_KEY?.trim();
+  const fromLegacy = env.OPENCODE_API_KEY?.trim();
+  let apiKey: string | undefined;
+  if (fromZoen !== undefined && fromZoen.length > 0) {
+    apiKey = fromZoen;
+  } else if (fromLegacy !== undefined && fromLegacy.length > 0) {
+    apiKey = fromLegacy;
+  }
+  if (apiKey === undefined) {
     return null;
   }
+  const baseFromEnv = env.ZOEN_OPENCODE_BASE_URL?.trim();
+  const modelFromEnv = env.ZOEN_OPENCODE_MODEL?.trim();
   return {
     apiKey: Redacted.make(apiKey),
     baseUrl:
-      env.ZOEN_OPENCODE_BASE_URL?.trim() || DEFAULT_OPENCODE_BASE_URL,
-    model: env.ZOEN_OPENCODE_MODEL?.trim() || DEFAULT_OPENCODE_MODEL,
+      baseFromEnv !== undefined && baseFromEnv.length > 0
+        ? baseFromEnv
+        : DEFAULT_OPENCODE_BASE_URL,
+    model:
+      modelFromEnv !== undefined && modelFromEnv.length > 0
+        ? modelFromEnv
+        : DEFAULT_OPENCODE_MODEL,
     userAgent: DEFAULT_OPENCODE_USER_AGENT,
   };
 };

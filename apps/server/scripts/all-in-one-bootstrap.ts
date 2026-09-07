@@ -123,15 +123,13 @@ const program = Effect.gen(function* bootstrapAllInOne() {
           SELECT 1 FROM pg_roles WHERE rolname = ${names[role]}
         ) AS exists
       `;
-      if (rows[0]?.exists === true) {
-        yield* sql.unsafe(
-          `ALTER ROLE "${names[role]}" WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS NOREPLICATION PASSWORD '${passwords[role]}'`
-        );
-      } else {
-        yield* sql.unsafe(
-          `CREATE ROLE "${names[role]}" LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS NOREPLICATION PASSWORD '${passwords[role]}'`
-        );
-      }
+      yield* rows[0]?.exists === true
+        ? sql.unsafe(
+            `ALTER ROLE "${names[role]}" WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS NOREPLICATION PASSWORD '${passwords[role]}'`
+          )
+        : sql.unsafe(
+            `CREATE ROLE "${names[role]}" LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS NOREPLICATION PASSWORD '${passwords[role]}'`
+          );
     }
     const dbRows = yield* sql<{ exists: boolean }>`
       SELECT EXISTS (
@@ -180,7 +178,7 @@ const program = Effect.gen(function* bootstrapAllInOne() {
         })
       ).pipe(
         Effect.as(true),
-        Effect.catch(() => Effect.succeed(false))
+        Effect.orElseSucceed(() => false)
       );
       if (!exists) {
         yield* Effect.tryPromise((signal) =>
@@ -240,27 +238,35 @@ const program = Effect.gen(function* bootstrapAllInOne() {
   return yield* Effect.logInfo({ event: "all-in-one.bootstrap.ready" });
 }).pipe(
   Effect.provide(Layer.mergeAll(NodeServices.layer)),
-  Effect.tapError((error) =>
-    Effect.gen(function* report() {
-      const code = "code" in error ? String(error.code) : "UNKNOWN";
+  Effect.catch((error) =>
+    Effect.gen(function* reportAndRethrow() {
+      const fs = yield* FileSystem.FileSystem;
+      let code = "UNKNOWN";
+      if (typeof error === "object" && error !== null && "code" in error) {
+        const candidate: unknown = Reflect.get(error, "code");
+        if (typeof candidate === "string") {
+          code = candidate;
+        }
+      }
       const message = String(error);
       // Durable diagnosis on the volume (no secrets).
-      yield* Effect.tryPromise(async () => {
-        const { writeFile, mkdir } = await import("node:fs/promises");
-        await mkdir("/data/zoen", { recursive: true, mode: 0o700 });
-        await writeFile(
+      yield* fs
+        .makeDirectory("/data/zoen", { mode: 0o700, recursive: true })
+        .pipe(Effect.ignore);
+      yield* fs
+        .writeFileString(
           "/data/zoen/bootstrap-error.txt",
           `${code}\n${message}\n`,
           { mode: 0o600 }
-        );
-      }).pipe(Effect.catch(() => Effect.void));
-      console.error(`all-in-one.bootstrap.failed code=${code}`);
+        )
+        .pipe(Effect.ignore);
       yield* Effect.logError({
         code,
         event: "all-in-one.bootstrap.failed",
         message,
       });
-    })
+      return yield* Effect.fail(error);
+    }).pipe(Effect.provide(NodeServices.layer))
   )
 );
 

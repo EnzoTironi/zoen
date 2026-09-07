@@ -75,9 +75,8 @@ export const isLiveProviderBlocked = (
   admission === "real-model-blocked" || admission === "voice-blocked";
 
 /** Admitted product / proof admissions that may mutate the journal. */
-export const isAdmittedProvider = (
-  admission: EveProviderAdmission
-): boolean => admission === "opencode-zen" || admission === "stub-local";
+export const isAdmittedProvider = (admission: EveProviderAdmission): boolean =>
+  admission === "opencode-zen" || admission === "stub-local";
 
 const profileMatchesAdmission = (
   profileId: EveProfileId,
@@ -149,10 +148,7 @@ export class EveJournal extends Context.Service<
               return yield* blockedProfile;
             }
             if (
-              !profileMatchesAdmission(
-                input.profileId,
-                input.providerAdmission
-              )
+              !profileMatchesAdmission(input.profileId, input.providerAdmission)
             ) {
               return yield* blockedProfile;
             }
