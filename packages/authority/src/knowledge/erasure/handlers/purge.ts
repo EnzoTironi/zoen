@@ -43,7 +43,7 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
     context: VerifiedRequestContext,
     request: typeof PurgeWorldContent.Type
   ) {
-    yield* authorizeWorld(context, request.worldRef, "manage");
+    yield* authorizeWorld(context, request.worldRef, "erasure");
     const installation = yield* AuthorityInstallation;
     const register = yield* ErasureAttemptRegister;
     const inventory = yield* ErasureObjectInventory;

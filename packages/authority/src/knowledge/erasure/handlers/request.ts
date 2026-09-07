@@ -6,6 +6,7 @@ import { Revision, exact } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
+import { fenceWorldDisclosures } from "../../../access/erasure/disclosure.js";
 import { authorizeWorld } from "../../../access/world.js";
 import { AuthorityInstallation } from "../../../commit/configuration.js";
 import { bindWorldIntent } from "../../../commit/intent.js";
@@ -63,7 +64,7 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
       return yield* new Conflict({ code: "CONFLICT" });
     }
     yield* requireErasablePolicy(request.input.policyVersion);
-    yield* authorizeWorld(context, request.worldRef, "mutate");
+    yield* authorizeWorld(context, request.worldRef, "erasure");
     const installation = yield* AuthorityInstallation;
     const register = yield* ErasureAttemptRegister;
     const identity = identityOf(context, request, installation);
@@ -117,6 +118,7 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
             WHERE world_id = ${world.worldId} AND realm = ${world.realm}
             FOR UPDATE
           `;
+          yield* fenceWorldDisclosures(world);
           const [progress] = yield* sql`
             SELECT phase, erasure_revision::text, closing_operation_id,
               closing_receipt_id, policy_version

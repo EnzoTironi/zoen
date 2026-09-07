@@ -13,6 +13,7 @@ import { Head } from "../ports/worlds/basis.js";
 import { DataPolicy } from "../ports/worlds/context.js";
 import type { VerifiedRequestContext } from "../ports/worlds/context.js";
 import { validateContext } from "./context.js";
+import { requireActiveWorldContent } from "./erasure/content.js";
 
 const AccessRow = Schema.Struct({
   cell_epoch: Revision,
@@ -27,7 +28,7 @@ const AccessRow = Schema.Struct({
   state: Schema.Literals(["active", "revoked"]),
 }).annotate(exact);
 
-const Capability = Schema.Literals(["read", "manage", "mutate"]);
+const Capability = Schema.Literals(["read", "manage", "mutate", "erasure"]);
 export type WorldCapability = typeof Capability.Type;
 const capabilities = {
   AcceptConversationTurn: "mutate",
@@ -40,15 +41,15 @@ const capabilities = {
   InspectIdentityRecovery: "read",
   InspectSubjectIdentity: "read",
   InspectWorldAccess: "read",
-  InspectWorldErasure: "manage",
+  InspectWorldErasure: "erasure",
   OpenEvidence: "read",
   ProposeCorrection: "mutate",
   ProposeIdentityResolution: "mutate",
   ProposeIdentitySplit: "mutate",
   ProposeIdentityUndo: "mutate",
-  PurgeWorldContent: "manage",
+  PurgeWorldContent: "erasure",
   RecoverConversationJournal: "read",
-  RequestWorldErasure: "mutate",
+  RequestWorldErasure: "erasure",
   ResolveIdentity: "mutate",
   RevokeWorldReadAccess: "manage",
   SettleConversationMessage: "mutate",
@@ -96,6 +97,9 @@ export const authorizeWorld = Effect.fn("authority.access.authorizeWorld")(
     const policy = yield* DataPolicy;
     if (access.data_policy_id !== policy.profileId) {
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
+    }
+    if (policy.erasure && capability !== "erasure") {
+      yield* requireActiveWorldContent(world);
     }
     return access;
   }
