@@ -239,3 +239,24 @@ it.live(
       )
     )
 );
+
+it.live("post-Closing reservation is denied before insert", () =>
+  withErasureRuntime(() =>
+    Effect.gen(function* afterClosing() {
+      const { context, closing, world } = yield* createScenario;
+      yield* requestWorldErasure(context, closing);
+      expect(
+        yield* reserveCapture(
+          context,
+          world,
+          new TextEncoder().encode("after-closing")
+        ).pipe(Effect.flip)
+      ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
+      const sql = yield* SqlClient.SqlClient;
+      expect(
+        yield* sql`SELECT count(*)::int AS count FROM jobs.captures
+          WHERE world_id = ${world.worldId}`
+      ).toStrictEqual([{ count: 0 }]);
+    })
+  )
+);
