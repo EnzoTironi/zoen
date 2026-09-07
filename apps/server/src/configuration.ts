@@ -61,6 +61,17 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
       code: "INVALID_CONFIGURATION",
     });
   }
+  const objectStoreAdminSecret = yield* Config.string(
+    "ZOEN_S3_ADMIN_SECRET_KEY"
+  ).pipe(Config.option);
+  if (
+    Option.isSome(objectStoreAdminSecret) &&
+    objectStoreAdminSecret.value.length > 0
+  ) {
+    return yield* new ServerConfigurationError({
+      code: "INVALID_CONFIGURATION",
+    });
+  }
   const erasureAttemptDatabaseUrl = yield* Config.redacted(
     "ZOEN_ERASURE_ATTEMPT_DATABASE_URL"
   ).pipe(Config.option);

@@ -65,10 +65,11 @@ RUN ln -sfn /app/apps/server/node_modules /app/ops/node_modules \
   && chmod +x /usr/local/bin/all-in-one-entrypoint.sh /usr/local/bin/rustfs /usr/local/bin/rustfs-ensure-app-user.py \
   && groupadd --system --gid 10001 zoen \
   && useradd --system --uid 10001 --gid zoen --home-dir /nonexistent --shell /usr/sbin/nologin zoen \
-  && mkdir -p /data/zoen /data/postgres /data/object \
+  && mkdir -p /data/zoen /data/postgres /data/object /data/bootstrap \
   && chown postgres:postgres /data /data/postgres \
-  && chown zoen:zoen /data/zoen \
-  && chmod 755 /data
+  && chown root:root /data/zoen /data/bootstrap \
+  && chmod 755 /data /data/zoen \
+  && chmod 700 /data/bootstrap
 
 ENV PGDATA=/data/postgres \
     ZOEN_DATA_ROOT=/data \

@@ -3,7 +3,7 @@
 Proves:
   ZA-05-01 readiness under restricted runtime identities (app UID zoen)
   ZA-05-02 denied infra auth / bootstrap file reads / SET ROLE from app identity
-  ZA-05-03 missing bootstrap password fails closed (separate short run)
+  ZA-05-03 missing bootstrap password / entrypoint failure status fail closed
 
 Does not deploy Fly or touch live resources. Requires Docker.
 """
@@ -132,11 +132,20 @@ def main() -> int:
         # Bootstrap files unreadable to zoen
         denied = docker_exec(
             container,
-            ["bash", "-lc", "cat /data/zoen/bootstrap/pg-infra.password"],
+            ["bash", "-lc", "cat /data/bootstrap/pg-infra.password"],
             user="zoen",
         )
         if denied.returncode == 0:
-            raise RuntimeError("zoen could read pg-infra.password")
+            raise RuntimeError("zoen could read /data/bootstrap/pg-infra.password")
+
+        # zoen must not be able to rename/replace the root-only bootstrap directory
+        rename = docker_exec(
+            container,
+            ["bash", "-lc", "mv /data/bootstrap /data/bootstrap.stolen"],
+            user="zoen",
+        )
+        if rename.returncode == 0:
+            raise RuntimeError("zoen could rename /data/bootstrap")
 
         # Trust auth must be gone
         hba = docker_exec(container, ["bash", "-lc", "grep -E 'trust|scram' /data/postgres/pg_hba.conf"])
@@ -220,15 +229,10 @@ def main() -> int:
 
         print("ZA-05-02: admin auth / bootstrap reads / SET ROLE / scoped S3 denied", flush=True)
 
-        # ZA-05-03: wipe infra password file mid-profile and ensure fail-closed restart
+        # ZA-05-03a: passwordless admin URL fail-closed at bootstrap module
         run(["docker", "rm", "--force", container], stdout=subprocess.DEVNULL)
-        # Recreate volume content path by starting once more with empty password file mounted? 
-        # Instead: start ephemeral container that clears password and exits bootstrap.
         fail_volume = f"{profile}-fail"
         run(["docker", "volume", "create", fail_volume], stdout=subprocess.DEVNULL)
-        fail_name = f"{profile}-failclosed"
-        # Run entrypoint but with ZOEN_PG_INFRA_PASSWORD empty after deleting file via override:
-        # simplest proof: bootstrap with passwordless admin URL must fail — invoke bootstrap node directly.
         probe = subprocess.run(
             [
                 "docker",
@@ -257,7 +261,61 @@ def main() -> int:
         if "EXIT:0" in combined:
             raise RuntimeError("passwordless bootstrap unexpectedly succeeded")
         (artifacts / "fail-closed.log").write_text(combined)
-        print("ZA-05-03: passwordless bootstrap fail-closed", flush=True)
+        print("ZA-05-03a: passwordless bootstrap module fail-closed", flush=True)
+
+        # ZA-05-03b: entrypoint must surface bootstrap failure as nonzero container exit
+        # (regression guard for `if ! node ...; status=$?` discarding the real status).
+        fail_name = f"{profile}-failclosed-entrypoint"
+        run(
+            [
+                "docker",
+                "run",
+                "-d",
+                "--name",
+                fail_name,
+                "--mount",
+                f"type=volume,src={fail_volume},dst=/data",
+                # Omit ZOEN_AUTH_SECRET so bootstrap fails after Postgres/RustFS start.
+                "-e",
+                "ZOEN_PUBLIC_URL=http://127.0.0.1:4310",
+                image,
+            ],
+            stdout=subprocess.DEVNULL,
+        )
+        wait_proc = subprocess.run(
+            ["docker", "wait", fail_name],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        entrypoint_status = int((wait_proc.stdout or "0").strip() or "0")
+        fail_logs = subprocess.run(
+            ["docker", "logs", fail_name],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        (artifacts / "entrypoint-fail-closed.log").write_text(
+            (fail_logs.stdout or "") + (fail_logs.stderr or "")
+        )
+        subprocess.run(
+            ["docker", "rm", "--force", fail_name],
+            cwd=ROOT,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        if entrypoint_status == 0:
+            raise RuntimeError(
+                "entrypoint masked bootstrap failure with exit 0 "
+                f"(logs in {artifacts / 'entrypoint-fail-closed.log'})"
+            )
+        print(
+            f"ZA-05-03b: entrypoint bootstrap failure exit={entrypoint_status}",
+            flush=True,
+        )
         run(["docker", "volume", "rm", fail_volume], stdout=subprocess.DEVNULL, check=False)
 
         digest = run(
@@ -268,7 +326,7 @@ def main() -> int:
         (artifacts / "result.json").write_text(
             json.dumps(
                 {
-                    "checks": ["ZA-05-01", "ZA-05-02", "ZA-05-03"],
+                    "checks": ["ZA-05-01", "ZA-05-02", "ZA-05-03a", "ZA-05-03b"],
                     "image": image,
                     "imageId": digest,
                     "profile": profile,

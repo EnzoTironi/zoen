@@ -75,6 +75,7 @@ jobs:
       - run: pnpm test:integration
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:container
+      - run: pnpm test:container:identity
       - if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -83,6 +84,11 @@ jobs:
             test-results
             .local/*-proof/build.log
             .local/*-proof/container.log
+            .local/*-identity/build.log
+            .local/*-identity/container.log
+            .local/*-identity/fail-closed.log
+            .local/*-identity/entrypoint-fail-closed.log
+            .local/*-identity/result.json
           include-hidden-files: true
           if-no-files-found: ignore
       - if: always() && steps.services-config.outcome == 'success'

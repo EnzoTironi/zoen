@@ -35,7 +35,8 @@
     "staging:logs": "docker compose --env-file .env.infra -f ops/compose.yaml logs -f --tail=200",
     "test:acceptance": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" node_modules/@playwright/test/cli.js test --config playwright.acceptance.config.ts",
     "build:container": "docker build -f ops/containers/application.Dockerfile -t zoen-local:current .",
-    "test:container": "python3 tooling/verify_container.py"
+    "test:container": "python3 tooling/verify_container.py",
+    "test:container:identity": "python3 tests/integration/hosted/identity/probe_all_in_one_identity.py"
   },
   "devDependencies": {
     "@aws-sdk/client-s3": "3.1127.0",

@@ -73,6 +73,22 @@ describe("all-in-one release align", () => {
     expect(parseQuotedEnvFile('KEY="has\\backslash"\n')).toBeNull();
   });
 
+  it("skips blank lines and parses embedded separators in quoted values", () => {
+    expect(
+      parseQuotedEnvFile(
+        '\n  \nZOEN_S3_ENDPOINT="http://127.0.0.1:9000"\nZOEN_NOTE="a=b=c"\n'
+      )
+    ).toStrictEqual({
+      ZOEN_NOTE: "a=b=c",
+      ZOEN_S3_ENDPOINT: "http://127.0.0.1:9000",
+    });
+  });
+
+  it("rejects separator-less and empty-key assignments", () => {
+    expect(parseQuotedEnvFile('="value"\n')).toBeNull();
+    expect(parseQuotedEnvFile("ONLYKEY\n")).toBeNull();
+  });
+
   it("narrows installation.json shape", () => {
     expect(parseHostedInstallationFile(sampleInstallation)).toStrictEqual(
       sampleInstallation

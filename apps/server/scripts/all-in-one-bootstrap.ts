@@ -23,7 +23,10 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
 import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
-import { digestReleaseBytes } from "../src/all-in-one-release-align.ts";
+import {
+  digestReleaseBytes,
+  parseQuotedEnvFile,
+} from "../src/all-in-one-release-align.ts";
 import {
   applyHostedReleaseAlign,
   HostedReleaseAlignError,
@@ -90,26 +93,6 @@ const ensureScopedObjectStoreUser = (input: {
       () => new BootstrapError({ code: "OBJECT_STORE_IAM_FAILED" })
     )
   );
-
-const parseRuntimeEnv = (raw: string) => {
-  const values: Record<string, string> = {};
-  for (const line of raw.split("\n")) {
-    if (line.trim().length === 0) {
-      continue;
-    }
-    const separator = line.indexOf("=");
-    if (separator <= 0) {
-      return null;
-    }
-    const key = line.slice(0, separator);
-    let value = line.slice(separator + 1);
-    if (value.startsWith('"') && value.endsWith('"')) {
-      value = value.slice(1, -1);
-    }
-    values[key] = value;
-  }
-  return values;
-};
 
 const writeRuntimeEnv = (
   fs: FileSystem.FileSystem,
@@ -219,9 +202,19 @@ const program = Effect.gen(function* bootstrapAllInOne() {
         code: "BOOTSTRAP_MARKER_INCONSISTENT",
       });
     }
-    const existing = parseRuntimeEnv(yield* fs.readFileString(runtimeEnvPath));
+    const existing = parseQuotedEnvFile(
+      yield* fs.readFileString(runtimeEnvPath)
+    );
     if (existing === null) {
       return yield* new BootstrapError({ code: "RUNTIME_ENV_MALFORMED" });
+    }
+    // Retain the bucket already bound to the app identity; refuse silent retarget.
+    const runtimeBucket = existing.ZOEN_S3_BUCKET;
+    if (runtimeBucket === undefined || runtimeBucket.length === 0) {
+      return yield* new BootstrapError({ code: "RUNTIME_ENV_BUCKET_MISSING" });
+    }
+    if (runtimeBucket !== bucket) {
+      return yield* new BootstrapError({ code: "BUCKET_MISMATCH_REFUSED" });
     }
     const adminAccess = Redacted.value(adminAccessKeyId);
     const adminSecret = Redacted.value(adminSecretAccessKey);
@@ -241,13 +234,14 @@ const program = Effect.gen(function* bootstrapAllInOne() {
       adminSecretKey: adminSecret,
       appAccessKey: appAccess,
       appSecretKey: appSecret,
-      bucket,
+      bucket: runtimeBucket,
       endpoint: endpoint.href,
     });
     if (inheritsAdmin) {
       yield* writeRuntimeEnv(fs, runtimeEnvPath, {
         ...existing,
         ZOEN_S3_ACCESS_KEY: appAccess,
+        ZOEN_S3_BUCKET: runtimeBucket,
         ZOEN_S3_SECRET_KEY: appSecret,
       });
     }

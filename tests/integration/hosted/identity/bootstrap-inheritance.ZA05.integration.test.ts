@@ -92,6 +92,18 @@ it.live(
         );
         expect(rejectedAdminKey._tag).toBe("Failure");
 
+        const rejectedAdminSecret = yield* loadConfiguration.pipe(
+          Effect.provideService(
+            ConfigProvider.ConfigProvider,
+            ConfigProvider.fromEnvRecord({
+              ...baseEnv(installationPath),
+              ZOEN_S3_ADMIN_SECRET_KEY: "rustfs-root-secret",
+            })
+          ),
+          Effect.result
+        );
+        expect(rejectedAdminSecret._tag).toBe("Failure");
+
         const accepted = yield* loadConfiguration.pipe(
           Effect.provideService(
             ConfigProvider.ConfigProvider,

@@ -8,7 +8,8 @@ DATA_ROOT="${ZOEN_DATA_ROOT:-/data}"
 PGDATA="${PGDATA:-${DATA_ROOT}/postgres}"
 OBJECT_DATA="${ZOEN_OBJECT_DATA:-${DATA_ROOT}/object}"
 ZOEN_STATE="${ZOEN_STATE_DIR:-${DATA_ROOT}/zoen}"
-BOOTSTRAP_DIR="${ZOEN_BOOTSTRAP_DIR:-${ZOEN_STATE}/bootstrap}"
+# Root-only parent (not under zoen-writable ZOEN_STATE) so the app cannot rename/replace secrets.
+BOOTSTRAP_DIR="${ZOEN_BOOTSTRAP_DIR:-${DATA_ROOT}/bootstrap}"
 PG_INFRA_PASSWORD_FILE="${BOOTSTRAP_DIR}/pg-infra.password"
 RUSTFS_ACCESS_KEY_FILE="${BOOTSTRAP_DIR}/rustfs-access-key"
 RUSTFS_SECRET_KEY_FILE="${BOOTSTRAP_DIR}/rustfs-secret-key"
@@ -20,6 +21,10 @@ mkdir -p "${PGDATA}" "${OBJECT_DATA}" "${ZOEN_STATE}" "${BOOTSTRAP_DIR}"
 chown -R postgres:postgres "${PGDATA}"
 chown root:root "${BOOTSTRAP_DIR}"
 chmod 700 "${BOOTSTRAP_DIR}"
+# ZOEN_STATE is root-owned (755): zoen can traverse/read group-readable files but cannot
+# rename sibling /data/bootstrap or replace root-owned runtime files.
+chown root:root "${ZOEN_STATE}"
+chmod 755 "${ZOEN_STATE}"
 
 write_secret_file() {
   local path="$1"
@@ -27,18 +32,112 @@ write_secret_file() {
   local tmp
   tmp="$(mktemp "${path}.tmp.XXXXXX")"
   printf '%s' "${value}" >"${tmp}"
+  chown root:root "${tmp}"
   chmod 600 "${tmp}"
   mv -f "${tmp}" "${path}"
+}
+
+refuse_insecure_secret_file() {
+  local path="$1"
+  local owner mode
+  if [[ ! -f "${path}" ]]; then
+    echo "all-in-one: refusing non-file secret path ${path}" >&2
+    exit 1
+  fi
+  owner="$(stat -c '%u' "${path}")"
+  mode="$(stat -c '%a' "${path}")"
+  if [[ "${owner}" != "0" ]]; then
+    echo "all-in-one: refusing non-root-owned secret file ${path}" >&2
+    exit 1
+  fi
+  # Allow only owner read/write (no group/other bits).
+  if [[ "${mode}" != "600" && "${mode}" != "400" ]]; then
+    chmod 600 "${path}"
+    mode="$(stat -c '%a' "${path}")"
+    if [[ "${mode}" != "600" && "${mode}" != "400" ]]; then
+      echo "all-in-one: refusing secret file with insecure mode ${path}" >&2
+      exit 1
+    fi
+  fi
 }
 
 ensure_secret_file() {
   local path="$1"
   local generator="$2"
-  if [[ -s "${path}" ]]; then
-    chmod 600 "${path}"
+  if [[ -e "${path}" ]]; then
+    if [[ ! -s "${path}" ]]; then
+      echo "all-in-one: refusing empty secret file ${path}" >&2
+      exit 1
+    fi
+    refuse_insecure_secret_file "${path}"
     return 0
   fi
   write_secret_file "${path}" "$(eval "${generator}")"
+}
+
+validate_infra_password() {
+  local pw="$1"
+  if [[ -z "${pw}" ]]; then
+    echo "all-in-one: empty infrastructure password" >&2
+    exit 1
+  fi
+  case "${pw}" in
+    *$'\n'*|*$'\r'*|*$'\0'*)
+      echo "all-in-one: infrastructure password contains control characters" >&2
+      exit 1
+      ;;
+  esac
+}
+
+# URL-encode a password for postgresql:// without shell-evaluating it.
+urlencode_password() {
+  PASSWORD_VALUE="$1" python3 -c 'import os, urllib.parse; print(urllib.parse.quote(os.environ["PASSWORD_VALUE"], safe=""))'
+}
+
+# Emit a single-quoted SQL string literal with '' escaping (handles apostrophes safely).
+sql_password_literal() {
+  PASSWORD_VALUE="$1" python3 -c 'import os; p=os.environ["PASSWORD_VALUE"]; print("'"'"'" + p.replace("'"'"'", "'"'"''"'"'") + "'"'"'")'
+}
+
+# Load KEY="value" runtime.env without `source` (no shell evaluation as root).
+load_runtime_env_file() {
+  local file="$1"
+  local line key raw value
+  if [[ ! -f "${file}" ]]; then
+    echo "all-in-one: missing runtime.env ${file}" >&2
+    exit 1
+  fi
+  while IFS= read -r line || [[ -n "${line}" ]]; do
+    # Trim ASCII whitespace; blank lines are ignored (matches parseQuotedEnvFile).
+    line="${line#"${line%%[![:space:]]*}"}"
+    line="${line%"${line##*[![:space:]]}"}"
+    if [[ -z "${line}" ]]; then
+      continue
+    fi
+    if [[ "${line}" != *=* ]]; then
+      echo "all-in-one: malformed runtime.env line (no =)" >&2
+      exit 1
+    fi
+    key="${line%%=*}"
+    raw="${line#*=}"
+    if [[ ! "${key}" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]]; then
+      echo "all-in-one: invalid runtime.env key" >&2
+      exit 1
+    fi
+    if [[ "${#raw}" -lt 2 || "${raw:0:1}" != '"' || "${raw: -1}" != '"' ]]; then
+      echo "all-in-one: runtime.env values must be double-quoted" >&2
+      exit 1
+    fi
+    value="${raw:1:${#raw}-2}"
+    case "${value}" in
+      *$'\n'*|*$'\r'*|*\\*|*'\"'*)
+        echo "all-in-one: unsupported runtime.env value encoding" >&2
+        exit 1
+        ;;
+    esac
+    printf -v "${key}" '%s' "${value}"
+    export "${key}"
+  done < "${file}"
 }
 
 write_scram_hba() {
@@ -58,13 +157,14 @@ write_scram_hba() {
 
 # Durable infra password (never logged). Prefer explicit env on first boot only.
 if [[ -n "${ZOEN_PG_INFRA_PASSWORD:-}" ]]; then
+  validate_infra_password "${ZOEN_PG_INFRA_PASSWORD}"
   write_secret_file "${PG_INFRA_PASSWORD_FILE}" "${ZOEN_PG_INFRA_PASSWORD}"
   unset ZOEN_PG_INFRA_PASSWORD
 fi
 ensure_secret_file "${PG_INFRA_PASSWORD_FILE}" 'openssl rand -hex 32'
 PG_INFRA_PASSWORD="$(cat "${PG_INFRA_PASSWORD_FILE}")"
+validate_infra_password "${PG_INFRA_PASSWORD}"
 
-# Object-store root credentials: explicit env wins on first materialization; else generate.
 # Object-store root credentials: explicit env on first boot, else generate (no silent zoenlocal default).
 if [[ -n "${RUSTFS_ACCESS_KEY:-}${ZOEN_S3_ACCESS_KEY:-}" && -n "${RUSTFS_SECRET_KEY:-}${ZOEN_S3_SECRET_KEY:-}" ]]; then
   write_secret_file "${RUSTFS_ACCESS_KEY_FILE}" "${RUSTFS_ACCESS_KEY:-${ZOEN_S3_ACCESS_KEY}}"
@@ -120,24 +220,32 @@ for _ in $(seq 1 60); do
 done
 gosu postgres pg_isready -h /tmp -d postgres
 
-# Set/rotate infra password. Trust-era volumes: connect without password first.
+# Set/rotate infra password via a Python-escaped SQL literal file (apostrophes/URL chars OK).
 set_infra_password() {
-  # Prefer peer map once HBA is upgraded; for trust-era use host trust / local trust.
+  local sqlfile sql
+  sqlfile="$(mktemp /tmp/zoen-infra-pw.XXXXXX.sql)"
+  sql="ALTER ROLE zoen_infra WITH LOGIN PASSWORD $(sql_password_literal "${PG_INFRA_PASSWORD}");"
+  printf '%s\n' "${sql}" >"${sqlfile}"
+  chown postgres:postgres "${sqlfile}"
+  chmod 600 "${sqlfile}"
   if gosu postgres psql -h /tmp -U zoen_infra -d postgres -v ON_ERROR_STOP=1 \
     -c "SELECT 1" >/dev/null 2>&1; then
     gosu postgres psql -h /tmp -U zoen_infra -d postgres -v ON_ERROR_STOP=1 \
-      -c "ALTER ROLE zoen_infra WITH LOGIN PASSWORD '${PG_INFRA_PASSWORD}'" >/dev/null
+      -f "${sqlfile}" >/dev/null
+    rm -f "${sqlfile}"
     return 0
   fi
   if gosu postgres psql -h 127.0.0.1 -U zoen_infra -d postgres -v ON_ERROR_STOP=1 \
     -c "SELECT 1" >/dev/null 2>&1; then
     gosu postgres psql -h 127.0.0.1 -U zoen_infra -d postgres -v ON_ERROR_STOP=1 \
-      -c "ALTER ROLE zoen_infra WITH LOGIN PASSWORD '${PG_INFRA_PASSWORD}'" >/dev/null
+      -f "${sqlfile}" >/dev/null
+    rm -f "${sqlfile}"
     return 0
   fi
   gosu postgres env PGPASSWORD="${PG_INFRA_PASSWORD}" \
     psql -h 127.0.0.1 -U zoen_infra -d postgres -v ON_ERROR_STOP=1 \
-    -c "ALTER ROLE zoen_infra WITH LOGIN PASSWORD '${PG_INFRA_PASSWORD}'" >/dev/null
+    -f "${sqlfile}" >/dev/null
+  rm -f "${sqlfile}"
 }
 
 set_infra_password
@@ -178,7 +286,9 @@ node --input-type=module -e \
 # Bootstrap-only credentials (cleared before app start).
 ZOEN_S3_ACCESS_KEY="$(cat "${RUSTFS_ACCESS_KEY_FILE}")"
 ZOEN_S3_SECRET_KEY="$(cat "${RUSTFS_SECRET_KEY_FILE}")"
-export ZOEN_BOOTSTRAP_ADMIN_URL="postgresql://zoen_infra:${PG_INFRA_PASSWORD}@127.0.0.1:5432/postgres"
+PG_INFRA_PASSWORD_URLENC="$(urlencode_password "${PG_INFRA_PASSWORD}")"
+export ZOEN_BOOTSTRAP_ADMIN_URL="postgresql://zoen_infra:${PG_INFRA_PASSWORD_URLENC}@127.0.0.1:5432/postgres"
+unset PG_INFRA_PASSWORD_URLENC
 export ZOEN_S3_ACCESS_KEY ZOEN_S3_SECRET_KEY
 export ZOEN_S3_ADMIN_ACCESS_KEY="${ZOEN_S3_ACCESS_KEY}"
 export ZOEN_S3_ADMIN_SECRET_KEY="${ZOEN_S3_SECRET_KEY}"
@@ -192,7 +302,10 @@ export ZOEN_RELEASE_FILE="${ZOEN_RELEASE_FILE:-/app/apps/server/dist/release.jso
 
 echo "all-in-one: provisioning / migrating if needed"
 export NODE_PATH="/app/apps/server/node_modules:/app/node_modules${NODE_PATH:+:$NODE_PATH}"
-if ! node /app/apps/server/scripts/all-in-one-bootstrap.ts; then
+# Capture the Node status without `!` (negation would discard a nonzero exit).
+if node /app/apps/server/scripts/all-in-one-bootstrap.ts; then
+  :
+else
   status=$?
   unset ZOEN_BOOTSTRAP_ADMIN_URL ZOEN_S3_ADMIN_ACCESS_KEY ZOEN_S3_ADMIN_SECRET_KEY \
     ZOEN_S3_ACCESS_KEY ZOEN_S3_SECRET_KEY PG_INFRA_PASSWORD || true
@@ -209,31 +322,36 @@ fi
 unset ZOEN_BOOTSTRAP_ADMIN_URL ZOEN_S3_ADMIN_ACCESS_KEY ZOEN_S3_ADMIN_SECRET_KEY \
   ZOEN_S3_ACCESS_KEY ZOEN_S3_SECRET_KEY PG_INFRA_PASSWORD || true
 
-# runtime.env + installation are app-readable; bootstrap dir stays root-only.
-chown -R zoen:zoen "${ZOEN_STATE}"
-chown -R root:root "${BOOTSTRAP_DIR}"
+# App-readable state files: root-owned, zoen-readable, not zoen-writable (cannot replace).
+chown root:root "${BOOTSTRAP_DIR}"
 chmod 700 "${BOOTSTRAP_DIR}"
 chmod 600 "${PG_INFRA_PASSWORD_FILE}" "${RUSTFS_ACCESS_KEY_FILE}" "${RUSTFS_SECRET_KEY_FILE}"
-if [[ -f "${ZOEN_RUNTIME_ENV_FILE}" ]]; then
-  chown zoen:zoen "${ZOEN_RUNTIME_ENV_FILE}"
-  chmod 600 "${ZOEN_RUNTIME_ENV_FILE}"
+for state_file in \
+  "${ZOEN_RUNTIME_ENV_FILE}" \
+  "${ZOEN_INSTALLATION_FILE}" \
+  "${ZOEN_STATE}/.bootstrap-complete"; do
+  if [[ -f "${state_file}" ]]; then
+    chown root:zoen "${state_file}"
+    chmod 640 "${state_file}"
+  fi
+done
+# Optional bootstrap error log (root-only).
+if [[ -f "${ZOEN_STATE}/bootstrap-error.txt" ]]; then
+  chown root:root "${ZOEN_STATE}/bootstrap-error.txt"
+  chmod 600 "${ZOEN_STATE}/bootstrap-error.txt"
 fi
-if [[ -f "${ZOEN_INSTALLATION_FILE}" ]]; then
-  chown zoen:zoen "${ZOEN_INSTALLATION_FILE}"
-  chmod 600 "${ZOEN_INSTALLATION_FILE}"
-fi
-if [[ -f "${ZOEN_STATE}/.bootstrap-complete" ]]; then
-  chown zoen:zoen "${ZOEN_STATE}/.bootstrap-complete"
-  chmod 600 "${ZOEN_STATE}/.bootstrap-complete"
-fi
+# Re-assert directory permissions (bootstrap mkdir must not leave 0700 blocking zoen reads).
+chown root:root "${ZOEN_STATE}"
+chmod 755 "${ZOEN_STATE}"
 
-set -a
-# shellcheck disable=SC1090
-source "${ZOEN_RUNTIME_ENV_FILE}"
-set +a
+load_runtime_env_file "${ZOEN_RUNTIME_ENV_FILE}"
 
 if [[ -n "${ZOEN_BOOTSTRAP_ADMIN_URL:-}" ]]; then
   echo "all-in-one: refusing to start app with ZOEN_BOOTSTRAP_ADMIN_URL present" >&2
+  exit 1
+fi
+if [[ -n "${ZOEN_S3_ADMIN_ACCESS_KEY:-}" || -n "${ZOEN_S3_ADMIN_SECRET_KEY:-}" ]]; then
+  echo "all-in-one: refusing to start app with ZOEN_S3_ADMIN_* present" >&2
   exit 1
 fi
 
