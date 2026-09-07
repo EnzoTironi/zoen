@@ -77,6 +77,10 @@ Paste the token value into `gh secret set` when prompted (or pipe it). Without `
 
 Manual run: Actions → **Deploy Fly** → **Run workflow** (skips the Verify wait; still health-checks after deploy).
 
+## Object Lock re-probe (D03 storage)
+
+Live Fly RustFS Object Lock qualification (loopback): [`docs/verification/erasure-fly-object-lock.md`](../../docs/verification/erasure-fly-object-lock.md). Evidence under `ops/fly/evidence/object-lock-reprobe-*`. Does **not** claim hosted Erased.
+
 ## Regras
 
 1. **Não** provisionar MPG / Tigris / storage gerenciado para este app.

@@ -984,13 +984,30 @@
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds; Closing\u2192Erased local-controlled-copies; restoreAfterErasure false)",
       "evidence": "docs/verification/erasure-local.md",
-      "scope": "EX45 PurgeWorldContent: after Closing+Confirmada, SQL content purge + World-prefix object purge via EX44 ports; phase Erased with attestationScope local-controlled-copies; Closing receipt immutable; restoreAfterErasure remains false. Does NOT conclude full D03: controller/anti-rollback, backup catalog, ER-R02 World fence, Fly re-probe, forensic wipe, restoreAfterErasure.",
-      "notes": "verified_for_profile ONLY for local Closing\u2192Erased controlled copies. execution.json kept planned/not_run for verify_plan.",
+      "scope": "EX45 PurgeWorldContent: after Closing+Confirmada, SQL content purge + World-prefix object purge via EX44 ports; phase Erased with attestationScope local-controlled-copies; Closing receipt immutable; restoreAfterErasure remains false. Does NOT conclude full D03: controller/anti-rollback, backup catalog, ER-R02 World fence, hosted Erased, forensic wipe, restoreAfterErasure.",
+      "notes": "verified_for_profile ONLY for local Closing\u2192Erased controlled copies. execution.json kept planned/not_run for verify_plan. Fly Object Lock re-probe cleared 2026-09-07 (see later checkpoint).",
       "blockers_remaining": [
         "Qualified independent controller / anti-rollback anchor",
         "Backup/copy catalog",
         "ER-R02 World fence + in-flight PUT/multipart containment",
-        "Fly Object Lock re-probe / hosted Erased",
+        "Hosted Closing\u2192Erased on live retained install (needs erasable hosted path)",
+        "restoreAfterErasure (F04 closed)"
+      ]
+    },
+    {
+      "date": "2026-09-07",
+      "commit": "2de195edb87e06d1b8cd7f36083cb201c4c3e9dd",
+      "packages": ["EX45"],
+      "state": "verified_for_profile",
+      "profile": "fly-all-in-one RustFS Object Lock (zoen-rebuild loopback; not hosted Erased)",
+      "evidence": "docs/verification/erasure-fly-object-lock.md",
+      "scope": "Live Fly VM RustFS 1.0.0-rc.5 Object Lock re-probe PASS: CreateBucket+ObjectLockEnabledForBucket, PutObjectLock after versioning, retention/legal hold enforce, multipart smoke. Install bucket zoen remains without Object Lock under d04-hosted-retained-v1. Does NOT conclude hosted Erased, controller independence, backup catalog, ER-R02, or restoreAfterErasure.",
+      "notes": "verified_for_profile ONLY for Fly Object Lock API parity with local EX44 qualification. Hosted Erased still blocked.",
+      "blockers_remaining": [
+        "Qualified independent controller / anti-rollback anchor",
+        "Backup/copy catalog",
+        "ER-R02 World fence + in-flight PUT/multipart containment",
+        "Hosted Closing\u2192Erased on live retained install",
         "restoreAfterErasure (F04 closed)"
       ]
     }
@@ -1006,7 +1023,7 @@
     {
       "id": "d03-purge-restore-after-erasure",
       "delivery": "D03",
-      "detail": "Local Closing/register + EX44 RustFS Object Lock/S3 inventory/purge ports + EX45 Closing\u2192Erased local SQL+object purge (attestationScope local-controlled-copies) verified on tip. Still open for full D03: qualified controller/anti-rollback, backup/copy catalog, ER-R02 World fence, Fly Object Lock re-probe/hosted Erased, restoreAfterErasure (F04 closed).",
+      "detail": "Local Closing/register + EX44 Object Lock/ports + EX45 Closing\u2192Erased (local-controlled-copies) landed. Fly RustFS Object Lock re-probe cleared 2026-09-07 (docs/verification/erasure-fly-object-lock.md). Still blocked for full D03/hosted Erased: independent controller/anti-rollback, backup catalog, ER-R02, restoreAfterErasure, hosted erasable install path (live zoen bucket remains retained).",
       "since": "2026-09-06"
     },
     {
@@ -1036,7 +1053,7 @@
       "verified_for_profile": true,
       "remaining_outside_identity_increment": [
         "Full D02 merge/split stewardship beyond subject-identity-v2",
-        "D03 erasure purge (freeze only; controller/storage/backups blocked)",
+        "D03 full Erased (controller/backup/ER-R02/hosted erasable; Fly Object Lock API cleared)",
         "Cloud / restore-after-erasure"
       ]
     },

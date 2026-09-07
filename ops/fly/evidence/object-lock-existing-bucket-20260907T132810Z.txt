@@ -1,0 +1,5 @@
+{"k":"created","bucket":"zoen-fly-olx-936f2dc5-0636-4271-87b6-67d54cbd1583"}
+{"k":"put-lock-before-versioning","name":"InvalidBucketState","code":"InvalidBucketState","status":409,"message":"Object Lock configuration cannot be enabled on existing buckets"}
+{"k":"versioning","status":"Enabled"}
+{"k":"put-lock-after-versioning","status":200,"enabled":"Enabled"}
+{"k":"cleanup","bucketGone":true}
