@@ -1,12 +1,10 @@
-import {
-  Blocked,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
+import { randomBytes } from "node:crypto";
+
+import { Blocked, Unavailable } from "@zoen/contracts/d01/errors";
 import type { ConversationId } from "@zoen/contracts/eve/values";
 import type { UncertaintyKind } from "@zoen/contracts/eve/values";
 import { Context, Effect, Layer, Redacted } from "effect";
 import type { Effect as EffectType } from "effect";
-import { randomBytes } from "node:crypto";
 
 /**
  * OpenCode Zen free — OpenAI-compatible chat client (ZN-0063 / D05 product path).
@@ -42,10 +40,7 @@ export interface EveChatCompletionResult {
 
 export type EveOpenCodeZenFailure = Blocked | Unavailable;
 
-export type EveFetch = (
-  input: string,
-  init?: RequestInit
-) => Promise<Response>;
+export type EveFetch = (input: string, init?: RequestInit) => Promise<Response>;
 
 const unavailable = () => new Unavailable({ code: "UNAVAILABLE" });
 const blocked = () => new Blocked({ code: "PROFILE_BLOCKED" });
@@ -64,9 +59,7 @@ const truncateVisible = (text: string): string =>
  * Map a successful model payload to honest uncertainty.
  * Empty / whitespace-only content is Unknown — never fake Known.
  */
-export const uncertaintyFromModelText = (
-  text: string
-): UncertaintyKind => {
+export const uncertaintyFromModelText = (text: string): UncertaintyKind => {
   const trimmed = text.trim();
   if (trimmed.length === 0) {
     return "Unknown";
@@ -213,8 +206,7 @@ export const readOpenCodeZenSettingsFromEnv = (
   }
   return {
     apiKey: Redacted.make(apiKey),
-    baseUrl:
-      env.ZOEN_OPENCODE_BASE_URL?.trim() || DEFAULT_OPENCODE_BASE_URL,
+    baseUrl: env.ZOEN_OPENCODE_BASE_URL?.trim() || DEFAULT_OPENCODE_BASE_URL,
     model: env.ZOEN_OPENCODE_MODEL?.trim() || DEFAULT_OPENCODE_MODEL,
     userAgent: DEFAULT_OPENCODE_USER_AGENT,
   };
