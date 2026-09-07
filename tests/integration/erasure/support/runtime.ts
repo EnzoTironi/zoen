@@ -2,19 +2,19 @@ import { NodeServices } from "@effect/platform-node";
 import { Effect, Layer } from "effect";
 
 import { makeDisclosureFenceLayer } from "../../../../apps/server/src/adapters/postgres/disclosure/fence.ts";
-import { makeD01PostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.ts";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { makeWorldsPostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { applyErasureMigrations } from "../../../../ops/migrations/run.ts";
 import { localErasureAttemptRegisterLayer } from "../../../../packages/authority/src/ports/erasure/local-pg.ts";
 import { erasableConfiguration } from "../core/fixture.ts";
 
 /** Numbered migrations, real roles, real register and real disclosure connections. */
 export const withErasureRuntime = <A, E, R>(run: Effect.Effect<A, E, R>) =>
-  withD01Database(
+  withWorldsDatabase(
     (database) => {
       const register = localErasureAttemptRegisterLayer.pipe(
         Layer.provide(
-          makeD01PostgresLayer({
+          makeWorldsPostgresLayer({
             applicationName: "zoen-erasure-register-test",
             maxConnections: 4,
             url: database.urls.authority,
