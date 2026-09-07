@@ -1080,7 +1080,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "PENDING",
+      "commit": "f11e3162a4b696425c69d34cc12dbc1d82bfa001",
       "packages": ["EX44"],
       "state": "eve_http_cli_surface_landed",
       "profile": "eve-opencode-zen-v1 / admission opencode-zen",

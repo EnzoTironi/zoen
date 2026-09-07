@@ -1,6 +1,6 @@
 # Eve HTTP/CLI surface — EX44 (OpenCode Zen product path)
 
-Data: 2026-09-07 (PT). Tip verificado: `a746931` (`a74693132bdae6980009cc71e69c7baca28ab879`). Perfil produto: `eve-opencode-zen-v1` / admission `opencode-zen`. Path: `/api/eve/execute`.
+Data: 2026-09-07 (PT). Tip verificado: `c689f2a` (`c689f2acddace0ccb532a22964960647d1ac11ea`). Perfil produto: `eve-opencode-zen-v1` / admission `opencode-zen`. Path: `/api/eve/execute`.
 
 ## Escopo verificado
 
