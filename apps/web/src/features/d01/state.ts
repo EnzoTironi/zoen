@@ -246,6 +246,21 @@ export const createWorkspaceController = (origin: string) => {
       });
       return;
     }
+    if (
+      result._tag === "ConversationTurnAccepted" ||
+      result._tag === "ConversationTurnCancelled" ||
+      result._tag === "ConversationMessageSettled" ||
+      result._tag === "ConversationJournalRecovered"
+    ) {
+      // Eve chat surface is request-assembled in features/eve; workspace panel wiring is later.
+      publish({
+        actionError: null,
+        busy: false,
+        canRetry: false,
+        feedback: "",
+      });
+      return;
+    }
     const patch = successPatch(state, result);
     if (result._tag === "WorldCreated") {
       invalidate(patch);

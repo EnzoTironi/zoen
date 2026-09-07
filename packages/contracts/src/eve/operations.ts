@@ -1,7 +1,7 @@
 import { Schema } from "effect";
 
 import { D01Error } from "../d01/errors.js";
-import { Purpose, exact } from "../d01/values.js";
+import { Purpose, WorldRef, exact } from "../d01/values.js";
 import {
   ConversationId,
   EveEvidenceLink,
@@ -19,17 +19,20 @@ import {
 const envelope = {
   purpose: Purpose,
   schemaVersion: EveSchemaVersion,
+  worldRef: WorldRef,
 };
 
-/** Accept a single ingress into the conversation journal (idempotent on ingressId). */
+/** Accept a single ingress and run the product turn path (idempotent on ingressId). */
 export const AcceptConversationTurn = Schema.Struct({
   ...envelope,
   input: Schema.Struct({
     conversationId: ConversationId,
     ingressId: IngressId,
+    messageId: MessageId,
     profileId: EveProfileId,
     providerAdmission: EveProviderAdmission,
     relationshipId: RelationshipId,
+    turnId: TurnId,
     userText: Schema.String.check(
       Schema.isMinLength(1),
       Schema.isMaxLength(16_384)
@@ -51,8 +54,10 @@ export const CancelConversationTurn = Schema.Struct({
 export type CancelConversationTurn = typeof CancelConversationTurn.Type;
 
 /**
- * Settle a visible grounded message.
+ * Settle a visible grounded message (internal / offline proofs only).
  * Live text path uses `opencode-zen`; voice I/O surface uses `web-speech`.
+ * Product HTTP surface settles via AcceptConversationTurn → runEveTurn.
+ * Client Settle over HTTP is rejected as Unsupported.
  * stub-local is offline proofs only.
  * voice-blocked / real-model-blocked stay fail-closed (F05/F06).
  */
@@ -118,6 +123,10 @@ export const ConversationMessageSettled = Schema.TaggedStruct(
     phase: Schema.Literal("Settled"),
     turnId: TurnId,
     uncertainty: UncertaintyKind,
+    visibleText: Schema.String.check(
+      Schema.isMinLength(0),
+      Schema.isMaxLength(16_384)
+    ),
   }
 ).annotate(exact);
 

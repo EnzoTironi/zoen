@@ -11,6 +11,11 @@ import {
   DataPolicySchema,
 } from "@zoen/authority/ports/d01/context";
 import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
+import { EveJournal } from "@zoen/authority/ports/eve/journal";
+import {
+  DEFAULT_OPENCODE_USER_AGENT,
+  EveOpenCodeZen,
+} from "@zoen/authority/ports/eve/opencode-zen";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { ApplicationApi } from "@zoen/contracts/d01/api";
 import { Effect, Layer, Schema } from "effect";
@@ -25,6 +30,7 @@ import { makeDisclosureFenceLayer } from "./adapters/postgres/disclosure/fence.t
 import { makeCorrectionHttpGroup } from "./http/corrections.ts";
 import { makeD01HttpGroup } from "./http/d01.ts";
 import { makeErasureHttpGroup } from "./http/erasure.ts";
+import { makeEveHttpGroup } from "./http/eve.ts";
 import { makeIdentityRoutes } from "./http/identity.ts";
 import { readinessRoutes } from "./http/readiness.ts";
 import { responseSecurity } from "./http/security.ts";
@@ -103,6 +109,19 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
       const erasureRegister = localErasureAttemptRegisterLayer.pipe(
         Layer.provide(erasureAttemptPg)
       );
+      const eveOpenCode =
+        config.openCodeZen === undefined
+          ? EveOpenCodeZen.blockedLayer
+          : EveOpenCodeZen.liveLayer({
+              apiKey: config.openCodeZen.apiKey,
+              baseUrl: config.openCodeZen.baseUrl,
+              model: config.openCodeZen.model,
+              userAgent: DEFAULT_OPENCODE_USER_AGENT,
+            });
+      const eveSurface = Layer.mergeAll(
+        EveJournal.stubMemoryLayer,
+        eveOpenCode
+      );
       const infrastructure = Layer.mergeAll(
         Layer.effectDiscard(checkD01AuthorityRole).pipe(
           Layer.provideMerge(authorityPg)
@@ -114,9 +133,10 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         Layer.succeed(AuthorityInstallation, installation),
         Layer.succeed(DataPolicy, policy),
         hostedAdmissionLayerFor(policy),
-        erasureRegister
+        erasureRegister,
+        eveSurface
       );
-      const executor = SemanticExecutor.layer.pipe(
+      const executor = SemanticExecutor.layerWithoutEve.pipe(
         Layer.provide(infrastructure)
       );
       const api = HttpApiBuilder.layer(ApplicationApi).pipe(
@@ -125,6 +145,7 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         Layer.provide(makeSharingHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeSubjectIdentityHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeErasureHttpGroup(identityConfig.baseUrl)),
+        Layer.provide(makeEveHttpGroup(identityConfig.baseUrl)),
         Layer.provide(executor)
       );
       return Layer.mergeAll(

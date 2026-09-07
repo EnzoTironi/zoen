@@ -357,7 +357,11 @@
     {
       "date": "2026-09-05",
       "commit": "6241437",
-      "packages": ["EX01", "EX02", "EX03"],
+      "packages": [
+        "EX01",
+        "EX02",
+        "EX03"
+      ],
       "state": "reviewed_and_verified_locally",
       "evidence": "docs/verification/bootstrap.md",
       "remote_ci": {
@@ -373,7 +377,12 @@
     {
       "date": "2026-09-05",
       "commit": "40e0e7e",
-      "packages": ["EX04", "EX05", "EX06", "EX07"],
+      "packages": [
+        "EX04",
+        "EX05",
+        "EX06",
+        "EX07"
+      ],
       "state": "combined_checks_passed_with_review_followups",
       "unit_tests": 152,
       "integration_tests": 36,
@@ -383,10 +392,17 @@
     {
       "date": "2026-09-05",
       "commit": "6b7f6c6",
-      "packages": ["EX05", "EX06"],
+      "packages": [
+        "EX05",
+        "EX06"
+      ],
       "state": "independently_reviewed_and_verified_locally",
       "reviewer": "worker-3",
-      "witness_commits": ["0dd65c8", "70d0cbd", "a0955d0"],
+      "witness_commits": [
+        "0dd65c8",
+        "70d0cbd",
+        "a0955d0"
+      ],
       "scope": "Prazo interrompe lock SQL sem persistência; runtime não escala por SET ROLE ou ADMIN OPTION. Typecheck, lint, formato, build core e suites combinadas passaram. Componentes Chromium7 passaram no40e0e7e, sem alteração de UI posterior.",
       "unit_tests": 152,
       "integration_tests": 41
@@ -454,7 +470,12 @@
     {
       "date": "2026-09-05",
       "commit": "048d937",
-      "packages": ["EX16", "EX17", "EX18", "EX19"],
+      "packages": [
+        "EX16",
+        "EX17",
+        "EX18",
+        "EX19"
+      ],
       "state": "local_csv_journey_verified_container_pending",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
       "evidence": "docs/verification/csv-local.md",
@@ -465,7 +486,12 @@
     {
       "date": "2026-09-05",
       "commit": "92c26a73549a9bb3f92b48b82d23a66ac1d4f864",
-      "packages": ["EX16", "EX17", "EX18", "EX19"],
+      "packages": [
+        "EX16",
+        "EX17",
+        "EX18",
+        "EX19"
+      ],
       "state": "verified_for_profile",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
       "evidence": "docs/verification/csv-local.md",
@@ -483,7 +509,12 @@
     {
       "date": "2026-09-05",
       "commit": "d7941bb",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "candidate_with_reproduced_disclosure_failure",
       "witness_commits": [
         "420fc38",
@@ -500,7 +531,12 @@
     {
       "date": "2026-09-05",
       "commit": "dd4f781",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "independently_reviewed_and_verified_locally_ci_pending",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
       "evidence": "docs/verification/sharing-local.md",
@@ -515,7 +551,12 @@
     {
       "date": "2026-09-05",
       "commit": "40ab4db5411535bf17212072a903dad2039e09d2",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "remote_ci_failed_browser_logout_history",
       "evidence": "docs/verification/sharing-local.md",
       "remote_ci": {
@@ -533,7 +574,12 @@
     {
       "date": "2026-09-05",
       "commit": "06535bdcec668f62ba6d91d8ebb17e0235ed568b",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "remote_behavior_passed_report_format_failed",
       "remote_ci": {
         "commit": "06535bdcec668f62ba6d91d8ebb17e0235ed568b",
@@ -549,7 +595,12 @@
     {
       "date": "2026-09-05",
       "commit": "aaa30db2aeac2e4b6abf96569f6efca236147c69",
-      "packages": ["EX20", "EX21", "EX22", "EX23"],
+      "packages": [
+        "EX20",
+        "EX21",
+        "EX22",
+        "EX23"
+      ],
       "state": "verified_for_profile",
       "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
       "evidence": "docs/verification/sharing-local.md",
@@ -567,7 +618,10 @@
     {
       "date": "2026-09-06",
       "commit": "1fb5adb",
-      "packages": ["EX25", "EX26"],
+      "packages": [
+        "EX25",
+        "EX26"
+      ],
       "state": "independently_reviewed_locally_partial",
       "reviewer": "worker-3",
       "evidence": "docs/verification/identity-basis.md",
@@ -581,7 +635,14 @@
     {
       "date": "2026-09-06",
       "commit": "dd4afed62c53fa1be4be1ee27c2fcb37c87dc867",
-      "packages": ["EX24", "EX25", "EX26", "EX27", "EX28", "EX29"],
+      "packages": [
+        "EX24",
+        "EX25",
+        "EX26",
+        "EX27",
+        "EX28",
+        "EX29"
+      ],
       "state": "local_and_container_partial_quality_ci_pending",
       "profile": "d01-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
       "evidence": "docs/verification/subject-identity-local.md",
@@ -595,7 +656,11 @@
     {
       "date": "2026-09-06",
       "commit": "88bb3c7d2b29dcac1671d676905b1d609d663624",
-      "packages": ["EX27", "EX28", "EX29"],
+      "packages": [
+        "EX27",
+        "EX28",
+        "EX29"
+      ],
       "state": "identity_writer_and_viewer_proofs_local_green_not_verified_for_profile",
       "profile": "d01-local-retained-v1 / subject-identity-v2",
       "evidence": "docs/verification/subject-identity-local.md",
@@ -609,7 +674,11 @@
     {
       "date": "2026-09-06",
       "commit": "dc8857b9ac6b57fe2e68733d53dea6a2de5a7463",
-      "packages": ["EX27", "EX28", "EX29"],
+      "packages": [
+        "EX27",
+        "EX28",
+        "EX29"
+      ],
       "state": "recovery_question_limits_oracle_local_green_not_verified_for_profile",
       "profile": "d01-local-retained-v1 / subject-identity-v2",
       "evidence": "docs/verification/subject-identity-local.md",
@@ -618,7 +687,14 @@
     {
       "date": "2026-09-06",
       "commit": "cae72de2be45c59ab63d1fbfc742a51ba34ae1b6",
-      "packages": ["EX24", "EX25", "EX26", "EX27", "EX28", "EX29"],
+      "packages": [
+        "EX24",
+        "EX25",
+        "EX26",
+        "EX27",
+        "EX28",
+        "EX29"
+      ],
       "state": "verified_for_profile",
       "profile": "d01-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
       "evidence": "docs/verification/subject-identity-local.md",
@@ -639,7 +715,9 @@
     {
       "date": "2026-09-06",
       "commit": "e1ffe3bc897a4bfb7c695a2b6192c7e73b84e0b2",
-      "packages": ["EX30"],
+      "packages": [
+        "EX30"
+      ],
       "state": "erasure_minimum_freeze_landed",
       "profile": "d03-local-erasable-v1 (candidate; new Worlds only; restoreAfterErasure blocked)",
       "evidence": "docs/contracts/d03-erasure-freeze.md",
@@ -648,7 +726,9 @@
     {
       "date": "2026-09-06",
       "commit": "8bfe9a7de12176d3d976f1303994465b0065ef12",
-      "packages": ["EX31"],
+      "packages": [
+        "EX31"
+      ],
       "state": "erasure_attempt_register_local_green",
       "profile": "d03-local-erasable-v1 (candidate; register only; restoreAfterErasure blocked)",
       "evidence": "docs/verification/erasure-local.md",
@@ -661,7 +741,9 @@
     {
       "date": "2026-09-06",
       "commit": "420cd5e7493ecd59d41a75271ed59d4290d3c8f4",
-      "packages": ["EX32"],
+      "packages": [
+        "EX32"
+      ],
       "state": "erasure_closing_local_green",
       "profile": "d03-local-erasable-v1 (candidate Closing; restoreAfterErasure blocked)",
       "evidence": "docs/verification/erasure-local.md",
@@ -676,7 +758,13 @@
     {
       "date": "2026-09-06",
       "commit": "66b958b84684ba080fdaacf2360f05e511d3d68c",
-      "packages": ["EX30", "EX31", "EX32", "EX33", "EX34"],
+      "packages": [
+        "EX30",
+        "EX31",
+        "EX32",
+        "EX33",
+        "EX34"
+      ],
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds only) / Closing+register local surface; d01-local-retained-v1 default preserved",
       "evidence": "docs/verification/erasure-local.md",
@@ -697,7 +785,9 @@
     {
       "date": "2026-09-06",
       "commit": "7964d4dd41f33b5e26cd1e07fd9827f78d420c02",
-      "packages": ["EX35"],
+      "packages": [
+        "EX35"
+      ],
       "state": "d04_freeze_and_stubs_landed",
       "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; no deploy; restore-after-erasure blocked)",
       "evidence": "docs/contracts/d04-hosted-freeze.md",
@@ -716,7 +806,9 @@
     {
       "date": "2026-09-06",
       "commit": "b010da0776ec1930537b0a257996c119e81f8df7",
-      "packages": ["EX36"],
+      "packages": [
+        "EX36"
+      ],
       "state": "d04_hosted_retained_policy_schemas_landed",
       "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; composition defaults local retained)",
       "evidence": "packages/contracts/src/hosted/policy/**; packages/authority/src/ports/hosted/**; packages/authority/src/ports/d01/context.ts",
@@ -730,7 +822,9 @@
     {
       "date": "2026-09-06",
       "commit": "f3982e48380f312beecd04712eb28d820cc57285",
-      "packages": ["EX37"],
+      "packages": [
+        "EX37"
+      ],
       "state": "d04_hosted_retained_restore_disposable_landed",
       "profile": "d04-hosted-retained-v1 (candidate; disposable restore of enabled retained scope only)",
       "evidence": "tests/integration/hosted/restore/**; docs/verification/hosted-retained-restore.md",
@@ -743,7 +837,9 @@
     {
       "date": "2026-09-06",
       "commit": "23e76883837b50ffce152cc902f782060e86af02",
-      "packages": ["EX38"],
+      "packages": [
+        "EX38"
+      ],
       "state": "admission_flags_unit_green",
       "profile": "d04-hosted-retained-v1 (admission flags; new Worlds only; no deploy)",
       "evidence": "docs/verification/hosted-admission.md",
@@ -757,7 +853,13 @@
     {
       "date": "2026-09-06",
       "commit": "7e9194024a551f2ba99faf00d726b4bb465dc020",
-      "packages": ["EX35", "EX36", "EX37", "EX38", "EX39"],
+      "packages": [
+        "EX35",
+        "EX36",
+        "EX37",
+        "EX38",
+        "EX39"
+      ],
       "state": "verified_for_profile",
       "profile": "d04-hosted-retained-v1 (new Worlds only) / local hosted-retained bootstrap; d01-local-retained-v1 default preserved; ops/fly stubs only",
       "evidence": "docs/verification/hosted-local.md",
@@ -787,12 +889,16 @@
     {
       "date": "2026-09-07",
       "commit": "3d2e71c10d27b84ca2e21c811e675ca576a18edb",
-      "packages": ["EX40"],
+      "packages": [
+        "EX40"
+      ],
       "state": "eve_minimum_freeze_and_schemas_landed",
       "profile": "eve-local-stub-v1 (candidate; local stub proofs only; real model/voice blocked)",
       "evidence": "docs/contracts/eve-freeze.md",
       "scope": "Frozen F01–F09: text chat with facts/uncertainty/cancel/recoverable journal; INV-01 no authority credentials in journal; voice blocked; real provider blocked; paths eve/**. Does NOT conclude D05.",
-      "unit_tests": ["packages/contracts/test/eve/operations.EX40.test.ts"],
+      "unit_tests": [
+        "packages/contracts/test/eve/operations.EX40.test.ts"
+      ],
       "not_full_d05": true,
       "live_model": false,
       "voice": false,
@@ -805,12 +911,16 @@
     {
       "date": "2026-09-07",
       "commit": "3d2e71c10d27b84ca2e21c811e675ca576a18edb",
-      "packages": ["EX41"],
+      "packages": [
+        "EX41"
+      ],
       "state": "eve_journal_stub_recoverability_landed",
       "profile": "eve-local-stub-v1 / in-memory EveJournal stubMemoryLayer",
       "evidence": "docs/verification/eve-local.md",
       "scope": "EX41 EveJournal port + stubMemoryLayer unit proofs: accept/settle/cancel/recover order without live model; real-model and voice fail-closed Blocked; authorityCredentialPresent false. Does NOT conclude D05.",
-      "unit_tests": ["packages/authority/test/ports/eve/journal.EX41.test.ts"],
+      "unit_tests": [
+        "packages/authority/test/ports/eve/journal.EX41.test.ts"
+      ],
       "not_full_d05": true,
       "live_model": false,
       "voice": false
@@ -818,7 +928,10 @@
     {
       "date": "2026-09-07",
       "commit": "3d2e71c10d27b84ca2e21c811e675ca576a18edb",
-      "packages": ["EX40", "EX41"],
+      "packages": [
+        "EX40",
+        "EX41"
+      ],
       "state": "verified_for_profile",
       "profile": "eve-local-stub-v1 (local journal stub only)",
       "evidence": "docs/verification/eve-local.md",
@@ -843,7 +956,9 @@
     {
       "date": "2026-09-07",
       "commit": "48c7c21adefeece3141d1c699cd8273be30a909d",
-      "packages": ["EX42"],
+      "packages": [
+        "EX42"
+      ],
       "state": "eve_opencode_zen_client_landed",
       "profile": "eve-opencode-zen-v1 / admission opencode-zen",
       "evidence": "docs/verification/eve-opencode-zen.md",
@@ -859,7 +974,9 @@
     {
       "date": "2026-09-07",
       "commit": "48c7c21adefeece3141d1c699cd8273be30a909d",
-      "packages": ["EX43"],
+      "packages": [
+        "EX43"
+      ],
       "state": "eve_opencode_zen_turn_path_landed",
       "profile": "eve-opencode-zen-v1",
       "evidence": "docs/verification/eve-opencode-zen.md",
@@ -875,7 +992,12 @@
     {
       "date": "2026-09-07",
       "commit": "48c7c21adefeece3141d1c699cd8273be30a909d",
-      "packages": ["EX40", "EX41", "EX42", "EX43"],
+      "packages": [
+        "EX40",
+        "EX41",
+        "EX42",
+        "EX43"
+      ],
       "state": "verified_for_profile",
       "profile": "eve-opencode-zen-v1 (OpenCode Zen free product path; stub offline only)",
       "evidence": "docs/verification/eve-opencode-zen.md",
@@ -912,7 +1034,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "bd689582c33c38e2c71ec709fa04e5ac2ba7a6c9",
+      "commit": "c145da4df7ea9a3d2877eb0727e6f2261787b846",
       "packages": ["EX44"],
       "state": "eve_web_speech_voice_profile_landed",
       "profile": "eve-web-speech-v1 / admission web-speech",
@@ -929,7 +1051,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "bd689582c33c38e2c71ec709fa04e5ac2ba7a6c9",
+      "commit": "c145da4df7ea9a3d2877eb0727e6f2261787b846",
       "packages": ["EX40", "EX41", "EX42", "EX43", "EX44"],
       "state": "verified_for_profile",
       "profile": "eve-web-speech-v1 (browser Web Speech voice I/O; text via OpenCode Zen)",
@@ -955,6 +1077,27 @@
         "No legacy zoen cutover"
       ],
       "notes": "verified_for_profile for Web Speech voice I/O. NOT full D05 / ZN-0281."
+    },
+    {
+      "date": "2026-09-07",
+      "commit": "PENDING",
+      "packages": ["EX44"],
+      "state": "eve_http_cli_surface_landed",
+      "profile": "eve-opencode-zen-v1 / admission opencode-zen",
+      "evidence": "docs/verification/eve-http-surface.md",
+      "scope": "EX44 HTTP/CLI Eve surface on live OpenCode Zen path; fail-closed Blocked without key; stub not product default. Does NOT conclude D05 or legacy cutover. Structural execution.json statuses remain planned/not_run.",
+      "unit_tests": [
+        "packages/authority/test/ports/eve/handlers.EX44.test.ts",
+        "apps/web/test/integration/eve/requests.EX44.test.ts",
+        "packages/contracts/test/eve/operations.EX40.test.ts"
+      ],
+      "integration_tests": [
+        "apps/server/test/composition/eve/http.EX44.integration.test.ts",
+        "apps/cli/test/eve/commands.integration.test.ts"
+      ],
+      "not_full_d05": true,
+      "voice": true,
+      "legacy_cutover": false
     }
   ],
   "verified_deliveries": [],
@@ -1005,7 +1148,10 @@
     "d04_hosted_bootstrap": {
       "fly_auth": true,
       "fly_legacy_app": "zoen (not cut over)",
-      "stubs": ["ops/fly/fly.toml", "ops/fly/README.md"],
+      "stubs": [
+        "ops/fly/fly.toml",
+        "ops/fly/README.md"
+      ],
       "dockerfile": "ops/containers/application.Dockerfile",
       "deployed": false,
       "hosted_retained_policy_schemas": true,

@@ -73,6 +73,7 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "hello",
+          worldRef: null,
         })
       );
       expect(real._tag).toBe("Failure");
@@ -91,6 +92,7 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnB,
           userText: "hello",
+          worldRef: null,
         })
       );
       expect(voice._tag).toBe("Failure");
@@ -110,6 +112,7 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "fato 1",
+          worldRef: null,
         });
         expect(first.phase).toBe("Accepted");
 
@@ -121,6 +124,7 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "fato 1",
+          worldRef: null,
         });
         expect(replay.turnId).toBe(turnA);
 
@@ -148,6 +152,7 @@ describe("EX41 eve journal stub port", () => {
         relationshipId,
         turnId: turnB,
         userText: "cancele",
+        worldRef: null,
       });
       const cancelled = yield* journal.cancelTurn({
         conversationId,
@@ -182,6 +187,7 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "fato 1",
+          worldRef: null,
         });
         yield* journal.settleMessage({
           conversationId,
@@ -199,6 +205,7 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnB,
           userText: "cancele",
+          worldRef: null,
         });
         yield* journal.cancelTurn({ conversationId, turnId: turnB });
 
@@ -226,6 +233,7 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "nope",
+          worldRef: null,
         })
       );
       expect(exit._tag).toBe("Failure");
@@ -243,24 +251,16 @@ describe("EX41 eve journal stub port", () => {
         relationshipId,
         turnId: turnA,
         userText: "live path accept",
+        worldRef: null,
       });
+      expect(accepted.phase).toBe("Accepted");
       const recovered = yield* journal.recover(conversationId);
+      expect(recovered.providerAdmission).toBe("opencode-zen");
+      expect(recovered.conversation.profileId).toBe("eve-opencode-zen-v1");
+      expect(recovered.authorityCredentialPresent).toBeFalsy();
       const serialized = JSON.stringify(recovered);
-      expect({
-        admission: recovered.providerAdmission,
-        credential: recovered.authorityCredentialPresent,
-        hasApiKey: serialized.toLowerCase().includes("apikey"),
-        hasSk: serialized.includes("sk-"),
-        phase: accepted.phase,
-        profileId: recovered.conversation.profileId,
-      }).toStrictEqual({
-        admission: "opencode-zen",
-        credential: false,
-        hasApiKey: false,
-        hasSk: false,
-        phase: "Accepted",
-        profileId: "eve-opencode-zen-v1",
-      });
+      expect(serialized.includes("sk-")).toBeFalsy();
+      expect(serialized.toLowerCase().includes("apikey")).toBeFalsy();
     }).pipe(Effect.provide(EveJournal.stubMemoryLayer))
   );
 });

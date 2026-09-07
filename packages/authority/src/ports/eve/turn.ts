@@ -4,6 +4,7 @@ import {
   NotFoundOrDenied,
   Unavailable,
 } from "@zoen/contracts/d01/errors";
+import type { WorldRef } from "@zoen/contracts/d01/values";
 import type {
   ConversationId,
   EveEvidenceLink,
@@ -34,6 +35,7 @@ export interface RunEveTurnInput {
   readonly systemText?: string;
   readonly turnId: TurnId;
   readonly userText: string;
+  readonly worldRef?: WorldRef | null;
 }
 
 export interface RunEveTurnResult {
@@ -93,6 +95,7 @@ export const runEveTurn = (
       relationshipId: input.relationshipId,
       turnId: input.turnId,
       userText: input.userText,
+      worldRef: input.worldRef ?? null,
     });
 
     const signalAborted = (): boolean =>
