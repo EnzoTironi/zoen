@@ -96,7 +96,7 @@ urlencode_password() {
 
 # Emit a single-quoted SQL string literal with '' escaping (handles apostrophes safely).
 sql_password_literal() {
-  PASSWORD_VALUE="$1" python3 -c 'import os; p=os.environ["PASSWORD_VALUE"]; print("'"'"'" + p.replace("'"'"'", "'"'"''"'"'") + "'"'"'")'
+  PASSWORD_VALUE="$1" python3 -c "import os; p=os.environ[\"PASSWORD_VALUE\"]; print(chr(39)+p.replace(chr(39), chr(39)*2)+chr(39))"
 }
 
 # Load KEY="value" runtime.env without `source` (no shell evaluation as root).
