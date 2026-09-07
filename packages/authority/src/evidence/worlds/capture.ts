@@ -77,6 +77,9 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
     const sql = yield* SqlClient.SqlClient;
     return yield* serializable(
       Effect.gen(function* reserveUpload() {
+        // Closing holds FOR UPDATE; a reservation cannot sneak in after its cut.
+        yield* sql`SELECT world_id FROM authority.worlds
+          WHERE world_id = ${world.worldId} AND realm = ${world.realm} FOR SHARE`;
         yield* requireImportPolicy(context, world);
         const [row] = yield* sql`
         INSERT INTO jobs.captures
