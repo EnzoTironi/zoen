@@ -15,7 +15,12 @@ const InstallationFile = Schema.Struct({
 export class ServerConfigurationError extends Schema.TaggedError<ServerConfigurationError>()(
   "ServerConfigurationError",
   { code: Schema.Literals(["INVALID_CONFIGURATION", "RELEASE_MISMATCH"]) }
-) {}
+) {
+  /** Surface code in Cause / Fly logs (Effect pretty uses `message`). */
+  override get message(): string {
+    return this.code;
+  }
+}
 
 export const loadConfiguration = Effect.gen(function* serverConfiguration() {
   const fs = yield* FileSystem.FileSystem;

@@ -22,6 +22,12 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
 import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
+import {
+  alignInstallationRelease,
+  digestReleaseBytes,
+  parseHostedInstallationFile,
+  parseQuotedEnvFile,
+} from "../dist/all-in-one-release-align.js";
 
 class BootstrapError extends Schema.TaggedError<BootstrapError>()(
   "BootstrapError",
@@ -39,6 +45,83 @@ const names = {
 } as const;
 
 const databaseName = "zoen";
+
+const alignExistingHostedRelease = (input: {
+  readonly encodeInstallation: typeof encodeJson;
+  readonly fs: FileSystem.FileSystem;
+  readonly installationPath: string;
+  readonly releaseFile: string;
+  readonly runtimeEnvPath: string;
+}) =>
+  Effect.gen(function* alignRelease() {
+    const {
+      encodeInstallation,
+      fs,
+      installationPath,
+      releaseFile,
+      runtimeEnvPath,
+    } = input;
+    const releaseDigest = digestReleaseBytes(yield* fs.readFile(releaseFile));
+    const installationText = yield* fs.readFileString(installationPath);
+    const installedUnknown = yield* Schema.decodeEffect(
+      Schema.fromJsonString(Schema.Unknown)
+    )(installationText).pipe(
+      Effect.mapError(
+        () => new BootstrapError({ code: "INVALID_INSTALLATION_FILE" })
+      )
+    );
+    const hosted = parseHostedInstallationFile(installedUnknown);
+    if (hosted === null) {
+      return yield* new BootstrapError({ code: "INVALID_INSTALLATION_FILE" });
+    }
+    const aligned = alignInstallationRelease(hosted, releaseDigest);
+    if (!aligned.changed) {
+      return yield* Effect.logInfo({ event: "all-in-one.bootstrap.skip" });
+    }
+    const runtimeEnv = parseQuotedEnvFile(
+      yield* fs.readFileString(runtimeEnvPath)
+    );
+    const authorityUrl = runtimeEnv?.ZOEN_AUTHORITY_DATABASE_URL;
+    if (authorityUrl === undefined) {
+      return yield* new BootstrapError({
+        code: "RUNTIME_ENV_MISSING_AUTHORITY",
+      });
+    }
+    const {
+      cellId,
+      generationId,
+      releaseDigest: previousDigest,
+    } = hosted.installation;
+    yield* Effect.gen(function* rewriteWorldsReleaseDigest() {
+      const sql = yield* SqlClient.SqlClient;
+      yield* sql`
+        UPDATE authority.worlds
+        SET release_digest = ${releaseDigest}
+        WHERE cell_id = ${cellId}::uuid
+          AND generation_id = ${generationId}::uuid
+          AND release_digest = ${previousDigest}
+      `;
+    }).pipe(
+      Effect.provide(
+        PgClient.layer({
+          maxConnections: 1,
+          url: Redacted.make(authorityUrl),
+        })
+      )
+    );
+    const encoded = yield* encodeInstallation(aligned.next);
+    const tmpPath = `${installationPath}.tmp`;
+    if (yield* fs.exists(tmpPath)) {
+      yield* fs.remove(tmpPath);
+    }
+    yield* fs.writeFileString(tmpPath, encoded, { flag: "wx", mode: 0o600 });
+    yield* fs.rename(tmpPath, installationPath);
+    return yield* Effect.logInfo({
+      event: "all-in-one.bootstrap.release-aligned",
+      from: previousDigest,
+      to: releaseDigest,
+    });
+  });
 
 const program = Effect.gen(function* bootstrapAllInOne() {
   const fs = yield* FileSystem.FileSystem;
@@ -75,7 +158,13 @@ const program = Effect.gen(function* bootstrapAllInOne() {
         code: "BOOTSTRAP_MARKER_INCONSISTENT",
       });
     }
-    return yield* Effect.logInfo({ event: "all-in-one.bootstrap.skip" });
+    return yield* alignExistingHostedRelease({
+      encodeInstallation: encodeJson,
+      fs,
+      installationPath,
+      releaseFile,
+      runtimeEnvPath,
+    });
   }
 
   const authSecret = yield* Config.redacted("ZOEN_AUTH_SECRET").pipe(

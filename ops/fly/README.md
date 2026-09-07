@@ -12,6 +12,10 @@ Integrador (`ops/fly/**`). App **`zoen-rebuild`**: **uma VM** com Postgres + Rus
 | Perfil Worlds novos | `d04-hosted-retained-v1` |
 | Hostname cutover | `ops/fly/CUTOVER.md` — **replace** de `zoen.tironi.xyz` → este app (sem dual-write) |
 
+## Release digest on redeploy
+
+`installation.json` on the volume pins `releaseDigest` to the first-boot `release.json`. Each new image rebuilds `release.json`, so bootstrap **aligns** the volume digest (and `authority.worlds.release_digest` for the same cell/generation) before the server starts. Without that step, tip boots fail with `server.failed` / `ServerConfigurationError: RELEASE_MISMATCH`. Pre-launch: disposable hosted data — no dual-read shim.
+
 ## Secrets
 
 Somente o necessário via `fly secrets` (valores nunca no git/chat):
