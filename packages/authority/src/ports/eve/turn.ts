@@ -87,7 +87,9 @@ export const runEveTurn = (
       userText: input.userText,
     });
 
-    if (input.signal?.aborted) {
+    const signalAborted = (): boolean =>
+      input.signal !== undefined && input.signal.aborted;
+    if (signalAborted()) {
       yield* journal.cancelTurn({
         conversationId: input.conversationId,
         turnId: input.turnId,
@@ -114,10 +116,10 @@ export const runEveTurn = (
     const chatInput = {
       conversationId: input.conversationId,
       userText: input.userText,
-      ...(input.signal !== undefined ? { signal: input.signal } : {}),
-      ...(input.systemText !== undefined
-        ? { systemText: input.systemText }
-        : {}),
+      ...(input.signal === undefined ? {} : { signal: input.signal }),
+      ...(input.systemText === undefined
+        ? {}
+        : { systemText: input.systemText }),
     };
     const completion = yield* model.completeChat(chatInput).pipe(
       Effect.catch((error) =>
@@ -127,19 +129,19 @@ export const runEveTurn = (
               conversationId: input.conversationId,
               turnId: input.turnId,
             })
-            .pipe(Effect.catch(() => Effect.void));
-          return yield* Effect.fail(error);
+            .pipe(Effect.ignore);
+          return yield* error;
         })
       )
     );
 
-    if (input.signal?.aborted) {
+    if (signalAborted()) {
       yield* journal
         .cancelTurn({
           conversationId: input.conversationId,
           turnId: input.turnId,
         })
-        .pipe(Effect.catch(() => Effect.void));
+        .pipe(Effect.ignore);
       return yield* new Unavailable({ code: "UNAVAILABLE" });
     }
 

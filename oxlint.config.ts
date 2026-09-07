@@ -109,6 +109,30 @@ export default defineConfig({
       rules: { "vitest/max-expects": "off" },
     },
     {
+      files: ["apps/server/scripts/all-in-one-bootstrap.ts"],
+      rules: {
+        "effecttsgo/any-unknown-in-error-context": "off",
+        "promise/no-promise-in-callback": "off",
+        "promise/prefer-await-to-callbacks": "off",
+        "promise/prefer-await-to-then": "off",
+      },
+    },
+    {
+      files: [
+        "packages/authority/src/ports/eve/**",
+        "packages/authority/test/ports/eve/**",
+        "packages/contracts/test/eve/**",
+      ],
+      rules: {
+        "effecttsgo/abort-controller-in-effect": "off",
+        "effecttsgo/async-function": "off",
+        "effecttsgo/node-builtin-import": "off",
+        "effecttsgo/prefer-schema-over-json": "off",
+        "effecttsgo/process-env": "off",
+        "effecttsgo/process-env-in-effect": "off",
+      },
+    },
+    {
       files: ["**/adapters/posix.ts"],
       rules: {
         "effecttsgo/node-builtin-import": "off",

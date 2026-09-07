@@ -26,28 +26,27 @@ const evidenceRef = "00000000-0000-4000-8000-000000000106";
 
 describe("EX40 eve schemas", () => {
   it("freezes stub + OpenCode Zen profiles and eve.v1 wire tag", () => {
-    expect(Schema.decodeSync(EveLocalStubProfileId)("eve-local-stub-v1")).toBe(
-      "eve-local-stub-v1"
-    );
-    expect(
-      Schema.decodeSync(EveOpenCodeZenProfileId)("eve-opencode-zen-v1")
-    ).toBe("eve-opencode-zen-v1");
-    expect(Schema.decodeSync(EveProfileId)("eve-opencode-zen-v1")).toBe(
-      "eve-opencode-zen-v1"
-    );
-    expect(Schema.decodeSync(EveSchemaVersion)("eve.v1")).toBe("eve.v1");
-    expect(
-      Result.isFailure(
+    expect({
+      foreignProfile: Result.isFailure(
         Schema.decodeUnknownResult(EveLocalStubProfileId)(
           "d01-local-retained-v1"
         )
-      )
-    ).toBeTruthy();
-    expect(
-      Result.isFailure(
+      ),
+      foreignSchema: Result.isFailure(
         Schema.decodeUnknownResult(EveSchemaVersion)("hosted.v1")
-      )
-    ).toBeTruthy();
+      ),
+      profileId: Schema.decodeSync(EveProfileId)("eve-opencode-zen-v1"),
+      schema: Schema.decodeSync(EveSchemaVersion)("eve.v1"),
+      stub: Schema.decodeSync(EveLocalStubProfileId)("eve-local-stub-v1"),
+      zen: Schema.decodeSync(EveOpenCodeZenProfileId)("eve-opencode-zen-v1"),
+    }).toStrictEqual({
+      foreignProfile: true,
+      foreignSchema: true,
+      profileId: "eve-opencode-zen-v1",
+      schema: "eve.v1",
+      stub: "eve-local-stub-v1",
+      zen: "eve-opencode-zen-v1",
+    });
   });
 
   it("encodes AcceptConversationTurn under opencode-zen admission", () => {
