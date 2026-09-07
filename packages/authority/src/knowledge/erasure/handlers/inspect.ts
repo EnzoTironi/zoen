@@ -29,7 +29,7 @@ export const inspectWorldErasure = Effect.fn("erasure.inspectWorldErasure")(
     const policy = yield* Schema.decodeEffect(DataPolicySchema)(
       yield* DataPolicy
     ).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
-    yield* authorizeWorld(context, request.worldRef, "manage");
+    yield* authorizeWorld(context, request.worldRef, "erasure");
     if (!policy.erasure) {
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
     }
