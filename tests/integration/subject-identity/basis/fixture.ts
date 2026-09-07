@@ -139,6 +139,26 @@ const reservePort = Effect.sync(
   () => 45_000 + Math.floor(Math.random() * 10_000)
 );
 
+/** Resolve when the OS reports the child has exited (DB clients released). */
+const awaitProcessExit = (child: ChildProcess) =>
+  Effect.callback<null>((resume, abort) => {
+    if (childHasExited(child)) {
+      resume(Effect.succeed(null));
+      return;
+    }
+    const onExit = () => {
+      resume(Effect.succeed(null));
+    };
+    child.once("exit", onExit);
+    abort.addEventListener(
+      "abort",
+      () => {
+        child.off("exit", onExit);
+      },
+      { once: true }
+    );
+  });
+
 /** Wait until the legacy child has fully exited (releases DB clients) before migrating. */
 const awaitChildExit = (
   child: ChildProcess,
@@ -152,26 +172,28 @@ const awaitChildExit = (
     yield* Effect.sync(() => {
       child.kill(signal);
     });
-    const gracePolls = Math.max(1, Math.ceil(graceMs / 50));
-    for (let poll = 0; poll < gracePolls; poll += 1) {
-      if (childHasExited(child)) {
-        return;
-      }
-      yield* Effect.sleep("50 millis");
-    }
+    yield* awaitProcessExit(child).pipe(
+      Effect.timeout(`${graceMs} millis`),
+      Effect.catchTag("TimeoutError", () => Effect.succeed(null))
+    );
     if (childHasExited(child)) {
       return;
     }
     yield* Effect.sync(() => {
       child.kill("SIGKILL");
     });
-    // SIGKILL still needs process teardown before DB locks drop.
-    for (let poll = 0; poll < 20; poll += 1) {
-      if (childHasExited(child)) {
-        return;
-      }
-      yield* Effect.sleep("50 millis");
-    }
+    // Fail closed: never start migrations unless the OS observed exit.
+    // Bound wait after SIGKILL; still fail closed — never migrate while locks may remain.
+    yield* awaitProcessExit(child).pipe(
+      Effect.timeout("10 seconds"),
+      Effect.catchTag("TimeoutError", () =>
+        Effect.die(
+          new Error(
+            `Legacy child did not exit after SIGKILL pid=${String(child.pid)}`
+          )
+        )
+      )
+    );
   });
 
 export const http = Effect.fn("basis.http")(function* send(
@@ -197,8 +219,8 @@ export const http = Effect.fn("basis.http")(function* send(
   ).pipe(
     HttpClient.execute,
     // Legacy emission handlers can leave the socket open if the child is wedged;
-    // fail the test Effect instead of waiting for the suite timeout.
-    Effect.timeout("45 seconds"),
+    // stay below the 30s integration testTimeout so this die runs first.
+    Effect.timeout("20 seconds"),
     Effect.catchTag("TimeoutError", () =>
       Effect.die(
         new Error(`Legacy HTTP timed out ${routePath} origin=${origin}`)
