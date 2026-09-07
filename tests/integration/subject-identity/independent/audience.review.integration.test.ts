@@ -29,12 +29,8 @@ import {
 } from "./harness.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const { envelope, executePath } = legacyWire;
-const sharing = {
-  purpose: "personal-records",
-  schemaVersion: "sharing.v1",
-};
-const sharingPath = "/api/sharing/execute";
+const { envelope, executePath, sharingEnvelope: sharing, sharingPath } =
+  legacyWire;
 const validTime = {
   _tag: "DateInterval" as const,
   from: "2026-09-01",
