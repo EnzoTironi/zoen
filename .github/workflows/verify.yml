@@ -63,7 +63,7 @@ jobs:
       - run: pnpm build
       - name: Restore identity legacy baseline
         id: identity-baseline-cache
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: .local/identity-baseline-ci
           key: identity-baseline-06535bdcec668f62ba6d91d8ebb17e0235ed568b-v1-${{ hashFiles('tooling/prepare_identity_baseline.py') }}
