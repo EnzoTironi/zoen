@@ -75,6 +75,18 @@ export const execute = Effect.fn(function* execute(
     case "RequestWorldErasure": {
       return yield* client.erasure.execute({ payload });
     }
+    case "AcceptConversationTurn": {
+      return yield* client.eve.execute({ payload });
+    }
+    case "CancelConversationTurn": {
+      return yield* client.eve.execute({ payload });
+    }
+    case "RecoverConversationJournal": {
+      return yield* client.eve.execute({ payload });
+    }
+    case "SettleConversationMessage": {
+      return yield* client.eve.execute({ payload });
+    }
     default: {
       return yield* new CliFailure("CLI_INPUT");
     }

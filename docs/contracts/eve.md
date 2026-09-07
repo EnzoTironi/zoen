@@ -34,6 +34,8 @@ Client OpenAI-compatible com headers free-tier; key só via env/Fly secret.
 
 `runEveTurn`: accept → model → settle; cancel/abort antes de settle; artefato `docs/verification/eve-opencode-zen.md`.
 
-## EX44 (voice Web Speech + qualificação)
+## EX44 (voice Web Speech + HTTP/CLI surface)
 
 `runEveVoiceTurn` + `@zoen/web` Web Speech adapter; artefato `docs/verification/eve-web-speech.md`.
+
+Rotas `/api/eve/execute` + CLI `eve-turn`/`eve-cancel`/`eve-recover` no path OpenCode Zen. Stub não é default de produto; sem key → Blocked. Ver `docs/verification/eve-http-surface.md`.

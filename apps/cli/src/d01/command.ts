@@ -14,6 +14,7 @@ import { Command, Flag } from "effect/unstable/cli";
 import { FetchHttpClient } from "effect/unstable/http";
 
 import { makeErasureCommands } from "../erasure/command.js";
+import { makeEveCommands } from "../eve/command.js";
 import { makeCorrectionCommands } from "../integration/d02/command.js";
 import { makeSharingCommands } from "../sharing/command.js";
 import { makeSubjectIdentityCommands } from "../subject-identity/command.js";
@@ -315,6 +316,7 @@ export const d01Command = root.pipe(
       report
     ),
     ...makeErasureCommands({ operationId, realm, worldId }, send, report),
+    ...makeEveCommands({ operationId, realm, worldId }, send, report),
   ]),
   Command.withExamples([
     {

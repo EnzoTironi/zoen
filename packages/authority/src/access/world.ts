@@ -30,7 +30,9 @@ const AccessRow = Schema.Struct({
 const Capability = Schema.Literals(["read", "manage", "mutate"]);
 export type WorldCapability = typeof Capability.Type;
 const capabilities = {
+  AcceptConversationTurn: "mutate",
   AnswerQuestion: "mutate",
+  CancelConversationTurn: "mutate",
   CreatePersonalWorld: "mutate",
   GrantWorldReadAccess: "manage",
   ImportEvidence: "mutate",
@@ -44,9 +46,11 @@ const capabilities = {
   ProposeIdentityResolution: "mutate",
   ProposeIdentitySplit: "mutate",
   ProposeIdentityUndo: "mutate",
+  RecoverConversationJournal: "read",
   RequestWorldErasure: "mutate",
   ResolveIdentity: "mutate",
   RevokeWorldReadAccess: "manage",
+  SettleConversationMessage: "mutate",
   UndoCorrection: "mutate",
 } as const satisfies Record<SemanticRequest["operation"], WorldCapability>;
 export const operationCapability = (

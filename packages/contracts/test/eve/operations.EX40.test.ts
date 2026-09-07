@@ -24,30 +24,35 @@ const ingressId = "00000000-0000-4000-8000-000000000103";
 const turnId = "00000000-0000-4000-8000-000000000104";
 const messageId = "00000000-0000-4000-8000-000000000105";
 const evidenceRef = "00000000-0000-4000-8000-000000000106";
+const worldRef = {
+  realm: "live" as const,
+  worldId: "00000000-0000-4000-8000-000000000199",
+};
 
 describe("EX40 eve schemas", () => {
   it("freezes stub + OpenCode Zen profiles and eve.v1 wire tag", () => {
-    expect({
-      foreignProfile: Result.isFailure(
+    expect(Schema.decodeSync(EveLocalStubProfileId)("eve-local-stub-v1")).toBe(
+      "eve-local-stub-v1"
+    );
+    expect(
+      Schema.decodeSync(EveOpenCodeZenProfileId)("eve-opencode-zen-v1")
+    ).toBe("eve-opencode-zen-v1");
+    expect(Schema.decodeSync(EveProfileId)("eve-opencode-zen-v1")).toBe(
+      "eve-opencode-zen-v1"
+    );
+    expect(Schema.decodeSync(EveSchemaVersion)("eve.v1")).toBe("eve.v1");
+    expect(
+      Result.isFailure(
         Schema.decodeUnknownResult(EveLocalStubProfileId)(
           "d01-local-retained-v1"
         )
-      ),
-      foreignSchema: Result.isFailure(
+      )
+    ).toBeTruthy();
+    expect(
+      Result.isFailure(
         Schema.decodeUnknownResult(EveSchemaVersion)("hosted.v1")
-      ),
-      profileId: Schema.decodeSync(EveProfileId)("eve-opencode-zen-v1"),
-      schema: Schema.decodeSync(EveSchemaVersion)("eve.v1"),
-      stub: Schema.decodeSync(EveLocalStubProfileId)("eve-local-stub-v1"),
-      zen: Schema.decodeSync(EveOpenCodeZenProfileId)("eve-opencode-zen-v1"),
-    }).toStrictEqual({
-      foreignProfile: true,
-      foreignSchema: true,
-      profileId: "eve-opencode-zen-v1",
-      schema: "eve.v1",
-      stub: "eve-local-stub-v1",
-      zen: "eve-opencode-zen-v1",
-    });
+      )
+    ).toBeTruthy();
   });
 
   it("encodes AcceptConversationTurn under opencode-zen admission", () => {
@@ -55,17 +60,21 @@ describe("EX40 eve schemas", () => {
       input: {
         conversationId,
         ingressId,
+        messageId,
         profileId: "eve-opencode-zen-v1",
         providerAdmission: "opencode-zen",
         relationshipId,
+        turnId,
         userText: "quanto gastei?",
       },
       operation: "AcceptConversationTurn",
       purpose: "personal-records",
       schemaVersion: "eve.v1",
+      worldRef,
     });
     expect(request.operation).toBe("AcceptConversationTurn");
     expect(request.input.providerAdmission).toBe("opencode-zen");
+    expect(request.worldRef.worldId).toBe(worldRef.worldId);
   });
 
   it("still encodes stub-local Accept for offline unit proofs", () => {
@@ -73,14 +82,17 @@ describe("EX40 eve schemas", () => {
       input: {
         conversationId,
         ingressId,
+        messageId,
         profileId: "eve-local-stub-v1",
         providerAdmission: "stub-local",
         relationshipId,
+        turnId,
         userText: "offline",
       },
       operation: "AcceptConversationTurn",
       purpose: "personal-records",
       schemaVersion: "eve.v1",
+      worldRef,
     });
     expect(request.input.providerAdmission).toBe("stub-local");
   });
@@ -120,6 +132,7 @@ describe("EX40 eve schemas", () => {
         operation: "CancelConversationTurn",
         purpose: "personal-records",
         schemaVersion: "eve.v1",
+        worldRef,
       }).operation
     ).toBe("CancelConversationTurn");
     expect(
@@ -128,6 +141,7 @@ describe("EX40 eve schemas", () => {
         operation: "RecoverConversationJournal",
         purpose: "personal-records",
         schemaVersion: "eve.v1",
+        worldRef,
       }).operation
     ).toBe("RecoverConversationJournal");
   });
@@ -145,6 +159,7 @@ describe("EX40 eve schemas", () => {
       operation: "SettleConversationMessage",
       purpose: "personal-records",
       schemaVersion: "eve.v1",
+      worldRef,
     });
     expect(settled.input.uncertainty).toBe("Partial");
     expect(settled.input.evidenceLinks).toHaveLength(1);
@@ -205,14 +220,17 @@ describe("EX40 eve schemas", () => {
           input: {
             conversationId,
             ingressId,
+            messageId,
             profileId: "d04-hosted-retained-v1",
             providerAdmission: "stub-local",
             relationshipId,
+            turnId,
             userText: "x",
           },
           operation: "AcceptConversationTurn",
           purpose: "personal-records",
           schemaVersion: "eve.v1",
+          worldRef,
         })
       )
     ).toBeTruthy();

@@ -3,6 +3,7 @@ import {
   Conflict,
   NotFoundOrDenied,
 } from "@zoen/contracts/d01/errors";
+import type { WorldRef } from "@zoen/contracts/d01/values";
 import type {
   ConversationId,
   EveConversation,
@@ -39,6 +40,7 @@ export interface AcceptTurnInput {
   readonly relationshipId: RelationshipId;
   readonly turnId: TurnId;
   readonly userText: string;
+  readonly worldRef: WorldRef | null;
 }
 
 export interface SettleMessageInput {
@@ -189,7 +191,7 @@ export class EveJournal extends Context.Service<
                   relationshipId: input.relationshipId,
                   revision: "1",
                   schemaVersion: "eve.v1",
-                  worldRef: null,
+                  worldRef: input.worldRef,
                 },
                 ingressIndex: new Map([[input.ingressId, input.turnId]]),
                 messages: [],
