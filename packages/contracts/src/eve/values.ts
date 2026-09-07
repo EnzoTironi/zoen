@@ -76,7 +76,7 @@ export type MessageState = typeof MessageState.Type;
 /**
  * Honest uncertainty for grounded composition (freeze F02 / ZA-17).
  * Summaries never become evidence (F04). Text length / model prose never set Known;
- * Known requires an authorized evidence basis.
+ * Known requires a verified authorized evidence basis (not identifier-only links).
  */
 export const UncertaintyKind = Schema.Literals(["Known", "Partial", "Unknown"]);
 export type UncertaintyKind = typeof UncertaintyKind.Type;

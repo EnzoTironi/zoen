@@ -58,10 +58,19 @@ export const uncertaintyFromGenerationText = (
 };
 
 /**
- * Factual Known requires at least one authorized evidence link.
- * Long model prose alone cannot set Known (ZA-17-02 / F10).
+ * Factual Known requires a **verified authorized** evidence basis.
+ * Identifier-only `EveEvidenceLink` values are never sufficient (ZA-17 / F10):
+ * callers must set `citationsAuthorized` only after each cited evidenceRef has
+ * been resolved and authorized for the request world / principal / claim
+ * context (ZA-19). Unverified or unauthorized links keep Partial.
+ * Long model prose alone cannot set Known.
  */
 export const uncertaintyFromEvidenceBasis = (input: {
+  /**
+   * True only after cited links were resolved and authorized for this turn.
+   * Raw nonempty `evidenceLinks` without this flag must not imply Known.
+   */
+  readonly citationsAuthorized: boolean;
   readonly evidenceLinks: readonly EveEvidenceLink[];
   readonly generatedText: string;
 }): UncertaintyKind => {
@@ -69,7 +78,7 @@ export const uncertaintyFromEvidenceBasis = (input: {
   if (trimmed.length === 0) {
     return "Unknown";
   }
-  if (input.evidenceLinks.length === 0) {
+  if (!(input.citationsAuthorized && input.evidenceLinks.length > 0)) {
     return "Partial";
   }
   return "Known";

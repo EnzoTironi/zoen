@@ -168,12 +168,16 @@ export const runEveTurn = (
     }
 
     const evidenceLinks = [...(input.evidenceLinks ?? [])];
+    // ZA-17 / F10: identifier-only links are not an authorized basis. Until
+    // ZA-19 resolves + authorizes citations for this world/principal/claim,
+    // settle Partial even when callers supply structurally valid links.
     const message = yield* journal.settleMessage({
       conversationId: input.conversationId,
       evidenceLinks,
       messageId: input.messageId,
       turnId: input.turnId,
       uncertainty: uncertaintyFromEvidenceBasis({
+        citationsAuthorized: false,
         evidenceLinks,
         generatedText: completion.visibleText,
       }),

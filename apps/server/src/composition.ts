@@ -79,6 +79,28 @@ export const hostedAdmissionLayerFor = (
     ? hostedAdmissionLayer
     : Layer.empty;
 
+/**
+ * Product Eve surface for the current tip (ZA-17).
+ * OpenCode key presence alone never installs stubMemory or live Zen — only
+ * blocked journal + blocked provider until ZA-18/19/20 qualify admission.
+ * Exported so unit tests pin the same selection `makeD01Application` uses.
+ */
+export const makeProductEveSurface = (openCodeKeyPresent: boolean) => {
+  const admission = currentProductEveAdmissionInput(openCodeKeyPresent);
+  if (isProductEveAdmitted(admission)) {
+    // Tripwire: flipping admission flags without durable/live layers is unsafe.
+    return Effect.die(
+      "ZA-17: product Eve admitted without durable journal/grounding layers"
+    );
+  }
+  return Effect.succeed(
+    Layer.mergeAll(
+      EveJournal.blockedProvidersLayer,
+      EveOpenCodeZen.blockedLayer
+    )
+  );
+};
+
 /** One explicit composition for every public semantic operation. */
 export const makeD01Application = (config: D01ApplicationConfig) =>
   Layer.unwrap(
@@ -112,21 +134,9 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
       const erasureRegister = localErasureAttemptRegisterLayer.pipe(
         Layer.provide(erasureAttemptPg)
       );
-      // ZA-17: key alone must not admit stubMemory or live Zen. Product Eve stays
-      // fail-closed until durable journal + grounding + profile acceptance (ZA-18/19/20).
-      const eveAdmission = currentProductEveAdmissionInput(
+      // ZA-17: key alone must not admit stubMemory or live Zen.
+      const eveSurface = yield* makeProductEveSurface(
         config.openCodeZen !== undefined
-      );
-      const productEveAdmitted = isProductEveAdmitted(eveAdmission);
-      if (productEveAdmitted) {
-        // Tripwire: flipping admission flags without durable/live layers is unsafe.
-        return yield* Effect.die(
-          "ZA-17: product Eve admitted without durable journal/grounding layers"
-        );
-      }
-      const eveSurface = Layer.mergeAll(
-        EveJournal.blockedProvidersLayer,
-        EveOpenCodeZen.blockedLayer
       );
       const infrastructure = Layer.mergeAll(
         Layer.effectDiscard(checkD01AuthorityRole).pipe(

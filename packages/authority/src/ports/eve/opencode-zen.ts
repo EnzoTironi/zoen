@@ -61,7 +61,8 @@ const truncateVisible = (text: string): string =>
  * Map a successful model payload to generation uncertainty.
  * Text length is never an epistemic input (ZA-17 / F10): empty → Unknown;
  * any non-empty generation without an evidence basis → Partial — never Known.
- * Prefer `uncertaintyFromEvidenceBasis` at settle when citations exist.
+ * Prefer `uncertaintyFromEvidenceBasis` at settle when citations are
+ * verified/authorized (`citationsAuthorized`); link presence alone is not Known.
  */
 export const uncertaintyFromModelText = (text: string): UncertaintyKind => {
   const trimmed = text.trim();

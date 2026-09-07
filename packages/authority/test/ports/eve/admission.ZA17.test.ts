@@ -91,7 +91,7 @@ describe("ZA-17 Eve admission safety", () => {
     ).toBeFalsy();
   });
 
-  it("ZA-17-02: long unsupported prose cannot set Known; evidence basis can", () => {
+  it("ZA-17-02: long unsupported prose cannot set Known; unverified links cannot either", () => {
     const longProse =
       "This is a long model reply that previously would have been classified Known solely by character count, without any authorized evidence citation.";
     expect(uncertaintyFromGenerationText(longProse)).toBe("Partial");
@@ -99,18 +99,36 @@ describe("ZA-17 Eve admission safety", () => {
     expect(uncertaintyFromGenerationText("   ")).toBe("Unknown");
     expect(
       uncertaintyFromEvidenceBasis({
+        citationsAuthorized: false,
+        evidenceLinks: [],
+        generatedText: longProse,
+      })
+    ).toBe("Partial");
+    // Identifier-only links without authorization must stay Partial (Greptile P2 / Qodo High).
+    expect(
+      uncertaintyFromEvidenceBasis({
+        citationsAuthorized: false,
+        evidenceLinks: [{ claimRef: null, evidenceRef }],
+        generatedText: longProse,
+      })
+    ).toBe("Partial");
+    expect(
+      uncertaintyFromEvidenceBasis({
+        citationsAuthorized: true,
         evidenceLinks: [],
         generatedText: longProse,
       })
     ).toBe("Partial");
     expect(
       uncertaintyFromEvidenceBasis({
+        citationsAuthorized: true,
         evidenceLinks: [{ claimRef: null, evidenceRef }],
         generatedText: longProse,
       })
     ).toBe("Known");
     expect(
       uncertaintyFromEvidenceBasis({
+        citationsAuthorized: true,
         evidenceLinks: [{ claimRef: null, evidenceRef }],
         generatedText: "   ",
       })
