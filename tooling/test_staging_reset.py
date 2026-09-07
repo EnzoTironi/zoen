@@ -410,25 +410,45 @@ class StagingResetOwnership(unittest.TestCase):
         self.assertTrue((self.root / ".env.staging").is_file())
         self.assertTrue((self.root / ".local" / "staging" / "resources.json").is_file())
 
-    def test_absent_resources_json_foreign_marker_refused_on_retry(self):
-        # No resources.json: a started marker with another profile's valid names
-        # must not become ownership authority for --reset-owned.
+    def test_interrupted_marker_missing_resources_recovers(self):
+        # Interrupted during remove_profile_files after resources.json was removed
+        # but started marker remains: finish deprovision + clear so staging:up can recreate.
         self.seed_staging_install(resources=False)
-        other_suffix = "c" * 24
         self._write_started_marker(
             {
                 "schemaVersion": "local-profile-resources.v1",
                 "profile": "staging",
                 "checkout": str(self.root.resolve()),
                 "composeProject": "zoen-rebuild",
-                "databaseName": f"zoen_local_{other_suffix}",
-                "bucket": f"zoen-local-{other_suffix}",
-                "roleNames": [
-                    f"zoen_authority_{other_suffix}",
-                    f"zoen_identity_{other_suffix}",
-                    f"zoen_migration_{other_suffix}",
-                    f"zoen_progress_{other_suffix}",
-                ],
+                "databaseName": self.database,
+                "bucket": self.bucket,
+                "roleNames": list(self.roles.values()),
+            }
+        )
+        self.assertFalse((self.root / ".local" / "staging" / "resources.json").exists())
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 0)
+        deprovision.assert_called_once()
+        called_inventory = deprovision.call_args.args[1]
+        self.assertEqual(called_inventory["databaseName"], self.database)
+        self.assertEqual(called_inventory["bucket"], self.bucket)
+        self.assertFalse((self.root / ".env.staging").exists())
+        self.assertFalse((self.root / ".local" / "staging").exists())
+        self.assertTrue((self.root / ".local" / "application" / "sentinel.txt").is_file())
+
+    def test_absent_resources_json_foreign_marker_refused_on_retry(self):
+        # No resources.json: a started marker from another checkout must still be refused.
+        self.seed_staging_install(resources=False)
+        foreign_checkout = str((self.root.parent / "other-checkout").resolve())
+        self._write_started_marker(
+            {
+                "schemaVersion": "local-profile-resources.v1",
+                "profile": "staging",
+                "checkout": foreign_checkout,
+                "composeProject": "zoen-rebuild",
+                "databaseName": self.database,
+                "bucket": self.bucket,
+                "roleNames": list(self.roles.values()),
             }
         )
         self.assertFalse((self.root / ".local" / "staging" / "resources.json").exists())

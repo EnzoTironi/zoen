@@ -235,8 +235,12 @@ def validate_owned_inventory(root: Path, inventory: dict[str, Any]) -> dict[str,
 def ownership_from_interrupted_marker(root: Path, inventory: dict[str, Any]) -> dict[str, Any]:
     """Re-validate interrupted reset markers before any destructive resume/retry.
 
-    Marker-alone is never ownership authority: resources.json must exist and its
-    resource tuple must exactly match the marker (plus checkout/profile/compose).
+    When resources.json remains, its resource tuple must exactly match the marker
+    (plus checkout/profile/compose). When resources.json is missing after a started
+    marker whose ownership validates for this checkout, treat as incomplete cleanup:
+    resume with the validated marker inventory so deprovision (tolerate already-gone)
+    and profile-file removal can finish and staging:up can recreate.
+    Foreign/malformed markers are still refused by validate_owned_inventory.
     """
     validated = validate_owned_inventory(root, inventory)
     env_path, profile_dir = profile_paths(root)
@@ -246,10 +250,9 @@ def ownership_from_interrupted_marker(root: Path, inventory: dict[str, Any]) -> 
             ensure_no_symlinks(root, path)
 
     if not resources_path.is_file():
-        raise ValueError(
-            "Interrupted reset marker without matching staging ownership inventory "
-            "(.local/staging/resources.json); refuse marker-only resume"
-        )
+        # Incomplete cleanup: remove_profile_files was interrupted after
+        # resources.json was gone but reset-operation.json (status=started) remains.
+        return validated
 
     live = load_inventory(root)
     if (
