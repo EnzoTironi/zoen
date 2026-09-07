@@ -15,10 +15,11 @@ const bumpSubject = (connection: Reservation, key: string) =>
     [key]
   );
 
-/** Called only while both physical shared locks are held, in canonical order. */
+/** Called only while world+session+membership shared locks are held, in canonical order. */
 export const registerPending = (
   connection: Reservation,
   permitId: string,
+  worldKey: string,
   sessionKey: string,
   membershipKey: string
 ) =>
@@ -33,6 +34,7 @@ export const registerPending = (
       if (closing) {
         return yield* new Unavailable({ code: "UNAVAILABLE" });
       }
+      yield* bumpSubject(connection, worldKey);
       yield* bumpSubject(connection, sessionKey);
       yield* bumpSubject(connection, membershipKey);
       yield* connection.statement(

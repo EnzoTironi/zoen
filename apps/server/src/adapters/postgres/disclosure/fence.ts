@@ -4,6 +4,7 @@ import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import {
   membershipDisclosureKey,
   sessionDisclosureKey,
+  worldDisclosureKey,
 } from "@zoen/authority/ports/disclosure/keys";
 import { Expired, Unavailable } from "@zoen/contracts/worlds/errors";
 import type { Instant } from "@zoen/contracts/worlds/values";
@@ -107,13 +108,16 @@ export const makeDisclosureFenceLayer = (config: D01PostgresConfig) =>
           }),
         shared: (presence, world, deadline) =>
           Effect.gen(function* registerDisclosure() {
+            const worldKey = worldDisclosureKey(world);
             const sessionKey = sessionDisclosureKey(presence);
             const membershipKey = membershipDisclosureKey(
               world,
               presence.principalId
             );
+            // World shared first so Closing's exclusive world lock stays O(1).
             const reservation = yield* acquire(
               [
+                { key: worldKey, shared: true },
                 { key: sessionKey, shared: true },
                 { key: membershipKey, shared: true },
               ],
@@ -124,6 +128,7 @@ export const makeDisclosureFenceLayer = (config: D01PostgresConfig) =>
             yield* registerPending(
               reservation,
               permitId,
+              worldKey,
               sessionKey,
               membershipKey
             ).pipe(

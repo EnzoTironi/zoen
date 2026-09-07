@@ -19,3 +19,10 @@ export const membershipDisclosureKey = (
     world.worldId,
     principalId,
   ])}`;
+
+/**
+ * World-scoped coordination for Closing vs emitters.
+ * Emitters take shared first; Closing takes exclusive — bounded regardless of membership cardinality.
+ */
+export const worldDisclosureKey = (world: WorldRef): string =>
+  `zoen:disclosure:world:v1:${JSON.stringify([world.realm, world.worldId])}`;
