@@ -19,7 +19,10 @@ const program = loadConfiguration.pipe(
     )
   ),
   Effect.provide(NodeServices.layer),
-  Effect.tapCause(() => Effect.logError({ event: "server.failed" }))
+  Effect.tapCause((cause) =>
+    Effect.logError({ event: "server.failed", cause: String(cause) })
+  )
 );
 
-NodeRuntime.runMain(program, { disableErrorReporting: true });
+// Keep Effect pretty-printing on so Fly logs show the real defect.
+NodeRuntime.runMain(program);
