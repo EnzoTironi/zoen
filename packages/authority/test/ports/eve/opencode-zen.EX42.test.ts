@@ -116,8 +116,9 @@ describe("EX42 OpenCode Zen client", () => {
       expect(exit._tag).toBe("Failure");
     }).pipe(
       Effect.provide(
-        EveOpenCodeZen.liveLayer(settings, async () =>
-          new Response("nope", { status: 502 })
+        EveOpenCodeZen.liveLayer(
+          settings,
+          async () => new Response("nope", { status: 502 })
         )
       )
     )
@@ -132,8 +133,9 @@ describe("EX42 OpenCode Zen client", () => {
       expect(exit._tag).toBe("Failure");
     }).pipe(
       Effect.provide(
-        EveOpenCodeZen.liveLayer(settings, async () =>
-          new Response("denied", { status: 401 })
+        EveOpenCodeZen.liveLayer(
+          settings,
+          async () => new Response("denied", { status: 401 })
         )
       )
     )

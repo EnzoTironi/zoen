@@ -49,7 +49,11 @@ type TurnFailure = Blocked | Conflict | NotFoundOrDenied | Unavailable;
  */
 export const runEveTurn = (
   input: RunEveTurnInput
-): EffectType.Effect<RunEveTurnResult, TurnFailure, EveJournal | EveOpenCodeZen> =>
+): EffectType.Effect<
+  RunEveTurnResult,
+  TurnFailure,
+  EveJournal | EveOpenCodeZen
+> =>
   Effect.gen(function* turn() {
     const journal = yield* EveJournal;
     const model = yield* EveOpenCodeZen;
@@ -115,21 +119,19 @@ export const runEveTurn = (
         ? { systemText: input.systemText }
         : {}),
     };
-    const completion = yield* model
-      .completeChat(chatInput)
-      .pipe(
-        Effect.catch((error) =>
-          Effect.gen(function* onModelFail() {
-            yield* journal
-              .cancelTurn({
-                conversationId: input.conversationId,
-                turnId: input.turnId,
-              })
-              .pipe(Effect.catch(() => Effect.void));
-            return yield* Effect.fail(error);
-          })
-        )
-      );
+    const completion = yield* model.completeChat(chatInput).pipe(
+      Effect.catch((error) =>
+        Effect.gen(function* onModelFail() {
+          yield* journal
+            .cancelTurn({
+              conversationId: input.conversationId,
+              turnId: input.turnId,
+            })
+            .pipe(Effect.catch(() => Effect.void));
+          return yield* Effect.fail(error);
+        })
+      )
+    );
 
     if (input.signal?.aborted) {
       yield* journal

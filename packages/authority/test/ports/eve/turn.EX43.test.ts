@@ -24,7 +24,9 @@ const relationshipId = Schema.decodeSync(RelationshipId)(
 const ingressId = Schema.decodeSync(IngressId)(
   "00000000-0000-4000-8000-000000000403"
 );
-const turnId = Schema.decodeSync(TurnId)("00000000-0000-4000-8000-000000000404");
+const turnId = Schema.decodeSync(TurnId)(
+  "00000000-0000-4000-8000-000000000404"
+);
 const messageId = Schema.decodeSync(MessageId)(
   "00000000-0000-4000-8000-000000000405"
 );
