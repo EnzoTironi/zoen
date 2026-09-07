@@ -40,7 +40,7 @@ it.effect(
       expect(first.operation).toBe("RequestWorldErasure");
       expect(first.input.confirmEntireWorld).toBeTruthy();
       expect(first.input.expectedErasureRevision).toBeNull();
-      expect(first.input.policyVersion).toBe("d03-local-erasable-v1");
+      expect(first.input.policyVersion).toBe("worlds-local-erasable-v1");
       expect(first.operationId).not.toBe(second.operationId);
     })
 );
@@ -53,7 +53,7 @@ it.effect(
         _tag: "WorldErasureRequested",
         attemptExternalState: "Confirmed",
         phase: "Closing",
-        policyVersion: "d03-local-erasable-v1",
+        policyVersion: "worlds-local-erasable-v1",
         receiptRef: randomUUID(),
         restoreAfterErasure: false,
         revision: "1",

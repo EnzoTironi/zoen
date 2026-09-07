@@ -158,7 +158,7 @@ it.live(
           input: {
             confirmEntireWorld: true,
             expectedErasureRevision: null,
-            policyVersion: "d03-local-erasable-v1",
+            policyVersion: "worlds-local-erasable-v1",
           },
           operation: "RequestWorldErasure",
           operationId: closingOperationId,
@@ -290,7 +290,7 @@ it.live("EX45 does not purge another World", () =>
           input: {
             confirmEntireWorld: true,
             expectedErasureRevision: null,
-            policyVersion: "d03-local-erasable-v1",
+            policyVersion: "worlds-local-erasable-v1",
           },
           operation: "RequestWorldErasure",
           operationId: closingOperationId,
@@ -337,7 +337,7 @@ it.live("EX45 retained profile blocks purge", () =>
           input: {
             confirmEntireWorld: true,
             expectedErasureRevision: null,
-            policyVersion: "d03-local-erasable-v1",
+            policyVersion: "worlds-local-erasable-v1",
           },
           operation: "RequestWorldErasure",
           operationId: randomUUID(),

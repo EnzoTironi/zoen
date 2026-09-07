@@ -28,9 +28,9 @@ const expectedErasureRevision = Flag.string("expected-revision").pipe(
 );
 
 const policyVersion = Flag.choice("policy-version", [
-  "d03-local-erasable-v1",
+  "worlds-local-erasable-v1",
 ]).pipe(
-  Flag.withDefault("d03-local-erasable-v1"),
+  Flag.withDefault("worlds-local-erasable-v1"),
   Flag.withDescription(
     "Candidate erasable profile id; retained Worlds stay blocked"
   )

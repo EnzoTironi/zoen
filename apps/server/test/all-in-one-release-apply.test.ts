@@ -10,7 +10,7 @@ import {
 } from "../src/all-in-one-release-apply.ts";
 
 const encodeJson = Schema.encodeEffect(Schema.fromJsonString(Schema.Unknown));
-const samplePolicy = { profileId: "d04-hosted-retained-v1" };
+const samplePolicy = { profileId: "worlds-hosted-retained-v1" };
 
 const withTempRoot = <A, E>(
   body: (paths: {

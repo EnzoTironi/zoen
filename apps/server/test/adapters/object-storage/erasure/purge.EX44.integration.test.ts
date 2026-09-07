@@ -20,7 +20,6 @@ import { Config, Effect, Redacted, Schema } from "effect";
 import type { Scope } from "effect";
 
 import {
-  legacyWorldObjectPrefix,
   worldObjectInventoryPrefixes,
   worldObjectPrefix,
 } from "../../../../src/adapters/object-storage/erasure/prefix.js";
@@ -333,67 +332,6 @@ it.effect(
           versionId: versionC,
         });
         expect(retentionBlocked).toBe("Blocked");
-      })
-    )
-);
-
-it.effect(
-  "EX44 inventory and purge scrub pre-launch residual d01/ objects",
-  () =>
-    withErasureStorage(({ client, config, worldRef }) =>
-      Effect.gen(function* residualProof() {
-        const inventory = yield* ErasureObjectInventory;
-        const purge = yield* ErasurePurgeStore;
-        const canonical = worldObjectPrefix(worldRef);
-        const legacy = legacyWorldObjectPrefix(worldRef);
-        const legacyKey = `${legacy}captures/${randomUUID()}`;
-        const canonicalKey = `${canonical}captures/${randomUUID()}`;
-
-        const putLegacy = yield* sdk((signal) =>
-          client.send(
-            new PutObjectCommand({
-              Body: "legacy-d01",
-              Bucket: config.bucket,
-              Key: legacyKey,
-            }),
-            { abortSignal: signal }
-          )
-        );
-        const legacyVersion = yield* requireVersionId(putLegacy.VersionId);
-        yield* sdk((signal) =>
-          client.send(
-            new PutObjectCommand({
-              Body: "canonical-worlds",
-              Bucket: config.bucket,
-              Key: canonicalKey,
-            }),
-            { abortSignal: signal }
-          )
-        );
-
-        const manifest = yield* inventory.listWorldVersions(worldRef);
-        expect(manifest.prefix).toBe(canonical);
-        expect(
-          manifest.entries.some((entry) => entry.key === legacyKey)
-        ).toBeTruthy();
-        expect(
-          manifest.entries.some((entry) => entry.key === canonicalKey)
-        ).toBeTruthy();
-
-        const cleared = yield* purge.purgeVersion({
-          deleteMarker: false,
-          key: legacyKey,
-          versionId: legacyVersion,
-        });
-        expect(cleared).toBe("Removed");
-
-        const after = yield* inventory.listWorldVersions(worldRef);
-        expect(
-          after.entries.every((entry) => entry.key !== legacyKey)
-        ).toBeTruthy();
-        expect(
-          after.entries.some((entry) => entry.key === canonicalKey)
-        ).toBeTruthy();
       })
     )
 );

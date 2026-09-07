@@ -88,7 +88,7 @@ it.live.each(["grant", "grant-no-op", "revoke", "revoke-no-op"] as const)(
           operation: "GrantWorldReadAccess",
           operationId: randomUUID(),
           purpose: "personal-records",
-          schemaVersion: "d03.sharing.v1",
+          schemaVersion: "sharing.v1",
           worldRef,
         });
         if (mode !== "grant") {
@@ -185,7 +185,7 @@ it.live.each(["existing", "absent"] as const)(
             operation: "GrantWorldReadAccess",
             operationId: randomUUID(),
             purpose: "personal-records",
-            schemaVersion: "d03.sharing.v1",
+            schemaVersion: "sharing.v1",
             worldRef,
           });
           const membershipKey = membershipDisclosureKey(

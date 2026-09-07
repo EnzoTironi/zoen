@@ -211,7 +211,7 @@ export const layer = (
           if (worldRef.realm !== config.realm) {
             return yield* unavailable();
           }
-          // Canonical worlds/ plus pre-launch residual d01/ until scrubbed empty.
+          // Canonical worlds/ inventory only (no dual-read residual prefixes).
           const prefix = worldObjectPrefix(worldRef);
           const entries: ErasureVersionEntry[] = [];
           for (const inventoryPrefix of worldObjectInventoryPrefixes(

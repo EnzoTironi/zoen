@@ -302,7 +302,7 @@ export ZOEN_S3_REGION="${ZOEN_S3_REGION:-us-east-1}"
 export ZOEN_S3_BUCKET="${ZOEN_S3_BUCKET:-zoen}"
 export ZOEN_INSTALLATION_FILE="${ZOEN_INSTALLATION_FILE:-${ZOEN_STATE}/installation.json}"
 export ZOEN_RUNTIME_ENV_FILE="${ZOEN_RUNTIME_ENV_FILE:-${ZOEN_STATE}/runtime.env}"
-export ZOEN_WORLD_POLICY="${ZOEN_WORLD_POLICY:-d04-hosted-retained-v1}"
+export ZOEN_WORLD_POLICY="${ZOEN_WORLD_POLICY:-worlds-hosted-retained-v1}"
 export ZOEN_RELEASE_FILE="${ZOEN_RELEASE_FILE:-/app/apps/server/dist/release.json}"
 
 echo "all-in-one: provisioning / migrating if needed"

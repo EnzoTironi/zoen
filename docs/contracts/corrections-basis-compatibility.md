@@ -29,7 +29,7 @@ A ordem exigida para mutações com operação já registrada é autorização a
 | `authority.frames` | Retém internal_basis e visible_frame JSONB, principal/purpose/assunto e pins. | Preservar JSON/campos/digests/pins históricos; JSONB não é promessa de preservar whitespace original de um JSON recebido. Comparar representação canônica e valores retidos. |
 | `authority.cases` | Retém internal_basis, question, consequence, Frame e state. | Preservar base, pergunta, digest e consequência. Não promover Cases pendentes antigos para versão nova. |
 | `authority.receipts` | Retém result e touched_domains. `readReceipt` seleciona somente result. | Receipt antigo não precisa de preenchimento de cut para ser replayado. Não passar a exigir novo DomainCut no reader histórico. |
-| `ops/migrations/001_d01_authority.sql` | CHECK de domain_key enumera cinco nomes. | Registrar dependência do futuro plano DDL, sem editar migração histórica. |
+| `ops/migrations/001_authority.sql` | CHECK de domain_key enumera cinco nomes. | Registrar dependência do futuro plano DDL, sem editar migração histórica. |
 | `commit/genesis.ts` | initialCut contém cinco zeros e cria as respectivas linhas em authority.domains. | Novos Worlds precisam da forma nova real; Worlds existentes precisam de transição explícita aprovada. Isso não autoriza acrescentar zero a uma base salva. |
 
 `readCut` lê todas as linhas do World, decodifica cada domain_key e depois o registro exato. Acrescentar uma linha identidade ao banco enquanto esse reader antigo continua ativo gera `Unavailable`, não compatibilidade. Acrescentar o schema novo sem criar a linha real também falha. Portanto rollout, migração e leitores/escritores precisam de ordem coordenada; não há fallback que invente estado ausente.

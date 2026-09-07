@@ -1,7 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
 import {
   HostedRetainedAdmissionFlags,
-  d04HostedRetainedAdmissionFlags,
+  hostedRetainedAdmissionFlags,
   hostedDisabledCapabilityIds,
 } from "@zoen/contracts/hosted/admission/values";
 import { Effect, Exit, Result, Schema } from "effect";
@@ -18,8 +18,8 @@ import {
 } from "../../../src/hosted/admission/flags.js";
 
 const tamperedWhatsAppAdmitted = {
-  ...d04HostedRetainedAdmissionFlags,
-  capabilities: d04HostedRetainedAdmissionFlags.capabilities.map((entry) =>
+  ...hostedRetainedAdmissionFlags,
+  capabilities: hostedRetainedAdmissionFlags.capabilities.map((entry) =>
     entry.capabilityId === "whatsapp"
       ? { ...entry, state: "admitted" as const }
       : entry
@@ -29,10 +29,10 @@ const tamperedWhatsAppAdmitted = {
 describe("EX38 hosted retained admission flags", () => {
   it("round-trips the frozen d04 admission matrix", () => {
     const decoded = Schema.decodeSync(HostedRetainedAdmissionFlags)(
-      d04HostedRetainedAdmissionFlags
+      hostedRetainedAdmissionFlags
     );
-    expect(decoded).toStrictEqual(d04HostedRetainedAdmissionFlags);
-    expect(decoded.profileId).toBe("d04-hosted-retained-v1");
+    expect(decoded).toStrictEqual(hostedRetainedAdmissionFlags);
+    expect(decoded.profileId).toBe("worlds-hosted-retained-v1");
     expect(decoded.schemaVersion).toBe("hosted.v1");
   });
 
@@ -46,7 +46,7 @@ describe("EX38 hosted retained admission flags", () => {
 
   it("surface readiness is ready without claiming healthy", () => {
     for (const surface of ["web", "cli", "file"] as const) {
-      const readiness = readinessFor(d04HostedRetainedAdmissionFlags, surface);
+      const readiness = readinessFor(hostedRetainedAdmissionFlags, surface);
       expect(readiness).toStrictEqual({
         admitted: true,
         capabilityId: surface,
@@ -59,7 +59,7 @@ describe("EX38 hosted retained admission flags", () => {
   it("disabled capabilities report Blocked-style disabled, never healthy", () => {
     for (const capabilityId of hostedDisabledCapabilityIds) {
       const readiness = readinessFor(
-        d04HostedRetainedAdmissionFlags,
+        hostedRetainedAdmissionFlags,
         capabilityId
       );
       expect(readiness).toMatchObject({
@@ -83,8 +83,8 @@ describe("EX38 hosted retained admission flags", () => {
     ).toBeTruthy();
 
     const withoutWeb = {
-      ...d04HostedRetainedAdmissionFlags,
-      capabilities: d04HostedRetainedAdmissionFlags.capabilities.map((entry) =>
+      ...hostedRetainedAdmissionFlags,
+      capabilities: hostedRetainedAdmissionFlags.capabilities.map((entry) =>
         entry.capabilityId === "web"
           ? { ...entry, state: "disabled" as const }
           : entry
@@ -101,7 +101,7 @@ describe("EX38 hosted retained admission flags", () => {
     expect(
       Result.isFailure(
         Schema.decodeUnknownResult(HostedRetainedAdmissionFlags)({
-          ...d04HostedRetainedAdmissionFlags,
+          ...hostedRetainedAdmissionFlags,
           profileId: "worlds-local-retained-v1",
         })
       )
@@ -109,7 +109,7 @@ describe("EX38 hosted retained admission flags", () => {
     expect(
       Result.isFailure(
         Schema.decodeUnknownResult(HostedRetainedAdmissionFlags)({
-          ...d04HostedRetainedAdmissionFlags,
+          ...hostedRetainedAdmissionFlags,
           healthy: true,
         })
       )
@@ -141,7 +141,7 @@ describe("EX38 hosted retained admission flags", () => {
   it("absent provider does not pass channel readiness", () => {
     const defaultFlags = evaluateChannelReadiness({
       channelId: "whatsapp",
-      flags: d04HostedRetainedAdmissionFlags,
+      flags: hostedRetainedAdmissionFlags,
       providerProvisioned: false,
     });
     expect(defaultFlags).toMatchObject({

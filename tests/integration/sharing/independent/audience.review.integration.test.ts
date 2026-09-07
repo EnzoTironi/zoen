@@ -135,7 +135,7 @@ const grantRequest = (worldRef: WorldRef, principalRef: string) =>
     operation: "GrantWorldReadAccess",
     operationId: randomUUID(),
     purpose: "personal-records",
-    schemaVersion: "d03.sharing.v1",
+    schemaVersion: "sharing.v1",
     worldRef,
   });
 
@@ -413,7 +413,7 @@ it.live(
                   operation: "RevokeWorldReadAccess",
                   operationId: randomUUID(),
                   purpose: "personal-records",
-                  schemaVersion: "d03.sharing.v1",
+                  schemaVersion: "sharing.v1",
                   worldRef,
                 })
               ).pipe(Effect.flip)
@@ -444,7 +444,7 @@ it.live(
                 input: { principalRef: null },
                 operation: "InspectWorldAccess",
                 purpose: "personal-records",
-                schemaVersion: "d03.sharing.v1",
+                schemaVersion: "sharing.v1",
                 worldRef,
               })
             );
@@ -466,7 +466,7 @@ it.live(
                     input: { principalRef },
                     operation: "InspectWorldAccess",
                     purpose: "personal-records",
-                    schemaVersion: "d03.sharing.v1",
+                    schemaVersion: "sharing.v1",
                     worldRef,
                   })
                 ).pipe(Effect.flip)

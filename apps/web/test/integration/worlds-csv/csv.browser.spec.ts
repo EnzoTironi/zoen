@@ -302,7 +302,7 @@ test("CSV-13 browser retains original CSV and operation across network retry and
         .getByLabel("Abrir espaço pelo identificador")
         .fill(attempted.worldRef.worldId);
       const deniedAccess = other.waitForResponse((accessResponse) =>
-        accessResponse.url().endsWith("/api/d03/sharing")
+        accessResponse.url().endsWith("/api/sharing/execute")
       );
       await other
         .getByRole("button", { exact: true, name: "Abrir espaço" })

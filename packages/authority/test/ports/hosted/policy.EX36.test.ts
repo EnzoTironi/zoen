@@ -25,7 +25,7 @@ const erasableLocal = {
   erasure: true as const,
   legalHold: false as const,
   licensedExpiry: false as const,
-  profileId: "d03-local-erasable-v1" as const,
+  profileId: "worlds-local-erasable-v1" as const,
   restoreAfterErasure: false as const,
   retention: "while-pinned" as const,
 };
@@ -36,7 +36,7 @@ const hostedRetained = {
   erasure: false as const,
   legalHold: false as const,
   licensedExpiry: false as const,
-  profileId: "d04-hosted-retained-v1" as const,
+  profileId: "worlds-hosted-retained-v1" as const,
   restoreAfterErasure: false as const,
   retention: "while-pinned" as const,
 };
@@ -72,7 +72,7 @@ describe("EX36 DataPolicy union includes hosted retained", () => {
     const erasable = Schema.decodeSync(DataPolicySchema)(erasableLocal);
     expect(Schema.is(ErasableDataPolicySchema)(erasable)).toBeTruthy();
     expect(Schema.is(HostedRetainedDataPolicySchema)(erasable)).toBeFalsy();
-    expect(erasable.profileId).toBe("d03-local-erasable-v1");
+    expect(erasable.profileId).toBe("worlds-local-erasable-v1");
     expect(erasable.erasure).toBeTruthy();
   });
 
@@ -98,7 +98,7 @@ describe("EX36 DataPolicy union includes hosted retained", () => {
       Result.isFailure(
         Schema.decodeUnknownResult(HostedRetainedDataPolicySchema)({
           ...erasableLocal,
-          profileId: "d04-hosted-retained-v1",
+          profileId: "worlds-hosted-retained-v1",
         })
       )
     ).toBeTruthy();

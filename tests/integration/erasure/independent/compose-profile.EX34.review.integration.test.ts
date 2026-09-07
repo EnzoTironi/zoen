@@ -83,13 +83,13 @@ it.live(
             SELECT data_policy_id FROM authority.worlds
             WHERE world_id = ${created.worldRef.worldId}
           `
-        ).toStrictEqual([{ data_policy_id: "d03-local-erasable-v1" }]);
+        ).toStrictEqual([{ data_policy_id: "worlds-local-erasable-v1" }]);
         const operationId = randomUUID();
         const request = yield* Schema.decodeEffect(RequestWorldErasure)({
           input: {
             confirmEntireWorld: true,
             expectedErasureRevision: null,
-            policyVersion: "d03-local-erasable-v1",
+            policyVersion: "worlds-local-erasable-v1",
           },
           operation: "RequestWorldErasure",
           operationId,
@@ -153,7 +153,7 @@ it.live(
           input: {
             confirmEntireWorld: true,
             expectedErasureRevision: null,
-            policyVersion: "d03-local-erasable-v1",
+            policyVersion: "worlds-local-erasable-v1",
           },
           operation: "RequestWorldErasure",
           operationId: randomUUID(),
@@ -190,7 +190,7 @@ it.live(
           input: {
             confirmEntireWorld: true,
             expectedErasureRevision: null,
-            policyVersion: "d03-local-erasable-v1",
+            policyVersion: "worlds-local-erasable-v1",
           },
           operation: "RequestWorldErasure",
           operationId: randomUUID(),

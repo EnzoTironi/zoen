@@ -69,14 +69,14 @@ describe("purge outcome accounting (pure values, not provider simulations)", () 
     ).toBeTruthy();
   });
 
-  it("admits the honest two-prefix aggregate inventory bound and rejects above it", () => {
+  it("admits the honest single-prefix aggregate inventory bound and rejects above it", () => {
     expect(ErasureLimits.versionEntries).toBe(
       ErasureLimits.inventoryPrefixes *
         ErasureLimits.inventoryPagesPerPrefix *
         ErasureLimits.inventoryPageSize
     );
-    expect(ErasureLimits.versionEntries).toBeGreaterThan(1_000_000);
-    expect(purgeInventoryWithinBound(1_000_001)).toBeTruthy();
+    expect(ErasureLimits.versionEntries).toBe(1_000_000);
+    expect(purgeInventoryWithinBound(999_999)).toBeTruthy();
     expect(
       purgeInventoryWithinBound(ErasureLimits.versionEntries)
     ).toBeTruthy();

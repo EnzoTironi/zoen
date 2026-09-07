@@ -1,6 +1,6 @@
 # D03 — contrato candidato de supressão, erasure e restore
 
-Status: candidato + **congelamento mínimo** em `docs/contracts/d03-erasure-freeze.md` (2026-09-06, tip `cae72de`). O freeze cobre ER-R01 (registro externo antes de Closing), perfil novo `d03-local-erasable-v1` só para Worlds novos, escopo World, restore-after-erasure bloqueado e Unavailable indefinido se o desfecho se perder. **Não** é admissão de purge, controlador, Object Lock, backups nem alteração de Worlds `worlds-local-retained-v1`. Revisão ER-R01–05 em `d03-erasure.review.md` (`843ddad` + `9af5eec`) permanece autoritativa para gates ainda abertos. Não autoriza EX30+ a apagar dados reais antes dos gates do freeze.
+Status: candidato + **congelamento mínimo** em `docs/contracts/d03-erasure-freeze.md` (2026-09-06, tip `cae72de`). O freeze cobre ER-R01 (registro externo antes de Closing), perfil novo `worlds-local-erasable-v1` só para Worlds novos, escopo World, restore-after-erasure bloqueado e Unavailable indefinido se o desfecho se perder. **Não** é admissão de purge, controlador, Object Lock, backups nem alteração de Worlds `worlds-local-retained-v1`. Revisão ER-R01–05 em `d03-erasure.review.md` (`843ddad` + `9af5eec`) permanece autoritativa para gates ainda abertos. Não autoriza EX30+ a apagar dados reais antes dos gates do freeze.
 
 ## Autoridade e fatos atuais
 

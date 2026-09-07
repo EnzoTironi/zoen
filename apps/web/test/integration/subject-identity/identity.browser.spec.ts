@@ -69,7 +69,7 @@ const waitForSharing = (
   operation: "GrantWorldReadAccess" | "InspectWorldAccess"
 ) =>
   page.waitForResponse((response) => {
-    if (!response.url().endsWith("/api/d03/sharing")) {
+    if (!response.url().endsWith("/api/sharing/execute")) {
       return false;
     }
     const request = Schema.decodeUnknownOption(SemanticRequest)(

@@ -22,7 +22,7 @@ import {
   jsonBody,
   withWorldsHttp,
 } from "../../../../apps/server/test/composition/worlds/fixture.ts";
-import { applyD01Migrations } from "../../../../ops/migrations/run.ts";
+import { applyWorldsBaselineMigrations } from "../../../../ops/migrations/run.ts";
 import { configuration } from "../commit/fixture.ts";
 
 it.live(
@@ -132,7 +132,7 @@ it.live(
         ),
       undefined,
       (database) =>
-        applyD01Migrations(database.names).pipe(
+        applyWorldsBaselineMigrations(database.names).pipe(
           Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
         )
     )
@@ -144,7 +144,9 @@ it.live(
     withWorldsDatabase(
       (database) =>
         Effect.gen(function* migrationReplay() {
-          const repeat = yield* applyD01Migrations(database.names).pipe(
+          const repeat = yield* applyWorldsBaselineMigrations(
+            database.names
+          ).pipe(
             Effect.provide(
               Layer.mergeAll(database.migration, NodeServices.layer)
             )
@@ -155,8 +157,8 @@ it.live(
               sql`SELECT migration_id, name FROM public.effect_sql_migrations ORDER BY migration_id`
           ).pipe(Effect.provide(database.migration));
           expect(metadata).toStrictEqual([
-            { migration_id: 1, name: "d01_authority" },
-            { migration_id: 2, name: "d01_identity" },
+            { migration_id: 1, name: "authority" },
+            { migration_id: 2, name: "identity" },
             { migration_id: 3, name: "scoped_corrections" },
           ]);
           const authority = yield* SqlClient.SqlClient.use(
@@ -176,7 +178,7 @@ it.live(
         }),
       undefined,
       (database) =>
-        applyD01Migrations(database.names).pipe(
+        applyWorldsBaselineMigrations(database.names).pipe(
           Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
         )
     )

@@ -25,7 +25,7 @@ import {
 
 const envelope = {
   purpose: "personal-records",
-  schemaVersion: "d03.sharing.v1",
+  schemaVersion: "sharing.v1",
 } as const;
 
 it.live(

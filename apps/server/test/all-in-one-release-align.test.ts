@@ -17,7 +17,7 @@ const sampleInstallation = {
     generationId: "22222222-2222-4222-8222-222222222222",
     releaseDigest: "a".repeat(64),
   },
-  policy: { profileId: "d04-hosted-retained-v1" },
+  policy: { profileId: "worlds-hosted-retained-v1" },
 };
 
 const authorityEnv =
@@ -52,7 +52,7 @@ describe("all-in-one release align", () => {
           generationId: "22222222-2222-4222-8222-222222222222",
           releaseDigest: nextDigest,
         },
-        policy: { profileId: "d04-hosted-retained-v1" },
+        policy: { profileId: "worlds-hosted-retained-v1" },
       },
     });
   });

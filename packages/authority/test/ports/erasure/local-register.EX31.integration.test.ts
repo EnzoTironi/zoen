@@ -28,7 +28,7 @@ const profile = (url: Redacted.Redacted, name: string) => ({
 });
 
 const intention = (
-  policyVersion = "d03-local-erasable-v1"
+  policyVersion = "worlds-local-erasable-v1"
 ): ErasureAttemptIntention => ({
   confirmEntireWorld: true,
   expectedErasureRevision: null,
@@ -130,7 +130,7 @@ it.live(
         expect(replay).toStrictEqual({ state: "Registered" });
 
         const conflictExit = yield* Effect.exit(
-          port.register(id, intention("d03-local-erasable-v1-other"))
+          port.register(id, intention("worlds-local-erasable-v1-other"))
         );
         expect(conflictExit._tag).toBe("Failure");
 

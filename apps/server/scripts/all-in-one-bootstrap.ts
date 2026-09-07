@@ -392,7 +392,7 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     Config.withDefault(`${root}apps/server/dist/release.json`)
   );
   const worldPolicyId = yield* Config.string("ZOEN_WORLD_POLICY").pipe(
-    Config.withDefault("d04-hosted-retained-v1")
+    Config.withDefault("worlds-hosted-retained-v1")
   );
   const policy = resolveLocalWorldPolicy(worldPolicyId);
   if (policy === null) {

@@ -2,7 +2,7 @@ import {
   HostedCapabilityId,
   HostedChannelId,
   HostedRetainedAdmissionFlags,
-  d04HostedRetainedAdmissionFlags,
+  hostedRetainedAdmissionFlags,
   hostedAdmittedSurfaceIds,
 } from "@zoen/contracts/hosted/admission/values";
 import type {
@@ -15,13 +15,13 @@ import { Blocked } from "@zoen/contracts/worlds/errors";
 import { Context, Effect, Schema } from "effect";
 
 export {
-  d04HostedRetainedAdmissionFlags,
+  hostedRetainedAdmissionFlags,
   HostedRetainedAdmissionFlags,
 } from "@zoen/contracts/hosted/admission/values";
 
 /**
  * Optional composition service: present when the install DataPolicy is
- * d04-hosted-retained-v1 (EX39 local hosted-retained bootstrap). Absent on
+ * worlds-hosted-retained-v1 (EX39 local hosted-retained bootstrap). Absent on
  * default local retained / erasable installs.
  */
 export class HostedAdmissionFlags extends Context.Service<
@@ -129,14 +129,14 @@ export const evaluateChannelReadiness = (input: {
 
 /** Surfaces admitted by the hosted retained profile (web/cli/file). */
 export const admittedSurfaces = (
-  flags: HostedRetainedAdmissionFlagsType = d04HostedRetainedAdmissionFlags
+  flags: HostedRetainedAdmissionFlagsType = hostedRetainedAdmissionFlags
 ): readonly HostedCapabilityIdType[] =>
   flags.capabilities
     .filter((entry) => entry.state === "admitted")
     .map((entry) => entry.capabilityId);
 
 export const disabledCapabilities = (
-  flags: HostedRetainedAdmissionFlagsType = d04HostedRetainedAdmissionFlags
+  flags: HostedRetainedAdmissionFlagsType = hostedRetainedAdmissionFlags
 ): readonly HostedCapabilityIdType[] =>
   flags.capabilities
     .filter((entry) => entry.state === "disabled")
@@ -150,7 +150,7 @@ export const requireAdmittedCapability = Effect.fn(
   "hosted.admission.requireAdmittedCapability"
 )(function* requireAdmittedCapability(
   capabilityId: HostedCapabilityIdType,
-  flags: HostedRetainedAdmissionFlagsType = d04HostedRetainedAdmissionFlags
+  flags: HostedRetainedAdmissionFlagsType = hostedRetainedAdmissionFlags
 ) {
   yield* Schema.decodeEffect(HostedCapabilityId)(capabilityId);
   yield* Schema.decodeEffect(HostedRetainedAdmissionFlags)(flags);
@@ -176,7 +176,7 @@ export const requireChannelReadiness = Effect.fn(
     input.channelId
   );
   const flags = yield* Schema.decodeEffect(HostedRetainedAdmissionFlags)(
-    input.flags ?? d04HostedRetainedAdmissionFlags
+    input.flags ?? hostedRetainedAdmissionFlags
   );
   const readiness = evaluateChannelReadiness({
     channelId,
@@ -191,7 +191,7 @@ export const requireChannelReadiness = Effect.fn(
 
 /** Core path check: only declared Worlds surfaces are ready on this profile. */
 export const assertOnlyCoreSurfacesAdmitted = (
-  flags: HostedRetainedAdmissionFlagsType = d04HostedRetainedAdmissionFlags
+  flags: HostedRetainedAdmissionFlagsType = hostedRetainedAdmissionFlags
 ): boolean => {
   const admitted = admittedSurfaces(flags);
   if (admitted.length !== hostedAdmittedSurfaceIds.length) {

@@ -4,7 +4,6 @@ import { Schema } from "effect";
 
 import {
   isRealmErasureObjectKey,
-  legacyWorldObjectPrefix,
   worldObjectInventoryPrefixes,
   worldObjectPrefix,
 } from "../../../../src/adapters/object-storage/erasure/prefix.js";
@@ -21,17 +20,13 @@ describe("EX44 world object prefix", () => {
     );
   });
 
-  it("exposes pre-launch residual d01/ namespace for scrubbing", () => {
-    expect(legacyWorldObjectPrefix(worldRef)).toBe(
-      "d01/live/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/"
-    );
+  it("inventories only the canonical worlds/ prefix", () => {
     expect(worldObjectInventoryPrefixes(worldRef)).toStrictEqual([
       "worlds/live/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/",
-      "d01/live/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/",
     ]);
   });
 
-  it("accepts canonical worlds/ and residual d01/ keys in-realm", () => {
+  it("accepts canonical worlds/ keys and rejects residual d01/ keys", () => {
     expect(
       isRealmErasureObjectKey(
         "worlds/live/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/captures/x",
@@ -43,7 +38,7 @@ describe("EX44 world object prefix", () => {
         "d01/live/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/captures/x",
         "live"
       )
-    ).toBeTruthy();
+    ).toBeFalsy();
     expect(
       isRealmErasureObjectKey(
         "worlds/other/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa/captures/x",

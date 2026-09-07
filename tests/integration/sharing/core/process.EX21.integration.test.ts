@@ -79,7 +79,7 @@ it.live.each(["GrantWorldReadAccess", "RevokeWorldReadAccess"] as const)(
               .pipe(Effect.flatMap(Schema.decodeUnknownEffect(WorldCreated)));
             const sharingEnvelope = {
               purpose: "personal-records",
-              schemaVersion: "d03.sharing.v1",
+              schemaVersion: "sharing.v1",
               worldRef: created.worldRef,
             };
             if (operation === "RevokeWorldReadAccess") {

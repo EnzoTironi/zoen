@@ -144,7 +144,7 @@ test("EX12 real browser preserves sources and clears private views across sessio
     await signUp(other);
     await other.getByLabel("Abrir espaço pelo identificador").fill(world);
     const deniedAccess = other.waitForResponse((response) =>
-      response.url().endsWith("/api/d03/sharing")
+      response.url().endsWith("/api/sharing/execute")
     );
     await other
       .getByRole("button", { exact: true, name: "Abrir espaço" })

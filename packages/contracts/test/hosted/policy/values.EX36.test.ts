@@ -13,13 +13,13 @@ const hostedRetained = {
   erasure: false as const,
   legalHold: false as const,
   licensedExpiry: false as const,
-  profileId: "d04-hosted-retained-v1" as const,
+  profileId: "worlds-hosted-retained-v1" as const,
   restoreAfterErasure: false as const,
   retention: "while-pinned" as const,
 };
 
 describe("EX36 hosted retained policy schemas", () => {
-  it("round-trips d04-hosted-retained-v1 with erasure and restore closed", () => {
+  it("round-trips worlds-hosted-retained-v1 with erasure and restore closed", () => {
     const decoded = Schema.decodeSync(HostedRetainedDataPolicy)(hostedRetained);
     expect(decoded).toStrictEqual(hostedRetained);
     expect(decoded.erasure).toBeFalsy();
@@ -34,13 +34,15 @@ describe("EX36 hosted retained policy schemas", () => {
     expect(decoded.dataScope).toBe("admitted-non-sensitive");
     expect(decoded.enabledRealm).toBe("live");
     expect(decoded.retention).toBe("while-pinned");
-    expect(decoded.profileId).toBe("d04-hosted-retained-v1");
+    expect(decoded.profileId).toBe("worlds-hosted-retained-v1");
   });
 
   it("accepts only the hosted retained profile id literal", () => {
     expect(
-      Schema.decodeSync(HostedRetainedPolicyProfileId)("d04-hosted-retained-v1")
-    ).toBe("d04-hosted-retained-v1");
+      Schema.decodeSync(HostedRetainedPolicyProfileId)(
+        "worlds-hosted-retained-v1"
+      )
+    ).toBe("worlds-hosted-retained-v1");
     expect(
       Result.isFailure(
         Schema.decodeUnknownResult(HostedRetainedPolicyProfileId)(
@@ -51,7 +53,7 @@ describe("EX36 hosted retained policy schemas", () => {
     expect(
       Result.isFailure(
         Schema.decodeUnknownResult(HostedRetainedPolicyProfileId)(
-          "d03-local-erasable-v1"
+          "worlds-local-erasable-v1"
         )
       )
     ).toBeTruthy();
@@ -62,7 +64,7 @@ describe("EX36 hosted retained policy schemas", () => {
       { erasure: true },
       { restoreAfterErasure: true },
       { profileId: "worlds-local-retained-v1" },
-      { profileId: "d03-local-erasable-v1" },
+      { profileId: "worlds-local-erasable-v1" },
     ]) {
       expect(
         Result.isFailure(
