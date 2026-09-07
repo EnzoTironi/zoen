@@ -24,7 +24,7 @@
     "start:server": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" apps/server/dist/main.js",
     "cli": "node apps/cli/dist/main.js",
     "test:unit": "vitest run --project unit",
-    "test:integration": "node tooling/run_integration.mjs",
+    "test:integration": "python3 tooling/run_integration.py",
     "test:components": "playwright test",
     "build:web": "vite build --config vite.application.config.ts",
     "build": "python3 tooling/clean_build.py && pnpm build:apps && pnpm build:web && python3 tooling/build_release.py",
