@@ -2,13 +2,32 @@
 
 [![Verify](https://github.com/EnzoTironi/zoen/actions/workflows/verify.yml/badge.svg)](https://github.com/EnzoTironi/zoen/actions/workflows/verify.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Node.js](https://img.shields.io/badge/Node.js-24-green.svg)](.node-version)
 
-Zoen is a governed workspace where people, Eve, apps, and integrations share the same Worlds — with evidence, rights, and erasure as first-class consequences.
+Shared governed Worlds for private truth — with evidence, rights, and erasure as first-class consequences.
 
-Live: [https://zoen.tironi.xyz](https://zoen.tironi.xyz)
+## Who it’s for
 
-## Status
+Same grammar across ICPs already named in the roadmap (no new commercial personas):
 
-Public TypeScript rebuild on Effect 4. Auth, Worlds, JSON/CSV import, inspection with evidence, correction/undo, and World read grant/revoke already run on real PostgreSQL and S3-compatible storage. More product surface is landing behind the same executor.
+- **Doméstico / household** — Import divergent household lists (bills, chores, commitments); see which source said what; correct one item and undo without losing history.
+- **Confeitaria / bakery shop** — Reconcile orders, recipes, and stock notes from CSV/JSON dumps; keep shop meaning inspectable before anyone acts on it.
+- **Clínica / clinic** — Keep administrative schedule truth under current rights; inspect evidence when two sources disagree; clinical scope stays a separate, qualified profile.
+- **Finanças / personal or small-business finance** — Admit statements and ledgers as sources; distinguish known vs unknown; never treat a local interpretation as bank settlement.
+
+## What you do
+
+1. Authenticate
+2. Create a World
+3. Import divergent sources (JSON/CSV) about the same commitment
+4. Inspect meaning with evidence
+5. Correct / mark unknown / undo — history stays
+6. Share and revoke (when enabled)
+7. Retention / erasure when qualified
+
+Surfaces first: **web** and **CLI** (same verbs). Agent, SDK, and MCP come later as adapters over that grammar. Eve is an optional conversation/voice layer (D05) over the same semantic executor — not part of the application grammar.
+
+## Live
+
+[https://zoen.tironi.xyz](https://zoen.tironi.xyz)
 
 ## Development
 
