@@ -979,7 +979,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "2c215624b686146bb270f407a5586f72ad7d902e",
+      "commit": "c01b09b4d1d07ee3225414f9c74211fc25a75c93",
       "packages": ["EX45"],
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds; Closing\u2192Erased local-controlled-copies; restoreAfterErasure false)",
