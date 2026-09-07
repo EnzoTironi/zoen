@@ -104,6 +104,7 @@ it.live(
               ChildProcess.make(
                 process.execPath,
                 [
+                  "--experimental-strip-types",
                   fileURLToPath(
                     new URL("orphaned-recovery-writer.ts", import.meta.url)
                   ),
@@ -202,6 +203,25 @@ it.live(
               ).pipe(Effect.flip)
             ).toMatchObject({ _tag: "Blocked" });
 
+            // Bound PID required: ESRCH on an unrelated pid must not retire this epoch.
+            expect(
+              yield* Effect.scoped(
+                fence.recoverOrphaned(
+                  {
+                    _tag: "SupervisorProcessExit",
+                    exitStatus: 9,
+                    permitId: inventory.permitId,
+                    pid: 2_147_483_646,
+                    writerEpoch: inventory.writerEpoch,
+                  },
+                  deadline
+                )
+              ).pipe(Effect.flip)
+            ).toMatchObject({ _tag: "Unavailable" });
+            expect(
+              yield* sql`SELECT count(*)::int AS pending FROM jobs.disclosure_pending`
+            ).toStrictEqual([{ pending: 1 }]);
+
             // ZA-08-01 — kill writer before send; prove ESRCH; recover.
             process.kill(inventory.pid, "SIGKILL");
             yield* waitUntil(
@@ -262,10 +282,11 @@ it.live(
               yield* sql`SELECT count(*)::int AS closing FROM jobs.disclosure_session_closing`
             ).toStrictEqual([{ closing: 1 }]);
 
-            // ZA-08-03 — resume after retirement cannot produce new private disclosure.
+            // ZA-08-03 — killed writer cannot resume/end; send-gate covered in send-gate.ZA08.test.ts.
             writeFileSync(`${controlDir}/resume`, "1", { mode: 0o600 });
             yield* Effect.sleep("200 millis");
             expect(existsSync(`${controlDir}/submitted`)).toBeFalsy();
+            expect(existsSync(`${controlDir}/send-error`)).toBeFalsy();
             expect(privateBody.length).toBeGreaterThan(0);
 
             expect(

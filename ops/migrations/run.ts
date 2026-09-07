@@ -93,20 +93,16 @@ export const applyDisclosureMigrations = Effect.fn(
       "6_durable_disclosure": sql.unsafe(disclosure).pipe(Effect.asVoid),
     }),
   });
+  // Apply orphaned-recovery DDL without migrator id 12 here: Effect migrator skips
+  // any id <= latest, so recording 12 before 7/8 would skip identity events.
   const recovery = yield* fs.readFileString(
     fileURLToPath(
       new URL("012_orphaned_disclosure_recovery.sql", import.meta.url)
     )
   );
-  const orphaned = yield* PgMigrator.run({
-    loader: PgMigrator.fromRecord({
-      "12_orphaned_disclosure_recovery": sql
-        .unsafe(recovery)
-        .pipe(Effect.asVoid),
-    }),
-  });
+  yield* sql.withTransaction(sql.unsafe(recovery));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
-  return [...base, ...durable, ...orphaned];
+  return [...base, ...durable];
 });
 
 /** Basis v2 is an explicit transition; the five-domain executables retain migrations 001–006. */
@@ -149,10 +145,18 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
     const rename = yield* fs.readFileString(
       fileURLToPath(new URL("011_worlds_rename_alignment.sql", import.meta.url))
     );
+    const recovery = yield* fs.readFileString(
+      fileURLToPath(
+        new URL("012_orphaned_disclosure_recovery.sql", import.meta.url)
+      )
+    );
     const extension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
         "11_worlds_rename_alignment": sql.unsafe(rename).pipe(Effect.asVoid),
+        "12_orphaned_disclosure_recovery": sql
+          .unsafe(recovery)
+          .pipe(Effect.asVoid),
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),
     });

@@ -199,6 +199,11 @@ export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
                       "DELETE FROM jobs.disclosure_pending WHERE permit_id = $1",
                       [permitId]
                     );
+                    yield* current.statement(
+                      "UPDATE jobs.disclosure_writer_epochs SET status = 'retired', retired_at = clock_timestamp() WHERE writer_epoch = $1 AND status = 'active'",
+                      [writerEpoch]
+                    );
+                    epochSendState.delete(writerEpoch);
                   })
                 ).pipe(
                   Effect.interruptible,

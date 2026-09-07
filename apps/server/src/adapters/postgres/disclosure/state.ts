@@ -43,8 +43,8 @@ export const registerPending = (
         [permitId, sessionKey, membershipKey]
       );
       yield* connection.statement(
-        "INSERT INTO jobs.disclosure_writer_epochs (writer_epoch, permit_id, session_key, membership_key, status) VALUES ($1, $2, $3, $4, 'active')",
-        [writerEpoch, permitId, sessionKey, membershipKey]
+        "INSERT INTO jobs.disclosure_writer_epochs (writer_epoch, permit_id, session_key, membership_key, writer_pid, status) VALUES ($1, $2, $3, $4, $5, 'active')",
+        [writerEpoch, permitId, sessionKey, membershipKey, String(process.pid)]
       );
       return yield* Effect.void;
     })
@@ -83,6 +83,7 @@ const PendingEpoch = Schema.Tuple([
     membership_key: Schema.String,
     session_key: Schema.String,
     status: Schema.Literals(["active", "retired"]),
+    writer_pid: Schema.Union([Schema.Finite, Schema.FiniteFromString]),
   }),
 ]);
 
@@ -102,7 +103,7 @@ export const recoverContainedPending = (
   connection.transaction(
     Effect.gen(function* recoverPending() {
       const rows = yield* connection.statement(
-        `SELECT e.session_key, e.membership_key, e.status
+        `SELECT e.session_key, e.membership_key, e.status, e.writer_pid
          FROM jobs.disclosure_writer_epochs AS e
          INNER JOIN jobs.disclosure_pending AS p ON p.permit_id = e.permit_id
          WHERE e.writer_epoch = $1 AND e.permit_id = $2
@@ -116,9 +117,17 @@ export const recoverContainedPending = (
         return yield* new Unavailable({ code: "UNAVAILABLE" });
       }
       const [
-        { membership_key: membershipKey, session_key: sessionKey, status },
+        {
+          membership_key: membershipKey,
+          session_key: sessionKey,
+          status,
+          writer_pid: boundPid,
+        },
       ] = decoded;
       if (status !== "active") {
+        return yield* new Unavailable({ code: "UNAVAILABLE" });
+      }
+      if (boundPid !== containmentPid) {
         return yield* new Unavailable({ code: "UNAVAILABLE" });
       }
       yield* bumpSubject(connection, sessionKey);

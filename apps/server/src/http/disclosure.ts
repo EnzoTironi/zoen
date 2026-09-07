@@ -6,7 +6,8 @@ import { ResponseSecurityHeaders } from "./security.ts";
 
 /**
  * The only private JSON writer: no retained callback or deferred body emission.
- * Optional `authorizeSend` enforces writer-epoch retirement at the `end` boundary.
+ * Production emission is gated in `withEmission` via `permit.authorizeSend` before
+ * invoke; optional `authorizeSend` here covers direct writers (ZA-08 child).
  */
 export const makePrivateJsonEmitter = Effect.fn("http.privateJsonEmitter")(
   function* makePrivateJsonEmitter(
