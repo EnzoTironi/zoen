@@ -15,7 +15,8 @@ Em 2026-09-06 (PT), o **congelamento mínimo** de erasure está em [`docs/contra
 | Closing local (EX32) | Landed — Active→Closing com receipt+outbox; sucesso só após Confirmada |
 | Web/CLI (EX33) | Landed — `/api/erasure/execute`, CLI `--confirm-entire-world`, painel owner-only |
 | Compose/verify (EX34) | Landed — perfil `d03-local-erasable-v1` só em **Worlds novos**; retained default |
-| Purge / Erased | **Bloqueado** (controlador, backups, Object Lock, fencing World) |
+| Purge / Erased | **Parcial** — inventário/purge S3 + Object Lock local (EX44); Closing→Erased / SQL / Fly controller / backups ainda **bloqueados** |
+| Object Lock / retention (RustFS local) | **Qualificado** — `docs/verification/erasure-storage-qualification.md` |
 | restoreAfterErasure | **false** / fechado |
 
 Worlds `d01-local-retained-v1` continuam **sem** erasure. Perfil candidato `d03-local-erasable-v1` só via provisionamento explícito de instalação **nova** (`ZOEN_LOCAL_WORLD_POLICY=d03-local-erasable-v1`). Sem rebind/migração de Worlds retidos (F02).
@@ -48,11 +49,14 @@ ZOEN_LOCAL_PROFILE=erasable-v1 \
 - Fixtures de executor legados fornecem `ErasureAttemptRegister.unqualifiedLayer` (dívida EX33 de typecheck).
 - Evidência separa **Closing/register verificado** de **purge ainda bloqueado**.
 
-## Lacunas (bloqueiam D03 integral / purge)
+## Lacunas (bloqueiam D03 integral / Erased)
 
-- Controlador distinto (epochs, grants, âncora anti-rollback independente).
-- Catálogo de backups/cópias; Object Lock / retention no storage real.
+- Controlador distinto no Fly all-in-one (epochs, grants, âncora anti-rollback independente do volume único).
+- Catálogo de backups/cópias.
 - Fence World (ER-R02); restore online (ER-R03) permanece fechado (F04).
-- Purge SQL/S3 e transição Closing→Erased.
+- Purge SQL e transição Closing→Erased atestada (portas S3 EX44 ≠ Erased).
+- Re-prova Object Lock na VM Fly live.
 
-Isto **não** autoriza apagar dados reais nem marca D03 completo.
+Cleared localmente (2026-09-07): Object Lock/retention/hold no RustFS compose; `ErasureObjectInventory` + `ErasurePurgeStore`; provision erasable com Object Lock.
+
+Isto **não** marca D03 completo nem autoriza Erased em produção.
