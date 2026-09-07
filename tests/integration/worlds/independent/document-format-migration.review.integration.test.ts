@@ -173,7 +173,13 @@ it.live(
             expect(yield* sdk(() => body.transformToByteArray())).toStrictEqual(
               bytes
             );
-            for (const invalid of ["d01.xml.v1", "", "D01.CSV.V1"]) {
+            for (const invalid of [
+              "d01.xml.v1",
+              "d01.json.v1",
+              "d01.csv.v1",
+              "",
+              "D01.CSV.V1",
+            ]) {
               expect(
                 yield* sql`UPDATE jobs.captures SET document_format = ${invalid} WHERE capture_id = ${seed.capture}`.pipe(
                   Effect.flip

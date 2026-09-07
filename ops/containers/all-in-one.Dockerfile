@@ -54,7 +54,7 @@ COPY ops/local/world-policy.ts ./ops/local/world-policy.ts
 COPY apps/server/scripts/all-in-one-bootstrap.ts ./apps/server/scripts/all-in-one-bootstrap.ts
 COPY ops/containers/all-in-one-entrypoint.sh /usr/local/bin/all-in-one-entrypoint.sh
 COPY apps/server/sql ./apps/server/sql
-COPY apps/server/src/identity/d01/grants.ts ./apps/server/src/identity/d01/grants.ts
+COPY apps/server/src/identity/worlds/grants.ts ./apps/server/src/identity/worlds/grants.ts
 
 # Let ops/*.ts (migrations bootstrap) resolve apps/server production deps.
 RUN ln -sfn /app/apps/server/node_modules /app/ops/node_modules \

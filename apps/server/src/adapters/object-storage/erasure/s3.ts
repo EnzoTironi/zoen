@@ -20,7 +20,11 @@ import { Clock, Context, Effect, Layer, Redacted } from "effect";
 
 import { decodeConfig } from "../worlds/config.js";
 import type { S3EvidenceConfig } from "../worlds/config.js";
-import { worldObjectPrefix } from "./prefix.js";
+import {
+  isRealmErasureObjectKey,
+  worldObjectInventoryPrefixes,
+  worldObjectPrefix,
+} from "./prefix.js";
 
 const unavailable = () => new Unavailable({ code: "UNAVAILABLE" });
 
@@ -140,12 +144,8 @@ export const layer = (
             ),
         });
 
-      const listWorldVersions = (worldRef: WorldRef) =>
-        Effect.gen(function* listAllVersions() {
-          if (worldRef.realm !== config.realm) {
-            return yield* unavailable();
-          }
-          const prefix = worldObjectPrefix(worldRef);
+      const listPrefixVersions = (prefix: string) =>
+        Effect.gen(function* listOnePrefix() {
           const entries: ErasureVersionEntry[] = [];
           let keyMarker: string | undefined;
           let versionIdMarker: string | undefined;
@@ -202,13 +202,30 @@ export const layer = (
               return yield* unavailable();
             }
           }
+          return entries;
+        });
+
+      const listWorldVersions = (worldRef: WorldRef) =>
+        Effect.gen(function* listAllVersions() {
+          if (worldRef.realm !== config.realm) {
+            return yield* unavailable();
+          }
+          // Canonical worlds/ plus pre-launch residual d01/ until scrubbed empty.
+          const prefix = worldObjectPrefix(worldRef);
+          const entries: ErasureVersionEntry[] = [];
+          for (const inventoryPrefix of worldObjectInventoryPrefixes(
+            worldRef
+          )) {
+            const page = yield* listPrefixVersions(inventoryPrefix);
+            entries.push(...page);
+          }
           const manifest: ErasureVersionManifest = { entries, prefix };
           return manifest;
         });
 
       const inspectHold = (target: ErasureVersionTarget) =>
         Effect.gen(function* inspectObjectHold() {
-          if (!target.key.startsWith(`worlds/${config.realm}/`)) {
+          if (!isRealmErasureObjectKey(target.key, config.realm)) {
             return yield* unavailable();
           }
           const legal = yield* Effect.tryPromise({
@@ -301,7 +318,7 @@ export const layer = (
         Effect.gen(function* purgeOneVersion() {
           if (
             target.versionId.length === 0 ||
-            !target.key.startsWith(`worlds/${config.realm}/`)
+            !isRealmErasureObjectKey(target.key, config.realm)
           ) {
             return yield* unavailable();
           }
