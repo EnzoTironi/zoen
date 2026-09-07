@@ -79,7 +79,10 @@ export const asCurrentWire = (request: object): Record<string, unknown> => {
       '\\"schemaVersion\\":\\"d03.sharing.v1\\"',
       '\\"schemaVersion\\":\\"sharing.v1\\"'
     )
-    .replaceAll('"schemaVersion":"d03.sharing.v1"', '"schemaVersion":"sharing.v1"')
+    .replaceAll(
+      '"schemaVersion":"d03.sharing.v1"',
+      '"schemaVersion":"sharing.v1"'
+    )
     .replaceAll(
       '"schemaVersion": "d03.sharing.v1"',
       '"schemaVersion": "sharing.v1"'

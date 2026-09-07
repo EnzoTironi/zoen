@@ -42,8 +42,12 @@ const requireRow = <A>(row: A | undefined, message: string) => {
   return row;
 };
 
-const { envelope, executePath, sharingEnvelope: sharing, sharingPath } =
-  legacyWire;
+const {
+  envelope,
+  executePath,
+  sharingEnvelope: sharing,
+  sharingPath,
+} = legacyWire;
 const validTime = {
   _tag: "DateInterval" as const,
   from: "2026-09-01",
