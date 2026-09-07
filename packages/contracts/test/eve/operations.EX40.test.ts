@@ -15,6 +15,8 @@ import {
   EveProfileId,
   EveProviderAdmission,
   EveSchemaVersion,
+  EveWebSpeechCapabilities,
+  EveWebSpeechProfileId,
 } from "../../src/eve/values.js";
 
 const conversationId = "00000000-0000-4000-8000-000000000101";
@@ -82,6 +84,34 @@ describe("EX40 eve schemas", () => {
       schemaVersion: "eve.v1",
     });
     expect(request.input.providerAdmission).toBe("stub-local");
+  });
+
+  it("encodes AcceptConversationTurn under web-speech voice admission", () => {
+    const request = Schema.decodeSync(AcceptConversationTurn)({
+      input: {
+        conversationId,
+        ingressId,
+        profileId: "eve-web-speech-v1",
+        providerAdmission: "web-speech",
+        relationshipId,
+        userText: "quanto gastei?",
+      },
+      operation: "AcceptConversationTurn",
+      purpose: "personal-records",
+      schemaVersion: "eve.v1",
+    });
+    expect(request.input.providerAdmission).toBe("web-speech");
+    expect(
+      Schema.decodeSync(EveProviderAdmission)("web-speech")
+    ).toBe("web-speech");
+    expect(
+      Schema.decodeSync(EveWebSpeechCapabilities)({
+        admission: "web-speech",
+        profileId: "eve-web-speech-v1",
+        recognitionAvailable: true,
+        synthesisAvailable: true,
+      }).recognitionAvailable
+    ).toBe(true);
   });
 
   it("admits cancel and recover operations", () => {

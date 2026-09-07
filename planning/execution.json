@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "planned",
-  "scope": "Pacotes D01/D02, CSV, compartilhamento local, primeiro incremento de erasure (contrato), primeiro incremento hosted D04 (freeze/stubs), Eve D05 freeze/schemas/journal + OpenCode Zen free (EX40–EX43); estados planejados são requisitos, progresso executado fica em planning/progress.json",
+  "scope": "Pacotes D01/D02, CSV, compartilhamento local, primeiro incremento de erasure (contrato), primeiro incremento hosted D04 (freeze/stubs), Eve D05 freeze/schemas/journal + OpenCode Zen free (EX40–EX43) + Web Speech voice (EX44); estados planejados são requisitos, progresso executado fica em planning/progress.json",
   "workers": {
     "worker-1": {
       "model": "gpt-6-astra",
@@ -2775,6 +2775,73 @@
           ]
         }
       ]
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX43"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Web Speech voice profile + ZN-0063 voice artifact landed; execution remains planned/not_run for verify_plan; progress in progress.json. Not full D05.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0063",
+        "ZN-0052",
+        "ZN-0061"
+      ],
+      "source_semantics": "D05: admitir Web Speech API como path de voz (eve-web-speech-v1 / web-speech); transcript→turn Zen texto→TTS; sem cloud STT/TTS inventado. Não conclui D05 integral.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/contracts/eve-freeze.md",
+        "docs/verification/eve-web-speech.md",
+        "docs/verification/eve-opencode-zen.md"
+      ],
+      "contracts_consumed": [
+        "Freeze F05/F07: Web Speech voice when browser APIs present; Zen text separate; voice-blocked fail-closed.",
+        "EX43 turn path OpenCode Zen."
+      ],
+      "id": "EX44",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Perfil de voz Eve Web Speech e artefato ZN-0063",
+      "scope": "Schemas/admission eve-web-speech-v1; runEveVoiceTurn; @zoen/web SpeechRecognition+speechSynthesis; docs/verification/eve-web-speech.md.",
+      "acceptance": [
+        "Schemas admitem eve-web-speech-v1 / web-speech; voice-blocked permanece fail-closed.",
+        "Transcript → Zen settle → speakText (unit); browser probe observa constructors Chromium.",
+        "Sem cloud STT/TTS inventado; INV-01 sem API key no journal."
+      ],
+      "planned_direct_checks": [
+        "pnpm exec vitest run --project unit packages/authority/test/ports/eve/voice.EX44.test.ts apps/web/test/features/eve packages/contracts/test/eve",
+        "python3 tooling/verify_plan.py"
+      ],
+      "owns": [
+        "packages/contracts/src/eve/**",
+        "packages/contracts/test/eve/**",
+        "packages/authority/src/ports/eve/voice.ts",
+        "packages/authority/src/ports/eve/journal.ts",
+        "packages/authority/src/ports/eve/turn.ts",
+        "packages/authority/test/ports/eve/voice.EX44.test.ts",
+        "packages/authority/test/ports/eve/journal.EX41.test.ts",
+        "apps/web/src/features/eve/**",
+        "apps/web/test/features/eve/**",
+        "docs/verification/eve-web-speech.md",
+        "docs/contracts/eve-freeze.md",
+        "docs/contracts/eve.md",
+        "docs/verification/eve-opencode-zen.md"
+      ],
+      "model": null,
+      "reasoning_effort": null
     }
   ],
   "suggested_schedule": [
@@ -2841,12 +2908,13 @@
     },
     {
       "wave": "H-eve",
-      "worker-1": ["EX41", "EX42", "EX43"],
+      "worker-1": ["EX41", "EX42", "EX43", "EX44"],
       "worker-2": ["preparar contraprovas de turn fence quando EX41 verde"],
       "worker-3": ["revisão independente dos schemas EX40"],
       "root": [
         "EX40 freeze/schemas",
-        "compor evidência eve-opencode-zen (ZN-0063) sem cutover zoen"
+        "compor evidência eve-opencode-zen (ZN-0063) sem cutover zoen",
+        "compor evidência eve-web-speech (ZN-0063 voz)"
       ]
     }
   ],
@@ -2855,7 +2923,7 @@
     "D02 merge/split reversível de identidade, workbench/priorização e closure para futuros consumers permanecem no mapa original; subject-identity-v2 verified_for_profile não conta como D02 integral.",
     "D03 erasure: freeze mínimo EX30+; purge real, controlador, Object Lock, catálogo de backups e restore após erasure continuam bloqueados.",
     "D04 hosted: EX35 freeze/stubs; app zoen-rebuild, MPG/Tigris, secrets redesign, deploy real e cutover do legado zoen não feitos; Docker local não prova cloud.",
-    "D05 Eve: EX40–EX43 freeze/schemas/journal + OpenCode Zen free product path; voz, máquina de turnos completa, processo Eve separado e D05 integral não feitos; stub só offline.",
+    "D05 Eve: EX40–EX44 freeze/schemas/journal + OpenCode Zen free text + Web Speech voice; cloud STT/TTS, máquina de turnos completa, processo Eve separado e D05 integral não feitos; stub só offline.",
     "Modelos, canais, fontes externas, efeitos, runners e finanças seguem fora da primeira composição; indisponíveis, nunca simulados."
   ],
   "max_active_workers": 3,

@@ -12,7 +12,7 @@ Data: 2026-09-07 (PT). Tip de partida: `644d400`. Tip verificado stub: `3d2e71c`
 | Schemas `eve.v1` / `eve-local-stub-v1` | Landed (EX40) — offline proofs only |
 | Journal port + recoverability stub | Landed (EX41) — in-memory |
 | Modelo real / OpenCode Zen | Ver `eve-opencode-zen.md` (EX42–EX43) |
-| Voz | **Blocked** |
+| Voz | Ver `eve-web-speech.md` (EX44) |
 | D05 integral | **Não** alegado |
 
 ## Comandos
@@ -26,4 +26,4 @@ pnpm exec vitest run --project unit \
 ## Não alegado
 
 - Stub como path de produto (substituído por Zen quando key presente).
-- Voice / streaming prod / processo Eve separado / cutover `zoen`.
+- Cloud STT/TTS / streaming prod / processo Eve separado / cutover `zoen` (Web Speech: ver `eve-web-speech.md`).

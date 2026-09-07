@@ -20,10 +20,18 @@ export type EveLocalStubProfileId = typeof EveLocalStubProfileId.Type;
 export const EveOpenCodeZenProfileId = Schema.Literal("eve-opencode-zen-v1");
 export type EveOpenCodeZenProfileId = typeof EveOpenCodeZenProfileId.Type;
 
+/**
+ * Browser Web Speech voice I/O profile (ZN-0063 voice qualification).
+ * Separate from text Zen — STT/TTS via SpeechRecognition + speechSynthesis.
+ */
+export const EveWebSpeechProfileId = Schema.Literal("eve-web-speech-v1");
+export type EveWebSpeechProfileId = typeof EveWebSpeechProfileId.Type;
+
 /** Admitted Eve profiles for this increment. */
 export const EveProfileId = Schema.Union([
   EveLocalStubProfileId,
   EveOpenCodeZenProfileId,
+  EveWebSpeechProfileId,
 ]);
 export type EveProfileId = typeof EveProfileId.Type;
 
@@ -73,17 +81,31 @@ export type UncertaintyKind = typeof UncertaintyKind.Type;
 
 /**
  * Provider admission (F05/F06).
- * Product path: `opencode-zen` when ZOEN_OPENCODE_API_KEY is present.
+ * Product text path: `opencode-zen` when ZOEN_OPENCODE_API_KEY is present.
+ * Product voice I/O path: `web-speech` (browser SpeechRecognition + speechSynthesis).
  * `stub-local` remains only for offline unit proofs.
- * Voice and unqualified real-model stay fail-closed.
+ * `voice-blocked` / `real-model-blocked` are fail-closed reject literals (not shims).
  */
 export const EveProviderAdmission = Schema.Literals([
   "opencode-zen",
+  "web-speech",
   "stub-local",
   "real-model-blocked",
   "voice-blocked",
 ]);
 export type EveProviderAdmission = typeof EveProviderAdmission.Type;
+
+/**
+ * Observed browser Web Speech capability snapshot (ZN-0063 voice artifact).
+ * Platform APIs only — never invents cloud STT/TTS.
+ */
+export const EveWebSpeechCapabilities = Schema.Struct({
+  admission: Schema.Literal("web-speech"),
+  profileId: EveWebSpeechProfileId,
+  recognitionAvailable: Schema.Boolean,
+  synthesisAvailable: Schema.Boolean,
+}).annotate(exact);
+export type EveWebSpeechCapabilities = typeof EveWebSpeechCapabilities.Type;
 
 /** Citation to admitted evidence — never authority credentials (F01 / INV-01). */
 export const EveEvidenceLink = Schema.Struct({
