@@ -16,9 +16,7 @@ import { Effect, Layer, Redacted, Schema } from "effect";
 import { EveJournal } from "../../../src/ports/eve/journal.js";
 import type { EveFetch } from "../../../src/ports/eve/opencode-zen.js";
 import { EveOpenCodeZen } from "../../../src/ports/eve/opencode-zen.js";
-import {
-  runEveVoiceTurn,
-} from "../../../src/ports/eve/voice.js";
+import { runEveVoiceTurn } from "../../../src/ports/eve/voice.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
   "00000000-0000-4000-8000-000000000501"
@@ -105,38 +103,40 @@ describe("EX44 Eve web-speech voice profile", () => {
     });
   });
 
-  it.effect("transcript → Zen text settle returns speakText; INV-01 holds", () =>
-    Effect.gen(function* path() {
-      const result = yield* runEveVoiceTurn({
-        capabilities: capable,
-        conversationId,
-        ingressId,
-        messageId,
-        relationshipId,
-        transcript: "quanto gastei este mês?",
-        turnId,
-      });
-      const journal = yield* EveJournal;
-      const snapshot = yield* journal.recover(conversationId);
-      const wire = JSON.stringify(snapshot);
-      expect({
-        admission: snapshot.providerAdmission,
-        credential: snapshot.authorityCredentialPresent,
-        phase: result.turn.phase,
-        profile: snapshot.conversation.profileId,
-        speakHasEveOk: result.speakText.includes("eve-ok"),
-        synthesisReady: result.synthesisReady,
-        wireHasKey: wire.includes("unit-test-key"),
-      }).toStrictEqual({
-        admission: "web-speech",
-        credential: false,
-        phase: "Settled",
-        profile: "eve-web-speech-v1",
-        speakHasEveOk: true,
-        synthesisReady: true,
-        wireHasKey: false,
-      });
-    }).pipe(Effect.provide(zenLayer))
+  it.effect(
+    "transcript → Zen text settle returns speakText; INV-01 holds",
+    () =>
+      Effect.gen(function* path() {
+        const result = yield* runEveVoiceTurn({
+          capabilities: capable,
+          conversationId,
+          ingressId,
+          messageId,
+          relationshipId,
+          transcript: "quanto gastei este mês?",
+          turnId,
+        });
+        const journal = yield* EveJournal;
+        const snapshot = yield* journal.recover(conversationId);
+        const wire = JSON.stringify(snapshot);
+        expect({
+          admission: snapshot.providerAdmission,
+          credential: snapshot.authorityCredentialPresent,
+          phase: result.turn.phase,
+          profile: snapshot.conversation.profileId,
+          speakHasEveOk: result.speakText.includes("eve-ok"),
+          synthesisReady: result.synthesisReady,
+          wireHasKey: wire.includes("unit-test-key"),
+        }).toStrictEqual({
+          admission: "web-speech",
+          credential: false,
+          phase: "Settled",
+          profile: "eve-web-speech-v1",
+          speakHasEveOk: true,
+          synthesisReady: true,
+          wireHasKey: false,
+        });
+      }).pipe(Effect.provide(zenLayer))
   );
 
   it.effect("fail-closed when SpeechRecognition is unavailable", () =>

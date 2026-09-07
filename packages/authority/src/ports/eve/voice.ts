@@ -4,11 +4,6 @@ import {
   NotFoundOrDenied,
   Unavailable,
 } from "@zoen/contracts/d01/errors";
-import {
-  probeWebSpeechCapabilities,
-  voiceRecognitionReady,
-  voiceSynthesisReady,
-} from "@zoen/contracts/eve/web-speech";
 import type {
   ConversationId,
   EveEvidenceLink,
@@ -19,6 +14,11 @@ import type {
   RelationshipId,
   TurnId,
 } from "@zoen/contracts/eve/values";
+import {
+  probeWebSpeechCapabilities,
+  voiceRecognitionReady,
+  voiceSynthesisReady,
+} from "@zoen/contracts/eve/web-speech";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 

@@ -101,9 +101,9 @@ describe("EX40 eve schemas", () => {
       schemaVersion: "eve.v1",
     });
     expect(request.input.providerAdmission).toBe("web-speech");
-    expect(
-      Schema.decodeSync(EveProviderAdmission)("web-speech")
-    ).toBe("web-speech");
+    expect(Schema.decodeSync(EveProviderAdmission)("web-speech")).toBe(
+      "web-speech"
+    );
     expect(
       Schema.decodeSync(EveWebSpeechCapabilities)({
         admission: "web-speech",

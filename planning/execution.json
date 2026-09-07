@@ -2778,9 +2778,7 @@
     },
     {
       "depends_on": {
-        "hard": [
-          "EX43"
-        ],
+        "hard": ["EX43"],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2795,11 +2793,7 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": [
-        "ZN-0063",
-        "ZN-0052",
-        "ZN-0061"
-      ],
+      "source_ticket_ids": ["ZN-0063", "ZN-0052", "ZN-0061"],
       "source_semantics": "D05: admitir Web Speech API como path de voz (eve-web-speech-v1 / web-speech); transcript→turn Zen texto→TTS; sem cloud STT/TTS inventado. Não conclui D05 integral.",
       "required_read": [
         "docs/invariants.md",
