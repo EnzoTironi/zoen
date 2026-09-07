@@ -18,6 +18,7 @@ import {
   Redacted,
   Schema,
 } from "effect";
+import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";
 
 import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
@@ -44,6 +45,95 @@ const names = {
 } as const;
 
 const databaseName = "zoen";
+
+const requirePasswordInAdminUrl = (adminUrl: string) => {
+  const url = new URL(adminUrl);
+  if (url.password.length === 0) {
+    return new BootstrapError({ code: "BOOTSTRAP_ADMIN_PASSWORD_REQUIRED" });
+  }
+  return null;
+};
+
+const ensureScopedObjectStoreUser = (input: {
+  readonly adminAccessKey: string;
+  readonly adminSecretKey: string;
+  readonly appAccessKey: string;
+  readonly appSecretKey: string;
+  readonly bucket: string;
+  readonly endpoint: string;
+}) =>
+  Effect.scoped(
+    Effect.gen(function* runRustfsEnsureAppUser() {
+      const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
+      const script = `${root}ops/containers/rustfs-ensure-app-user.py`;
+      const child = yield* spawner.spawn(
+        ChildProcess.make("python3", [script], {
+          env: {
+            ...process.env,
+            ZOEN_S3_ADMIN_ACCESS_KEY: input.adminAccessKey,
+            ZOEN_S3_ADMIN_SECRET_KEY: input.adminSecretKey,
+            ZOEN_S3_APP_ACCESS_KEY: input.appAccessKey,
+            ZOEN_S3_APP_SECRET_KEY: input.appSecretKey,
+            ZOEN_S3_BUCKET: input.bucket,
+            ZOEN_S3_ENDPOINT: input.endpoint,
+          },
+        })
+      );
+      const code = yield* child.exitCode;
+      if (code !== 0) {
+        return yield* new BootstrapError({ code: "OBJECT_STORE_IAM_FAILED" });
+      }
+      return yield* Effect.void;
+    })
+  ).pipe(
+    Effect.mapError(
+      () => new BootstrapError({ code: "OBJECT_STORE_IAM_FAILED" })
+    )
+  );
+
+const parseRuntimeEnv = (raw: string) => {
+  const values: Record<string, string> = {};
+  for (const line of raw.split("\n")) {
+    if (line.trim().length === 0) {
+      continue;
+    }
+    const separator = line.indexOf("=");
+    if (separator <= 0) {
+      return null;
+    }
+    const key = line.slice(0, separator);
+    let value = line.slice(separator + 1);
+    if (value.startsWith('"') && value.endsWith('"')) {
+      value = value.slice(1, -1);
+    }
+    values[key] = value;
+  }
+  return values;
+};
+
+const writeRuntimeEnv = (
+  fs: FileSystem.FileSystem,
+  runtimeEnvPath: string,
+  environment: Record<string, string>
+) =>
+  Effect.gen(function* writeEnv() {
+    if (Object.values(environment).some((value) => /[\r\n"\\]/u.test(value))) {
+      return yield* new BootstrapError({
+        code: "UNSUPPORTED_ENVIRONMENT_ENCODING",
+      });
+    }
+    const lines = Object.entries(environment).map(
+      ([key, value]) => `${key}="${value}"`
+    );
+    if (yield* fs.exists(runtimeEnvPath)) {
+      yield* fs.remove(runtimeEnvPath);
+    }
+    yield* fs.writeFileString(runtimeEnvPath, `${lines.join("\n")}\n`, {
+      flag: "wx",
+      mode: 0o600,
+    });
+    return yield* Effect.void;
+  });
 
 const alignExistingHostedRelease = (input: {
   readonly encodeInstallation: typeof encodeJson;
@@ -89,9 +179,17 @@ const alignExistingHostedRelease = (input: {
 const program = Effect.gen(function* bootstrapAllInOne() {
   const fs = yield* FileSystem.FileSystem;
   const adminUrl = yield* Config.redacted("ZOEN_BOOTSTRAP_ADMIN_URL");
+  const adminPasswordError = requirePasswordInAdminUrl(
+    Redacted.value(adminUrl)
+  );
+  if (adminPasswordError !== null) {
+    return yield* adminPasswordError;
+  }
   const endpoint = yield* Config.url("ZOEN_S3_ENDPOINT");
-  const accessKeyId = yield* Config.redacted("ZOEN_S3_ACCESS_KEY");
-  const secretAccessKey = yield* Config.redacted("ZOEN_S3_SECRET_KEY");
+  const adminAccessKeyId = yield* Config.redacted("ZOEN_S3_ADMIN_ACCESS_KEY");
+  const adminSecretAccessKey = yield* Config.redacted(
+    "ZOEN_S3_ADMIN_SECRET_KEY"
+  );
   const bucket = yield* Config.string("ZOEN_S3_BUCKET").pipe(
     Config.withDefault("zoen")
   );
@@ -119,6 +217,38 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     ) {
       return yield* new BootstrapError({
         code: "BOOTSTRAP_MARKER_INCONSISTENT",
+      });
+    }
+    const existing = parseRuntimeEnv(yield* fs.readFileString(runtimeEnvPath));
+    if (existing === null) {
+      return yield* new BootstrapError({ code: "RUNTIME_ENV_MALFORMED" });
+    }
+    const adminAccess = Redacted.value(adminAccessKeyId);
+    const adminSecret = Redacted.value(adminSecretAccessKey);
+    let appAccess = existing.ZOEN_S3_ACCESS_KEY ?? "";
+    let appSecret = existing.ZOEN_S3_SECRET_KEY ?? "";
+    const inheritsAdmin =
+      appAccess.length === 0 ||
+      appSecret.length === 0 ||
+      appAccess === adminAccess ||
+      appSecret === adminSecret;
+    if (inheritsAdmin) {
+      appAccess = `zoenapp${randomBytes(8).toString("hex")}`;
+      appSecret = randomBytes(32).toString("hex");
+    }
+    yield* ensureScopedObjectStoreUser({
+      adminAccessKey: adminAccess,
+      adminSecretKey: adminSecret,
+      appAccessKey: appAccess,
+      appSecretKey: appSecret,
+      bucket,
+      endpoint: endpoint.href,
+    });
+    if (inheritsAdmin) {
+      yield* writeRuntimeEnv(fs, runtimeEnvPath, {
+        ...existing,
+        ZOEN_S3_ACCESS_KEY: appAccess,
+        ZOEN_S3_SECRET_KEY: appSecret,
       });
     }
     return yield* alignExistingHostedRelease({
@@ -161,7 +291,6 @@ const program = Effect.gen(function* bootstrapAllInOne() {
 
   yield* fs.makeDirectory(stateDir, { mode: 0o700, recursive: true });
 
-  // Create-or-resume: reset passwords if roles already exist from a crashed boot.
   yield* Effect.gen(function* ensureDatabaseAndRoles() {
     const sql = yield* SqlClient.SqlClient;
     for (const role of [
@@ -209,8 +338,8 @@ const program = Effect.gen(function* bootstrapAllInOne() {
           () =>
             new S3Client({
               credentials: {
-                accessKeyId: Redacted.value(accessKeyId),
-                secretAccessKey: Redacted.value(secretAccessKey),
+                accessKeyId: Redacted.value(adminAccessKeyId),
+                secretAccessKey: Redacted.value(adminSecretAccessKey),
               },
               endpoint: endpoint.href,
               forcePathStyle: true,
@@ -259,33 +388,28 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     );
   }
 
+  const appAccessKey = `zoenapp${randomBytes(8).toString("hex")}`;
+  const appSecretKey = randomBytes(32).toString("hex");
+  yield* ensureScopedObjectStoreUser({
+    adminAccessKey: Redacted.value(adminAccessKeyId),
+    adminSecretKey: Redacted.value(adminSecretAccessKey),
+    appAccessKey,
+    appSecretKey,
+    bucket,
+    endpoint: endpoint.href,
+  });
+
   const environment: Record<string, string> = {
     ZOEN_AUTHORITY_DATABASE_URL: roleUrl("authority"),
     ZOEN_IDENTITY_DATABASE_URL: roleUrl("identity"),
     ZOEN_INSTALLATION_FILE: installationPath,
-    ZOEN_S3_ACCESS_KEY: Redacted.value(accessKeyId),
+    ZOEN_S3_ACCESS_KEY: appAccessKey,
     ZOEN_S3_BUCKET: bucket,
     ZOEN_S3_ENDPOINT: endpoint.href,
     ZOEN_S3_REGION: "us-east-1",
-    ZOEN_S3_SECRET_KEY: Redacted.value(secretAccessKey),
+    ZOEN_S3_SECRET_KEY: appSecretKey,
   };
-  const lines: string[] = [];
-  for (const [key, value] of Object.entries(environment)) {
-    if (/[\r\n"\\]/u.test(value)) {
-      return yield* new BootstrapError({
-        code: "UNSUPPORTED_ENVIRONMENT_ENCODING",
-      });
-    }
-    lines.push(`${key}="${value}"`);
-  }
-  // Always rewrite runtime.env on incomplete boots so passwords match ALTER ROLE.
-  if (yield* fs.exists(runtimeEnvPath)) {
-    yield* fs.remove(runtimeEnvPath);
-  }
-  yield* fs.writeFileString(runtimeEnvPath, `${lines.join("\n")}\n`, {
-    flag: "wx",
-    mode: 0o600,
-  });
+  yield* writeRuntimeEnv(fs, runtimeEnvPath, environment);
   yield* fs.writeFileString(markerPath, "ok\n", { flag: "wx", mode: 0o600 });
   return yield* Effect.logInfo({ event: "all-in-one.bootstrap.ready" });
 }).pipe(
@@ -301,7 +425,6 @@ const program = Effect.gen(function* bootstrapAllInOne() {
         }
       }
       const message = String(error);
-      // Durable diagnosis on the volume (no secrets).
       yield* fs
         .makeDirectory("/data/zoen", { mode: 0o700, recursive: true })
         .pipe(Effect.ignore);
