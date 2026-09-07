@@ -1,6 +1,10 @@
+import { ErasureLimits } from "@zoen/contracts/erasure/values";
 import { describe, expect, it } from "vitest";
 
-import { completePurgeOutcomes } from "./purge-outcomes.ts";
+import {
+  completePurgeOutcomes,
+  purgeInventoryWithinBound,
+} from "./purge-outcomes.ts";
 
 const first = {
   deleteMarker: false,
@@ -63,5 +67,21 @@ describe("purge outcome accounting (pure values, not provider simulations)", () 
     expect(
       completePurgeOutcomes([first], [{ entry: first, outcome: "Unknown" }])
     ).toBeTruthy();
+  });
+
+  it("admits the honest two-prefix aggregate inventory bound and rejects above it", () => {
+    expect(ErasureLimits.versionEntries).toBe(
+      ErasureLimits.inventoryPrefixes *
+        ErasureLimits.inventoryPagesPerPrefix *
+        ErasureLimits.inventoryPageSize
+    );
+    expect(ErasureLimits.versionEntries).toBeGreaterThan(1_000_000);
+    expect(purgeInventoryWithinBound(1_000_001)).toBeTruthy();
+    expect(
+      purgeInventoryWithinBound(ErasureLimits.versionEntries)
+    ).toBeTruthy();
+    expect(
+      purgeInventoryWithinBound(ErasureLimits.versionEntries + 1)
+    ).toBeFalsy();
   });
 });

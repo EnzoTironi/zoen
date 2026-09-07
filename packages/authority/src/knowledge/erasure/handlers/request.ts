@@ -118,6 +118,13 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
             WHERE world_id = ${world.worldId} AND realm = ${world.realm}
             FOR UPDATE
           `;
+          // Identity write so a reservation waiting on FOR SHARE cannot keep a
+          // pre-Closing snapshot after we commit (SSI aborts the stale reader).
+          yield* sql`
+            UPDATE authority.worlds
+            SET security_revision = security_revision
+            WHERE world_id = ${world.worldId} AND realm = ${world.realm}
+          `;
           yield* fenceWorldDisclosures(world);
           const [progress] = yield* sql`
             SELECT phase, erasure_revision::text, closing_operation_id,

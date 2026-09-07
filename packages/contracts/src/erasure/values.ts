@@ -48,6 +48,20 @@ export const ErasureObjectVersionId = Schema.String.check(
 );
 export type ErasureObjectVersionId = typeof ErasureObjectVersionId.Type;
 
+/**
+ * Aggregate ListObjectVersions inventory bound: two prefixes (canonical worlds/
+ * + residual legacy) × 10_000 pages × 100 keys. Must stay aligned with the S3
+ * adapter page/prefix caps so completePurgeOutcomes can accept every inventory
+ * the adapter may return.
+ */
+export const ErasureLimits = {
+  inventoryPageSize: 100,
+  inventoryPagesPerPrefix: 10_000,
+  inventoryPrefixes: 2,
+  /** Combined two-prefix manifest: prefixes × pages × page size. */
+  versionEntries: 2 * 10_000 * 100,
+} as const;
+
 /** One ListObjectVersions entry under a World prefix. */
 export const ErasureVersionEntry = Schema.Struct({
   deleteMarker: Schema.Boolean,

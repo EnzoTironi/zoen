@@ -10,7 +10,7 @@ import {
   RequestWorldErasure,
 } from "@zoen/contracts/erasure/operations";
 import { CreatePersonalWorld } from "@zoen/contracts/worlds/operations";
-import { Effect, Schema } from "effect";
+import { Deferred, Effect, Fiber, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { layer as erasureStorage } from "../../../../apps/server/src/adapters/object-storage/erasure/s3.ts";
@@ -157,4 +157,85 @@ it.live("durable removed captures do not block purge terminality", () =>
       }).pipe(Effect.provide(erasureStorage(config)))
     )
   )
+);
+
+it.live(
+  "reservation waiting behind Closing cannot insert after the Closing cut",
+  () =>
+    withErasureRuntime((database) =>
+      Effect.scoped(
+        Effect.gen(function* closingReservationRace() {
+          const { context, world } = yield* createScenario;
+          const held = yield* Deferred.make<null>();
+          const release = yield* Deferred.make<null>();
+          const closingOperationId = randomUUID();
+          const closingReceiptId = randomUUID();
+          const holder = yield* Effect.forkScoped(
+            Effect.gen(function* holdClosingLock() {
+              const migration = yield* SqlClient.SqlClient;
+              yield* migration.withTransaction(
+                Effect.gen(function* closingCriticalSection() {
+                  // ACCESS EXCLUSIVE also blocks the reservation's pre-txn reads so
+                  // the wait is observable; Closing's FOR UPDATE is the production lock.
+                  yield* migration`LOCK TABLE authority.worlds IN ACCESS EXCLUSIVE MODE`;
+                  yield* Deferred.succeed(held, null);
+                  yield* Deferred.await(release);
+                  // Mirrors Closing's identity write that forces SSI abort of
+                  // reservations whose snapshot predates the cut.
+                  yield* migration`
+                    UPDATE authority.worlds
+                    SET security_revision = security_revision
+                    WHERE world_id = ${world.worldId} AND realm = ${world.realm}`;
+                  yield* migration`
+                    INSERT INTO authority.world_erasure_progress (
+                      world_id, realm, phase, erasure_revision,
+                      closing_operation_id, closing_receipt_id, policy_version
+                    ) VALUES (
+                      ${world.worldId}, ${world.realm}, ${"Closing"}, ${1},
+                      ${closingOperationId}, ${closingReceiptId},
+                      ${"d03-local-erasable-v1"}
+                    )`;
+                })
+              );
+            }).pipe(Effect.provide(database.migration))
+          );
+          yield* Deferred.await(held);
+          const pending = yield* Effect.forkScoped(
+            reserveCapture(
+              context,
+              world,
+              new TextEncoder().encode("post-closing-upload")
+            ).pipe(Effect.result)
+          );
+          const blocked = SqlClient.SqlClient.use(
+            (admin) => admin`SELECT count(*)::int AS waiting FROM pg_locks
+              WHERE database = (SELECT oid FROM pg_database WHERE datname = current_database())
+                AND relation = 'authority.worlds'::regclass
+                AND NOT granted`
+          ).pipe(Effect.provide(database.migration));
+          let waiting = false;
+          for (let attempt = 0; attempt < 80 && !waiting; attempt += 1) {
+            const rows = yield* blocked;
+            waiting = rows[0]?.waiting === 1;
+            if (!waiting) {
+              yield* Effect.sleep("25 millis");
+            }
+          }
+          expect(waiting).toBeTruthy();
+          yield* Deferred.succeed(release, null);
+          yield* Fiber.join(holder);
+          const reserved = yield* Fiber.join(pending);
+          expect(reserved._tag).toBe("Failure");
+          const sql = yield* SqlClient.SqlClient;
+          expect(
+            yield* sql`SELECT count(*)::int AS count FROM jobs.captures
+              WHERE world_id = ${world.worldId}`
+          ).toStrictEqual([{ count: 0 }]);
+          expect(
+            yield* sql`SELECT phase FROM authority.world_erasure_progress
+              WHERE world_id = ${world.worldId}`
+          ).toStrictEqual([{ phase: "Closing" }]);
+        })
+      )
+    )
 );
