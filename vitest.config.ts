@@ -10,6 +10,15 @@ const generated = [
   "archives/**",
 ];
 
+// EX25 basis compatibility + withLegacyBasisHarness consumers. Keep serial: parallel
+// legacy harnesses contend on disposable DB/storage past it.live timeouts.
+const integrationLegacyInclude = [
+  "tests/integration/subject-identity/basis/**/*.integration.test.{ts,tsx}",
+  "tests/integration/subject-identity/independent/audience.review.integration.test.ts",
+  "tests/integration/subject-identity/independent/concurrency.review.integration.test.ts",
+  "tests/integration/subject-identity/independent/legacy-bases.review.integration.test.ts",
+] as const;
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -39,11 +48,21 @@ export default defineConfig({
           environment: "node",
           exclude: generated,
           hookTimeout: 30_000,
-          include: ["**/*.integration.test.{ts,tsx}"],
-          // These workers share real PostgreSQL/S3 and launch additional native processes.
-          // Keep one worker: parallel legacy-basis harnesses can contend on disposable
-          // DB/storage long enough to hit it.live timeouts before container acceptance.
+          include: [...integrationLegacyInclude],
           maxWorkers: 1,
+          name: "integration-legacy",
+          testTimeout: 30_000,
+        },
+      },
+      {
+        extends: true,
+        test: {
+          environment: "node",
+          exclude: [...generated, ...integrationLegacyInclude],
+          hookTimeout: 30_000,
+          include: ["**/*.integration.test.{ts,tsx}"],
+          // Non-legacy suites: modest parallelism against shared Postgres/S3.
+          maxWorkers: 2,
           name: "integration",
           testTimeout: 30_000,
         },
