@@ -3,7 +3,11 @@ import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-/** Expiry and cleanup's `removed` state do not prove that a remote PUT cannot finish. */
+/**
+ * Refuse captures that can still finish a remote PUT (`reserved`) or are mid-cleanup
+ * (`cleanup_pending`). Durable `removed` rows cannot stage uploads and are deleted only
+ * during SQL purge — treating them as unsettled would block Erased forever.
+ */
 export const requireSettledCaptures = Effect.fn(
   "erasure.requireSettledCaptures"
 )(function* requireSettledCaptures(world: WorldRef) {
@@ -11,7 +15,7 @@ export const requireSettledCaptures = Effect.fn(
   const uncertain = yield* sql`
       SELECT capture_id FROM jobs.captures
       WHERE world_id = ${world.worldId} AND realm = ${world.realm}
-        AND state NOT IN ('uploaded', 'admitted') LIMIT 1
+        AND state IN ('reserved', 'cleanup_pending') LIMIT 1
     `;
   if (uncertain.length !== 0) {
     return yield* new Unavailable({ code: "UNAVAILABLE" });

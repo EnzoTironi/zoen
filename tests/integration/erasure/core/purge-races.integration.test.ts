@@ -127,3 +127,36 @@ it.live(
       )
     )
 );
+
+it.live(
+  "durable removed captures do not block purge terminality",
+  () =>
+    withErasureRuntime((database) =>
+      withStorage(({ config }) =>
+        Effect.gen(function* removedSettled() {
+          const { context, closing, world } = yield* createScenario;
+          const capture = yield* reserveCapture(
+            context,
+            world,
+            new TextEncoder().encode("cleaned-upload")
+          );
+          // Simulate cleanup completing to durable `removed` without deleting the row yet
+          // (SQL purge is what removes capture rows). Staging only accepts `reserved`.
+          yield* SqlClient.SqlClient.use(
+            (admin) => admin`UPDATE jobs.captures
+      SET state = 'removed',
+          expires_at = clock_timestamp() - interval '1 second'
+      WHERE capture_id = ${capture.captureId}`
+          ).pipe(Effect.provide(database.migration));
+          const closed = yield* requestWorldErasure(context, closing);
+          const request = yield* purgeRequest(closing, closed.revision);
+          const purged = yield* purgeWorldContent(context, request);
+          expect(purged).toMatchObject({ phase: "Erased" });
+          const sql = yield* SqlClient.SqlClient;
+          expect(
+            yield* sql`SELECT count(*)::int AS count FROM jobs.captures WHERE capture_id = ${capture.captureId}`
+          ).toStrictEqual([{ count: 0 }]);
+        }).pipe(Effect.provide(erasureStorage(config)))
+      )
+    )
+);
