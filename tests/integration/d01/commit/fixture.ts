@@ -12,6 +12,8 @@ import {
   VerifiedRequestContext,
 } from "../../../../packages/authority/src/ports/d01/context.js";
 import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
+import { ErasureObjectInventory } from "../../../../packages/authority/src/ports/erasure/inventory.js";
+import { ErasurePurgeStore } from "../../../../packages/authority/src/ports/erasure/purge.js";
 import { digestBytes } from "../../../../packages/authority/src/values/canonical.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/d01/operations.js";
 
@@ -38,7 +40,9 @@ const policy = Schema.decodeSync(DataPolicySchema)({
 export const configuration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
   Layer.succeed(DataPolicy, policy),
-  ErasureAttemptRegister.unqualifiedLayer
+  ErasureAttemptRegister.unqualifiedLayer,
+  ErasureObjectInventory.unqualifiedLayer,
+  ErasurePurgeStore.unqualifiedLayer
 );
 
 export const makeInput = Effect.fn("EX05.makeInput")(function* makeInput() {

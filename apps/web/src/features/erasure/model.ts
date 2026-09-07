@@ -35,7 +35,7 @@ export const entireWorldScope =
   "A exclusão cobre este espaço inteiro: Frames, Questions, correções, grants de conteúdo, imports, objetos admitidos/staged e versões órfãs do namespace. Não apaga a conta, outros espaços, nem cópias já liberadas ao transporte.";
 
 export const noRestoreNotice =
-  "Restore após erasure permanece bloqueado. Esta superfície não oferece reabertura de conteúdo apagado e não promove o estado para Erased.";
+  "Restore após erasure permanece bloqueado. Esta UI não dispara purge; progresso Erased vem de PurgeWorldContent (cópias controladas locais).";
 
 export const erasurePatch = (
   result: WorldErasureSuccess
@@ -63,6 +63,18 @@ export const erasurePatch = (
           revision: result.revision,
         },
         receipt: result,
+        stale: false,
+      };
+    }
+    case "WorldContentPurged": {
+      return {
+        confirmation: false,
+        progress: {
+          attemptExternalState: result.attemptExternalState,
+          phase: result.phase,
+          restoreAfterErasure: false,
+          revision: result.revision,
+        },
         stale: false,
       };
     }

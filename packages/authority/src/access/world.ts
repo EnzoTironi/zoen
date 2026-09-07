@@ -46,6 +46,7 @@ const capabilities = {
   ProposeIdentityResolution: "mutate",
   ProposeIdentitySplit: "mutate",
   ProposeIdentityUndo: "mutate",
+  PurgeWorldContent: "manage",
   RecoverConversationJournal: "read",
   RequestWorldErasure: "mutate",
   ResolveIdentity: "mutate",

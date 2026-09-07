@@ -56,8 +56,9 @@ export const ErasurePanel = ({
             </p>
             {progress.phase === "Erased" || progress.phase === "Purging" ? (
               <p role="note">
-                Esta superfície não promove nem executa purge/Erased; o
-                progresso acima é somente leitura administrativa.
+                Progresso administrativo somente leitura nesta UI. Purge local
+                (cópias controladas) usa CLI/API PurgeWorldContent; restore após
+                erasure permanece bloqueado.
               </p>
             ) : null}
             {progress.phase === "Active" && !confirmation ? (

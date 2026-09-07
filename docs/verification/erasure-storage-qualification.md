@@ -57,7 +57,7 @@ bucket-deleted
 | Fly all-in-one independent controller / anti-rollback anchor | **Blocked** — app PG + RustFS share one Fly volume; local disposable register (EX31) ≠ qualified controller |
 | Backup / copy catalog | **Blocked** |
 | World fence + in-flight PUT/multipart containment (ER-R02) | **Blocked** |
-| SQL content purge + Closing→Erased attestation | **Blocked** (S3 inventory/purge ports only) |
+| SQL content purge + Closing→Erased attestation | **Local EX45 landed** (`local-controlled-copies` only); full D03 still blocked |
 | `restoreAfterErasure` | **false** / closed (F04) |
 | Hosted Erased on live Fly | **Blocked** until Fly re-probe + gates above |
 
