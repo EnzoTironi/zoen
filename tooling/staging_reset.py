@@ -32,6 +32,7 @@ COMPOSE_PROJECT = "zoen-rebuild"
 DATABASE_RE = re.compile(r"^zoen_local_[0-9a-f]{24}$")
 BUCKET_RE = re.compile(r"^zoen-local-[0-9a-f]{24}$")
 ROLE_RE = re.compile(r"^zoen_(authority|identity|migration|progress)_[0-9a-f]{24}$")
+PROFILE_NAME_RE = re.compile(r"^[a-z][a-z0-9-]{0,31}$")
 
 
 def _lexical_under_root(root: Path, path: Path) -> Path:
@@ -89,11 +90,33 @@ def operation_path(root: Path) -> Path:
     return root / ".local" / PROFILE / "reset-operation.json"
 
 
+def owned_inventory_fields(
+    database_name: Any, bucket: Any, role_names: Any
+) -> dict[str, Any]:
+    if not isinstance(database_name, str) or not DATABASE_RE.fullmatch(database_name):
+        raise ValueError("Malformed owned database name in staging inventory")
+    if not isinstance(bucket, str) or not BUCKET_RE.fullmatch(bucket):
+        raise ValueError("Malformed owned bucket name in staging inventory")
+    if not isinstance(role_names, list) or not role_names:
+        raise ValueError("Staging inventory missing roleNames")
+    for role in role_names:
+        if not isinstance(role, str) or not ROLE_RE.fullmatch(role):
+            raise ValueError(f"Malformed owned role name: {role!r}")
+    return {
+        "schemaVersion": SCHEMA,
+        "profile": PROFILE,
+        "checkout": None,  # filled by callers
+        "composeProject": COMPOSE_PROJECT,
+        "databaseName": database_name,
+        "bucket": bucket,
+        "roleNames": role_names,
+    }
+
+
 def load_inventory(root: Path) -> dict[str, Any]:
-    """Build ownership inventory from resources.json or provision.json."""
+    """Load ownership inventory from resources.json only (no legacy synthesis)."""
     env_path, profile_dir = profile_paths(root)
     resources_path = profile_dir / "resources.json"
-    provision_path = profile_dir / "provision.json"
 
     for path in (
         root / ".env.infra",
@@ -101,62 +124,47 @@ def load_inventory(root: Path) -> dict[str, Any]:
         root / ".local",
         profile_dir,
         resources_path,
-        provision_path,
         profile_dir / "installation.json",
+        profile_dir / "provision.json",
+        profile_dir / "ready.json",
     ):
         if path.exists() or path.is_symlink():
             ensure_no_symlinks(root, path)
 
-    if resources_path.is_file():
-        inventory = json.loads(resources_path.read_text())
-    elif provision_path.is_file():
-        provision = json.loads(provision_path.read_text())
-        inventory = {
-            "schemaVersion": SCHEMA,
-            "profile": PROFILE,
-            "checkout": str(root.resolve()),
-            "composeProject": COMPOSE_PROJECT,
-            "databaseName": provision.get("databaseName"),
-            "bucket": provision.get("bucket"),
-            "roleNames": list((provision.get("names") or {}).values()),
-        }
-    else:
+    if not resources_path.is_file():
         raise ValueError(
-            "No staging ownership inventory (.local/staging/resources.json or provision.json)"
+            "No staging ownership inventory (.local/staging/resources.json); "
+            "recreate disposable staging with `pnpm staging:reset` then staging:up"
         )
 
-    if inventory.get("schemaVersion") not in {SCHEMA, "staging-resources.v1"}:
+    inventory = json.loads(resources_path.read_text())
+    if not isinstance(inventory, dict):
+        raise ValueError("Malformed staging ownership inventory; expected object")
+    if inventory.get("schemaVersion") != SCHEMA:
         raise ValueError("Unknown staging resource schema; refuse automatic reset")
-    if inventory.get("profile") not in {None, PROFILE}:
+    if inventory.get("profile") != PROFILE:
         raise ValueError("Inventory profile is not staging; refuse automatic reset")
-    if inventory.get("composeProject") not in {None, COMPOSE_PROJECT}:
+    if inventory.get("composeProject") != COMPOSE_PROJECT:
         raise ValueError(
             f"Foreign Compose project {inventory.get('composeProject')!r}; refuse automatic reset"
         )
     checkout = inventory.get("checkout")
-    if checkout is not None and Path(checkout).resolve() != root.resolve():
+    if not isinstance(checkout, str) or Path(checkout).resolve() != root.resolve():
         raise ValueError("Inventory checkout does not match this repository root")
 
-    database_name = inventory.get("databaseName")
-    bucket = inventory.get("bucket")
-    if not isinstance(database_name, str) or not DATABASE_RE.fullmatch(database_name):
-        raise ValueError("Malformed owned database name in staging inventory")
-    if not isinstance(bucket, str) or not BUCKET_RE.fullmatch(bucket):
-        raise ValueError("Malformed owned bucket name in staging inventory")
-
-    role_names = inventory.get("roleNames") or []
-    if not isinstance(role_names, list) or not role_names:
-        raise ValueError("Staging inventory missing roleNames")
-    for role in role_names:
-        if not isinstance(role, str) or not ROLE_RE.fullmatch(role):
-            raise ValueError(f"Malformed owned role name: {role!r}")
+    validated = owned_inventory_fields(
+        inventory.get("databaseName"),
+        inventory.get("bucket"),
+        inventory.get("roleNames"),
+    )
+    validated["checkout"] = str(root.resolve())
 
     if env_path.is_file():
         env = parse_env_file(env_path)
         for key in ("ZOEN_PUBLIC_URL", "ZOEN_S3_ENDPOINT"):
             if key in env:
                 require_local_url(key, env[key])
-        if env.get("ZOEN_S3_BUCKET") not in {None, bucket}:
+        if env.get("ZOEN_S3_BUCKET") not in {None, validated["bucket"]}:
             raise ValueError("Staging env bucket does not match ownership inventory")
 
     infra = root / ".env.infra"
@@ -168,15 +176,7 @@ def load_inventory(root: Path) -> dict[str, Any]:
             raise ValueError(f".env.infra missing {key}")
         require_local_url(key, infra_env[key])
 
-    return {
-        "schemaVersion": SCHEMA,
-        "profile": PROFILE,
-        "checkout": str(root.resolve()),
-        "composeProject": COMPOSE_PROJECT,
-        "databaseName": database_name,
-        "bucket": bucket,
-        "roleNames": role_names,
-    }
+    return validated
 
 
 def write_operation(root: Path, inventory: dict[str, Any], status: str) -> None:
@@ -201,19 +201,33 @@ def read_operation(root: Path) -> dict[str, Any] | None:
         raise ValueError(f"Refusing symlinked reset operation file: {path}")
     if not path.is_file():
         return None
-    return json.loads(path.read_text())
+    payload = json.loads(path.read_text())
+    if not isinstance(payload, dict):
+        raise ValueError("Malformed reset operation; expected object")
+    return payload
+
+
+def remove_named_profile_files(root: Path, profile: str) -> None:
+    if not PROFILE_NAME_RE.fullmatch(profile):
+        raise ValueError(f"Refusing to remove unexpected profile name: {profile!r}")
+    env_path = root / f".env.{profile}"
+    profile_dir = root / ".local" / profile
+    if env_path.exists() or env_path.is_symlink():
+        ensure_no_symlinks(root, env_path)
+        if env_path.is_file() or env_path.is_symlink():
+            env_path.unlink()
+    if profile_dir.exists() or profile_dir.is_symlink():
+        ensure_no_symlinks(root, profile_dir)
+        if profile_dir.is_dir():
+            for item in sorted(profile_dir.rglob("*"), reverse=True):
+                ensure_no_symlinks(root, item)
+            shutil.rmtree(profile_dir)
+        elif profile_dir.is_file() or profile_dir.is_symlink():
+            profile_dir.unlink()
 
 
 def remove_profile_files(root: Path) -> None:
-    env_path, profile_dir = profile_paths(root)
-    ensure_no_symlinks(root, env_path)
-    if env_path.is_file():
-        env_path.unlink()
-    ensure_no_symlinks(root, profile_dir)
-    if profile_dir.is_dir():
-        for item in sorted(profile_dir.rglob("*"), reverse=True):
-            ensure_no_symlinks(root, item)
-        shutil.rmtree(profile_dir)
+    remove_named_profile_files(root, PROFILE)
 
 
 def deprovision_owned(root: Path, inventory: dict[str, Any]) -> None:
@@ -237,14 +251,21 @@ def deprovision_owned(root: Path, inventory: dict[str, Any]) -> None:
 
 
 def enumerate_local_profiles(root: Path) -> list[str]:
-    names: list[str] = []
+    names: set[str] = set()
     for path in sorted(root.glob(".env.*")):
         if path.name in {".env.infra"} or path.is_symlink():
             continue
         suffix = path.name.removeprefix(".env.")
-        if re.fullmatch(r"[a-z][a-z0-9-]{0,31}", suffix):
-            names.append(suffix)
-    return names
+        if PROFILE_NAME_RE.fullmatch(suffix):
+            names.add(suffix)
+    local = root / ".local"
+    if local.is_dir() and not local.is_symlink():
+        for child in local.iterdir():
+            if child.name.startswith("."):
+                continue
+            if PROFILE_NAME_RE.fullmatch(child.name):
+                names.add(child.name)
+    return sorted(names)
 
 
 def wipe_shared_volumes(root: Path) -> int:
@@ -258,8 +279,22 @@ def wipe_shared_volumes(root: Path) -> int:
     if not infra.is_file() or infra.is_symlink():
         print("Refusing wipe without a regular .env.infra", file=sys.stderr)
         return 1
+    for name in profiles:
+        # Preflight symlink safety before destroying shared volumes.
+        env_path = root / f".env.{name}"
+        profile_dir = root / ".local" / name
+        if env_path.exists() or env_path.is_symlink():
+            ensure_no_symlinks(root, env_path)
+        if profile_dir.exists() or profile_dir.is_symlink():
+            ensure_no_symlinks(root, profile_dir)
     subprocess.check_call([*COMPOSE, "down", "--volumes"], cwd=root)
-    print("Shared Compose volumes removed after explicit opt-in.")
+    for name in profiles:
+        remove_named_profile_files(root, name)
+    print(
+        "Shared Compose volumes removed after explicit opt-in. "
+        "Local profile env/install pointers were cleared so staging:up cannot "
+        "report a falsely ready install."
+    )
     return 0
 
 
@@ -269,20 +304,12 @@ def reset_owned_profile(root: Path) -> int:
         inventory = existing.get("inventory")
         if not isinstance(inventory, dict):
             raise ValueError("Incomplete reset operation has unusable inventory; blocked")
-        # Resume from recorded inventory; neighboring installs stay untouched.
-        validated = {
-            "schemaVersion": SCHEMA,
-            "profile": PROFILE,
-            "checkout": str(root.resolve()),
-            "composeProject": COMPOSE_PROJECT,
-            "databaseName": inventory["databaseName"],
-            "bucket": inventory["bucket"],
-            "roleNames": inventory["roleNames"],
-        }
-        if not DATABASE_RE.fullmatch(validated["databaseName"]):
-            raise ValueError("Blocked: recorded reset database name is invalid")
-        if not BUCKET_RE.fullmatch(validated["bucket"]):
-            raise ValueError("Blocked: recorded reset bucket name is invalid")
+        validated = owned_inventory_fields(
+            inventory.get("databaseName"),
+            inventory.get("bucket"),
+            inventory.get("roleNames"),
+        )
+        validated["checkout"] = str(root.resolve())
     else:
         # Refuse before any mutation when inventory/paths are unsafe.
         if not (root / f".env.{PROFILE}").exists() and not (root / ".local" / PROFILE).exists():

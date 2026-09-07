@@ -243,6 +243,16 @@ const program = Effect.gen(function* provisionLocalApplication() {
       );
     })
   );
+  // Completion marker only after DB migrations and bucket setup succeed.
+  yield* fs.writeFileString(
+    `${directory}/ready.json`,
+    yield* encodeJson({
+      profile,
+      schemaVersion: "local-profile-ready.v1",
+      status: "ready",
+    }),
+    { flag: "wx", mode: 384 }
+  );
   return yield* Effect.logInfo({
     event: "local.provisioned",
     origin: publicUrl.origin,
@@ -294,16 +304,8 @@ const resetOwnedProgram = Effect.gen(function* resetOwnedLocalProfile() {
       return yield* new ProvisionError({ code: "RESET_ROLE_NAME_INVALID" });
     }
   }
-  yield* Effect.gen(function* dropOwnedDatabase() {
-    const sql = yield* SqlClient.SqlClient;
-    yield* sql.unsafe(
-      `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${databaseName}' AND pid <> pg_backend_pid()`
-    );
-    yield* sql.unsafe(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
-    for (const role of roleNames) {
-      yield* sql.unsafe(`DROP ROLE IF EXISTS "${role}"`);
-    }
-  }).pipe(Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl })));
+  // Empty/delete owned bucket first (paginate all versions) before dropping
+  // DB/roles so a truncated listing never leaves a half-reset.
   yield* Effect.scoped(
     Effect.gen(function* deleteOwnedBucket() {
       const client = yield* Effect.acquireRelease(
@@ -326,68 +328,128 @@ const resetOwnedProgram = Effect.gen(function* resetOwnedLocalProfile() {
             resource.destroy();
           })
       );
-      const listing = yield* Effect.tryPromise({
-        catch: (error) => heldOrFailed(error, "RESET_BUCKET_LIST_FAILED"),
-        try: async (signal) => {
-          try {
-            return await client.send(
-              new ListObjectVersionsCommand({ Bucket: bucket }),
-              { abortSignal: signal }
-            );
-          } catch (error) {
+      const listPage = (
+        keyMarker: string | undefined,
+        versionIdMarker: string | undefined
+      ) =>
+        Effect.tryPromise({
+          catch: (error) => {
             const name = s3ErrorName(error);
             if (name === "NoSuchBucket" || name === "NotFound") {
-              return null;
+              return new ProvisionError({ code: "RESET_BUCKET_ABSENT" });
             }
-            throw error;
-          }
-        },
-      });
-      if (listing === null) {
-        return yield* Effect.void;
-      }
-      if (listing.IsTruncated === true) {
-        return yield* new ProvisionError({
-          code: "RESET_BUCKET_LIST_TRUNCATED",
-        });
-      }
-      const entries = [
-        ...(listing.Versions ?? []),
-        ...(listing.DeleteMarkers ?? []),
-      ];
-      for (const object of entries) {
-        if (object.Key === undefined) {
-          return yield* new ProvisionError({
-            code: "RESET_BUCKET_ENTRY_INVALID",
-          });
-        }
-        const objectKey = object.Key;
-        yield* Effect.tryPromise({
-          catch: (error) =>
-            heldOrFailed(error, "RESET_BUCKET_DELETE_OBJECT_FAILED"),
+            return heldOrFailed(error, "RESET_BUCKET_LIST_FAILED");
+          },
           try: (signal) =>
             client.send(
-              new DeleteObjectCommand({
+              new ListObjectVersionsCommand({
                 Bucket: bucket,
-                Key: objectKey,
-                VersionId: object.VersionId,
+                ...(keyMarker === undefined ? {} : { KeyMarker: keyMarker }),
+                ...(versionIdMarker === undefined
+                  ? {}
+                  : { VersionIdMarker: versionIdMarker }),
               }),
               { abortSignal: signal }
             ),
         });
+      let keyMarker: string | undefined;
+      let versionIdMarker: string | undefined;
+      let page = 0;
+      const visited = new Set<string>();
+      for (;;) {
+        const listing = yield* listPage(keyMarker, versionIdMarker).pipe(
+          Effect.catchTag("ProvisionError", (error) =>
+            error.code === "RESET_BUCKET_ABSENT"
+              ? Effect.succeed(null)
+              : Effect.fail(error)
+          )
+        );
+        if (listing === null) {
+          return yield* Effect.void;
+        }
+        const entries = [
+          ...(listing.Versions ?? []),
+          ...(listing.DeleteMarkers ?? []),
+        ];
+        for (const object of entries) {
+          if (object.Key === undefined) {
+            return yield* new ProvisionError({
+              code: "RESET_BUCKET_ENTRY_INVALID",
+            });
+          }
+          const objectKey = object.Key;
+          yield* Effect.tryPromise({
+            catch: (error) =>
+              heldOrFailed(error, "RESET_BUCKET_DELETE_OBJECT_FAILED"),
+            try: (signal) =>
+              client.send(
+                new DeleteObjectCommand({
+                  Bucket: bucket,
+                  Key: objectKey,
+                  VersionId: object.VersionId,
+                }),
+                { abortSignal: signal }
+              ),
+          });
+        }
+        if (listing.IsTruncated !== true) {
+          break;
+        }
+        if (listing.NextKeyMarker === undefined) {
+          return yield* new ProvisionError({
+            code: "RESET_BUCKET_LIST_TRUNCATED",
+          });
+        }
+        const cursor = `${listing.NextKeyMarker}\0${listing.NextVersionIdMarker ?? ""}`;
+        if (visited.has(cursor)) {
+          return yield* new ProvisionError({
+            code: "RESET_BUCKET_LIST_TRUNCATED",
+          });
+        }
+        visited.add(cursor);
+        keyMarker = listing.NextKeyMarker;
+        versionIdMarker = listing.NextVersionIdMarker;
+        page += 1;
+        if (page >= 10_000) {
+          return yield* new ProvisionError({
+            code: "RESET_BUCKET_LIST_TRUNCATED",
+          });
+        }
       }
       yield* Effect.tryPromise({
-        catch: (error) => heldOrFailed(error, "RESET_BUCKET_DELETE_FAILED"),
+        catch: (error) => {
+          const name = s3ErrorName(error);
+          if (name === "NoSuchBucket" || name === "NotFound") {
+            return new ProvisionError({ code: "RESET_BUCKET_ABSENT" });
+          }
+          return heldOrFailed(error, "RESET_BUCKET_DELETE_FAILED");
+        },
         try: (signal) =>
           client.send(new DeleteBucketCommand({ Bucket: bucket }), {
             abortSignal: signal,
           }),
-      });
+      }).pipe(
+        Effect.catchTag("ProvisionError", (error) =>
+          error.code === "RESET_BUCKET_ABSENT"
+            ? Effect.void
+            : Effect.fail(error)
+        )
+      );
       return yield* Effect.void;
     })
   );
+  yield* Effect.gen(function* dropOwnedDatabase() {
+    const sql = yield* SqlClient.SqlClient;
+    yield* sql.unsafe(
+      `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${databaseName}' AND pid <> pg_backend_pid()`
+    );
+    yield* sql.unsafe(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+    for (const role of roleNames) {
+      yield* sql.unsafe(`DROP ROLE IF EXISTS "${role}"`);
+    }
+  }).pipe(Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl })));
   // Touch fs so the dependency remains meaningful for interrupted resumes.
-  yield* fs.exists(`${root}.local/${profile}/provision.json`);
+  yield* fs.exists(`${root}.local/${profile}/resources.json`);
   return yield* Effect.logInfo({
     event: "local.profile.reset_owned",
     profile,

@@ -83,6 +83,16 @@ class StagingResetOwnership(unittest.TestCase):
                 )
                 + "\n"
             )
+            (profile / "ready.json").write_text(
+                json.dumps(
+                    {
+                        "schemaVersion": "local-profile-ready.v1",
+                        "profile": "staging",
+                        "status": "ready",
+                    }
+                )
+                + "\n"
+            )
         if env:
             write_env(
                 self.root / ".env.staging",
@@ -233,6 +243,93 @@ class StagingResetOwnership(unittest.TestCase):
         check_call.assert_called()
         flat = " ".join(str(part) for part in check_call.call_args.args[0])
         self.assertIn("--volumes", flat)
+        self.assertFalse((self.root / ".env.staging").exists())
+        self.assertFalse((self.root / ".local" / "staging").exists())
+        self.assertFalse((self.root / ".env.application").exists())
+        self.assertFalse((self.root / ".local" / "application").exists())
+        self.assertFalse((self.root / ".env.other").exists())
+        self.assertTrue((self.root / ".env.infra").is_file())
+
+
+    def test_provision_json_only_inventory_refused(self):
+        self.seed_staging_install(resources=False)
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 1)
+        deprovision.assert_not_called()
+        self.assertTrue((self.root / ".env.staging").is_file())
+
+    def test_legacy_schema_version_refused(self):
+        self.seed_staging_install()
+        resources = self.root / ".local" / "staging" / "resources.json"
+        data = json.loads(resources.read_text())
+        data["schemaVersion"] = "staging-resources.v1"
+        resources.write_text(json.dumps(data) + "\n")
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 1)
+        deprovision.assert_not_called()
+
+    def test_non_object_inventory_refused(self):
+        self.seed_staging_install()
+        resources = self.root / ".local" / "staging" / "resources.json"
+        resources.write_text("[1, 2, 3]\n")
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 1)
+        deprovision.assert_not_called()
+
+    def test_damaged_reset_record_refused(self):
+        self.seed_staging_install()
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "staging_reset_damaged", self.root / "tooling" / "staging_reset.py"
+        )
+        assert spec and spec.loader
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.ROOT = self.root.resolve()
+        module.write_operation(
+            self.root,
+            {
+                "schemaVersion": "local-profile-resources.v1",
+                "profile": "staging",
+                "checkout": str(self.root.resolve()),
+                "composeProject": "zoen-rebuild",
+                "databaseName": 123,
+                "bucket": self.bucket,
+                "roleNames": list(self.roles.values()),
+            },
+            "started",
+        )
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 1)
+        deprovision.assert_not_called()
+
+    def test_missing_ready_marker_blocks_phantom_ready_on_up(self):
+        self.seed_staging_install()
+        (self.root / ".local" / "staging" / "ready.json").unlink()
+        import importlib.util
+
+        up_spec = importlib.util.spec_from_file_location(
+            "staging_up_ready", self.root / "tooling" / "staging_up.py"
+        )
+        assert up_spec and up_spec.loader
+        up = importlib.util.module_from_spec(up_spec)
+        up_spec.loader.exec_module(up)
+        with self.assertRaises(ValueError) as ctx:
+            up.assert_ready_or_absent(self.root)
+        self.assertIn("ready.json", str(ctx.exception))
+
+    def test_ready_install_accepted_on_up(self):
+        self.seed_staging_install()
+        import importlib.util
+
+        up_spec = importlib.util.spec_from_file_location(
+            "staging_up_ok", self.root / "tooling" / "staging_up.py"
+        )
+        assert up_spec and up_spec.loader
+        up = importlib.util.module_from_spec(up_spec)
+        up_spec.loader.exec_module(up)
+        up.assert_ready_or_absent(self.root)
 
 
 if __name__ == "__main__":

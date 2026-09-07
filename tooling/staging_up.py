@@ -33,14 +33,18 @@ def refuse_symlink(path: Path, label: str) -> None:
 def assert_ready_or_absent(root: Path) -> None:
     """Reject stale / partial staging pointers instead of skipping provision."""
     env_path = root / f".env.{PROFILE}"
-    profile_dir = root / ".local" / PROFILE
+    local_parent = root / ".local"
+    profile_dir = local_parent / PROFILE
     operation = profile_dir / "reset-operation.json"
+    refuse_symlink(local_parent, ".local")
     refuse_symlink(env_path, f".env.{PROFILE}")
     refuse_symlink(profile_dir, f".local/{PROFILE}")
     refuse_symlink(operation, "reset-operation.json")
 
     if operation.is_file():
         payload = json.loads(operation.read_text())
+        if not isinstance(payload, dict):
+            raise ValueError("Malformed reset-operation.json; expected object")
         if payload.get("status") == "started":
             raise ValueError(
                 "Incomplete staging reset recorded; finish or clear with "
@@ -51,15 +55,27 @@ def assert_ready_or_absent(root: Path) -> None:
         installation = profile_dir / "installation.json"
         provision = profile_dir / "provision.json"
         resources = profile_dir / "resources.json"
-        if not installation.is_file() or not provision.is_file():
+        ready = profile_dir / "ready.json"
+        for path, label in (
+            (installation, "installation.json"),
+            (provision, "provision.json"),
+            (resources, "resources.json"),
+            (ready, "ready.json"),
+        ):
+            refuse_symlink(path, label)
+        if (
+            not installation.is_file()
+            or not provision.is_file()
+            or not resources.is_file()
+        ):
             raise ValueError(
                 "Partial staging install (.env.staging without installation/"
-                "provision inventory); run `pnpm staging:reset` then staging:up"
+                "provision/resources inventory); run `pnpm staging:reset` then staging:up"
             )
-        if not resources.is_file():
-            # Older tip installs: require an explicit reset so ownership is recorded.
+        if not ready.is_file():
+            # Files written before DB/bucket creation do not prove provision finished.
             raise ValueError(
-                "Staging install lacks resources.json ownership manifest; "
+                "Partial staging install (missing ready.json completion marker); "
                 "run `pnpm staging:reset` then staging:up"
             )
         print(
