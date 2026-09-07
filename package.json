@@ -29,6 +29,10 @@
     "build:web": "vite build --config vite.application.config.ts",
     "build": "python3 tooling/clean_build.py && pnpm build:apps && pnpm build:web && python3 tooling/build_release.py",
     "provision:local": "node --env-file=.env.infra ops/local/provision.ts",
+    "staging:up": "python3 tooling/staging_up.py",
+    "staging:down": "docker compose --env-file .env.infra -f ops/compose.yaml down",
+    "staging:reset": "python3 tooling/staging_reset.py",
+    "staging:logs": "docker compose --env-file .env.infra -f ops/compose.yaml logs -f --tail=200",
     "test:acceptance": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" node_modules/@playwright/test/cli.js test --config playwright.acceptance.config.ts",
     "build:container": "docker build -f ops/containers/application.Dockerfile -t zoen-local:current .",
     "test:container": "python3 tooling/verify_container.py"
