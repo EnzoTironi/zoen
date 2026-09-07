@@ -233,7 +233,11 @@ def validate_owned_inventory(root: Path, inventory: dict[str, Any]) -> dict[str,
 
 
 def ownership_from_interrupted_marker(root: Path, inventory: dict[str, Any]) -> dict[str, Any]:
-    """Re-validate interrupted reset markers before any destructive resume/retry."""
+    """Re-validate interrupted reset markers before any destructive resume/retry.
+
+    Marker-alone is never ownership authority: resources.json must exist and its
+    resource tuple must exactly match the marker (plus checkout/profile/compose).
+    """
     validated = validate_owned_inventory(root, inventory)
     env_path, profile_dir = profile_paths(root)
     resources_path = profile_dir / "resources.json"
@@ -241,38 +245,23 @@ def ownership_from_interrupted_marker(root: Path, inventory: dict[str, Any]) -> 
         if path.exists() or path.is_symlink():
             ensure_no_symlinks(root, path)
 
-    if resources_path.is_file():
-        live = load_inventory(root)
-        if (
-            validated["databaseName"] != live["databaseName"]
-            or validated["bucket"] != live["bucket"]
-            or list(validated["roleNames"]) != list(live["roleNames"])
-        ):
-            raise ValueError(
-                "Interrupted reset marker resource tuple does not match staging ownership "
-                "inventory; refuse foreign marker"
-            )
-        return live
+    if not resources_path.is_file():
+        raise ValueError(
+            "Interrupted reset marker without matching staging ownership inventory "
+            "(.local/staging/resources.json); refuse marker-only resume"
+        )
 
-    # Marker-only resume: still require local infra endpoints and matching env bucket.
-    infra = root / ".env.infra"
-    if not infra.is_file():
-        raise ValueError("No .env.infra; cannot verify local admin path")
-    infra_env = parse_env_file(infra)
-    for key in ("ZOEN_TEST_DATABASE_URL", "ZOEN_TEST_S3_ENDPOINT"):
-        if key not in infra_env:
-            raise ValueError(f".env.infra missing {key}")
-        require_local_url(key, infra_env[key])
-
-    if env_path.is_file():
-        env = parse_env_file(env_path)
-        for key in ("ZOEN_PUBLIC_URL", "ZOEN_S3_ENDPOINT"):
-            if key in env:
-                require_local_url(key, env[key])
-        if env.get("ZOEN_S3_BUCKET") not in {None, validated["bucket"]}:
-            raise ValueError("Staging env bucket does not match interrupted reset marker")
-
-    return validated
+    live = load_inventory(root)
+    if (
+        validated["databaseName"] != live["databaseName"]
+        or validated["bucket"] != live["bucket"]
+        or list(validated["roleNames"]) != list(live["roleNames"])
+    ):
+        raise ValueError(
+            "Interrupted reset marker resource tuple does not match staging ownership "
+            "inventory; refuse foreign marker"
+        )
+    return live
 
 
 def remove_named_profile_files(root: Path, profile: str) -> None:

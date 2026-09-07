@@ -410,6 +410,34 @@ class StagingResetOwnership(unittest.TestCase):
         self.assertTrue((self.root / ".env.staging").is_file())
         self.assertTrue((self.root / ".local" / "staging" / "resources.json").is_file())
 
+    def test_absent_resources_json_foreign_marker_refused_on_retry(self):
+        # No resources.json: a started marker with another profile's valid names
+        # must not become ownership authority for --reset-owned.
+        self.seed_staging_install(resources=False)
+        other_suffix = "c" * 24
+        self._write_started_marker(
+            {
+                "schemaVersion": "local-profile-resources.v1",
+                "profile": "staging",
+                "checkout": str(self.root.resolve()),
+                "composeProject": "zoen-rebuild",
+                "databaseName": f"zoen_local_{other_suffix}",
+                "bucket": f"zoen-local-{other_suffix}",
+                "roleNames": [
+                    f"zoen_authority_{other_suffix}",
+                    f"zoen_identity_{other_suffix}",
+                    f"zoen_migration_{other_suffix}",
+                    f"zoen_progress_{other_suffix}",
+                ],
+            }
+        )
+        self.assertFalse((self.root / ".local" / "staging" / "resources.json").exists())
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 1)
+        deprovision.assert_not_called()
+        self.assertTrue((self.root / ".env.staging").is_file())
+        self.assertTrue((self.root / ".local" / "application" / "sentinel.txt").is_file())
+
     def test_symlinked_staging_marker_refused_on_retry(self):
         profile = self.seed_staging_install()
         real = self.root.parent / "staging-real-marker"
