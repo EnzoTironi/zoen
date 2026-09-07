@@ -1,6 +1,6 @@
 # Eve Web Speech voice — qualificação ZN-0063 (D05 / EX44)
 
-Data: 2026-09-07 (PT). Tip de partida: `daabe8e`. Perfil produto voz: `eve-web-speech-v1` / admission `web-speech`. Texto permanece `eve-opencode-zen-v1` / `opencode-zen`.
+Data: 2026-09-07 (PT). Tip de partida: `daabe8e`. Tip verificado: `663b1d9` (`663b1d9488b105dd5b8b1e75c61c589a13c7976b`). Perfil produto voz: `eve-web-speech-v1` / admission `web-speech`. Texto permanece `eve-opencode-zen-v1` / `opencode-zen`.
 
 ## Inventário de providers (sem inventar)
 

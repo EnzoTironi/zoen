@@ -912,7 +912,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "PENDING",
+      "commit": "bd689582c33c38e2c71ec709fa04e5ac2ba7a6c9",
       "packages": ["EX44"],
       "state": "eve_web_speech_voice_profile_landed",
       "profile": "eve-web-speech-v1 / admission web-speech",
@@ -929,7 +929,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "PENDING",
+      "commit": "bd689582c33c38e2c71ec709fa04e5ac2ba7a6c9",
       "packages": ["EX40", "EX41", "EX42", "EX43", "EX44"],
       "state": "verified_for_profile",
       "profile": "eve-web-speech-v1 (browser Web Speech voice I/O; text via OpenCode Zen)",
