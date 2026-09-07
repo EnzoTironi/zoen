@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Zoen all-in-one: Postgres + RustFS (S3) + server on one Fly machine / volume.
 # ZA-05: distinct bootstrap / DB / object-store / app identities on one profile.
+# ZA-06: deterministic install lifecycle — same-release restart; digest mismatch
+# refuses (RESET_REQUIRED); readiness env fixed; supervise PG/RustFS/app exits.
 # module-resolution via /app/ops/node_modules -> apps/server/node_modules
 set -euo pipefail
 
@@ -25,6 +27,8 @@ chmod 700 "${BOOTSTRAP_DIR}"
 # rename sibling /data/bootstrap or replace root-owned runtime files.
 chown root:root "${ZOEN_STATE}"
 chmod 755 "${ZOEN_STATE}"
+# Drop any prior-boot supervisor marker so a healthy run cannot inherit status=1.
+rm -f "${ZOEN_STATE}/supervisor-failure.txt"
 
 write_secret_file() {
   local path="$1"
@@ -274,15 +278,15 @@ RUSTFS_PID=$!
 
 echo "all-in-one: waiting for RustFS"
 for _ in $(seq 1 60); do
-  if node --input-type=module -e \
-    'const u=process.env.U; try { const r=await fetch(u); process.exit(r.ok?0:1);} catch { process.exit(1); }' \
-    U="http://127.0.0.1:9000/health/ready"; then
+  # ZA-06: env assignment must precede the command (trailing U= is argv, not env).
+  if U="http://127.0.0.1:9000/health/ready" node --input-type=module -e \
+    'const u=process.env.U; try { const r=await fetch(u); process.exit(r.ok?0:1);} catch { process.exit(1); }'; then
     break
   fi
   sleep 0.5
 done
-node --input-type=module -e \
-  'const r=await fetch("http://127.0.0.1:9000/health/ready"); if(!r.ok) process.exit(1);'
+U="http://127.0.0.1:9000/health/ready" node --input-type=module -e \
+  'const u=process.env.U; const r=await fetch(u); if(!r.ok) process.exit(1);'
 
 # Bootstrap-only credentials (cleared before app start).
 ZOEN_S3_ACCESS_KEY="$(cat "${RUSTFS_ACCESS_KEY_FILE}")"
@@ -356,19 +360,55 @@ if [[ -n "${ZOEN_S3_ADMIN_ACCESS_KEY:-}" || -n "${ZOEN_S3_ADMIN_SECRET_KEY:-}" ]
   exit 1
 fi
 
+CLEANUP_DONE=0
 cleanup() {
+  if [[ "${CLEANUP_DONE}" -eq 1 ]]; then
+    return 0
+  fi
+  CLEANUP_DONE=1
   echo "all-in-one: shutting down"
+  if [[ -n "${MONITOR_PID:-}" ]]; then
+    kill -TERM "${MONITOR_PID}" 2>/dev/null || true
+    wait "${MONITOR_PID}" 2>/dev/null || true
+    MONITOR_PID=""
+  fi
   if [[ -n "${SERVER_PID:-}" ]]; then
     kill -TERM "${SERVER_PID}" 2>/dev/null || true
     wait "${SERVER_PID}" 2>/dev/null || true
+    SERVER_PID=""
   fi
   gosu postgres pg_ctl --pgdata="${PGDATA}" --mode=fast --wait stop 2>/dev/null || true
   if [[ -n "${RUSTFS_PID:-}" ]]; then
     kill -TERM "${RUSTFS_PID}" 2>/dev/null || true
     wait "${RUSTFS_PID}" 2>/dev/null || true
+    RUSTFS_PID=""
   fi
 }
-trap cleanup TERM INT
+trap cleanup TERM INT EXIT
+
+# ZA-06-04: observe dependency exits after readiness; withdraw by stopping the app
+# so Fly /ready fails closed. Retain a bounded local failure reason.
+supervise_dependencies() {
+  local reason=""
+  while true; do
+    if [[ -n "${RUSTFS_PID:-}" ]] && ! kill -0 "${RUSTFS_PID}" 2>/dev/null; then
+      reason="RUSTFS_EXIT"
+      break
+    fi
+    if ! gosu postgres pg_isready -h /tmp -d postgres >/dev/null 2>&1; then
+      reason="POSTGRES_NOT_READY"
+      break
+    fi
+    sleep 1
+  done
+  printf '%s\n' "${reason}" >"${ZOEN_STATE}/supervisor-failure.txt"
+  chown root:root "${ZOEN_STATE}/supervisor-failure.txt" 2>/dev/null || true
+  chmod 600 "${ZOEN_STATE}/supervisor-failure.txt" 2>/dev/null || true
+  echo "all-in-one: dependency failure ${reason}; withdrawing readiness" >&2
+  if [[ -n "${SERVER_PID:-}" ]]; then
+    kill -TERM "${SERVER_PID}" 2>/dev/null || true
+  fi
+}
 
 echo "all-in-one: starting Zoen server on ${ZOEN_LISTEN_HOST:-0.0.0.0}:${ZOEN_PORT:-4310} as zoen"
 gosu zoen env \
@@ -379,7 +419,17 @@ gosu zoen env \
   -u ZOEN_S3_ADMIN_SECRET_KEY \
   node /app/apps/server/dist/main.js &
 SERVER_PID=$!
-wait "${SERVER_PID}"
-status=$?
-cleanup
+supervise_dependencies &
+MONITOR_PID=$!
+# Capture wait under set -e so dependency-driven nonzero exits still reach cleanup.
+if wait "${SERVER_PID}"; then
+  status=0
+else
+  status=$?
+fi
+SERVER_PID=""
+if [[ -f "${ZOEN_STATE}/supervisor-failure.txt" ]]; then
+  status=1
+fi
+# EXIT trap runs cleanup; clear MONITOR_PID so trap reaps it once.
 exit "${status}"

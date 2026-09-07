@@ -25,6 +25,7 @@ import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
 import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
 import {
   digestReleaseBytes,
+  parseHostedInstallationFile,
   parseQuotedEnvFile,
 } from "../src/all-in-one-release-align.ts";
 import {
@@ -94,6 +95,22 @@ const ensureScopedObjectStoreUser = (input: {
     )
   );
 
+const writeAtomicString = (
+  fs: FileSystem.FileSystem,
+  targetPath: string,
+  contents: string,
+  mode: number
+) =>
+  Effect.gen(function* atomicWrite() {
+    const tmpPath = `${targetPath}.tmp`;
+    if (yield* fs.exists(tmpPath)) {
+      yield* fs.remove(tmpPath);
+    }
+    yield* fs.writeFileString(tmpPath, contents, { flag: "wx", mode });
+    yield* fs.rename(tmpPath, targetPath);
+    return yield* Effect.void;
+  });
+
 const writeRuntimeEnv = (
   fs: FileSystem.FileSystem,
   runtimeEnvPath: string,
@@ -108,26 +125,36 @@ const writeRuntimeEnv = (
     const lines = Object.entries(environment).map(
       ([key, value]) => `${key}="${value}"`
     );
-    if (yield* fs.exists(runtimeEnvPath)) {
-      yield* fs.remove(runtimeEnvPath);
-    }
-    yield* fs.writeFileString(runtimeEnvPath, `${lines.join("\n")}\n`, {
-      flag: "wx",
-      mode: 0o600,
-    });
+    yield* writeAtomicString(
+      fs,
+      runtimeEnvPath,
+      `${lines.join("\n")}\n`,
+      0o600
+    );
     return yield* Effect.void;
   });
 
+/** Deterministic crash barriers for ZA-06-03 seam tests (never privilege). */
+const maybeCrashAfter = (stage: string) =>
+  Effect.gen(function* crashBarrier() {
+    const configured = yield* Config.string("ZOEN_BOOTSTRAP_CRASH_AFTER").pipe(
+      Config.option
+    );
+    if (Option.isNone(configured) || configured.value !== stage) {
+      return yield* Effect.void;
+    }
+    return yield* new BootstrapError({
+      code: `BOOTSTRAP_CRASH_AFTER_${stage.toUpperCase().replaceAll("-", "_")}`,
+    });
+  });
+
 const alignExistingHostedRelease = (input: {
-  readonly encodeInstallation: typeof encodeJson;
   readonly fs: FileSystem.FileSystem;
   readonly installationPath: string;
   readonly releaseFile: string;
   readonly runtimeEnvPath: string;
 }) =>
   applyHostedReleaseAlign({
-    encodeInstallation: (value) =>
-      input.encodeInstallation(value).pipe(Effect.orDie),
     fs: input.fs,
     installationPath: input.installationPath,
     reconcileWorlds: (step) =>
@@ -216,6 +243,43 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     if (runtimeBucket !== bucket) {
       return yield* new BootstrapError({ code: "BUCKET_MISMATCH_REFUSED" });
     }
+    // ZA-06: same-release admission before any mutate. Digest mismatch →
+    // RESET_REQUIRED (no silent rewrite). Leave a seam for ZA-08 admitted
+    // same-release schema migrate on existing volumes AFTER this check.
+    yield* alignExistingHostedRelease({
+      fs,
+      installationPath,
+      releaseFile,
+      runtimeEnvPath,
+    });
+    // --- ZA-08 seam (migrate on existing same-release volumes) ---
+    // #92: rotate migration password via infra admin, then idempotent DDL.
+    // Digest admission above must stay first; incompatible images refuse before DDL.
+    const migrationPassword = randomBytes(32).toString("hex");
+    yield* Effect.gen(function* rotateMigrationPassword() {
+      const sql = yield* SqlClient.SqlClient;
+      yield* sql.unsafe(
+        `ALTER ROLE "${names.migration}" WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS NOREPLICATION PASSWORD '${migrationPassword}'`
+      );
+    }).pipe(
+      Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl }))
+    );
+    const migrationUrl = (() => {
+      const url = new URL(Redacted.value(adminUrl));
+      url.pathname = `/${databaseName}`;
+      url.username = names.migration;
+      url.password = migrationPassword;
+      return url.href;
+    })();
+    yield* applyErasureMigrations(names).pipe(
+      Effect.provide(
+        PgClient.layer({
+          maxConnections: 1,
+          url: Redacted.make(migrationUrl),
+        })
+      )
+    );
+    // --- end ZA-08 seam ---
     const adminAccess = Redacted.value(adminAccessKeyId);
     const adminSecret = Redacted.value(adminSecretAccessKey);
     let appAccess = existing.ZOEN_S3_ACCESS_KEY ?? "";
@@ -245,39 +309,9 @@ const program = Effect.gen(function* bootstrapAllInOne() {
         ZOEN_S3_SECRET_KEY: appSecret,
       });
     }
-    // Marker path previously skipped schema migrates; ZA-08 health requires
-    // disclosure_writer_epochs/recovery. Rotate migration password via infra
-    // admin (password is not persisted in runtime.env) then apply idempotent DDL.
-    const migrationPassword = randomBytes(32).toString("hex");
-    yield* Effect.gen(function* rotateMigrationPassword() {
-      const sql = yield* SqlClient.SqlClient;
-      yield* sql.unsafe(
-        `ALTER ROLE "${names.migration}" WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS NOREPLICATION PASSWORD '${migrationPassword}'`
-      );
-    }).pipe(
-      Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl }))
-    );
-    const migrationUrl = (() => {
-      const url = new URL(Redacted.value(adminUrl));
-      url.pathname = `/${databaseName}`;
-      url.username = names.migration;
-      url.password = migrationPassword;
-      return url.href;
-    })();
-    yield* applyErasureMigrations(names).pipe(
-      Effect.provide(
-        PgClient.layer({
-          maxConnections: 1,
-          url: Redacted.make(migrationUrl),
-        })
-      )
-    );
-    return yield* alignExistingHostedRelease({
-      encodeInstallation: encodeJson,
-      fs,
-      installationPath,
-      releaseFile,
-      runtimeEnvPath,
+    return yield* Effect.logInfo({
+      event: "all-in-one.bootstrap.ready",
+      mode: "same-release-restart",
     });
   }
 
@@ -303,11 +337,30 @@ const program = Effect.gen(function* bootstrapAllInOne() {
   };
 
   const release = yield* fs.readFile(releaseFile);
+  const releaseDigest = digestReleaseBytes(release);
+  // Incomplete installs (installation present, marker absent) are not an
+  // unconditionally reusable identity: refuse wrong-image resume before DDL.
+  if (yield* fs.exists(installationPath)) {
+    let installedUnknown: unknown;
+    try {
+      installedUnknown = JSON.parse(yield* fs.readFileString(installationPath));
+    } catch {
+      return yield* new BootstrapError({ code: "INVALID_INSTALLATION_FILE" });
+    }
+    const hosted = parseHostedInstallationFile(installedUnknown);
+    if (hosted === null) {
+      return yield* new BootstrapError({ code: "INVALID_INSTALLATION_FILE" });
+    }
+    if (hosted.installation.releaseDigest !== releaseDigest) {
+      return yield* new BootstrapError({ code: "RESET_REQUIRED" });
+    }
+  }
+
   const installation = {
     cellEpoch: "1",
     cellId: randomUUID(),
     generationId: randomUUID(),
-    releaseDigest: digestReleaseBytes(release),
+    releaseDigest,
   };
 
   yield* fs.makeDirectory(stateDir, { mode: 0o700, recursive: true });
@@ -342,6 +395,7 @@ const program = Effect.gen(function* bootstrapAllInOne() {
       yield* sql`CREATE DATABASE ${sql(databaseName)} OWNER ${sql(names.migration)}`;
     }
   }).pipe(Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl })));
+  yield* maybeCrashAfter("schema-roles");
 
   yield* applyErasureMigrations(names).pipe(
     Effect.provide(
@@ -351,6 +405,7 @@ const program = Effect.gen(function* bootstrapAllInOne() {
       })
     )
   );
+  yield* maybeCrashAfter("schema");
 
   yield* Effect.scoped(
     Effect.gen(function* ensureBucket() {
@@ -401,16 +456,46 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     })
   );
 
+  // Resume-safe: keep an existing installation identity across interrupted boots.
+  // Digest was already admitted above when the file existed.
   if (!(yield* fs.exists(installationPath))) {
-    yield* fs.writeFileString(
+    yield* writeAtomicString(
+      fs,
       installationPath,
       yield* encodeJson({ installation, policy }),
-      { flag: "wx", mode: 0o600 }
+      0o600
     );
   }
+  yield* maybeCrashAfter("installation");
 
-  const appAccessKey = `zoenapp${randomBytes(8).toString("hex")}`;
-  const appSecretKey = randomBytes(32).toString("hex");
+  // Persist pending app credentials before provisioning so a crash between
+  // IAM create and runtime.env does not orphan enabled RustFS users on retry.
+  const pendingCredentialsPath = `${stateDir}/.pending-s3-app-credentials.env`;
+  let appAccessKey = "";
+  let appSecretKey = "";
+  if (yield* fs.exists(pendingCredentialsPath)) {
+    const pending = parseQuotedEnvFile(
+      yield* fs.readFileString(pendingCredentialsPath)
+    );
+    if (
+      pending === null ||
+      (pending.ZOEN_S3_ACCESS_KEY ?? "").length === 0 ||
+      (pending.ZOEN_S3_SECRET_KEY ?? "").length === 0
+    ) {
+      return yield* new BootstrapError({
+        code: "PENDING_CREDENTIALS_MALFORMED",
+      });
+    }
+    appAccessKey = pending.ZOEN_S3_ACCESS_KEY;
+    appSecretKey = pending.ZOEN_S3_SECRET_KEY;
+  } else {
+    appAccessKey = `zoenapp${randomBytes(8).toString("hex")}`;
+    appSecretKey = randomBytes(32).toString("hex");
+    yield* writeRuntimeEnv(fs, pendingCredentialsPath, {
+      ZOEN_S3_ACCESS_KEY: appAccessKey,
+      ZOEN_S3_SECRET_KEY: appSecretKey,
+    });
+  }
   yield* ensureScopedObjectStoreUser({
     adminAccessKey: Redacted.value(adminAccessKeyId),
     adminSecretKey: Redacted.value(adminSecretAccessKey),
@@ -419,6 +504,7 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     bucket,
     endpoint: endpoint.href,
   });
+  yield* maybeCrashAfter("credentials");
 
   const environment: Record<string, string> = {
     ZOEN_AUTHORITY_DATABASE_URL: roleUrl("authority"),
@@ -431,8 +517,15 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     ZOEN_S3_SECRET_KEY: appSecretKey,
   };
   yield* writeRuntimeEnv(fs, runtimeEnvPath, environment);
-  yield* fs.writeFileString(markerPath, "ok\n", { flag: "wx", mode: 0o600 });
-  return yield* Effect.logInfo({ event: "all-in-one.bootstrap.ready" });
+  yield* maybeCrashAfter("runtime-env");
+  yield* writeAtomicString(fs, markerPath, "ok\n", 0o600);
+  if (yield* fs.exists(pendingCredentialsPath)) {
+    yield* fs.remove(pendingCredentialsPath);
+  }
+  return yield* Effect.logInfo({
+    event: "all-in-one.bootstrap.ready",
+    mode: "first-install",
+  });
 }).pipe(
   Effect.provide(Layer.mergeAll(NodeServices.layer)),
   Effect.catch((error) =>

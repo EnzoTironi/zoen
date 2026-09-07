@@ -29,6 +29,8 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
   const installed = yield* parseJsonBytes(installationBytes, 65_536).pipe(
     Effect.flatMap(Schema.decodeUnknownEffect(InstallationFile))
   );
+  // ZA-06: bootstrap must refuse RESET_REQUIRED before launch; this check is
+  // belt-and-suspenders if the app is started without the entrypoint gate.
   if ((yield* verifyRelease) !== installed.installation.releaseDigest) {
     return yield* new ServerConfigurationError({ code: "RELEASE_MISMATCH" });
   }
