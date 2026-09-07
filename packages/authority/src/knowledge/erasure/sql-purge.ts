@@ -45,14 +45,16 @@ export const purgeWorldSqlContent = Effect.fn("erasure.purgeWorldSqlContent")(
     const { worldId, realm } = input.worldRef;
     const { closingReceiptId, purgeReceiptId } = input;
 
-    const identityDecisions = yield* countOf(yield* sql`
+    const identityDecisions = yield* countOf(
+      yield* sql`
       WITH deleted AS (
         DELETE FROM authority.identity_decisions
         WHERE world_id = ${worldId} AND realm = ${realm}
         RETURNING 1
       )
       SELECT count(*)::int AS count FROM deleted
-    `);
+    `
+    );
     const corrections = yield* countOf(
       yield* sql`
       WITH deleted AS (
