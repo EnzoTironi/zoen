@@ -54,7 +54,11 @@ it.live(
         );
         expect(
           yield* sql`SELECT revision FROM jobs.disclosure_subjects ORDER BY subject_key`
-        ).toStrictEqual([{ revision: "1" }, { revision: "1" }]);
+        ).toStrictEqual([
+          { revision: "1" },
+          { revision: "1" },
+          { revision: "1" },
+        ]);
         expect(
           yield* sql`SELECT count(*)::int AS count FROM jobs.disclosure_pending`
         ).toStrictEqual([{ count: 1 }]);

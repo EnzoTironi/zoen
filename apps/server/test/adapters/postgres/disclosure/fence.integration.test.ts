@@ -5,6 +5,7 @@ import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import {
   membershipDisclosureKey,
   sessionDisclosureKey,
+  worldDisclosureKey,
 } from "@zoen/authority/ports/disclosure/keys";
 import { VerifiedPresence } from "@zoen/authority/ports/worlds/context";
 import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
@@ -71,6 +72,7 @@ it.live(
         ).pipe(Effect.forkChild);
         yield* Deferred.await(ready);
         for (const key of [
+          worldDisclosureKey(target),
           sessionDisclosureKey(viewer),
           membershipDisclosureKey(target, viewer.principalId),
         ]) {
@@ -91,6 +93,7 @@ it.live(
           yield* sql`SELECT count(*)::int AS count FROM jobs.disclosure_pending`
         ).toStrictEqual([{ count: 0 }]);
         for (const key of [
+          worldDisclosureKey(target),
           sessionDisclosureKey(viewer),
           membershipDisclosureKey(target, viewer.principalId),
         ]) {
