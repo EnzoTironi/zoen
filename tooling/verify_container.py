@@ -1,4 +1,10 @@
-"""Build and exercise the real application image against the local Compose services."""
+"""Build and exercise the real application image against the local Compose services.
+
+ZA-05 exact all-in-one process/DB/object-store identity seam lives in
+tests/integration/hosted/identity/probe_all_in_one_identity.py and is run by
+`pnpm test:container:identity` (disposable volume; distinct from this
+application.Dockerfile path / ops/local/provision.ts).
+"""
 
 import json
 import os

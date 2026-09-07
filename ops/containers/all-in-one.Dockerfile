@@ -22,7 +22,7 @@ RUN set -eux; \
     *) echo "unsupported arch: ${arch}" >&2; exit 1 ;; \
   esac; \
   apt-get update; \
-  apt-get install --no-install-recommends --yes ca-certificates curl xz-utils; \
+  apt-get install --no-install-recommends --yes ca-certificates curl python3 xz-utils; \
   curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${node_arch}.tar.xz" \
     | tar -xJ -C /usr/local --strip-components=1; \
   npm install --global pnpm@11.25.0; \
@@ -53,6 +53,8 @@ COPY ops/migrations ./ops/migrations
 COPY ops/local/world-policy.ts ./ops/local/world-policy.ts
 COPY apps/server/scripts/all-in-one-bootstrap.ts ./apps/server/scripts/all-in-one-bootstrap.ts
 COPY ops/containers/all-in-one-entrypoint.sh /usr/local/bin/all-in-one-entrypoint.sh
+COPY ops/containers/rustfs-ensure-app-user.py /usr/local/bin/rustfs-ensure-app-user.py
+COPY ops/containers/rustfs-ensure-app-user.py /app/ops/containers/rustfs-ensure-app-user.py
 COPY apps/server/sql ./apps/server/sql
 COPY apps/server/src/identity/worlds/grants.ts ./apps/server/src/identity/worlds/grants.ts
 COPY apps/server/src/all-in-one-release-align.ts ./apps/server/src/all-in-one-release-align.ts
@@ -60,9 +62,14 @@ COPY apps/server/src/all-in-one-release-apply.ts ./apps/server/src/all-in-one-re
 
 # Let ops/*.ts (migrations bootstrap) resolve apps/server production deps.
 RUN ln -sfn /app/apps/server/node_modules /app/ops/node_modules \
-  && chmod +x /usr/local/bin/all-in-one-entrypoint.sh /usr/local/bin/rustfs \
-  && mkdir -p /data \
-  && chown postgres:postgres /data
+  && chmod +x /usr/local/bin/all-in-one-entrypoint.sh /usr/local/bin/rustfs /usr/local/bin/rustfs-ensure-app-user.py \
+  && groupadd --system --gid 10001 zoen \
+  && useradd --system --uid 10001 --gid zoen --home-dir /nonexistent --shell /usr/sbin/nologin zoen \
+  && mkdir -p /data/zoen /data/postgres /data/object /data/bootstrap \
+  && chown postgres:postgres /data /data/postgres \
+  && chown root:root /data/zoen /data/bootstrap \
+  && chmod 755 /data /data/zoen \
+  && chmod 700 /data/bootstrap
 
 ENV PGDATA=/data/postgres \
     ZOEN_DATA_ROOT=/data \
@@ -73,8 +80,7 @@ ENV PGDATA=/data/postgres \
     ZOEN_S3_BUCKET=zoen \
     ZOEN_INSTALLATION_FILE=/data/zoen/installation.json \
     ZOEN_RUNTIME_ENV_FILE=/data/zoen/runtime.env \
-    ZOEN_WORLD_POLICY=d04-hosted-retained-v1 \
-    ZOEN_BOOTSTRAP_ADMIN_URL=postgresql://zoen_infra@127.0.0.1:5432/postgres
+    ZOEN_WORLD_POLICY=d04-hosted-retained-v1
 
 VOLUME ["/data"]
 EXPOSE 4310

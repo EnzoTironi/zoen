@@ -60,3 +60,16 @@ Ver `planning/execution.json`: **EX35** (freeze) → **EX36** (schemas de polít
 - Não autoriza gastar créditos Fly nem reutilizar o volume/secrets do app `zoen`.
 - Não reabre restore-após-erasure.
 - Não inventa RPO/RTO, HA enterprise ou células D19.
+
+## Identities (ZA-05)
+
+Hosted all-in-one keeps **one VM/volume profile** while separating bootstrap, database, object-store and application identities:
+
+| Boundary | Enforcement |
+| --- | --- |
+| Postgres loopback | SCRAM-SHA-256 only (no `trust`). Infra role `zoen_infra` password lives under `/data/bootstrap/` (root-only sibling of `/data/zoen`; app cannot rename it). |
+| Process user | Application runs as OS user `zoen` (UID 10001). Bootstrap secrets are not in the app environment. |
+| Object store | RustFS root credentials stay in bootstrap files / bootstrap env only. Application receives a scoped IAM user limited to the admitted bucket via RustFS `/rustfs/admin/v3` APIs. |
+| Fail-closed | Missing/rotated bootstrap admin password prevents readiness; app config rejects inherited `ZOEN_BOOTSTRAP_ADMIN_URL` / `ZOEN_S3_ADMIN_*`; completed installs refuse bucket retarget that would cut off stored objects; `runtime.env` is loaded without shell `source`. |
+
+**Not claimed by this PR:** live Fly redeploy/qualification (`G-OPS`), paid staging, or independent erasure-controller isolation (`H-01`). Local all-in-one identity probes are required before treating the profile as identity-qualified.

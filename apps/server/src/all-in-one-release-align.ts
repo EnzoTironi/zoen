@@ -46,7 +46,7 @@ export const parseQuotedEnvFile = (
 ): Record<string, string> | null => {
   const out: Record<string, string> = {};
   for (const line of text.split("\n")) {
-    if (line.length === 0) {
+    if (line.trim().length === 0) {
       continue;
     }
     const eq = line.indexOf("=");
