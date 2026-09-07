@@ -979,7 +979,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "c01b09b4d1d07ee3225414f9c74211fc25a75c93",
+      "commit": "cadd16faf2040945335ee54efdb0a8fd7db12e75",
       "packages": ["EX45"],
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds; Closing\u2192Erased local-controlled-copies; restoreAfterErasure false)",
@@ -1006,7 +1006,7 @@
     {
       "id": "d03-purge-restore-after-erasure",
       "delivery": "D03",
-      "detail": "Local Closing/register verified; EX44 cleared RustFS Object Lock + S3 inventory/purge ports locally. Closing\u2192Erased/SQL purge/controller/backup catalog/restoreAfterErasure/Fly re-probe remain blocked.",
+      "detail": "Local Closing/register + EX44 RustFS Object Lock/S3 inventory/purge ports + EX45 Closing\u2192Erased local SQL+object purge (attestationScope local-controlled-copies) verified on tip. Still open for full D03: qualified controller/anti-rollback, backup/copy catalog, ER-R02 World fence, Fly Object Lock re-probe/hosted Erased, restoreAfterErasure (F04 closed).",
       "since": "2026-09-06"
     },
     {
