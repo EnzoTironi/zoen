@@ -283,12 +283,12 @@ export const withLegacyBasisHarness = <A, E, R>(
             restoreAfterErasure: false,
             retention: "while-pinned",
           });
-          // Frozen baseline (legacy-build revision) only admits worlds-local-retained-v1.
+          // Frozen baseline (legacy-build revision) only admits d01-local-retained-v1.
           // Write that literal into the installation file the legacy process reads;
           // current-component policy after transition stays worlds-local-retained-v1.
           const legacyInstallationPolicy = {
             ...policy,
-            profileId: "worlds-local-retained-v1" as const,
+            profileId: "d01-local-retained-v1" as const,
           };
           const installation = yield* Schema.decodeEffect(
             AuthorityInstallationSchema
