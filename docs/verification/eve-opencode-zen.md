@@ -1,6 +1,6 @@
 # Eve OpenCode Zen free — qualificação ZN-0063 (D05)
 
-Data: 2026-09-07 (PT). Tip de partida: `90ad08e`. Tip verificado: `48c7c21` (`48c7c21adefeece3141d1c699cd8273be30a909d`). Perfil produto: `eve-opencode-zen-v1` / admission `opencode-zen`.
+Data: 2026-09-07 (PT). Tip de partida: `90ad08e`. Tip verificado: `be09d5b` (`be09d5b7b551e3fd2a254e77f6784f65a43d7ad0`). Perfil produto: `eve-opencode-zen-v1` / admission `opencode-zen`.
 
 ## Escopo verificado
 
