@@ -16,8 +16,9 @@ Em 2026-09-06 (PT), o **congelamento mínimo** de erasure está em [`docs/contra
 | Web/CLI (EX33) | Landed — `/api/erasure/execute`, CLI `--confirm-entire-world`, painel owner-only |
 | Compose/verify (EX34) | Landed — perfil `d03-local-erasable-v1` só em **Worlds novos**; retained default |
 | Purge / Erased (local controlled copies) | **Landed EX45** — Closing→Erased via `PurgeWorldContent` (SQL + World object prefix; EX44 ports). AttestationScope=`local-controlled-copies`. |
-| Full D03 Erased (controller/backups/fence/Fly) | **Bloqueado** |
+| Full D03 Erased (controller/backups/fence/hosted) | **Bloqueado** |
 | Object Lock / retention (RustFS local) | **Qualificado** — `docs/verification/erasure-storage-qualification.md` |
+| Object Lock / retention (Fly all-in-one RustFS) | **Qualificado** — `docs/verification/erasure-fly-object-lock.md` |
 | restoreAfterErasure | **false** / fechado |
 
 Worlds `worlds-local-retained-v1` continuam **sem** erasure. Perfil candidato `d03-local-erasable-v1` só via provisionamento explícito de instalação **nova** (`ZOEN_LOCAL_WORLD_POLICY=d03-local-erasable-v1`). Sem rebind/migração de Worlds retidos (F02).
@@ -61,9 +62,9 @@ ZOEN_LOCAL_PROFILE=erasable-v1 \
 - Controlador distinto no Fly all-in-one (epochs, grants, âncora anti-rollback independente do volume único).
 - Catálogo de backups/cópias.
 - Fence World (ER-R02); restore online (ER-R03) permanece fechado (F04).
-- Catálogo de backups/cópias; controlador/anti-rollback; ER-R02; Fly re-probe; forensic wipe.
-- Re-prova Object Lock na VM Fly live.
+- Catálogo de backups/cópias; controlador/anti-rollback; ER-R02; forensic wipe; hosted Erased.
+- ~~Re-prova Object Lock na VM Fly live~~ — **cleared** 2026-09-07 (`erasure-fly-object-lock.md`).
 
-Cleared localmente (2026-09-07): Object Lock/retention/hold no RustFS compose; `ErasureObjectInventory` + `ErasurePurgeStore`; provision erasable com Object Lock.
+Cleared localmente (2026-09-07): Object Lock/retention/hold no RustFS compose; `ErasureObjectInventory` + `ErasurePurgeStore`; provision erasable com Object Lock. Cleared no Fly (2026-09-07): Object Lock/retention/hold no RustFS all-in-one loopback (`zoen-rebuild`).
 
 Isto **não** marca D03 completo nem autoriza Erased em produção.

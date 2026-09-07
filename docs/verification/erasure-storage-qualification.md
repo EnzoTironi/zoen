@@ -1,6 +1,6 @@
 # Erasure storage qualification — RustFS (local compose + topology note)
 
-Date observed: **2026-09-07 (PT)**. Topology under test: Docker Compose `zoen-rebuild-object-storage-1` (`rustfs/rustfs:1.0.0-rc.5`), endpoint from `.env.infra` (`127.0.0.1:59004`). Hosting production candidate is Fly all-in-one `zoen-rebuild` with **the same RustFS image on a volume** (NOT Tigris). This report qualifies the **local RustFS process**; it does **not** claim a live Fly VM re-run in this session.
+Date observed: **2026-09-07 (PT)**. Topology under test: Docker Compose `zoen-rebuild-object-storage-1` (`rustfs/rustfs:1.0.0-rc.5`), endpoint from `.env.infra` (`127.0.0.1:59004`). Hosting production candidate is Fly all-in-one `zoen-rebuild` with **the same RustFS image on a volume** (NOT Tigris). This report qualifies the **local RustFS process**. Live Fly Object Lock re-probe: [`erasure-fly-object-lock.md`](./erasure-fly-object-lock.md).
 
 Prior versioning/multipart feasibility: [`erasure-s3-feasibility.md`](./erasure-s3-feasibility.md). This document adds **Object Lock / retention / legal hold** and states what the purge ports may rely on.
 
@@ -29,7 +29,7 @@ Probe artifacts (gitignored under `.local/`): `.local/erasure-storage-qualificat
 | Multipart list/abort | `CreateMultipartUpload`, `UploadPart`, `ListMultipartUploads`, `AbortMultipartUpload` | **PASS** | Smoke only; aligns with prior feasibility |
 | Physical media destruction | — | **Not proven** | DELETE/404 ≠ forensic wipe |
 | Replication / lifecycle / MFA Delete | — | **Not exercised** | Still open |
-| Live Fly VM RustFS | — | **Not re-probed here** | Same image/topology intended; re-run before claiming hosted Erased |
+| Live Fly VM RustFS Object Lock | — | **PASS (re-probed)** | See [`erasure-fly-object-lock.md`](./erasure-fly-object-lock.md) (2026-09-07). Hosted Erased still blocked on other gates. |
 
 ### Isolated retention transcript (sanitized)
 
@@ -59,7 +59,8 @@ bucket-deleted
 | World fence + in-flight PUT/multipart containment (ER-R02) | **Blocked** |
 | SQL content purge + Closing→Erased attestation | **Local EX45 landed** (`local-controlled-copies` only); full D03 still blocked |
 | `restoreAfterErasure` | **false** / closed (F04) |
-| Hosted Erased on live Fly | **Blocked** until Fly re-probe + gates above |
+| Fly Object Lock API re-probe | **Cleared** — [`erasure-fly-object-lock.md`](./erasure-fly-object-lock.md) |
+| Hosted Erased on live Fly | **Blocked** — retained install + controller/backup/ER-R02/`restoreAfterErasure` |
 
 ## Reproduction
 
