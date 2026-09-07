@@ -197,14 +197,82 @@ def write_operation(root: Path, inventory: dict[str, Any], status: str) -> None:
 
 def read_operation(root: Path) -> dict[str, Any] | None:
     path = operation_path(root)
-    if path.is_symlink():
-        raise ValueError(f"Refusing symlinked reset operation file: {path}")
+    if path.exists() or path.is_symlink():
+        ensure_no_symlinks(root, path)
     if not path.is_file():
         return None
     payload = json.loads(path.read_text())
     if not isinstance(payload, dict):
         raise ValueError("Malformed reset operation; expected object")
     return payload
+
+
+def validate_owned_inventory(root: Path, inventory: dict[str, Any]) -> dict[str, Any]:
+    """Require marker/inventory ownership to match this checkout and staging profile."""
+    if not isinstance(inventory, dict):
+        raise ValueError("Incomplete reset operation has unusable inventory; blocked")
+    if inventory.get("schemaVersion") != SCHEMA:
+        raise ValueError("Unknown staging resource schema in reset marker; refuse automatic reset")
+    if inventory.get("profile") != PROFILE:
+        raise ValueError("Reset marker profile is not staging; refuse automatic reset")
+    if inventory.get("composeProject") != COMPOSE_PROJECT:
+        raise ValueError(
+            f"Foreign Compose project {inventory.get('composeProject')!r} in reset marker; "
+            "refuse automatic reset"
+        )
+    checkout = inventory.get("checkout")
+    if not isinstance(checkout, str) or Path(checkout).resolve() != root.resolve():
+        raise ValueError("Reset marker checkout does not match this repository root")
+    validated = owned_inventory_fields(
+        inventory.get("databaseName"),
+        inventory.get("bucket"),
+        inventory.get("roleNames"),
+    )
+    validated["checkout"] = str(root.resolve())
+    return validated
+
+
+def ownership_from_interrupted_marker(root: Path, inventory: dict[str, Any]) -> dict[str, Any]:
+    """Re-validate interrupted reset markers before any destructive resume/retry."""
+    validated = validate_owned_inventory(root, inventory)
+    env_path, profile_dir = profile_paths(root)
+    resources_path = profile_dir / "resources.json"
+    for path in (root / ".local", profile_dir, resources_path, env_path, root / ".env.infra"):
+        if path.exists() or path.is_symlink():
+            ensure_no_symlinks(root, path)
+
+    if resources_path.is_file():
+        live = load_inventory(root)
+        if (
+            validated["databaseName"] != live["databaseName"]
+            or validated["bucket"] != live["bucket"]
+            or list(validated["roleNames"]) != list(live["roleNames"])
+        ):
+            raise ValueError(
+                "Interrupted reset marker resource tuple does not match staging ownership "
+                "inventory; refuse foreign marker"
+            )
+        return live
+
+    # Marker-only resume: still require local infra endpoints and matching env bucket.
+    infra = root / ".env.infra"
+    if not infra.is_file():
+        raise ValueError("No .env.infra; cannot verify local admin path")
+    infra_env = parse_env_file(infra)
+    for key in ("ZOEN_TEST_DATABASE_URL", "ZOEN_TEST_S3_ENDPOINT"):
+        if key not in infra_env:
+            raise ValueError(f".env.infra missing {key}")
+        require_local_url(key, infra_env[key])
+
+    if env_path.is_file():
+        env = parse_env_file(env_path)
+        for key in ("ZOEN_PUBLIC_URL", "ZOEN_S3_ENDPOINT"):
+            if key in env:
+                require_local_url(key, env[key])
+        if env.get("ZOEN_S3_BUCKET") not in {None, validated["bucket"]}:
+            raise ValueError("Staging env bucket does not match interrupted reset marker")
+
+    return validated
 
 
 def remove_named_profile_files(root: Path, profile: str) -> None:
@@ -304,12 +372,8 @@ def reset_owned_profile(root: Path) -> int:
         inventory = existing.get("inventory")
         if not isinstance(inventory, dict):
             raise ValueError("Incomplete reset operation has unusable inventory; blocked")
-        validated = owned_inventory_fields(
-            inventory.get("databaseName"),
-            inventory.get("bucket"),
-            inventory.get("roleNames"),
-        )
-        validated["checkout"] = str(root.resolve())
+        # Resume/retry must re-validate ownership; never trust marker resource ids alone.
+        validated = ownership_from_interrupted_marker(root, inventory)
     else:
         # Refuse before any mutation when inventory/paths are unsafe.
         if not (root / f".env.{PROFILE}").exists() and not (root / ".local" / PROFILE).exists():

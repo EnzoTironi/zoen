@@ -332,5 +332,111 @@ class StagingResetOwnership(unittest.TestCase):
         up.assert_ready_or_absent(self.root)
 
 
+    def _write_started_marker(self, inventory: dict) -> None:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(
+            "staging_reset_marker_helper", self.root / "tooling" / "staging_reset.py"
+        )
+        assert spec and spec.loader
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        module.ROOT = self.root.resolve()
+        module.write_operation(self.root, inventory, "started")
+
+    def test_interrupted_marker_resumes_when_ownership_matches(self):
+        self.seed_staging_install()
+        self._write_started_marker(
+            {
+                "schemaVersion": "local-profile-resources.v1",
+                "profile": "staging",
+                "checkout": str(self.root.resolve()),
+                "composeProject": "zoen-rebuild",
+                "databaseName": self.database,
+                "bucket": self.bucket,
+                "roleNames": list(self.roles.values()),
+            }
+        )
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 0)
+        deprovision.assert_called_once()
+        called_inventory = deprovision.call_args.args[1]
+        self.assertEqual(called_inventory["databaseName"], self.database)
+        self.assertEqual(called_inventory["bucket"], self.bucket)
+        self.assertFalse((self.root / ".local" / "staging").exists())
+
+    def test_foreign_checkout_marker_refused_on_retry(self):
+        self.seed_staging_install()
+        foreign_checkout = str((self.root.parent / "other-checkout").resolve())
+        self._write_started_marker(
+            {
+                "schemaVersion": "local-profile-resources.v1",
+                "profile": "staging",
+                "checkout": foreign_checkout,
+                "composeProject": "zoen-rebuild",
+                "databaseName": self.database,
+                "bucket": self.bucket,
+                "roleNames": list(self.roles.values()),
+            }
+        )
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 1)
+        deprovision.assert_not_called()
+        self.assertTrue((self.root / ".env.staging").is_file())
+        self.assertTrue((self.root / ".local" / "staging" / "resources.json").is_file())
+
+    def test_swapped_profile_resource_tuple_marker_refused_on_retry(self):
+        self.seed_staging_install()
+        other_suffix = "b" * 24
+        self._write_started_marker(
+            {
+                "schemaVersion": "local-profile-resources.v1",
+                "profile": "staging",
+                "checkout": str(self.root.resolve()),
+                "composeProject": "zoen-rebuild",
+                "databaseName": f"zoen_local_{other_suffix}",
+                "bucket": f"zoen-local-{other_suffix}",
+                "roleNames": [
+                    f"zoen_authority_{other_suffix}",
+                    f"zoen_identity_{other_suffix}",
+                    f"zoen_migration_{other_suffix}",
+                    f"zoen_progress_{other_suffix}",
+                ],
+            }
+        )
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 1)
+        deprovision.assert_not_called()
+        self.assertTrue((self.root / ".env.staging").is_file())
+        self.assertTrue((self.root / ".local" / "staging" / "resources.json").is_file())
+
+    def test_symlinked_staging_marker_refused_on_retry(self):
+        profile = self.seed_staging_install()
+        real = self.root.parent / "staging-real-marker"
+        shutil.move(profile, real)
+        (self.root / ".local" / "staging").symlink_to(real, target_is_directory=True)
+        # Marker lives behind the symlink; retry must refuse before deletes.
+        marker = {
+            "status": "started",
+            "profile": "staging",
+            "inventory": {
+                "schemaVersion": "local-profile-resources.v1",
+                "profile": "staging",
+                "checkout": str(self.root.resolve()),
+                "composeProject": "zoen-rebuild",
+                "databaseName": self.database,
+                "bucket": self.bucket,
+                "roleNames": list(self.roles.values()),
+            },
+        }
+        (real / "reset-operation.json").write_text(json.dumps(marker) + "\n")
+        code, deprovision, _ = self.run_reset()
+        self.assertEqual(code, 1)
+        deprovision.assert_not_called()
+        self.assertTrue((real / "resources.json").is_file())
+        self.assertTrue((self.root / ".env.staging").is_file())
+
+
+
 if __name__ == "__main__":
     unittest.main()
