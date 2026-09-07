@@ -43,7 +43,7 @@ const scenario = Effect.gen(function* createScenario() {
 it.live(
   "Closing denies content and sharing while retaining narrow owner erasure access",
   () =>
-    withErasureRuntime(
+    withErasureRuntime(() =>
       Effect.gen(function* closedAccess() {
         const { context, request, world } = yield* scenario;
         yield* authorizeWorld(context, world, "read");
@@ -67,7 +67,7 @@ it.live(
 it.live(
   "live emission reservation prevents Closing without fabricating an acknowledgement",
   () =>
-    withErasureRuntime(
+    withErasureRuntime(() =>
       Effect.scoped(
         Effect.gen(function* liveEmission() {
           const { context, request, world } = yield* scenario;
@@ -93,7 +93,7 @@ it.live(
 it.live(
   "lost emitter session leaves durable pending proof blocking Closing until trusted ACK",
   () =>
-    withErasureRuntime(
+    withErasureRuntime(() =>
       Effect.gen(function* uncertainEmission() {
         const { context, request, world } = yield* scenario;
         const fence = yield* DisclosureFence;

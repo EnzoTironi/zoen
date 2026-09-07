@@ -12,6 +12,7 @@ import {
 import {
   ErasureAttemptExternalState,
   ErasureAttestationScope,
+  ErasureLimits,
   ErasureRestoreAfterErasure,
   ErasureSchemaVersion,
   WorldErasurePhase,
@@ -100,7 +101,7 @@ export const WorldContentPurged = Schema.TaggedStruct("WorldContentPurged", {
   objectVersionsRemoved: Schema.Number.check(
     Schema.isInt(),
     Schema.isGreaterThanOrEqualTo(0),
-    Schema.isLessThanOrEqualTo(1_000_000)
+    Schema.isLessThanOrEqualTo(ErasureLimits.versionEntries)
   ),
   phase: WorldErasurePhase,
   policyVersion: Schema.String.check(

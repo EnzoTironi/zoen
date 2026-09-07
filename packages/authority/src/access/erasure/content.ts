@@ -12,6 +12,7 @@ export const requireActiveWorldContent = Effect.fn(
   const rows = yield* sql`
     SELECT phase FROM authority.world_erasure_progress
     WHERE world_id = ${world.worldId} AND realm = ${world.realm}
+    FOR SHARE
   `;
   const progress = yield* Schema.decodeUnknownEffect(
     Schema.Array(Schema.Struct({ phase: WorldErasurePhase }))

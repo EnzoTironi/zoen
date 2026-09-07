@@ -14,6 +14,7 @@ import type {
   ErasureVersionManifest,
   ErasureVersionPurgeOutcome,
 } from "@zoen/contracts/erasure/values";
+import { ErasureLimits } from "@zoen/contracts/erasure/values";
 import { Unavailable } from "@zoen/contracts/worlds/errors";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Clock, Context, Effect, Layer, Redacted } from "effect";
@@ -133,7 +134,7 @@ export const layer = (
             client.send(
               new ListObjectVersionsCommand({
                 Bucket: config.bucket,
-                MaxKeys: 100,
+                MaxKeys: ErasureLimits.inventoryPageSize,
                 Prefix: prefix,
                 ...(keyMarker === undefined ? {} : { KeyMarker: keyMarker }),
                 ...(versionIdMarker === undefined
@@ -198,7 +199,7 @@ export const layer = (
             keyMarker = response.NextKeyMarker;
             versionIdMarker = response.NextVersionIdMarker;
             page += 1;
-            if (page >= 10_000) {
+            if (page >= ErasureLimits.inventoryPagesPerPrefix) {
               return yield* unavailable();
             }
           }
