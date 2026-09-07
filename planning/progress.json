@@ -888,7 +888,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "PENDING_PUSH",
+      "commit": "3d2e71c10d27b84ca2e21c811e675ca576a18edb",
       "packages": [
         "EX40"
       ],
@@ -910,7 +910,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "PENDING_PUSH",
+      "commit": "3d2e71c10d27b84ca2e21c811e675ca576a18edb",
       "packages": [
         "EX41"
       ],
@@ -927,7 +927,7 @@
     },
     {
       "date": "2026-09-07",
-      "commit": "PENDING_PUSH",
+      "commit": "3d2e71c10d27b84ca2e21c811e675ca576a18edb",
       "packages": [
         "EX40",
         "EX41"

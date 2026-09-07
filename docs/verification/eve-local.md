@@ -1,6 +1,6 @@
 # Eve local stub — evidência do primeiro incremento (EX40–EX41)
 
-Data: 2026-09-07 (PT). Tip de partida: `644d400`. Tip verificado: preencher após push.
+Data: 2026-09-07 (PT). Tip de partida: `644d400`. Tip verificado:  ().
 
 ## Escopo verificado
 
