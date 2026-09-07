@@ -1,6 +1,9 @@
 # Zoen rebuild — all-in-one Fly VM (app + Postgres + RustFS on one volume).
 # Hosted path: reject managed Postgres and managed object storage (Enzo).
-# Legacy app `zoen` is a different product topology; do not cut over here.
+#
+# Hostname cutover (authorized replace): ops/fly/CUTOVER.md
+# After DNS+cert prove /ready on zoen.tironi.xyz, replace ZOEN_PUBLIC_URL below
+# with https://zoen.tironi.xyz (single URL — no dual public origins).
 #
 # Deploy from repository root:
 #   fly deploy -a zoen-rebuild --config ops/fly/fly.toml
