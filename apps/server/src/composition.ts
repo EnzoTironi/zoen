@@ -24,6 +24,7 @@ import { HttpApiBuilder } from "effect/unstable/httpapi";
 
 import type { S3EvidenceConfig } from "./adapters/object-storage/d01/config.ts";
 import { layer as s3EvidenceLayer } from "./adapters/object-storage/d01/s3.ts";
+import { layer as erasureStorageLayer } from "./adapters/object-storage/erasure/s3.ts";
 import { checkD01AuthorityRole } from "./adapters/postgres/d01/authority-role.ts";
 import { makeD01PostgresLayer } from "./adapters/postgres/d01/postgres.ts";
 import { makeDisclosureFenceLayer } from "./adapters/postgres/disclosure/fence.ts";
@@ -130,6 +131,7 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
           Layer.provideMerge(disclosure)
         ),
         s3EvidenceLayer(config.storage),
+        erasureStorageLayer(config.storage),
         Layer.succeed(AuthorityInstallation, installation),
         Layer.succeed(DataPolicy, policy),
         hostedAdmissionLayerFor(policy),

@@ -60,7 +60,24 @@ const isSharingOperation = (operation: string | undefined) =>
   operation === "RevokeWorldReadAccess";
 
 const isErasureOperation = (operation: string | undefined) =>
-  operation === "InspectWorldErasure" || operation === "RequestWorldErasure";
+  operation === "InspectWorldErasure" ||
+  operation === "RequestWorldErasure" ||
+  operation === "PurgeWorldContent";
+
+const erasureSuccessFeedback = (
+  result:
+    | { readonly _tag: "WorldErasureRequested" }
+    | { readonly _tag: "WorldContentPurged" }
+    | { readonly _tag: "WorldErasureInspected" }
+) => {
+  if (result._tag === "WorldErasureRequested") {
+    return "Decisão de Closing registrada. Restore após erasure permanece bloqueado.";
+  }
+  if (result._tag === "WorldContentPurged") {
+    return "Purge local (cópias controladas) registrado. Restore após erasure permanece bloqueado.";
+  }
+  return "";
+};
 
 /** Ephemeral presentation state, discarded on every session or World boundary. */
 export const createWorkspaceController = (origin: string) => {
@@ -232,17 +249,15 @@ export const createWorkspaceController = (origin: string) => {
     }
     if (
       result._tag === "WorldErasureInspected" ||
-      result._tag === "WorldErasureRequested"
+      result._tag === "WorldErasureRequested" ||
+      result._tag === "WorldContentPurged"
     ) {
       publish({
         actionError: null,
         busy: false,
         canRetry: false,
         erasure: { ...state.erasure, ...erasurePatch(result) },
-        feedback:
-          result._tag === "WorldErasureRequested"
-            ? "Decisão de Closing registrada. Restore após erasure permanece bloqueado."
-            : "",
+        feedback: erasureSuccessFeedback(result),
       });
       return;
     }

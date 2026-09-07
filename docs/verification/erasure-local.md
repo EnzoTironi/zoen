@@ -15,7 +15,8 @@ Em 2026-09-06 (PT), o **congelamento mínimo** de erasure está em [`docs/contra
 | Closing local (EX32) | Landed — Active→Closing com receipt+outbox; sucesso só após Confirmada |
 | Web/CLI (EX33) | Landed — `/api/erasure/execute`, CLI `--confirm-entire-world`, painel owner-only |
 | Compose/verify (EX34) | Landed — perfil `d03-local-erasable-v1` só em **Worlds novos**; retained default |
-| Purge / Erased | **Parcial** — inventário/purge S3 + Object Lock local (EX44); Closing→Erased / SQL / Fly controller / backups ainda **bloqueados** |
+| Purge / Erased (local controlled copies) | **Landed EX45** — Closing→Erased via `PurgeWorldContent` (SQL + World object prefix; EX44 ports). AttestationScope=`local-controlled-copies`. |
+| Full D03 Erased (controller/backups/fence/Fly) | **Bloqueado** |
 | Object Lock / retention (RustFS local) | **Qualificado** — `docs/verification/erasure-storage-qualification.md` |
 | restoreAfterErasure | **false** / fechado |
 
@@ -49,12 +50,18 @@ ZOEN_LOCAL_PROFILE=erasable-v1 \
 - Fixtures de executor legados fornecem `ErasureAttemptRegister.unqualifiedLayer` (dívida EX33 de typecheck).
 - Evidência separa **Closing/register verificado** de **purge ainda bloqueado**.
 
-## Lacunas (bloqueiam D03 integral / Erased)
+## EX45 — Closing→Erased (local controlled copies)
+
+- Tip: see `planning/progress.json` EX45 checkpoint.
+- `PurgeWorldContent` after Closing+Confirmada: Purging→Erased; SQL content FK-safe delete; S3 World-prefix via EX44 ports; `restoreAfterErasure:false`; Closing receipt immutable on replay.
+- Attestation is **only** `local-controlled-copies`.
+
+## Lacunas (bloqueiam D03 integral)
 
 - Controlador distinto no Fly all-in-one (epochs, grants, âncora anti-rollback independente do volume único).
 - Catálogo de backups/cópias.
 - Fence World (ER-R02); restore online (ER-R03) permanece fechado (F04).
-- Purge SQL e transição Closing→Erased atestada (portas S3 EX44 ≠ Erased).
+- Catálogo de backups/cópias; controlador/anti-rollback; ER-R02; Fly re-probe; forensic wipe.
 - Re-prova Object Lock na VM Fly live.
 
 Cleared localmente (2026-09-07): Object Lock/retention/hold no RustFS compose; `ErasureObjectInventory` + `ErasurePurgeStore`; provision erasable com Object Lock.

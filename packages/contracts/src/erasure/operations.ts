@@ -11,6 +11,7 @@ import {
 } from "../d01/values.js";
 import {
   ErasureAttemptExternalState,
+  ErasureAttestationScope,
   ErasureRestoreAfterErasure,
   ErasureSchemaVersion,
   WorldErasurePhase,
@@ -46,9 +47,23 @@ export const InspectWorldErasure = Schema.Struct({
   operation: Schema.Literal("InspectWorldErasure"),
 }).annotate(exact);
 
+/**
+ * Advance Closing→Erased for local controlled copies (SQL + World object prefix).
+ * Does not mutate the immutable Closing receipt; Inspect shows current phase.
+ */
+export const PurgeWorldContent = Schema.Struct({
+  ...mutation,
+  input: Schema.Struct({
+    closingOperationId: OperationId,
+    expectedErasureRevision: Revision,
+  }).annotate(exact),
+  operation: Schema.Literal("PurgeWorldContent"),
+}).annotate(exact);
+
 export const WorldErasureRequest = Schema.Union([
   RequestWorldErasure,
   InspectWorldErasure,
+  PurgeWorldContent,
 ]);
 export type WorldErasureRequest = typeof WorldErasureRequest.Type;
 
@@ -79,9 +94,30 @@ export const WorldErasureInspected = Schema.TaggedStruct(
   }
 ).annotate(exact);
 
+export const WorldContentPurged = Schema.TaggedStruct("WorldContentPurged", {
+  attemptExternalState: ErasureAttemptExternalState,
+  attestationScope: ErasureAttestationScope,
+  objectVersionsRemoved: Schema.Number.check(
+    Schema.isInt(),
+    Schema.isGreaterThanOrEqualTo(0),
+    Schema.isLessThanOrEqualTo(1_000_000)
+  ),
+  phase: WorldErasurePhase,
+  policyVersion: Schema.String.check(
+    Schema.isMinLength(1),
+    Schema.isMaxLength(128)
+  ),
+  receiptRef: ReceiptRef,
+  restoreAfterErasure: ErasureRestoreAfterErasure,
+  revision: Revision,
+  sqlContentPurged: Schema.Boolean,
+  worldRef: WorldRef,
+}).annotate(exact);
+
 export const WorldErasureSuccess = Schema.Union([
   WorldErasureRequested,
   WorldErasureInspected,
+  WorldContentPurged,
 ]);
 export type WorldErasureSuccess = typeof WorldErasureSuccess.Type;
 

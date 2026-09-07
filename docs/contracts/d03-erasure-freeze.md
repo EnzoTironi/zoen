@@ -1,6 +1,6 @@
 # D03 erasure — congelamento mínimo executável (EX30+)
 
-Status: **decisões mínimas congeladas por root em 2026-09-06 (PT)** a partir de `docs/contracts/d03-erasure.md` (revisão ER-R01–05 em `d03-erasure.review.md`). Incremento **2026-09-07 (PT)**: RustFS local qualificado para versioning + Object Lock/retention/legal hold; portas `ErasureObjectInventory` / `ErasurePurgeStore` (EX44) com holds fail-closed. Isto **não** admite perfil em Worlds existentes, **não** conclui Closing→Erased / SQL purge, **não** qualifica controlador independente no Fly all-in-one nem catálogo de backups, e **não** libera restore após erasure.
+Status: **decisões mínimas congeladas por root em 2026-09-06 (PT)** a partir de `docs/contracts/d03-erasure.md` (revisão ER-R01–05 em `d03-erasure.review.md`). Incremento **2026-09-07 (PT)**: RustFS local qualificado para versioning + Object Lock/retention/legal hold; portas `ErasureObjectInventory` / `ErasurePurgeStore` (EX44) com holds fail-closed. Incremento EX45 (2026-09-07 PT): Closing→Erased local para **cópias controladas** (SQL + prefixo de objeto) via `PurgeWorldContent`, attestationScope=`local-controlled-copies`. Isto **não** admite perfil em Worlds existentes, **não** qualifica controlador independente no Fly all-in-one nem catálogo de backups, **não** prova ER-R02/fence, e **não** libera restore após erasure.
 
 Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verificado; o incremento subject-identity-v2 (EX24–EX29) está `verified_for_profile` no mesmo tip sem concluir D02 integral.
 
@@ -32,12 +32,12 @@ Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verifi
 | ER-R03 — restore online / ativação por head | **Blocked** (F04; `restoreAfterErasure:false`) |
 | Destruição física / prazo regulatório | **Blocked** |
 | Qualificação de pins locais superados por erasure | **Blocked** |
-| Purge SQL + transição Closing→Erased atestada | **Blocked** |
+| Purge SQL + transição Closing→Erased (local controlled copies) | **Cleared EX45** — full D03 Erased still blocked (controller/backups/ER-R02/Fly) |
 | Re-prova Object Lock na VM Fly live | **Blocked** até probe no app `zoen-rebuild` |
 
 ## Pacotes EX do primeiro incremento
 
-Ver `planning/execution.json`: **EX30** (congelar + schemas) → **EX31** (porta de registro de tentativa) → **EX32** (Closing local) → **EX33** (Web/CLI confirmação) → **EX34** (compor/verificar) → **EX44** (qualificação RustFS Object Lock + inventário/purge S3 fail-closed). Paths de domínio: `erasure/**` (não `d03-*` em pastas novas). Rotas HTTP legadas `/api/d0x/` existentes não são renomeadas em massa.
+Ver `planning/execution.json`: **EX30** (congelar + schemas) → **EX31** (porta de registro de tentativa) → **EX32** (Closing local) → **EX33** (Web/CLI confirmação) → **EX34** (compor/verificar) → **EX44** (qualificação RustFS Object Lock + inventário/purge S3 fail-closed) → **EX45** (Closing→Erased local controlled copies). Paths de domínio: `erasure/**` (não `d03-*` em pastas novas). Rotas HTTP legadas `/api/d0x/` existentes não são renomeadas em massa.
 
 ## O que este freeze NÃO é
 
