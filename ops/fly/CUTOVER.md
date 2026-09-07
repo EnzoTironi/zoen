@@ -60,10 +60,10 @@ Dashboard: [Cloudflare](https://dash.cloudflare.com) → zone **tironi.xyz** →
 3. Find existing `zoen` **A** (`66.241.124.90`) and **AAAA** (`2a09:8280:1::17b:f3db:0`) — or a CNAME to `zoen.fly.dev`.
 4. **Edit / Replace** (do not leave legacy targets alongside rebuild):
 
-| Type | Name | Content (cutover) | Proxy status |
-| --- | --- | --- | --- |
-| A | `zoen` | `66.241.124.12` | **DNS only** (grey cloud) |
-| AAAA | `zoen` | `2a09:8280:1::185:b83f:0` | **DNS only** |
+| Type | Name   | Content (cutover)         | Proxy status              |
+| ---- | ------ | ------------------------- | ------------------------- |
+| A    | `zoen` | `66.241.124.12`           | **DNS only** (grey cloud) |
+| AAAA | `zoen` | `2a09:8280:1::185:b83f:0` | **DNS only**              |
 
 Alternative single CNAME (instead of A+AAAA): `zoen` → `z32mowp.zoen-rebuild.fly.dev` (Fly-issued target from `fly certs setup`).
 
@@ -116,9 +116,9 @@ Rollback is **DNS replace back to legacy IPs** (and restore legacy scale if stop
 1. If legacy was scaled to 0: `fly scale count 1 -a zoen` and wait for machine start (legacy `/ready` may still be critical — known pre-cutover state).
 2. Cloudflare DNS **replace** back:
 
-| Type | Name | Value (rollback) |
-| --- | --- | --- |
-| A | `zoen` | `66.241.124.90` |
+| Type | Name   | Value (rollback)          |
+| ---- | ------ | ------------------------- |
+| A    | `zoen` | `66.241.124.90`           |
 | AAAA | `zoen` | `2a09:8280:1::17b:f3db:0` |
 
 3. Confirm `dig @1.1.1.1 zoen.tironi.xyz A/AAAA` shows legacy IPs.
