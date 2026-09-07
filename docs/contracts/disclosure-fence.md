@@ -105,3 +105,7 @@ Logout resolve a sessão real antes de adquirir seu exclusivo, chama o provider 
 Este perfil não oferece operações de troca de geração, emergency deny administrativo em runtime, exclusão/reutilização de contas ou writer promotion. Essas futuras operações precisam coordenar suas escritas antes de ativação; SQL administrativo fora do protocolo não participa da garantia de ordenação. Não apresentar grants SQL de migração como operação do produto. Leitura de emergência/geração continua sendo revalidada no caminho atual, sem alegar que um SELECT isolado ordena um escritor administrativo externo.
 
 A composição só pode ativar compartilhamento depois de provar as duas ordens de emissão/revogação e emissão/logout, isolamento de correções/Frames, limpeza em erro/desconexão e ausência de bytes no callback quando a revalidação nega. O teste de exatamente 1 MiB é prova do writer/lifecycle, distinto de fabricar um DTO de produto acima dos limites internos. As expectativas de erro e limites anteriores não são reduzidas para acomodar o mecanismo.
+
+## ZA-08 — recuperação de writer órfão
+
+Ver [disclosure-durable.md](disclosure-durable.md#orphaned-writer-recovery-za-08). Contenção independente do processo escritor precede qualquer avanço de pending; TTL/desconexão/Scope não bastam.

@@ -31,3 +31,14 @@ O fechamento é terminal neste perfil, inclusive em falha do provider; retry da 
 ## Provas para congelar e aceitar
 
 O congelamento consumiu a contraprova SQL do snapshot antigo, tratamento com linha de coordenação presente/ausente e revisão do callback síncrono. Antes de ativar: ordens leitor/revoke/logout em processos reais; conexão perdida com writer pausado; erro antes/durante/depois de `end`; acknowledgement indisponível; expiração/deadline; privilégios e migração preservando histórico. A propriedade pública continua sendo ausência de nova emissão após revogação confirmada. Nenhuma expectativa de privacidade pode ser reduzida para fazer o teste passar. Oráculo físico antigo fica preservado como baseline; o protocolo novo precisa comprovar que a operação pública não confirma atravessando uma emissão pendente, mesmo quando o exclusivo físico já se tornou adquirível.
+
+## Orphaned writer recovery (ZA-08)
+
+An orphaned `jobs.disclosure_pending` row must not be cleared by TTL, network disconnect, or Scope finalizers. Those signals do not prove the HTTP writer cannot still call `end`.
+
+Migration `012_orphaned_disclosure_recovery.sql` adds:
+
+- `jobs.disclosure_writer_epochs` — inventory of each permit's writer epoch (`active` → `retired`)
+- `jobs.disclosure_recovery` — monotone recovery records (insert-only); never claim network retraction
+
+`DisclosureFence.recoverOrphaned` accepts only `SupervisorProcessExit` containment on this runtime, after `process.kill(pid, 0)` yields `ESRCH`. `NetworkDisconnect` and `TtlExpired` remain `Blocked`. On success it retires the exact epoch, inserts a recovery row, then deletes the matching pending row under the same subject bump order as registration (session → membership). Logout/`exclusiveSession` may then proceed. `DisclosurePermit.authorizeSend` refuses new send after retirement; already-sent bytes are not retractable.

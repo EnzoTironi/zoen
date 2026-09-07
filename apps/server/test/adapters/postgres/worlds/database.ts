@@ -156,6 +156,17 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
             )
           ).pipe(Effect.provide(NodeFileSystem.layer));
           yield* sql.withTransaction(sql.unsafe(disclosure));
+          const disclosureRecovery = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/012_orphaned_disclosure_recovery.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(disclosureRecovery));
           const identityBasis = yield* FileSystem.FileSystem.use((fs) =>
             fs.readFileString(
               fileURLToPath(

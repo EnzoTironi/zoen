@@ -16,7 +16,9 @@ export const checkDisclosurePool = (pool: Pool) =>
       SELECT FROM (VALUES
         ('jobs.disclosure_subjects', 'SELECT'), ('jobs.disclosure_subjects', 'INSERT'),
         ('jobs.disclosure_pending', 'SELECT'), ('jobs.disclosure_pending', 'INSERT'), ('jobs.disclosure_pending', 'DELETE'),
-        ('jobs.disclosure_session_closing', 'SELECT'), ('jobs.disclosure_session_closing', 'INSERT')
+        ('jobs.disclosure_session_closing', 'SELECT'), ('jobs.disclosure_session_closing', 'INSERT'),
+        ('jobs.disclosure_writer_epochs', 'SELECT'), ('jobs.disclosure_writer_epochs', 'INSERT'), ('jobs.disclosure_writer_epochs', 'UPDATE'),
+        ('jobs.disclosure_recovery', 'SELECT'), ('jobs.disclosure_recovery', 'INSERT')
       ) AS required(relation, privilege)
       WHERE NOT coalesce(has_table_privilege(current_user, to_regclass(required.relation), required.privilege), false)
     )

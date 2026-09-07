@@ -374,7 +374,7 @@ export class SemanticExecutor extends Context.Service<
           const prepared = yield* prepare(family, credential, bytes);
           return yield* Effect.gen(function* authorizeEmission() {
             let phase: "prepared" | "attempting" | "submitted" = "prepared";
-            yield* Effect.acquireRelease(
+            const permit = yield* Effect.acquireRelease(
               fence
                 .shared(
                   prepared.context.presence,
@@ -382,10 +382,10 @@ export class SemanticExecutor extends Context.Service<
                   prepared.context.deadline
                 )
                 .pipe(Scope.provide(requestScope)),
-              (permit) =>
+              (held) =>
                 phase === "attempting"
                   ? Effect.void
-                  : permit.acknowledge.pipe(
+                  : held.acknowledge.pipe(
                       Effect.interruptible,
                       Effect.timeout("3 seconds"),
                       Effect.catch(() =>
@@ -418,6 +418,9 @@ export class SemanticExecutor extends Context.Service<
                   );
                 }
                 phase = "attempting";
+                if (permit.authorizeSend() === "retired") {
+                  return Effect.fail(schemaUnavailable());
+                }
                 if (emit(prepared.jsonBytes) !== "submitted") {
                   return Effect.fail(schemaUnavailable());
                 }
