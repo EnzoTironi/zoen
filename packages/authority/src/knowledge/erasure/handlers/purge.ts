@@ -18,6 +18,8 @@ import { ErasureObjectInventory } from "../../../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../../../ports/erasure/purge.js";
 import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
 import { requireErasablePolicy } from "../policy.js";
+import { lockPurgingProgress, requireSettledCaptures } from "../purge-guard.js";
+import { completePurgeOutcomes } from "../purge-outcomes.js";
 import { purgeWorldSqlContent } from "../sql-purge.js";
 
 const ProgressRow = Schema.Struct({
@@ -112,6 +114,8 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
       return yield* new Stale({ code: "STALE" });
     }
 
+    yield* requireSettledCaptures(world);
+
     if (current.phase === "Closing" || current.phase === "Suppressed") {
       yield* sql`
         UPDATE authority.world_erasure_progress
@@ -124,6 +128,16 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
     // External S3 I/O outside the semantic mutation transaction.
     const manifest = yield* inventory.listWorldVersions(world);
     const outcomes = yield* purgeStore.purgeManifest(manifest.entries);
+    if (!completePurgeOutcomes(manifest.entries, outcomes)) {
+      return yield* new Unavailable({ code: "UNAVAILABLE" });
+    }
+    const progressIdentity = {
+      closingOperationId: request.input.closingOperationId,
+      closingReceiptId,
+      policyVersion,
+      revision: current.erasure_revision,
+      world,
+    };
     const blocked = outcomes.some(
       (row) => row.outcome === "Blocked" || row.outcome === "Unknown"
     );
@@ -135,6 +149,7 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
       const result = yield* commitMutation(context, bound, {
         apply: (receiptRef) =>
           Effect.gen(function* applyBlocked() {
+            yield* lockPurgingProgress(progressIdentity);
             yield* sql`
               UPDATE authority.world_erasure_progress
               SET phase = ${"Blocked"}, updated_at = clock_timestamp()
@@ -178,6 +193,7 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
             WHERE world_id = ${world.worldId} AND realm = ${world.realm}
             FOR UPDATE
           `;
+          yield* lockPurgingProgress(progressIdentity);
           yield* purgeWorldSqlContent({
             closingReceiptId,
             purgeReceiptId: receiptRef,
@@ -188,14 +204,18 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
           ).pipe(
             Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
           );
-          yield* sql`
+          const erased = yield* sql`
             UPDATE authority.world_erasure_progress
             SET phase = ${"Erased"},
                 erasure_revision = ${nextRevision},
                 updated_at = clock_timestamp()
             WHERE world_id = ${world.worldId} AND realm = ${world.realm}
               AND phase = ${"Purging"}
+            RETURNING world_id
           `;
+          if (erased.length !== 1) {
+            return yield* new Conflict({ code: "CONFLICT" });
+          }
           const stored = yield* Schema.decodeEffect(WorldContentPurged)({
             _tag: "WorldContentPurged",
             attemptExternalState: "Confirmed",
