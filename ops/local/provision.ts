@@ -180,10 +180,16 @@ const program = Effect.gen(function* provisionLocalApplication() {
             resource.destroy();
           })
       );
+      // Erasable installs require Object Lock at CreateBucket (S3-compatible).
+      // Retained installs stay without Object Lock — no dual-mode on one bucket.
       yield* Effect.tryPromise((signal) =>
-        client.send(new CreateBucketCommand({ Bucket: bucket }), {
-          abortSignal: signal,
-        })
+        client.send(
+          new CreateBucketCommand({
+            Bucket: bucket,
+            ...(policy.erasure ? { ObjectLockEnabledForBucket: true } : {}),
+          }),
+          { abortSignal: signal }
+        )
       );
       yield* Effect.tryPromise((signal) =>
         client.send(

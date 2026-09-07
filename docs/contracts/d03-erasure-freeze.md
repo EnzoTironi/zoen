@@ -1,6 +1,6 @@
 # D03 erasure — congelamento mínimo executável (EX30+)
 
-Status: **decisões mínimas congeladas por root em 2026-09-06 (PT)** a partir de `docs/contracts/d03-erasure.md` (revisão ER-R01–05 em `d03-erasure.review.md`). Isto **não** admite perfil em Worlds existentes, **não** autoriza purge real, **não** qualifica controlador/storage/backups e **não** libera restore após erasure.
+Status: **decisões mínimas congeladas por root em 2026-09-06 (PT)** a partir de `docs/contracts/d03-erasure.md` (revisão ER-R01–05 em `d03-erasure.review.md`). Incremento **2026-09-07 (PT)**: RustFS local qualificado para versioning + Object Lock/retention/legal hold; portas `ErasureObjectInventory` / `ErasurePurgeStore` (EX44) com holds fail-closed. Isto **não** admite perfil em Worlds existentes, **não** conclui Closing→Erased / SQL purge, **não** qualifica controlador independente no Fly all-in-one nem catálogo de backups, e **não** libera restore após erasure.
 
 Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verificado; o incremento subject-identity-v2 (EX24–EX29) está `verified_for_profile` no mesmo tip sem concluir D02 integral.
 
@@ -18,22 +18,26 @@ Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verifi
 | F08 | Receipt mínimo imutável vs progresso mutável (ER-R04); porta de purge **não** reutiliza `EvidenceObjectStore.remove` / normalização de versionId (ER-R05). | Interfaces novas sob domínio `erasure/**`. |
 | F09 | Sem bypass de Object Lock, legal hold, retenção obrigatória ou pins inter-World sem regra explícita. | Hold/impedimento → Blocked, sem elevação de grants. |
 
-## Ainda bloqueado (gates antes de purge real)
+## Gates atualizados (2026-09-07 PT)
 
-| Gate | Por quê |
+| Gate | Estado |
 | --- | --- |
-| Serviço controlador real | Topologia, grants distintos, epochs/admissões, durabilidade fora do rollback da app e âncora monotônica independente **não** qualificados. |
-| Catálogo completo de backups/cópias | Dump lógico, basebackup/WAL, volumes, réplicas S3, identidade, índices, temporários — ausente como admissão. |
-| Object Lock / retention / multipart / replicação no storage real | SDK ≠ admissão RustFS; porta de purge e inventário ListObjectVersions ainda não provados para erasure. |
-| ER-R02 — barreira World + contenção de uploads | Ordem de locks e prova de PUT/multipart em voo ainda por congelar/qualificar; fence de sessão/membership atual não cobre World inteiro. |
-| ER-R03 — restore online / ativação por head | Protocolo candidato apenas; restore após erasure permanece fechado (F04). |
-| Destruição física / prazo regulatório | DELETE/VACUUM/version delete não demonstram mídia; perfil bloqueado se a política exigir o que o provedor não prova. |
-| Qualificação de pins locais superados por erasure | Matriz explícita ainda necessária antes de admitir o perfil em produção. |
-| Implementação completa de purge SQL/S3 | EX packages abaixo cobrem contrato→registro→Closing→UI→verify; purge/Erased exige gates acima. |
+| RustFS local: versioning + ListObjectVersions + multipart abort | **Cleared (local compose)** — ver `docs/verification/erasure-storage-qualification.md` + feasibility anterior |
+| RustFS local: Object Lock / retention / legal hold enforce | **Cleared (local compose)** — CreateBucket ObjectLock + Put/Get retention/hold; delete sem bypass → 403 |
+| Porta inventário + purge S3 (não reusa `EvidenceObjectStore.remove`) | **Cleared (código+integração EX44)** — holds → `Blocked`; sem Bypass no caminho de produto |
+| Bucket Object Lock em installs **novos** `d03-local-erasable-v1` | **Cleared (provision)** — `ObjectLockEnabledForBucket` só quando `policy.erasure`; retained intacto |
+| Serviço controlador real / âncora anti-rollback (Fly all-in-one) | **Blocked** — volume único PG+RustFS; register local EX31 ≠ controlador qualificado |
+| Catálogo completo de backups/cópias | **Blocked** |
+| ER-R02 — barreira World + contenção de uploads | **Blocked** |
+| ER-R03 — restore online / ativação por head | **Blocked** (F04; `restoreAfterErasure:false`) |
+| Destruição física / prazo regulatório | **Blocked** |
+| Qualificação de pins locais superados por erasure | **Blocked** |
+| Purge SQL + transição Closing→Erased atestada | **Blocked** |
+| Re-prova Object Lock na VM Fly live | **Blocked** até probe no app `zoen-rebuild` |
 
 ## Pacotes EX do primeiro incremento
 
-Ver `planning/execution.json`: **EX30** (congelar + schemas) → **EX31** (porta de registro de tentativa) → **EX32** (Closing local) → **EX33** (Web/CLI confirmação) → **EX34** (compor/verificar). Paths de domínio: `erasure/**` (não `d03-*` em pastas novas). Rotas HTTP legadas `/api/d0x/` existentes não são renomeadas em massa.
+Ver `planning/execution.json`: **EX30** (congelar + schemas) → **EX31** (porta de registro de tentativa) → **EX32** (Closing local) → **EX33** (Web/CLI confirmação) → **EX34** (compor/verificar) → **EX44** (qualificação RustFS Object Lock + inventário/purge S3 fail-closed). Paths de domínio: `erasure/**` (não `d03-*` em pastas novas). Rotas HTTP legadas `/api/d0x/` existentes não são renomeadas em massa.
 
 ## O que este freeze NÃO é
 
