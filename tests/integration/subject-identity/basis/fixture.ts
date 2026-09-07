@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import type { ChildProcess } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -131,9 +132,47 @@ export const realignIntentDigest = Effect.fn("basis.realignIntentDigest")(
   }
 );
 
+const childHasExited = (child: ChildProcess) =>
+  child.exitCode !== null || child.signalCode !== null;
+
 const reservePort = Effect.sync(
   () => 45_000 + Math.floor(Math.random() * 10_000)
 );
+
+/** Wait until the legacy child has fully exited (releases DB clients) before migrating. */
+const awaitChildExit = (
+  child: ChildProcess,
+  signal: NodeJS.Signals,
+  graceMs: number
+) =>
+  Effect.gen(function* waitForExit() {
+    if (childHasExited(child)) {
+      return;
+    }
+    yield* Effect.sync(() => {
+      child.kill(signal);
+    });
+    const gracePolls = Math.max(1, Math.ceil(graceMs / 50));
+    for (let poll = 0; poll < gracePolls; poll += 1) {
+      if (childHasExited(child)) {
+        return;
+      }
+      yield* Effect.sleep("50 millis");
+    }
+    if (childHasExited(child)) {
+      return;
+    }
+    yield* Effect.sync(() => {
+      child.kill("SIGKILL");
+    });
+    // SIGKILL still needs process teardown before DB locks drop.
+    for (let poll = 0; poll < 20; poll += 1) {
+      if (childHasExited(child)) {
+        return;
+      }
+      yield* Effect.sleep("50 millis");
+    }
+  });
 
 export const http = Effect.fn("basis.http")(function* send(
   origin: string,
@@ -155,7 +194,17 @@ export const http = Effect.fn("basis.http")(function* send(
     body === undefined
       ? base
       : HttpClientRequest.bodyText(base, body, "application/json")
-  ).pipe(HttpClient.execute);
+  ).pipe(
+    HttpClient.execute,
+    // Legacy emission handlers can leave the socket open if the child is wedged;
+    // fail the test Effect instead of waiting for the suite timeout.
+    Effect.timeout("45 seconds"),
+    Effect.catchTag("TimeoutError", () =>
+      Effect.die(
+        new Error(`Legacy HTTP timed out ${routePath} origin=${origin}`)
+      )
+    )
+  );
 });
 
 export const jsonBody = (response: HttpClientResponse.HttpClientResponse) =>
@@ -282,8 +331,10 @@ export const withLegacyBasisHarness = <A, E, R>(
             }),
             (processChild) =>
               Effect.sync(() => {
-                if (!processChild.killed) {
+                try {
                   processChild.kill("SIGKILL");
+                } catch {
+                  // already exited
                 }
               })
           );
@@ -298,9 +349,9 @@ export const withLegacyBasisHarness = <A, E, R>(
                 );
               }
               ready = yield* Effect.tryPromise(() =>
-                fetch(`${origin}/ready`).then(
-                  (response) => response.status === 200
-                )
+                fetch(`${origin}/ready`, {
+                  signal: AbortSignal.timeout(1000),
+                }).then((response) => response.status === 200)
               ).pipe(Effect.orElseSucceed(() => false));
               if (!ready) {
                 yield* Effect.sleep("250 millis");
@@ -320,25 +371,9 @@ export const withLegacyBasisHarness = <A, E, R>(
                 return yield* Effect.die("Basis transition already applied");
               }
               transitioned = true;
-              if (!child.killed) {
-                child.kill("SIGTERM");
-              }
-              yield* Effect.tryPromise(
-                () =>
-                  new Promise<void>((resolve) => {
-                    if (child.exitCode !== null) {
-                      resolve();
-                      return;
-                    }
-                    child.once("exit", () => {
-                      resolve();
-                    });
-                    setTimeout(() => {
-                      child.kill("SIGKILL");
-                      resolve();
-                    }, 2000);
-                  })
-              );
+              // Must observe exit before migrations: resolving after SIGKILL without
+              // waiting left PG sessions alive and blocked 007/011 under CI load.
+              yield* awaitChildExit(child, "SIGTERM", 2000);
               yield* applyIdentityBasisMigrations(database.names).pipe(
                 Effect.provide(
                   Layer.mergeAll(database.migration, NodeServices.layer)
