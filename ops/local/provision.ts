@@ -3,6 +3,9 @@ import { fileURLToPath } from "node:url";
 
 import {
   CreateBucketCommand,
+  DeleteBucketCommand,
+  DeleteObjectCommand,
+  ListObjectVersionsCommand,
   PutBucketVersioningCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -18,6 +21,29 @@ class ProvisionError extends Schema.TaggedError<ProvisionError>()(
   "ProvisionError",
   { code: Schema.String }
 ) {}
+
+const s3ErrorName = (error: unknown): string => {
+  if (error !== null && typeof error === "object" && "name" in error) {
+    const { name } = error as { readonly name?: unknown };
+    return typeof name === "string" ? name : "";
+  }
+  return "";
+};
+
+const isHeldStorageError = (error: unknown): boolean => {
+  const message = String(error);
+  return (
+    message.includes("AccessDenied") ||
+    message.includes("ObjectLocked") ||
+    message.includes("retention") ||
+    message.includes("WORM")
+  );
+};
+
+const heldOrFailed = (error: unknown, failed: string): ProvisionError =>
+  new ProvisionError({
+    code: isHeldStorageError(error) ? "RESET_BUCKET_HELD_BLOCKED" : failed,
+  });
 
 const encodeJson = Schema.encodeEffect(Schema.fromJsonString(Schema.Unknown));
 const root = fileURLToPath(new URL("../../", import.meta.url));
@@ -105,6 +131,21 @@ const program = Effect.gen(function* provisionLocalApplication() {
       databaseName,
       migrationUrl: roleUrl("migration"),
       names,
+    }),
+    { flag: "wx", mode: 384 }
+  );
+  // Ownership inventory for scoped local reset (ZA-04). Never implies volume wipe.
+  yield* fs.writeFileString(
+    `${directory}/resources.json`,
+    yield* encodeJson({
+      bucket,
+      checkout: root.replace(/\/$/u, ""),
+      composeFile: "ops/compose.yaml",
+      composeProject: "zoen-rebuild",
+      databaseName,
+      profile,
+      roleNames: Object.values(names),
+      schemaVersion: "local-profile-resources.v1",
     }),
     { flag: "wx", mode: 384 }
   );
@@ -202,6 +243,16 @@ const program = Effect.gen(function* provisionLocalApplication() {
       );
     })
   );
+  // Completion marker only after DB migrations and bucket setup succeed.
+  yield* fs.writeFileString(
+    `${directory}/ready.json`,
+    yield* encodeJson({
+      profile,
+      schemaVersion: "local-profile-ready.v1",
+      status: "ready",
+    }),
+    { flag: "wx", mode: 384 }
+  );
   return yield* Effect.logInfo({
     event: "local.provisioned",
     origin: publicUrl.origin,
@@ -211,4 +262,207 @@ const program = Effect.gen(function* provisionLocalApplication() {
   Effect.tapCause(() => Effect.logError({ event: "local.provision.failed" }))
 );
 
-NodeRuntime.runMain(program, { disableErrorReporting: true });
+const isLocalHostname = (hostname: string): boolean =>
+  hostname === "127.0.0.1" || hostname === "localhost";
+
+const resetOwnedProgram = Effect.gen(function* resetOwnedLocalProfile() {
+  const fs = yield* FileSystem.FileSystem;
+  const adminUrl = yield* Config.redacted("ZOEN_TEST_DATABASE_URL");
+  const endpoint = yield* Config.url("ZOEN_TEST_S3_ENDPOINT");
+  const accessKeyId = yield* Config.redacted("ZOEN_TEST_S3_ACCESS_KEY");
+  const secretAccessKey = yield* Config.redacted("ZOEN_TEST_S3_SECRET_KEY");
+  const profile = yield* Config.string("ZOEN_LOCAL_PROFILE");
+  if (profile !== "staging") {
+    return yield* new ProvisionError({ code: "RESET_PROFILE_NOT_STAGING" });
+  }
+  if (!isLocalHostname(endpoint.hostname) || endpoint.protocol !== "http:") {
+    return yield* new ProvisionError({ code: "RESET_HOSTED_ENDPOINT_REFUSED" });
+  }
+  const adminParsed = new URL(Redacted.value(adminUrl));
+  if (!isLocalHostname(adminParsed.hostname)) {
+    return yield* new ProvisionError({ code: "RESET_HOSTED_DATABASE_REFUSED" });
+  }
+  const databaseName = yield* Config.string("ZOEN_LOCAL_RESET_DATABASE");
+  const bucket = yield* Config.string("ZOEN_LOCAL_RESET_BUCKET");
+  const rolesCsv = yield* Config.string("ZOEN_LOCAL_RESET_ROLES");
+  if (!/^zoen_local_[0-9a-f]{24}$/u.test(databaseName)) {
+    return yield* new ProvisionError({ code: "RESET_DATABASE_NAME_INVALID" });
+  }
+  if (!/^zoen-local-[0-9a-f]{24}$/u.test(bucket)) {
+    return yield* new ProvisionError({ code: "RESET_BUCKET_NAME_INVALID" });
+  }
+  const roleNames = rolesCsv.split(",").filter((value) => value.length > 0);
+  if (roleNames.length === 0) {
+    return yield* new ProvisionError({ code: "RESET_ROLES_MISSING" });
+  }
+  for (const role of roleNames) {
+    if (
+      !/^zoen_(?:authority|identity|migration|progress)_[0-9a-f]{24}$/u.test(
+        role
+      )
+    ) {
+      return yield* new ProvisionError({ code: "RESET_ROLE_NAME_INVALID" });
+    }
+  }
+  // Empty/delete owned bucket first (paginate all versions) before dropping
+  // DB/roles so a truncated listing never leaves a half-reset.
+  yield* Effect.scoped(
+    Effect.gen(function* deleteOwnedBucket() {
+      const client = yield* Effect.acquireRelease(
+        Effect.sync(
+          () =>
+            new S3Client({
+              credentials: {
+                accessKeyId: Redacted.value(accessKeyId),
+                secretAccessKey: Redacted.value(secretAccessKey),
+              },
+              endpoint: endpoint.href,
+              forcePathStyle: true,
+              maxAttempts: 1,
+              region: "us-east-1",
+              requestHandler: { connectionTimeout: 3000, requestTimeout: 5000 },
+            })
+        ),
+        (resource) =>
+          Effect.sync(() => {
+            resource.destroy();
+          })
+      );
+      const listPage = (
+        keyMarker: string | undefined,
+        versionIdMarker: string | undefined
+      ) =>
+        Effect.tryPromise({
+          catch: (error) => {
+            const name = s3ErrorName(error);
+            if (name === "NoSuchBucket" || name === "NotFound") {
+              return new ProvisionError({ code: "RESET_BUCKET_ABSENT" });
+            }
+            return heldOrFailed(error, "RESET_BUCKET_LIST_FAILED");
+          },
+          try: (signal) =>
+            client.send(
+              new ListObjectVersionsCommand({
+                Bucket: bucket,
+                ...(keyMarker === undefined ? {} : { KeyMarker: keyMarker }),
+                ...(versionIdMarker === undefined
+                  ? {}
+                  : { VersionIdMarker: versionIdMarker }),
+              }),
+              { abortSignal: signal }
+            ),
+        });
+      let keyMarker: string | undefined;
+      let versionIdMarker: string | undefined;
+      let page = 0;
+      const visited = new Set<string>();
+      for (;;) {
+        const listing = yield* listPage(keyMarker, versionIdMarker).pipe(
+          Effect.catchTag("ProvisionError", (error) =>
+            error.code === "RESET_BUCKET_ABSENT"
+              ? Effect.succeed(null)
+              : Effect.fail(error)
+          )
+        );
+        if (listing === null) {
+          return yield* Effect.void;
+        }
+        const entries = [
+          ...(listing.Versions ?? []),
+          ...(listing.DeleteMarkers ?? []),
+        ];
+        for (const object of entries) {
+          if (object.Key === undefined) {
+            return yield* new ProvisionError({
+              code: "RESET_BUCKET_ENTRY_INVALID",
+            });
+          }
+          const objectKey = object.Key;
+          yield* Effect.tryPromise({
+            catch: (error) =>
+              heldOrFailed(error, "RESET_BUCKET_DELETE_OBJECT_FAILED"),
+            try: (signal) =>
+              client.send(
+                new DeleteObjectCommand({
+                  Bucket: bucket,
+                  Key: objectKey,
+                  VersionId: object.VersionId,
+                }),
+                { abortSignal: signal }
+              ),
+          });
+        }
+        if (listing.IsTruncated !== true) {
+          break;
+        }
+        if (listing.NextKeyMarker === undefined) {
+          return yield* new ProvisionError({
+            code: "RESET_BUCKET_LIST_TRUNCATED",
+          });
+        }
+        const cursor = `${listing.NextKeyMarker}\0${listing.NextVersionIdMarker ?? ""}`;
+        if (visited.has(cursor)) {
+          return yield* new ProvisionError({
+            code: "RESET_BUCKET_LIST_TRUNCATED",
+          });
+        }
+        visited.add(cursor);
+        keyMarker = listing.NextKeyMarker;
+        versionIdMarker = listing.NextVersionIdMarker;
+        page += 1;
+        if (page >= 10_000) {
+          return yield* new ProvisionError({
+            code: "RESET_BUCKET_LIST_TRUNCATED",
+          });
+        }
+      }
+      yield* Effect.tryPromise({
+        catch: (error) => {
+          const name = s3ErrorName(error);
+          if (name === "NoSuchBucket" || name === "NotFound") {
+            return new ProvisionError({ code: "RESET_BUCKET_ABSENT" });
+          }
+          return heldOrFailed(error, "RESET_BUCKET_DELETE_FAILED");
+        },
+        try: (signal) =>
+          client.send(new DeleteBucketCommand({ Bucket: bucket }), {
+            abortSignal: signal,
+          }),
+      }).pipe(
+        Effect.catchTag("ProvisionError", (error) =>
+          error.code === "RESET_BUCKET_ABSENT"
+            ? Effect.void
+            : Effect.fail(error)
+        )
+      );
+      return yield* Effect.void;
+    })
+  );
+  yield* Effect.gen(function* dropOwnedDatabase() {
+    const sql = yield* SqlClient.SqlClient;
+    yield* sql.unsafe(
+      `SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${databaseName}' AND pid <> pg_backend_pid()`
+    );
+    yield* sql.unsafe(`DROP DATABASE IF EXISTS "${databaseName}" WITH (FORCE)`);
+    for (const role of roleNames) {
+      yield* sql.unsafe(`DROP ROLE IF EXISTS "${role}"`);
+    }
+  }).pipe(Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl })));
+  // Touch fs so the dependency remains meaningful for interrupted resumes.
+  yield* fs.exists(`${root}.local/${profile}/resources.json`);
+  return yield* Effect.logInfo({
+    event: "local.profile.reset_owned",
+    profile,
+  });
+}).pipe(
+  Effect.provide(Layer.mergeAll(NodeServices.layer)),
+  Effect.tapCause(() =>
+    Effect.logError({ event: "local.profile.reset.failed" })
+  )
+);
+
+if (process.argv.includes("--reset-owned")) {
+  NodeRuntime.runMain(resetOwnedProgram, { disableErrorReporting: true });
+} else {
+  NodeRuntime.runMain(program, { disableErrorReporting: true });
+}
