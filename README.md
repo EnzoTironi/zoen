@@ -31,7 +31,6 @@ Surfaces first: **web** and **CLI** (same verbs). Agent, SDK, and MCP come later
 
 **Status:** tip on Fly `zoen-rebuild` is deployed; post-#74 execution frontier is documented in [docs/architecture-audit/](docs/architecture-audit/README.md) (ZA not accepted). Honest verified increments live in `planning/progress.json`.
 
-
 ## Development
 
 Trunk is `main`. There is no paid Fly staging app — staging is local Docker only (zero Fly staging cost).
