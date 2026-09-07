@@ -17,7 +17,7 @@ ENTRYPOINT = ROOT / "ops" / "containers" / "all-in-one-entrypoint.sh"
 def _extract_functions() -> str:
     text = ENTRYPOINT.read_text()
     chunks: list[str] = []
-    for name in ("urlencode_password", "sql_password_literal", "load_runtime_env_file"):
+    for name in ("validate_infra_password", "urlencode_password", "sql_password_literal", "load_runtime_env_file"):
         start = text.index(f"{name}()")
         # Walk braces from the function header.
         i = text.index("{", start)
@@ -104,6 +104,21 @@ class AllInOneEntrypointHelpers(unittest.TestCase):
             )
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertEqual(marker.read_text(encoding="utf-8"), "$(echo pwned)")
+
+
+    def test_validate_infra_password_accepts_openssl_hex(self) -> None:
+        # Regression: *$'\0'* is empty in bash and previously matched every password,
+        # so generated openssl rand -hex secrets failed closed and /ready never came up.
+        result = self._bash(
+            'pw="$(openssl rand -hex 32)"; validate_infra_password "$pw"; printf OK'
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "OK")
+
+    def test_validate_infra_password_rejects_newline(self) -> None:
+        result = self._bash("validate_infra_password $'abc\\ndef'")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("control characters", result.stderr)
 
 
 if __name__ == "__main__":

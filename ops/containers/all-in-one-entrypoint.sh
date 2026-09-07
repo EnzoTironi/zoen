@@ -81,8 +81,9 @@ validate_infra_password() {
     echo "all-in-one: empty infrastructure password" >&2
     exit 1
   fi
+  # Bash cannot store NUL in variables ($'\0' is empty and would match every password).
   case "${pw}" in
-    *$'\n'*|*$'\r'*|*$'\0'*)
+    *$'\n'*|*$'\r'*)
       echo "all-in-one: infrastructure password contains control characters" >&2
       exit 1
       ;;
