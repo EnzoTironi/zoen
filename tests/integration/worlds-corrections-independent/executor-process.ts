@@ -86,7 +86,7 @@ const program = Effect.scoped(
           ).href
         ),
     });
-    const { makeD01PostgresLayer } = yield* Effect.tryPromise({
+    const { makeWorldsPostgresLayer } = yield* Effect.tryPromise({
       catch: () =>
         new BuildRequired({
           message: "Build the application before EX15 process integration",
@@ -99,7 +99,7 @@ const program = Effect.scoped(
           ).href
         ),
     });
-    const { makeD01IdentityLayer } = yield* Effect.tryPromise({
+    const { makeIdentityLayer } = yield* Effect.tryPromise({
       catch: () =>
         new BuildRequired({
           message: "Build the application before EX15 process integration",
@@ -147,12 +147,12 @@ const program = Effect.scoped(
       Layer.succeed(AuthorityInstallation, config.installation),
       Layer.succeed(DataPolicy, config.policy),
       ErasureAttemptRegister.unqualifiedLayer,
-      makeD01PostgresLayer({
+      makeWorldsPostgresLayer({
         applicationName: "zoen-ex15-child",
         maxConnections: 2,
         url: Redacted.make(config.authorityUrl),
       }),
-      makeD01IdentityLayer({
+      makeIdentityLayer({
         ...config.identity,
         databaseUrl: Redacted.make(config.identity.databaseUrl),
         secret: Redacted.make(config.identity.secret),

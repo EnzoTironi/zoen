@@ -32,7 +32,7 @@ import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
 import { makeProcessConfiguration } from "../../worlds-corrections-independent/process-configuration.ts";
 import { configuration } from "../commit/fixture.ts";
@@ -49,7 +49,7 @@ const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
 it.live(
   "CSV-11 SIGKILL before SQL commit rolls back state/receipt/outbox; lost acknowledgement after commit replays once through a restarted real executor",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage((storage) =>
         Effect.scoped(
           Effect.gen(function* processAtomicity() {

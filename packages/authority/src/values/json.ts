@@ -1,7 +1,7 @@
 import { InvalidInput, QuotaExceeded } from "@zoen/contracts/worlds/errors";
 import { decodeImportDocument } from "@zoen/contracts/worlds/evidence";
-import { decodeD01Request } from "@zoen/contracts/worlds/operations";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { decodeWorldRequest } from "@zoen/contracts/worlds/operations";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 export type JsonValue =
@@ -12,7 +12,7 @@ export type JsonValue =
   | readonly JsonValue[]
   | { readonly [key: string]: JsonValue };
 
-/** D01 excludes NUL for PostgreSQL text; I-JSON excludes noncharacters and surrogates. */
+/** Worlds excludes NUL for PostgreSQL text; I-JSON excludes noncharacters and surrogates. */
 export const validUnicode = (value: string): boolean => {
   if (!value.isWellFormed()) {
     return false;
@@ -37,7 +37,7 @@ const quota = (): never => {
   throw new QuotaExceeded({ code: "QUOTA_EXCEEDED" });
 };
 
-/** D01 deliberately permits only safe integer JSON numbers; amounts are strings. */
+/** Worlds deliberately permits only safe integer JSON numbers; amounts are strings. */
 export const parseJsonBytes = (bytes: Uint8Array, byteLimit: number) =>
   Effect.try({
     catch: (error) =>
@@ -48,7 +48,7 @@ export const parseJsonBytes = (bytes: Uint8Array, byteLimit: number) =>
       if (
         !Number.isSafeInteger(byteLimit) ||
         byteLimit < 1 ||
-        byteLimit > D01_LIMITS.envelopeBytes
+        byteLimit > WorldLimits.envelopeBytes
       ) {
         invalid();
       }
@@ -76,7 +76,7 @@ export const parseJsonBytes = (bytes: Uint8Array, byteLimit: number) =>
       };
       const count = (): void => {
         entries += 1;
-        if (entries > D01_LIMITS.entries) {
+        if (entries > WorldLimits.entries) {
           quota();
         }
       };
@@ -165,7 +165,7 @@ export const parseJsonBytes = (bytes: Uint8Array, byteLimit: number) =>
         }
       };
       const value = (depth: number): JsonValue => {
-        if (depth > D01_LIMITS.depth) {
+        if (depth > WorldLimits.depth) {
           quota();
         }
         count();
@@ -214,15 +214,15 @@ export const parseJsonBytes = (bytes: Uint8Array, byteLimit: number) =>
   });
 
 export const parseEnvelopeBytes = (bytes: Uint8Array) =>
-  parseJsonBytes(bytes, D01_LIMITS.envelopeBytes).pipe(
-    Effect.flatMap(decodeD01Request),
+  parseJsonBytes(bytes, WorldLimits.envelopeBytes).pipe(
+    Effect.flatMap(decodeWorldRequest),
     Effect.catchTag("SchemaError", () =>
       Effect.fail(new InvalidInput({ code: "INVALID_INPUT" }))
     )
   );
 
 export const parseDocumentBytes = (bytes: Uint8Array) =>
-  parseJsonBytes(bytes, D01_LIMITS.documentBytes).pipe(
+  parseJsonBytes(bytes, WorldLimits.documentBytes).pipe(
     Effect.flatMap(decodeImportDocument),
     Effect.catchTag("SchemaError", () =>
       Effect.fail(new InvalidInput({ code: "INVALID_INPUT" }))

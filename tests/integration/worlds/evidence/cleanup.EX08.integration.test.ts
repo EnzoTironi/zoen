@@ -3,7 +3,7 @@ import { Effect, Layer } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import {
   reserveCapture,
@@ -16,7 +16,7 @@ import { configuration, makeInput } from "../commit/fixture.js";
 it.live(
   "EX08 expired upload fencing removes real orphans and later uploads cannot revive a cleaned reservation",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       withStorage(() =>
         Effect.gen(function* cleanupFences() {
           const { context, request } = yield* makeInput();
@@ -76,7 +76,7 @@ it.live(
 it.live(
   "EX08 cleanup pagination crosses equal expiration timestamps without revisiting a page",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       withStorage(() =>
         Effect.gen(function* cursorPrecision() {
           const { context, request } = yield* makeInput();

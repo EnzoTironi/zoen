@@ -4,7 +4,7 @@ import { parseJsonBytes } from "@zoen/authority/values/json";
 import { exact } from "@zoen/contracts/worlds/values";
 import { Config, Effect, FileSystem, Option, Schema } from "effect";
 
-import type { D01ApplicationConfig } from "./composition.ts";
+import type { ApplicationConfig } from "./composition.ts";
 import { verifyRelease } from "./release.ts";
 
 const InstallationFile = Schema.Struct({
@@ -44,7 +44,7 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
   const erasureAttemptDatabaseUrl = yield* Config.redacted(
     "ZOEN_ERASURE_ATTEMPT_DATABASE_URL"
   ).pipe(Config.option);
-  const application: D01ApplicationConfig = {
+  const application: ApplicationConfig = {
     authorityDatabaseUrl: yield* Config.redacted("ZOEN_AUTHORITY_DATABASE_URL"),
     identity: {
       baseUrl: yield* Config.string("ZOEN_PUBLIC_URL"),

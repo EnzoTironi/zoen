@@ -5,7 +5,7 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01Database as withCorrectionsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase as withCorrectionsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.js";
 import { answerQuestion } from "../../../../packages/authority/src/knowledge/corrections/answer.js";

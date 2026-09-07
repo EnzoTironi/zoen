@@ -5,7 +5,7 @@ import type {
   QuotaExceeded,
   Unavailable,
 } from "@zoen/contracts/worlds/errors";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Effect, Layer } from "effect";
 import {
   HttpRouter,
@@ -13,7 +13,7 @@ import {
   HttpServerResponse,
 } from "effect/unstable/http";
 
-import { D01Auth } from "../identity/worlds/identity.ts";
+import { IdentityAuth } from "../identity/worlds/identity.ts";
 import { checkRequestAudience, readJsonBody } from "./request.ts";
 
 const errorResponse = (
@@ -35,14 +35,14 @@ export const makeIdentityRoutes = (publicUrl: URL) =>
   Layer.effectDiscard(
     Effect.gen(function* identityRoutes() {
       const router = yield* HttpRouter.HttpRouter;
-      const auth = yield* D01Auth;
+      const auth = yield* IdentityAuth;
       const handle = Effect.gen(function* identityRequest() {
         const request = yield* HttpServerRequest.HttpServerRequest;
         yield* checkRequestAudience(request, publicUrl);
         const body =
           request.method === "POST" ? yield* readJsonBody(request) : undefined;
         if (body !== undefined) {
-          yield* parseJsonBytes(body, D01_LIMITS.envelopeBytes);
+          yield* parseJsonBytes(body, WorldLimits.envelopeBytes);
         }
         const webRequest = yield* Effect.try({
           catch: () => new InvalidInput({ code: "INVALID_INPUT" }),
@@ -56,7 +56,7 @@ export const makeIdentityRoutes = (publicUrl: URL) =>
         return HttpServerResponse.fromWeb(yield* auth.handle(webRequest));
       }).pipe(
         Effect.timeoutOrElse({
-          duration: D01_LIMITS.requestSeconds * 1000,
+          duration: WorldLimits.requestSeconds * 1000,
           orElse: () => Effect.fail(new Expired({ code: "EXPIRED" })),
         }),
         Effect.catchTags({

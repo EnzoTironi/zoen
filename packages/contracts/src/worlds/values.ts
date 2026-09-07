@@ -4,7 +4,7 @@ export const exact = {
   parseOptions: { onExcessProperty: "error" },
 } as const;
 
-export const D01_LIMITS = {
+export const WorldLimits = {
   depth: 32,
   documentBytes: 262_144,
   entries: 10_000,
@@ -18,7 +18,7 @@ export const D01_LIMITS = {
 
 export const DocumentText = Schema.String.check(
   Schema.isMinLength(1),
-  Schema.isMaxLength(D01_LIMITS.documentBytes)
+  Schema.isMaxLength(WorldLimits.documentBytes)
 );
 export const DocumentFormat = Schema.Literals([
   "worlds.json.v1",

@@ -7,17 +7,17 @@ import { Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { makeDisclosureFenceLayer } from "../../../src/adapters/postgres/disclosure/fence.ts";
-import type { D01IdentityConfig } from "../../../src/identity/worlds/configuration.ts";
-import { grantD01IdentityRole } from "../../../src/identity/worlds/grants.ts";
-import { makeD01IdentityLayer } from "../../../src/identity/worlds/identity.ts";
-import { withD01Database } from "../../adapters/postgres/worlds/database.ts";
+import type { IdentityConfig } from "../../../src/identity/worlds/configuration.ts";
+import { grantIdentityRole } from "../../../src/identity/worlds/grants.ts";
+import { makeIdentityLayer } from "../../../src/identity/worlds/identity.ts";
+import { withWorldsDatabase } from "../../adapters/postgres/worlds/database.ts";
 
-type Database = Parameters<Parameters<typeof withD01Database>[0]>[0];
+type Database = Parameters<Parameters<typeof withWorldsDatabase>[0]>[0];
 export const makeTestIdentityLayer = (
-  config: D01IdentityConfig,
+  config: IdentityConfig,
   database: Database
 ) =>
-  makeD01IdentityLayer(config).pipe(
+  makeIdentityLayer(config).pipe(
     Layer.provideMerge(
       makeDisclosureFenceLayer({
         applicationName: "zoen-ex22-identity-fence",
@@ -32,7 +32,7 @@ interface Options {
   readonly secure?: boolean;
 }
 
-export const withD01IdentityDatabase = <A, E, R>(
+export const withIdentityDatabase = <A, E, R>(
   run: (fixture: {
     readonly database: Database;
     readonly config: {
@@ -45,7 +45,7 @@ export const withD01IdentityDatabase = <A, E, R>(
   }) => Effect.Effect<A, E, R>,
   options: Options = {}
 ) =>
-  withD01Database((database) =>
+  withWorldsDatabase((database) =>
     Effect.gen(function* prepareIdentity() {
       const info = yield* Effect.gen(function* connectionInfo() {
         const pg = yield* PgClient.PgClient;
@@ -71,7 +71,7 @@ export const withD01IdentityDatabase = <A, E, R>(
       yield* Effect.gen(function* migration() {
         const sql = yield* SqlClient.SqlClient;
         yield* sql.withTransaction(sql.unsafe(source));
-        yield* grantD01IdentityRole(info.role);
+        yield* grantIdentityRole(info.role);
       }).pipe(Effect.provide(database.migration));
       const config = {
         baseUrl:

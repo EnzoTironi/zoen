@@ -9,7 +9,7 @@ import { Context, Effect, Layer, Redacted } from "effect";
 import type { Effect as EffectType } from "effect";
 
 /**
- * OpenCode Zen free — OpenAI-compatible chat client (ZN-0063 / D05 product path).
+ * OpenCode Zen free — OpenAI-compatible chat client (ZN-0063 product path).
  *
  * Free-tier models require OpenCode CLI identity headers; plain curl is rejected.
  * Paid models do not require User-Agent spoofing (observed; see verification doc).

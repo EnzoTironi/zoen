@@ -4,19 +4,19 @@ import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
 
 import { S3Health } from "../adapters/object-storage/worlds/health.ts";
-import { checkD01AuthorityRole } from "../adapters/postgres/worlds/authority-role.ts";
-import { D01Auth } from "../identity/worlds/identity.ts";
+import { checkAuthorityRole } from "../adapters/postgres/worlds/authority-role.ts";
+import { IdentityAuth } from "../identity/worlds/identity.ts";
 
 export const readinessRoutes = Layer.effectDiscard(
   Effect.gen(function* buildReadinessRoutes() {
     const router = yield* HttpRouter.HttpRouter;
     const sql = yield* SqlClient.SqlClient;
-    const identity = yield* D01Auth;
+    const identity = yield* IdentityAuth;
     const storage = yield* S3Health;
     const disclosure = yield* DisclosureFence;
     const check = Effect.all(
       [
-        checkD01AuthorityRole.pipe(
+        checkAuthorityRole.pipe(
           Effect.provideService(SqlClient.SqlClient, sql)
         ),
         identity.checkHealth,

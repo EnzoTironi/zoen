@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import type { WorkspaceView } from "../../../src/components/worlds/presentation.ts";
-import { D01Workspace } from "../../../src/components/worlds/worlds-workspace.tsx";
+import { WorldsWorkspace } from "../../../src/components/worlds/worlds-workspace.tsx";
 import { views } from "./fixtures.ts";
 
 /** Browser component harness only. Records callbacks; it never invents operation results. */
@@ -19,7 +19,7 @@ export const EX03Fixture = ({
   };
   return (
     <>
-      <D01Workspace
+      <WorldsWorkspace
         acceptedFileTypes=".json,application/json"
         fileHelp="Arquivos JSON. A admissão e os limites são verificados ao enviar."
         onCorrection={(draft) => {

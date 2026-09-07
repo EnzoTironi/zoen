@@ -2,7 +2,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 
 import { Effect, Redacted, Schema } from "effect";
 
-import { D01Auth } from "../../../src/identity/worlds/identity.ts";
+import { IdentityAuth } from "../../../src/identity/worlds/identity.ts";
 
 export const UserResponse = Schema.Struct({
   user: Schema.Struct({
@@ -25,7 +25,7 @@ export const postAuth = Effect.fn("test.postAuth")(function* post(
   body: unknown,
   credential?: Redacted.Redacted
 ) {
-  const auth = yield* D01Auth;
+  const auth = yield* IdentityAuth;
   const headers = new Headers({
     "Content-Type": "application/json",
     origin: baseUrl,

@@ -15,7 +15,7 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../worlds/fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
@@ -49,7 +49,7 @@ const document = (revision: string) =>
 it.live(
   "EX14 HTTP binds correction consent, preserves replay and history, and rejects stale or revoked disclosure",
   () =>
-    withD01Http(({ database, origin }) =>
+    withWorldsHttp(({ database, origin }) =>
       Effect.gen(function* correctionHttpJourney() {
         const signup = yield* http(
           origin,
@@ -260,7 +260,7 @@ it.live(
 it.live(
   "EX14 correction HTTP keeps strict original bytes and audience checks",
   () =>
-    withD01Http(({ origin }) =>
+    withWorldsHttp(({ origin }) =>
       Effect.gen(function* correctionHttpBoundaries() {
         const duplicate = yield* http(
           origin,

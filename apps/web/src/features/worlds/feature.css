@@ -1,17 +1,17 @@
-.d01-account {
+.worlds-account {
   max-width: 38rem !important;
   display: grid;
   gap: 1.5rem;
 }
-.d01-account fieldset {
+.worlds-account fieldset {
   border: 0;
   padding: 0;
   display: grid;
   gap: 0.75rem;
 }
-.d01-account input,
-.d01-context input,
-.d01-context select {
+.worlds-account input,
+.worlds-context input,
+.worlds-context select {
   width: 100%;
   min-width: 0;
   border: 1px solid #8c9c91;
@@ -20,43 +20,43 @@
   background: white;
   color: #203e35;
 }
-.d01-account output {
+.worlds-account output {
   display: block;
   min-height: 2rem;
 }
-.d01-context {
+.worlds-context {
   min-height: 0;
   padding: 1.5rem 3rem;
   border-bottom: 1px solid #d9e0d7;
 }
-.d01-context-inner {
+.worlds-context-inner {
   max-width: 72rem;
   margin: auto;
   display: grid;
   gap: 1rem;
 }
-.d01-context form {
+.worlds-context form {
   display: grid;
   gap: 0.5rem;
 }
-.d01-context .d01-action-row {
+.worlds-context .worlds-action-row {
   display: flex;
   align-items: stretch;
 }
-.d01-context .d01-action-row input {
+.worlds-context .worlds-action-row input {
   flex: 1;
 }
-.d01-context .d01-action-row button {
+.worlds-context .worlds-action-row button {
   flex-shrink: 0;
 }
-.d01-world-id {
+.worlds-world-id {
   overflow-wrap: anywhere;
 }
 @media (max-width: 48rem) {
-  .d01-context {
+  .worlds-context {
     padding: 1.25rem;
   }
-  .d01-context .d01-action-row {
+  .worlds-context .worlds-action-row {
     flex-direction: column;
   }
 }

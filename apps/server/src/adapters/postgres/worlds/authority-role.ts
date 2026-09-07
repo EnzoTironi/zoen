@@ -1,7 +1,7 @@
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { checkD01RuntimeRole } from "./postgres.ts";
+import { checkWorldsRuntimeRole } from "./postgres.ts";
 
 export class IncompleteAuthorityRole extends Schema.TaggedError<IncompleteAuthorityRole>()(
   "IncompleteAuthorityRole",
@@ -9,8 +9,8 @@ export class IncompleteAuthorityRole extends Schema.TaggedError<IncompleteAuthor
 ) {}
 
 /** Positive capabilities are required in addition to the generic excess-privilege guard. */
-export const checkD01AuthorityRole = Effect.gen(function* authorityRole() {
-  yield* checkD01RuntimeRole;
+export const checkAuthorityRole = Effect.gen(function* authorityRole() {
+  yield* checkWorldsRuntimeRole;
   const sql = yield* SqlClient.SqlClient;
   yield* sql`
     SELECT has_schema_privilege(current_user, 'authority', 'USAGE')

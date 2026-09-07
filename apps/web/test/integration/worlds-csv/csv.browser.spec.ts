@@ -61,7 +61,7 @@ const signUp = async (page: Page) => {
 };
 const createWorld = async (page: Page) => {
   await page.getByRole("button", { name: "Criar espaço privado" }).click();
-  await expect(page.locator(".d01-world-id span")).toBeVisible();
+  await expect(page.locator(".worlds-world-id span")).toBeVisible();
 };
 const quoted = (text: string) => `"${text.replaceAll('"', '""')}"`;
 const csvSource = (subject: string, label: string, amount: string) =>
@@ -313,7 +313,7 @@ test("CSV-13 browser retains original CSV and operation across network retry and
         _tag: "NotFoundOrDenied",
         code: "NOT_FOUND_OR_DENIED",
       });
-      await expect(other.locator(".d01-world-id")).toHaveCount(0);
+      await expect(other.locator(".worlds-world-id")).toHaveCount(0);
       await expect(other.getByLabel("Identificador da obrigação")).toHaveCount(
         0
       );

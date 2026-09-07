@@ -12,7 +12,7 @@ import {
   sdk,
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
 import {
   reserveCapture,
@@ -52,7 +52,7 @@ const document =
 it.live(
   "CSV-07–10 real signup retains versioned CSV bytes, logical records and replay under current authority",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage(({ client, config }) =>
         Effect.gen(function* realCsvJourney() {
           yield* sdk((signal) =>
@@ -344,7 +344,7 @@ it.live(
 it.live(
   "CSV-05 and CSV-11 reject the complete invalid document before any reservation or semantic publication",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage(() =>
         Effect.gen(function* invalidCsvIsAtomic() {
           const account = yield* createAccount(fixture.config.baseUrl);

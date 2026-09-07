@@ -5,7 +5,7 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
 import { SemanticExecutor } from "../../../../packages/authority/src/semantic/executor.ts";
 import { canonicalJson } from "../../../../packages/authority/src/values/canonical.ts";
@@ -47,7 +47,7 @@ const csv = (separator: "\n" | "\r\n", quoteZero = false) =>
 it.live(
   "independent CSV review: equivalent representations never erase byte identity or bypass input validation on replay",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage(() =>
         Effect.gen(function* replayRepresentation() {
           const account = yield* createAccount(fixture.config.baseUrl);

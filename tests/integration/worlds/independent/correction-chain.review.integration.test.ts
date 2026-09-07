@@ -5,7 +5,7 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.js";
 import { answerQuestion } from "../../../../packages/authority/src/knowledge/corrections/answer.js";
@@ -25,7 +25,7 @@ import { configuration, makeInput } from "../commit/fixture.js";
 it.live(
   "independent EX13 a three-answer chain restores exact predecessors through undo, replay remains stable, and retained frames stay historical",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       withStorage(() =>
         Effect.gen(function* reviewChain() {
           const { context, request } = yield* makeInput();

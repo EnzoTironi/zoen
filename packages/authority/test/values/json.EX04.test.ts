@@ -1,4 +1,4 @@
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Effect, Result } from "effect";
 import { describe, expect, it } from "vitest";
 
@@ -16,7 +16,7 @@ import {
 
 const bytes = (text: string) => new TextEncoder().encode(text);
 const parse = (text: string) =>
-  Effect.runSync(parseJsonBytes(bytes(text), D01_LIMITS.envelopeBytes));
+  Effect.runSync(parseJsonBytes(bytes(text), WorldLimits.envelopeBytes));
 const failure = <A, E>(effect: Effect.Effect<A, E>) => {
   const result = Effect.runSync(Effect.result(effect));
   if (Result.isSuccess(result)) {
@@ -96,7 +96,7 @@ describe("EX04 strict JSON bytes", () => {
     "",
   ])("rejects lossy or malformed input %s", (text) => {
     expect(
-      failure(parseJsonBytes(bytes(text), D01_LIMITS.envelopeBytes))._tag
+      failure(parseJsonBytes(bytes(text), WorldLimits.envelopeBytes))._tag
     ).toBe("InvalidInput");
   });
 
@@ -127,7 +127,7 @@ describe("EX04 strict JSON bytes", () => {
     [0xe2, 0x82],
   ])("rejects invalid UTF-8 bytes %s", (...input) => {
     expect(
-      failure(parseJsonBytes(Uint8Array.from(input), D01_LIMITS.envelopeBytes))
+      failure(parseJsonBytes(Uint8Array.from(input), WorldLimits.envelopeBytes))
         ._tag
     ).toBe("InvalidInput");
   });
@@ -140,7 +140,7 @@ describe("EX04 strict JSON bytes", () => {
       failure(
         parseJsonBytes(
           bytes(`${"[".repeat(33)}0${"]".repeat(33)}`),
-          D01_LIMITS.envelopeBytes
+          WorldLimits.envelopeBytes
         )
       )._tag
     ).toBe("QuotaExceeded");
@@ -154,7 +154,7 @@ describe("EX04 strict JSON bytes", () => {
       failure(
         parseJsonBytes(
           bytes(JSON.stringify(Array.from({ length: 10_000 }, () => null))),
-          D01_LIMITS.envelopeBytes
+          WorldLimits.envelopeBytes
         )
       )._tag
     ).toBe("QuotaExceeded");
@@ -163,7 +163,7 @@ describe("EX04 strict JSON bytes", () => {
     );
     expect(
       failure(
-        parseJsonBytes(bytes(JSON.stringify(object)), D01_LIMITS.envelopeBytes)
+        parseJsonBytes(bytes(JSON.stringify(object)), WorldLimits.envelopeBytes)
       )._tag
     ).toBe("QuotaExceeded");
   });
@@ -171,7 +171,7 @@ describe("EX04 strict JSON bytes", () => {
   it("does not repair invalid UTF-16 text before encoding documents", () => {
     expect(failure(parseDocumentText('"\uD800"'))._tag).toBe("InvalidInput");
     expect(
-      failure(parseDocumentText(" ".repeat(D01_LIMITS.documentBytes + 1)))._tag
+      failure(parseDocumentText(" ".repeat(WorldLimits.documentBytes + 1)))._tag
     ).toBe("QuotaExceeded");
   });
 
@@ -218,13 +218,13 @@ describe("EX04 canonical bytes and domain-separated digests", () => {
 
   it("applies the smaller document byte limit within a valid envelope", () => {
     const exact =
-      " ".repeat(D01_LIMITS.documentBytes - bytes(document).byteLength) +
+      " ".repeat(WorldLimits.documentBytes - bytes(document).byteLength) +
       document;
     expect(Effect.runSync(parseDocumentText(exact)).records).toHaveLength(1);
     expect(failure(parseDocumentText(` ${exact}`))._tag).toBe("QuotaExceeded");
     expect(
       failure(
-        parseEnvelopeBytes(bytes(" ".repeat(D01_LIMITS.envelopeBytes + 1)))
+        parseEnvelopeBytes(bytes(" ".repeat(WorldLimits.envelopeBytes + 1)))
       )._tag
     ).toBe("QuotaExceeded");
   });

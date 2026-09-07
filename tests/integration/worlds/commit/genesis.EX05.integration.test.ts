@@ -2,14 +2,14 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { configuration, makeInput } from "./fixture.js";
 
 it.live(
   "EX05 concurrent genesis commits one world, receipt and outbox through the runtime role",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* concurrentGenesis() {
         const { context, request } = yield* makeInput();
         const [first, second] = yield* Effect.all(
@@ -50,7 +50,7 @@ it.live(
 it.live(
   "EX05 a current revocation prevents genesis replay from disclosing its retained receipt",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* revokedReplay() {
         const { context, request } = yield* makeInput();
         const created = yield* createPersonalWorld(context, request);

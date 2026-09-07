@@ -189,7 +189,7 @@ export const requireChannelReadiness = Effect.fn(
   return readiness;
 });
 
-/** Core path check: only declared D01 surfaces are ready on this profile. */
+/** Core path check: only declared Worlds surfaces are ready on this profile. */
 export const assertOnlyCoreSurfacesAdmitted = (
   flags: HostedRetainedAdmissionFlagsType = d04HostedRetainedAdmissionFlags
 ): boolean => {

@@ -8,7 +8,7 @@ import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import { Pool } from "pg";
 
-import { checkD01RuntimeRole } from "../../adapters/postgres/worlds/postgres.ts";
+import { checkWorldsRuntimeRole } from "../../adapters/postgres/worlds/postgres.ts";
 
 /** Check only the authenticated provider session, using its own identity pool. */
 export const identitySessionExists = (
@@ -52,7 +52,7 @@ export const identityPrincipalExists = (
     Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
   );
 
-export const acquireD01IdentityPool = Effect.fn("identity.acquirePool")(
+export const acquireIdentityPool = Effect.fn("identity.acquirePool")(
   function* acquirePool(url: Redacted.Redacted) {
     const runLog = Effect.runSyncWith(yield* Effect.context());
     return yield* Effect.acquireRelease(
@@ -80,10 +80,10 @@ export const acquireD01IdentityPool = Effect.fn("identity.acquirePool")(
 );
 
 /** Uses the very same pool Better Auth will use, without giving it domain grants. */
-export const checkD01IdentityPool = Effect.fn("identity.checkPool")(
+export const checkIdentityPool = Effect.fn("identity.checkPool")(
   function* checkPool(pool: Pool) {
     yield* Effect.gen(function* admission() {
-      yield* checkD01RuntimeRole;
+      yield* checkWorldsRuntimeRole;
       const sql = yield* SqlClient.SqlClient;
       yield* sql`SELECT current_schema() = 'identity'
       AND has_schema_privilege(current_user, 'identity', 'USAGE')

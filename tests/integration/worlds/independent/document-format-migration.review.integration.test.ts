@@ -21,7 +21,7 @@ import {
   sdk,
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import {
   claimRow,
   seedEvidence,
@@ -60,7 +60,7 @@ const snapshotHistory = Effect.gen(function* snapshotHistory() {
 it.live(
   "independent migration 004 preserves real legacy SQL history and exact versioned JSON bytes",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         withStorage(({ client, config }) =>
           Effect.gen(function* upgradeHistory() {

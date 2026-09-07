@@ -16,7 +16,7 @@ export default defineConfig({
   overrides: [
     {
       files: [
-        "tests/integration/d03-sharing/independent/durable-permit-snapshot.review.md",
+        "tests/integration/sharing/independent/durable-permit-snapshot.review.md",
       ],
       // The embedded original experiment is immutable evidence with a recorded byte hash.
       options: { embeddedLanguageFormatting: "off" },

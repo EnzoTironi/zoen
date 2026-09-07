@@ -4,12 +4,12 @@ import { describe, expect, it } from "vitest";
 
 import {
   CorrectionApiGroup,
-  D01Api,
-  D01ApiGroup,
+  WorldApi,
+  WorldApiGroup,
 } from "../../src/worlds/api.js";
 import {
   Conflict,
-  D01Error,
+  SemanticError,
   RetryableInfrastructureFailure,
 } from "../../src/worlds/errors.js";
 import {
@@ -17,7 +17,10 @@ import {
   ImportDocument,
   VisibleFrame,
 } from "../../src/worlds/evidence.js";
-import { CorrectionRequest, D01Request } from "../../src/worlds/operations.js";
+import {
+  CorrectionRequest,
+  WorldRequest,
+} from "../../src/worlds/operations.js";
 import {
   DateInterval,
   DecimalText,
@@ -214,7 +217,7 @@ describe("EX02 public scalar boundaries", () => {
 
 describe("EX02 exact request and import schemas", () => {
   it("decodes the bounded JSON import envelope without interpreting its document", () => {
-    expect(Schema.decodeUnknownSync(D01Request)(request)).toStrictEqual(
+    expect(Schema.decodeUnknownSync(WorldRequest)(request)).toStrictEqual(
       request
     );
     expect(Schema.decodeUnknownSync(ImportDocument)(document)).toStrictEqual(
@@ -234,31 +237,31 @@ describe("EX02 exact request and import schemas", () => {
     "dataPolicy",
   ])("rejects client authority or extra field %s", (field) => {
     expect(
-      isRejected(D01Request, { ...request, [field]: "owner" })
+      isRejected(WorldRequest, { ...request, [field]: "owner" })
     ).toBeTruthy();
   });
 
   it("rejects authority fields nested at every envelope boundary", () => {
     expect(
-      isRejected(D01Request, {
+      isRejected(WorldRequest, {
         ...request,
         worldRef: { ...world, principal: id },
       })
     ).toBeTruthy();
     expect(
-      isRejected(D01Request, {
+      isRejected(WorldRequest, {
         ...request,
         input: { ...request.input, role: "owner" },
       })
     ).toBeTruthy();
     expect(
-      isRejected(D01Request, { ...request, purpose: "admin" })
+      isRejected(WorldRequest, { ...request, purpose: "admin" })
     ).toBeTruthy();
     expect(
-      isRejected(D01Request, { ...request, schemaVersion: "v999" })
+      isRejected(WorldRequest, { ...request, schemaVersion: "v999" })
     ).toBeTruthy();
     expect(
-      isRejected(D01Request, { ...request, operation: "ExecuteSql" })
+      isRejected(WorldRequest, { ...request, operation: "ExecuteSql" })
     ).toBeTruthy();
   });
 
@@ -270,17 +273,17 @@ describe("EX02 exact request and import schemas", () => {
       purpose: "personal-records",
       schemaVersion: "worlds.v1",
     };
-    expect(Schema.decodeUnknownSync(D01Request)(genesis)).toStrictEqual(
+    expect(Schema.decodeUnknownSync(WorldRequest)(genesis)).toStrictEqual(
       genesis
     );
     expect(
-      isRejected(D01Request, { ...genesis, worldRef: world })
+      isRejected(WorldRequest, { ...genesis, worldRef: world })
     ).toBeTruthy();
     expect(
-      isRejected(D01Request, { ...genesis, input: { seed: "arbitrary" } })
+      isRejected(WorldRequest, { ...genesis, input: { seed: "arbitrary" } })
     ).toBeTruthy();
-    expect(isRejected(D01Request, { ...genesis, input: 1 })).toBeTruthy();
-    expect(isRejected(D01Request, { ...genesis, input: [] })).toBeTruthy();
+    expect(isRejected(WorldRequest, { ...genesis, input: 1 })).toBeTruthy();
+    expect(isRejected(WorldRequest, { ...genesis, input: [] })).toBeTruthy();
   });
 
   it("does not admit verified or settled claims from a file", () => {
@@ -334,7 +337,7 @@ describe("EX02 exact request and import schemas", () => {
     expect(Schema.decodeUnknownSync(CorrectionRequest)(answer)).toStrictEqual(
       answer
     );
-    expect(isRejected(D01Request, answer)).toBeTruthy();
+    expect(isRejected(WorldRequest, answer)).toBeTruthy();
     expect(
       isRejected(CorrectionRequest, {
         ...answer,
@@ -393,22 +396,25 @@ describe("EX02 disclosure and API boundaries", () => {
     const retryable = new RetryableInfrastructureFailure({
       code: "RETRYABLE_INFRASTRUCTURE_FAILURE",
     });
-    expect(Schema.encodeSync(D01Error)(conflict)).toStrictEqual({
+    expect(Schema.encodeSync(SemanticError)(conflict)).toStrictEqual({
       _tag: "Conflict",
       code: "CONFLICT",
     });
-    expect(Schema.encodeSync(D01Error)(retryable)).toStrictEqual({
+    expect(Schema.encodeSync(SemanticError)(retryable)).toStrictEqual({
       _tag: "RetryableInfrastructureFailure",
       code: "RETRYABLE_INFRASTRUCTURE_FAILURE",
     });
     expect(
-      isRejected(D01Error, { _tag: "Conflict", code: "HIDDEN_SOURCE_EXISTS" })
+      isRejected(SemanticError, {
+        _tag: "Conflict",
+        code: "HIDDEN_SOURCE_EXISTS",
+      })
     ).toBeTruthy();
   });
 
   it("preserves each semantic error HTTP status instead of a union-wide 500", () => {
     const responses =
-      OpenApi.fromApi(D01Api).paths["/api/worlds/execute"]?.post?.responses;
+      OpenApi.fromApi(WorldApi).paths["/api/worlds/execute"]?.post?.responses;
     expect(Object.keys(responses ?? {})).toStrictEqual([
       "200",
       "400",
@@ -422,13 +428,13 @@ describe("EX02 disclosure and API boundaries", () => {
   });
 
   it("keeps correction endpoints out of the first API and retains the request schema", () => {
-    expect(Object.keys(D01Api.groups)).toStrictEqual(["worlds"]);
-    expect(Object.keys(D01ApiGroup.endpoints)).toStrictEqual(["execute"]);
+    expect(Object.keys(WorldApi.groups)).toStrictEqual(["worlds"]);
+    expect(Object.keys(WorldApiGroup.endpoints)).toStrictEqual(["execute"]);
     expect(CorrectionApiGroup.endpoints.execute.path).toBe(
       "/api/corrections/execute"
     );
     const payloadSchemas = [
-      ...D01ApiGroup.endpoints.execute.payload.values(),
+      ...WorldApiGroup.endpoints.execute.payload.values(),
     ].flatMap((entry) => entry.schemas);
     expect(payloadSchemas).toHaveLength(1);
     for (const schema of payloadSchemas) {

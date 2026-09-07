@@ -16,12 +16,12 @@ import {
 import { SqlClient } from "effect/unstable/sql";
 
 import { makeDisclosureFenceLayer } from "../../../../src/adapters/postgres/disclosure/fence.ts";
-import { withD01Database } from "../worlds/database.ts";
+import { withWorldsDatabase } from "../worlds/database.ts";
 
 it.live(
   "EX22 private bytes must not reach end after coordinator loss releases the exclusive session gate",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* writerLoss() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;

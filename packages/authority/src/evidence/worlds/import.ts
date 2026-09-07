@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import type { D01Error } from "@zoen/contracts/worlds/errors";
+import type { SemanticError } from "@zoen/contracts/worlds/errors";
 import {
   Conflict,
   HistoricalContentUnavailable,
@@ -48,7 +48,7 @@ const writeAdmission = Effect.fn("authority.evidence.writeAdmission")(
     receiptRef: typeof ReceiptRef.Type
   ): Effect.fn.Return<
     MutationOutcome,
-    D01Error | SqlError | SchemaError,
+    SemanticError | SqlError | SchemaError,
     SqlClient.SqlClient
   > {
     const sql = yield* SqlClient.SqlClient;

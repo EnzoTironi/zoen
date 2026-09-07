@@ -5,7 +5,7 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { seedEvidence } from "../../../../apps/server/test/adapters/postgres/worlds/seed.ts";
 import {
   applyDisclosureMigrations,
@@ -46,7 +46,7 @@ const permissionDenied = {
 it.live(
   "independent EX22 migration 006 preserves 001–005 data and privileges, grants only coordination rights, and is idempotent",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         Effect.gen(function* reviewMigration() {
           const sql = yield* SqlClient.SqlClient;

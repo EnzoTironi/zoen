@@ -6,7 +6,7 @@ import {
   Unavailable,
 } from "@zoen/contracts/worlds/errors";
 import {
-  D01_LIMITS,
+  WorldLimits,
   Digest,
   DocumentFormat,
   Instant,
@@ -37,7 +37,7 @@ export const CaptureReservation = Schema.Struct({
   documentFormat: DocumentFormat,
   expectedBytes: Schema.Int.check(
     Schema.isGreaterThan(0),
-    Schema.isLessThanOrEqualTo(D01_LIMITS.documentBytes)
+    Schema.isLessThanOrEqualTo(WorldLimits.documentBytes)
   ),
   expectedDigest: Digest,
   expiresAt: Instant,
@@ -64,7 +64,10 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
     format: DocumentFormat = "worlds.json.v1"
   ) {
     yield* requireImportPolicy(context, world);
-    if (bytes.byteLength === 0 || bytes.byteLength > D01_LIMITS.documentBytes) {
+    if (
+      bytes.byteLength === 0 ||
+      bytes.byteLength > WorldLimits.documentBytes
+    ) {
       return yield* new InvalidInput({ code: "INVALID_INPUT" });
     }
     const documentFormat = yield* Schema.decodeEffect(DocumentFormat)(
@@ -83,7 +86,7 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
           (world_id, realm, capture_id, principal_id, state, object_location,
            expected_digest, byte_length, expires_at, fence, document_format)
         VALUES (${world.worldId}, ${world.realm}, ${captureId}, ${context.presence.principalId},
-          'reserved', NULL, ${digest}, ${bytes.byteLength}, clock_timestamp() + ${D01_LIMITS.stagingSeconds} * interval '1 second', 0, ${documentFormat})
+          'reserved', NULL, ${digest}, ${bytes.byteLength}, clock_timestamp() + ${WorldLimits.stagingSeconds} * interval '1 second', 0, ${documentFormat})
         RETURNING to_char(expires_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS expires_at
       `;
         const deadline = yield* Schema.decodeUnknownEffect(

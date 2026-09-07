@@ -1,5 +1,5 @@
 import { StorageFailure } from "@zoen/authority/ports/worlds/storage";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Effect, Stream } from "effect";
 
 /** A single bounded allocation; each chunk is copied before upstream can reuse it. */
@@ -12,7 +12,7 @@ export const collectExactBytes = (
     if (
       !Number.isSafeInteger(expectedBytes) ||
       expectedBytes < 1 ||
-      expectedBytes > D01_LIMITS.documentBytes
+      expectedBytes > WorldLimits.documentBytes
     ) {
       return yield* new StorageFailure({ reason: mismatch });
     }

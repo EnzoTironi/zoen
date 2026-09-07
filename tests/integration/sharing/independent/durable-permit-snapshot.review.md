@@ -2,7 +2,7 @@
 
 ## Executed evidence
 
-The original experiment was run with `node --env-file=.env.infra tests/integration/d03-sharing/independent/durable-permit-snapshot.review.mjs` against the configured real PostgreSQL database. The script owns a randomly named schema and drops only that schema. No service/provider response is mocked. This is a SQL concurrency experiment, not product, HTTP, Better Auth, or full disclosure acceptance.
+The original experiment was run with `node --env-file=.env.infra tests/integration/sharing/independent/durable-permit-snapshot.review.mjs` against the configured real PostgreSQL database. The script owns a randomly named schema and drops only that schema. No service/provider response is mocked. This is a SQL concurrency experiment, not product, HTTP, Better Auth, or full disclosure acceptance.
 
 Observed on 2026-09-05:
 
@@ -40,7 +40,7 @@ The exact original UTF-8 source below has SHA-256 `da01ee9d1c363bbe6b5d0176cfe69
 
 ```javascript
 // Independent PostgreSQL protocol experiment; not an HTTP/provider acceptance test.
-// Run: node --env-file=.env.infra tests/integration/d03-sharing/independent/durable-permit-snapshot.review.mjs
+// Run: node --env-file=.env.infra tests/integration/sharing/independent/durable-permit-snapshot.review.mjs
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { createRequire } from "node:module";
@@ -114,7 +114,7 @@ for (const mode of ["unsafe", "existing-subject", "absent-subject"]) {
 
 ## Typed integration-suite conversion
 
-Run `pnpm test:integration tests/integration/d03-sharing/independent/durable-permit-snapshot.review.integration.test.ts` with the existing `.env.infra` PostgreSQL configuration. On 2026-09-05 at 17:25:21 local time, Vitest executed all three scenarios: **3 passed**, one file, 236 ms total (90 ms tests). Whole-worktree TypeScript checking and linting of the new test also passed.
+Run `pnpm test:integration tests/integration/sharing/independent/durable-permit-snapshot.review.integration.test.ts` with the existing `.env.infra` PostgreSQL configuration. On 2026-09-05 at 17:25:21 local time, Vitest executed all three scenarios: **3 passed**, one file, 236 ms total (90 ms tests). Whole-worktree TypeScript checking and linting of the new test also passed.
 
 The conversion preserves the three original oracles, including the unsafe successful commit, physical reader connection closure, actual SQLSTATE 40001 for both subject-row histories, fresh-snapshot pending-permit detection, and rollback leaving membership active. It uses Effect-scoped native PostgreSQL connections because this experiment must physically close the reader, not release a pooled reservation. The server workspace owns the `pg` dependency; the sole narrow lint suppression annotates Node's untyped `require` import boundary. All SQL results inspected by the assertions are schema decoded.
 

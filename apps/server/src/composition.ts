@@ -27,8 +27,8 @@ import { layer as erasureStorageLayer } from "./adapters/object-storage/erasure/
 import type { S3EvidenceConfig } from "./adapters/object-storage/worlds/config.ts";
 import { layer as s3EvidenceLayer } from "./adapters/object-storage/worlds/s3.ts";
 import { makeDisclosureFenceLayer } from "./adapters/postgres/disclosure/fence.ts";
-import { checkD01AuthorityRole } from "./adapters/postgres/worlds/authority-role.ts";
-import { makeD01PostgresLayer } from "./adapters/postgres/worlds/postgres.ts";
+import { checkAuthorityRole } from "./adapters/postgres/worlds/authority-role.ts";
+import { makeWorldsPostgresLayer } from "./adapters/postgres/worlds/postgres.ts";
 import { makeCorrectionHttpGroup } from "./http/corrections.ts";
 import { makeErasureHttpGroup } from "./http/erasure.ts";
 import { makeEveHttpGroup } from "./http/eve.ts";
@@ -37,19 +37,19 @@ import { readinessRoutes } from "./http/readiness.ts";
 import { responseSecurity } from "./http/security.ts";
 import { makeSharingHttpGroup } from "./http/sharing.ts";
 import { makeSubjectIdentityHttpGroup } from "./http/subject-identity.ts";
-import { makeD01HttpGroup } from "./http/worlds.ts";
-import { D01IdentityConfig } from "./identity/worlds/configuration.ts";
-import { makeD01IdentityLayer } from "./identity/worlds/identity.ts";
+import { makeWorldsHttpGroup } from "./http/worlds.ts";
+import { IdentityConfig } from "./identity/worlds/configuration.ts";
+import { makeIdentityLayer } from "./identity/worlds/identity.ts";
 import { captureMaintenance } from "./maintenance/captures.ts";
 
-export interface D01ApplicationConfig {
+export interface ApplicationConfig {
   readonly authorityDatabaseUrl: Redacted.Redacted;
   /** Dedicated pool/DB for attempt register (outside Closing TX). Defaults to authority URL. */
   readonly erasureAttemptDatabaseUrl?: Redacted.Redacted;
-  readonly identity: D01IdentityConfig;
+  readonly identity: IdentityConfig;
   readonly installation: typeof AuthorityInstallationSchema.Type;
   /**
-   * Optional OpenCode Zen free credentials (D05 / ZN-0063).
+   * Optional OpenCode Zen free credentials (ZN-0063).
    * Present only when ZOEN_OPENCODE_API_KEY is set; never logged or journaled.
    * Presence does **not** admit product Eve until ZA-18/19/20 safety proofs (ZA-17).
    */
@@ -83,7 +83,7 @@ export const hostedAdmissionLayerFor = (
  * Product Eve surface for the current tip (ZA-17).
  * OpenCode key presence alone never installs stubMemory or live Zen — only
  * blocked journal + blocked provider until ZA-18/19/20 qualify admission.
- * Exported so unit tests pin the same selection `makeD01Application` uses.
+ * Exported so unit tests pin the same selection `makeApplication` uses.
  */
 export const makeProductEveSurface = (openCodeKeyPresent: boolean) => {
   const admission = currentProductEveAdmissionInput(openCodeKeyPresent);
@@ -102,10 +102,10 @@ export const makeProductEveSurface = (openCodeKeyPresent: boolean) => {
 };
 
 /** One explicit composition for every public semantic operation. */
-export const makeD01Application = (config: D01ApplicationConfig) =>
+export const makeApplication = (config: ApplicationConfig) =>
   Layer.unwrap(
-    Effect.gen(function* d01Application() {
-      const identityConfig = yield* Schema.decodeEffect(D01IdentityConfig)(
+    Effect.gen(function* application() {
+      const identityConfig = yield* Schema.decodeEffect(IdentityConfig)(
         config.identity
       );
       const installation = yield* Schema.decodeEffect(
@@ -119,14 +119,14 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         maxConnections: 8,
         url: config.authorityDatabaseUrl,
       });
-      const authorityPg = makeD01PostgresLayer({
+      const authorityPg = makeWorldsPostgresLayer({
         applicationName: "zoen-authority-live",
         maxConnections: 8,
         url: config.authorityDatabaseUrl,
       });
       const erasureAttemptUrl =
         config.erasureAttemptDatabaseUrl ?? config.authorityDatabaseUrl;
-      const erasureAttemptPg = makeD01PostgresLayer({
+      const erasureAttemptPg = makeWorldsPostgresLayer({
         applicationName: "zoen-erasure-attempt",
         maxConnections: 4,
         url: erasureAttemptUrl,
@@ -139,12 +139,10 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         config.openCodeZen !== undefined
       );
       const infrastructure = Layer.mergeAll(
-        Layer.effectDiscard(checkD01AuthorityRole).pipe(
+        Layer.effectDiscard(checkAuthorityRole).pipe(
           Layer.provideMerge(authorityPg)
         ),
-        makeD01IdentityLayer(config.identity).pipe(
-          Layer.provideMerge(disclosure)
-        ),
+        makeIdentityLayer(config.identity).pipe(Layer.provideMerge(disclosure)),
         s3EvidenceLayer(config.storage),
         erasureStorageLayer(config.storage),
         Layer.succeed(AuthorityInstallation, installation),
@@ -157,7 +155,7 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
         Layer.provide(infrastructure)
       );
       const api = HttpApiBuilder.layer(ApplicationApi).pipe(
-        Layer.provide(makeD01HttpGroup(identityConfig.baseUrl)),
+        Layer.provide(makeWorldsHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeCorrectionHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeSharingHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeSubjectIdentityHttpGroup(identityConfig.baseUrl)),

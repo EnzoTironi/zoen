@@ -3,7 +3,7 @@ import { Console, Effect, Layer, Result } from "effect";
 import { CliError, CliOutput, Command } from "effect/unstable/cli";
 import { FetchHttpClient } from "effect/unstable/http";
 
-import { d01Command } from "./worlds/command.ts";
+import { rootCommand } from "./worlds/command.ts";
 import { CliFailure, formatFailure } from "./worlds/output.ts";
 
 const program = Effect.gen(function* cliMain() {
@@ -42,7 +42,7 @@ const program = Effect.gen(function* cliMain() {
     },
     formatVersion: formatter.formatVersion,
   };
-  const result = yield* Command.run(d01Command, {
+  const result = yield* Command.run(rootCommand, {
     renderErrors: false,
     version: "0.0.0",
   }).pipe(

@@ -34,7 +34,7 @@ import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
 import { makeProcessConfiguration } from "../../worlds-corrections-independent/process-configuration.ts";
 import { configuration } from "../../worlds/commit/fixture.js";
@@ -53,7 +53,7 @@ const bytes = (value: unknown) =>
     Effect.map((json) => new TextEncoder().encode(json))
   );
 
-const d01 = {
+const worldsBasis = {
   purpose: "personal-records" as const,
   schemaVersion: "worlds.v1" as const,
 };
@@ -88,7 +88,7 @@ const documentFor = (subjects: readonly { key: string; amount: string }[]) =>
 it.live(
   "independent: ResolveIdentity SIGKILL before commit rolls back; lost ack after commit replays once",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage((storage) =>
         Effect.scoped(
           Effect.gen(function* identityWriterAtomicity() {
@@ -104,7 +104,7 @@ it.live(
               .execute(
                 account.credential,
                 yield* bytes({
-                  ...d01,
+                  ...worldsBasis,
                   input: {},
                   operation: "CreatePersonalWorld",
                   operationId: randomUUID(),
@@ -115,7 +115,7 @@ it.live(
             yield* executor.execute(
               account.credential,
               yield* bytes({
-                ...d01,
+                ...worldsBasis,
                 input: {
                   document: yield* documentFor([
                     { amount: "100", key: "A" },

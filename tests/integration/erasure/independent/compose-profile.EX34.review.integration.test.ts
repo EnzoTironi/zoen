@@ -5,8 +5,8 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { makeD01PostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { makeWorldsPostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { applyErasureMigrations } from "../../../../ops/migrations/run.ts";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import { inspectWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/inspect.js";
@@ -32,10 +32,10 @@ const withNumberedErasureRuntime = <A, E, R, ROut, EOut>(
   configuration: Layer.Layer<ROut, EOut>,
   run: Effect.Effect<A, E, R>
 ) =>
-  withD01Database(
+  withWorldsDatabase(
     (database) =>
       Effect.gen(function* prepare() {
-        const registerPg = makeD01PostgresLayer({
+        const registerPg = makeWorldsPostgresLayer({
           applicationName: "zoen-ex34-erasure-attempt",
           maxConnections: 4,
           url: database.urls.authority,

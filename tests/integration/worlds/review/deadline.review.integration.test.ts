@@ -18,14 +18,14 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../../../../apps/server/test/composition/worlds/fixture.js";
 import { canonicalJson } from "../../../../packages/authority/src/values/canonical.js";
 
 it.live(
   "independent EX10 HTTP deadline includes slow body delivery and rolls back the subsequent real lock wait",
   () =>
-    withD01Http(({ database, origin }) =>
+    withWorldsHttp(({ database, origin }) =>
       Effect.scoped(
         Effect.gen(function* wholeHttpDeadline() {
           const signup = yield* http(

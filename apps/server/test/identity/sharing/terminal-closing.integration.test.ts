@@ -8,7 +8,7 @@ import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
 import { DateTime, Deferred, Effect, Fiber, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01IdentityDatabase } from "../worlds/database.ts";
+import { withIdentityDatabase } from "../worlds/database.ts";
 import { cookieCredential, createAccount, postAuth } from "../worlds/http.ts";
 
 const target = Effect.gen(function* disclosureTarget() {
@@ -27,7 +27,7 @@ const target = Effect.gen(function* disclosureTarget() {
 it.live(
   "EX22 provider failure retains terminal closing without claiming identity revoked; another login has its own session",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* terminalProviderFailure() {
         const fence = yield* DisclosureFence;
         const presence = yield* Presence;
@@ -88,7 +88,7 @@ it.live(
 it.live(
   "EX22 terminal closing survives coordinator loss while Better Auth is blocked before its real DELETE",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* closingDuringProviderIo() {
         const fence = yield* DisclosureFence;
         const presence = yield* Presence;

@@ -2,8 +2,8 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { checkD01RuntimeRole } from "../../../../src/adapters/postgres/worlds/postgres.ts";
-import { withD01Database } from "./database.ts";
+import { checkWorldsRuntimeRole } from "../../../../src/adapters/postgres/worlds/postgres.ts";
+import { withWorldsDatabase } from "./database.ts";
 
 const roleName = Effect.gen(function* currentRole() {
   const sql = yield* SqlClient.SqlClient;
@@ -18,8 +18,8 @@ const roleName = Effect.gen(function* currentRole() {
 });
 
 for (const mode of ["direct", "indirect", "admin-option"] as const) {
-  it.live(`D01 rejects ${mode} SET ROLE access to the migration owner`, () =>
-    withD01Database((database) =>
+  it.live(`Worlds rejects ${mode} SET ROLE access to the migration owner`, () =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* membership() {
         const admin = yield* SqlClient.SqlClient;
         const migration = yield* roleName.pipe(
@@ -31,7 +31,7 @@ for (const mode of ["direct", "indirect", "admin-option"] as const) {
         yield* Effect.gen(function* reachableOwner() {
           const sql = yield* SqlClient.SqlClient;
           const runtime = yield* roleName;
-          yield* checkD01RuntimeRole;
+          yield* checkWorldsRuntimeRole;
           if (mode === "indirect") {
             yield* admin`GRANT ${admin(migration)} TO ${admin(progress)}`;
             yield* admin`GRANT ${admin(progress)} TO ${admin(runtime)}`;
@@ -43,9 +43,11 @@ for (const mode of ["direct", "indirect", "admin-option"] as const) {
           } else {
             yield* admin`GRANT ${admin(migration)} TO ${admin(runtime)}`;
           }
-          expect(yield* checkD01RuntimeRole.pipe(Effect.flip)).toMatchObject({
-            _tag: "UnsafePostgresRole",
-          });
+          expect(yield* checkWorldsRuntimeRole.pipe(Effect.flip)).toMatchObject(
+            {
+              _tag: "UnsafePostgresRole",
+            }
+          );
           if (mode === "admin-option") {
             yield* sql`GRANT ${sql(migration)} TO ${sql(runtime)} WITH SET TRUE`;
           }

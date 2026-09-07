@@ -45,4 +45,4 @@ UPDATE authority.cases
 -- pre-identity executables so current DataPolicy (worlds-local-retained-v1) matches.
 UPDATE authority.worlds
   SET data_policy_id = 'worlds-local-retained-v1'
-  WHERE data_policy_id = 'd01-local-retained-v1';
+  WHERE data_policy_id = 'worlds-local-retained-v1';

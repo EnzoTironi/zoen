@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { D01Error } from "../worlds/errors.js";
+import { SemanticError } from "../worlds/errors.js";
 import {
   CaseRef,
   DateInterval,
@@ -149,6 +149,6 @@ export const SubjectIdentitySuccess = Schema.Union([
 export type SubjectIdentitySuccess = typeof SubjectIdentitySuccess.Type;
 export const SubjectIdentityResult = Schema.Union([
   SubjectIdentitySuccess,
-  D01Error,
+  SemanticError,
 ]);
 export type SubjectIdentityResult = typeof SubjectIdentityResult.Type;

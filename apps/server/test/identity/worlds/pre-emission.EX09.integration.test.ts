@@ -9,13 +9,13 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { configuration } from "../../../../../tests/integration/worlds/commit/fixture.ts";
 import { withStorage } from "../../adapters/object-storage/worlds/fixture.ts";
-import { withD01IdentityDatabase } from "./database.ts";
+import { withIdentityDatabase } from "./database.ts";
 import { createAccount, postAuth } from "./http.ts";
 
 it.live(
   "EX09 logout during a real SQL wait withholds the committed result at pre-emission",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage(() =>
         Effect.gen(function* preEmission() {
           const executor = yield* SemanticExecutor;

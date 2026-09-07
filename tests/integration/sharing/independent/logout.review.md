@@ -36,13 +36,13 @@ The held case does not expose a requestfailed event for sign-out; the narrower d
 
 ## Artifacts and scope
 
-Diagnostic source was temporarily `apps/web/test/integration/d03-sharing/independent/logout.review.browser.spec.ts`. Its exact executed contents are preserved below, outside default test discovery. The temporary executable was removed after preservation, as requested by root.
+Diagnostic source was temporarily `apps/web/test/integration/sharing/independent/logout.review.browser.spec.ts`. Its exact executed contents are preserved below, outside default test discovery. The temporary executable was removed after preservation, as requested by root.
 
-Held timeline and screenshots: `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788643306325/integration-d03-sharing-in-4fe47-rves-EX12-navigation-oracle-chromium/` (logout-timeline.json, test-failed-1.png, test-failed-2.png, error-context.md).
+Held timeline and screenshots: `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788643306325/integration-sharing-in-4fe47-rves-EX12-navigation-oracle-chromium/` (logout-timeline.json, test-failed-1.png, test-failed-2.png, error-context.md).
 
-Confirmed timeline: `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788643323190/integration-d03-sharing-in-2c09d-rves-EX12-navigation-oracle-chromium/logout-timeline.json`.
+Confirmed timeline: `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788643323190/integration-sharing-in-2c09d-rves-EX12-navigation-oracle-chromium/logout-timeline.json`.
 
-Command: `ZOEN_TEST_WEB_URL=http://127.0.0.1:4316 pnpm exec playwright test --config playwright.acceptance.config.ts apps/web/test/integration/d03-sharing/independent/logout.review.browser.spec.ts`, using installed Node 24.18.1. No mocks, privileged identity, fake service response, concurrent suite, server rebuild or product change.
+Command: `ZOEN_TEST_WEB_URL=http://127.0.0.1:4316 pnpm exec playwright test --config playwright.acceptance.config.ts apps/web/test/integration/sharing/independent/logout.review.browser.spec.ts`, using installed Node 24.18.1. No mocks, privileged identity, fake service response, concurrent suite, server rebuild or product change.
 
 Recommended test correction: register waitForResponse before clicking Sair, retain immediate content-clearing assertions, require sign-out 200 and get-session null, then perform the existing back-navigation assertions. This does not prove logout survives page closure before provider acknowledgement. A product requirement to guarantee that stronger behavior requires separate design and proof; this review does not claim it.
 
@@ -154,9 +154,9 @@ test(`Independent logout ${mode} preserves EX12 navigation oracle`, async ({
   const secondLabel = `Fonte B ${randomUUID()}`;
   await signUp(page);
   await page.getByRole("button", { name: "Criar espaço privado" }).click();
-  await expect(page.locator(".d01-world-id span")).toBeVisible();
+  await expect(page.locator(".worlds-world-id span")).toBeVisible();
   const world = Schema.decodeUnknownSync(WorldId)(
-    await page.locator(".d01-world-id span").textContent()
+    await page.locator(".worlds-world-id span").textContent()
   );
   await page
     .getByLabel("Adicionar arquivos", { exact: true })

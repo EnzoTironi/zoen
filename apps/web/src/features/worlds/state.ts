@@ -1,5 +1,5 @@
 import { InvalidInput, Unavailable } from "@zoen/contracts/worlds/errors";
-import type { D01Error } from "@zoen/contracts/worlds/errors";
+import type { SemanticError } from "@zoen/contracts/worlds/errors";
 import { Inspect, OpenEvidence } from "@zoen/contracts/worlds/operations";
 import type {
   CorrectionRequest,
@@ -120,7 +120,7 @@ export const createWorkspaceController = (origin: string) => {
       ...patch,
     });
   };
-  const failed = (error: D01Error) => {
+  const failed = (error: SemanticError) => {
     const failedRequest = retry;
     if (
       error._tag !== "Unavailable" &&

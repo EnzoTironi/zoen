@@ -4,13 +4,13 @@ import { Presence } from "@zoen/authority/ports/worlds/context";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { makeTestIdentityLayer, withD01IdentityDatabase } from "./database.ts";
+import { makeTestIdentityLayer, withIdentityDatabase } from "./database.ts";
 import { createAccount } from "./http.ts";
 
 it.live(
   "EX09 session expiration is enforced by the real provider and clock on the next verification",
   () =>
-    withD01IdentityDatabase(
+    withIdentityDatabase(
       (fixture) =>
         Effect.gen(function* expiry() {
           const presence = yield* Presence;
@@ -32,7 +32,7 @@ it.live(
 it.live(
   "EX09 provider SQL denial remains closed Unavailable without a cached or offline session",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* deniedDatabase() {
         const presence = yield* Presence;
         const account = yield* createAccount(fixture.config.baseUrl);
@@ -70,7 +70,7 @@ it.live(
 it.live(
   "EX09 identity startup refuses authority and progress credentials even though they are valid runtime roles",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* credentials() {
         for (const profile of [
           fixture.database.authority,

@@ -2,7 +2,7 @@ import type { BetterAuthOptions } from "better-auth";
 import { Effect, Redacted, Schema } from "effect";
 import type { Pool } from "pg";
 
-export const D01IdentityConfig = Schema.Struct({
+export const IdentityConfig = Schema.Struct({
   baseUrl: Schema.URLFromString.check(
     Schema.makeFilter(
       (url) =>
@@ -25,7 +25,7 @@ export const D01IdentityConfig = Schema.Struct({
     Schema.isLessThanOrEqualTo(604_800)
   ),
 });
-export type D01IdentityConfig = typeof D01IdentityConfig.Encoded;
+export type IdentityConfig = typeof IdentityConfig.Encoded;
 
 export class IdentityConfigurationError extends Schema.TaggedError<IdentityConfigurationError>()(
   "IdentityConfigurationError",
@@ -42,8 +42,8 @@ const authLog = (level: "debug" | "info" | "warn" | "error") => {
 };
 
 /** The same options drive the real provider and its generated migration. */
-export const d01AuthOptions = (
-  config: typeof D01IdentityConfig.Type,
+export const identityAuthOptions = (
+  config: typeof IdentityConfig.Type,
   pool: Pool
 ) =>
   ({
@@ -57,7 +57,7 @@ export const d01AuthOptions = (
       trustedProxyHeaders: false,
       useSecureCookies: config.baseUrl.protocol === "https:",
     },
-    appName: "Zoen D01",
+    appName: "Zoen",
     basePath: "/api/auth",
     baseURL: config.baseUrl.origin,
     database: pool,

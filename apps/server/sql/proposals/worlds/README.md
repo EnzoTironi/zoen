@@ -4,7 +4,7 @@ Estado: implementada e exercitada em PostgreSQL 18 real; pendente de revisão in
 
 `schema.sql` cria `identity`, `authority` e `jobs` em banco dedicado, executado pelo proprietário de migração dentro de uma transação. Não contém DROP de dados ou `IF NOT EXISTS` para esconder schema divergente. Revoga CREATE em public e CREATE/TEMPORARY de PUBLIC no banco alvo. Tabelas identity da biblioteca serão definidas somente em EX09, sem schema simulado neste incremento.
 
-`grantD01Roles` de `grants.ts` recebe nomes de roles da configuração de instalação e usa identificadores SQL escapados. Não cria usuários nem recebe nomes do cliente. Executar como dono da migração depois do schema:
+`grantWorldsRoles` de `grants.ts` recebe nomes de roles da configuração de instalação e usa identificadores SQL escapados. Não cria usuários nem recebe nomes do cliente. Executar como dono da migração depois do schema:
 
 - Migração: proprietária do banco/schema, única responsável por DDL.
 - Authority: SELECT/INSERT nas tabelas de domínio, UPDATE nos heads/memberships/domains e colunas de progresso necessárias; sem DELETE de claims/receipts/pins/corrections, sem UPDATE de fatos históricos.
@@ -15,7 +15,7 @@ As roles de runtime precisam de LOGIN, NOSUPERUSER, NOCREATEDB, NOCREATEROLE, NO
 
 ## Pool e consumidores
 
-`apps/server/src/adapters/postgres/worlds/postgres.ts` exporta `makeD01PostgresLayer({ url, applicationName, maxConnections })`. A URL é `Redacted`; o retorno fornece os serviços nativos `PgClient` e `SqlClient`. O perfil conecta com limite de três segundos e verifica que o runtime não recebeu CREATE nos schemas authority/identity/jobs/public, CREATE/TEMP no banco, superuser, createrole, createdb, bypassrls ou replication. O proprietário de migração usa um pool separado, não esse perfil restritivo. Não existe repository, UnitOfWork ou autorizer paralelo.
+`apps/server/src/adapters/postgres/worlds/postgres.ts` exporta `makeWorldsPostgresLayer({ url, applicationName, maxConnections })`. A URL é `Redacted`; o retorno fornece os serviços nativos `PgClient` e `SqlClient`. O perfil conecta com limite de três segundos e verifica que o runtime não recebeu CREATE nos schemas authority/identity/jobs/public, CREATE/TEMP no banco, superuser, createrole, createdb, bypassrls ou replication. O proprietário de migração usa um pool separado, não esse perfil restritivo. Não existe repository, UnitOfWork ou autorizer paralelo.
 
 EX05/08 usam `SqlClient.withTransaction` diretamente, definindo SERIALIZABLE ou REPEATABLE READ antes da primeira consulta relevante. O adapter não aplica retry genérico. Retornar DATE como `to_char(valid_from, 'YYYY-MM-DD')`/equivalente ou texto com DateStyle admitido e validar com LocalDate; nunca converter DATE por Date.toISOString. Valores NUMERIC/bigint continuam texto e são validados pelo Schema correspondente.
 

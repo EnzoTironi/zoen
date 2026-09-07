@@ -1,6 +1,6 @@
 # Independent HTTP sharing journey
 
-Baseline: committed production `9701de4`, with the earlier response/Scope emitter. Only this independent test and report were added. The test uses `withD01Http`: a real TCP Node Effect HTTP server, isolated PostgreSQL database with normal component login roles, Better Auth accounts, and versioned S3-compatible storage. The only account IDs come from validated real signup responses. No mocked services, fabricated provider responses, privileged application identities, or emitter hooks are used.
+Baseline: committed production `9701de4`, with the earlier response/Scope emitter. Only this independent test and report were added. The test uses `withWorldsHttp`: a real TCP Node Effect HTTP server, isolated PostgreSQL database with normal component login roles, Better Auth accounts, and versioned S3-compatible storage. The only account IDs come from validated real signup responses. No mocked services, fabricated provider responses, privileged application identities, or emitter hooks are used.
 
 Executed on 2026-09-05:
 

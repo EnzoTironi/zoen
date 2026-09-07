@@ -30,9 +30,9 @@ const Connected = ({
     <>
       <section
         aria-label="Contexto do espaço privado"
-        className="worlds-workspace d01-context"
+        className="worlds-workspace worlds-context"
       >
-        <div className="d01-context-inner">
+        <div className="worlds-context-inner">
           <output aria-live="polite">{state.actionError}</output>
           <label htmlFor={`${id}-principal`}>Seu identificador de conta</label>
           <input
@@ -56,7 +56,7 @@ const Connected = ({
             <label htmlFor={`${id}-world`}>
               Abrir espaço pelo identificador
             </label>
-            <div className="d01-action-row">
+            <div className="worlds-action-row">
               <input
                 disabled={state.busy}
                 id={`${id}-world`}
@@ -65,7 +65,7 @@ const Connected = ({
                 type="text"
               />
               <button
-                className="d01-button"
+                className="worlds-button"
                 disabled={state.busy}
                 type="submit"
               >
@@ -74,7 +74,7 @@ const Connected = ({
             </div>
           </form>
           <button
-            className="d01-button"
+            className="worlds-button"
             disabled={state.busy}
             onClick={() => {
               controller.createWorld();
@@ -90,7 +90,7 @@ const Connected = ({
             </p>
           ) : (
             <>
-              <p className="d01-world-id">
+              <p className="worlds-world-id">
                 Espaço atual: <span>{state.world.worldId}</span>
               </p>
               <p>
@@ -120,7 +120,7 @@ const Connected = ({
                   <label htmlFor={`${id}-subject`}>
                     Identificador da obrigação
                   </label>
-                  <div className="d01-action-row">
+                  <div className="worlds-action-row">
                     <input
                       disabled={state.busy}
                       id={`${id}-subject`}
@@ -130,7 +130,7 @@ const Connected = ({
                       type="text"
                     />
                     <button
-                      className="d01-button d01-button-primary"
+                      className="worlds-button worlds-button-primary"
                       disabled={state.busy}
                       type="submit"
                     >
@@ -157,12 +157,12 @@ const Connected = ({
         </div>
       </section>
       {state.world === null ? (
-        <div className="worlds-workspace d01-context">
+        <div className="worlds-workspace worlds-context">
           {state.view.kind === "denied" ? (
             <h1>Não foi possível abrir este conteúdo</h1>
           ) : null}
           <button
-            className="d01-button"
+            className="worlds-button"
             onClick={() => {
               controller.logout();
             }}
@@ -208,7 +208,7 @@ const Connected = ({
 };
 
 /** Root composes this export on the same origin as the real server. */
-export const D01Feature = () => {
+export const WorldsFeature = () => {
   const controller = useMemo(
     () => createWorkspaceController(window.location.origin),
     []

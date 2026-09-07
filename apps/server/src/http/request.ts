@@ -3,7 +3,7 @@ import {
   NotFoundOrDenied,
   QuotaExceeded,
 } from "@zoen/contracts/worlds/errors";
-import { D01_LIMITS } from "@zoen/contracts/worlds/values";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import { Effect, Stream } from "effect";
 import type { HttpServerRequest } from "effect/unstable/http";
 
@@ -42,7 +42,7 @@ export const readJsonBody = Effect.fn("http.readJsonBody")(
     const declaredLength = request.headers["content-length"];
     if (
       declaredLength !== undefined &&
-      Number(declaredLength) > D01_LIMITS.envelopeBytes
+      Number(declaredLength) > WorldLimits.envelopeBytes
     ) {
       return yield* new QuotaExceeded({ code: "QUOTA_EXCEEDED" });
     }
@@ -53,7 +53,7 @@ export const readJsonBody = Effect.fn("http.readJsonBody")(
       Stream.runForEach((chunk) =>
         Effect.gen(function* retainChunk() {
           size += chunk.byteLength;
-          if (size > D01_LIMITS.envelopeBytes) {
+          if (size > WorldLimits.envelopeBytes) {
             return yield* new QuotaExceeded({ code: "QUOTA_EXCEEDED" });
           }
           chunks.push(chunk);

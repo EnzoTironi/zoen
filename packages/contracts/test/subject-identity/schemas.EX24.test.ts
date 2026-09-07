@@ -14,7 +14,10 @@ import {
   IdentityPartitions,
   IdentityQuestion,
 } from "../../src/subject-identity/question.js";
-import { D01Request, CorrectionRequest } from "../../src/worlds/operations.js";
+import {
+  WorldRequest,
+  CorrectionRequest,
+} from "../../src/worlds/operations.js";
 
 const id = "11111111-1111-4111-8111-111111111111";
 const otherId = "22222222-2222-4222-8222-222222222222";
@@ -148,7 +151,7 @@ describe("EX24 closed subject identity schemas", () => {
     ];
     for (const request of requests) {
       expect(Schema.is(SubjectIdentityRequest)(request)).toBeTruthy();
-      expect(Schema.is(D01Request)(request)).toBeFalsy();
+      expect(Schema.is(WorldRequest)(request)).toBeFalsy();
       expect(Schema.is(CorrectionRequest)(request)).toBeFalsy();
       for (const field of ["role", "capability", "basis", "principalRef"]) {
         expect(

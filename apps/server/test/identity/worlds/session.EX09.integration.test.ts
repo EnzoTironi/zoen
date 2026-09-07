@@ -5,13 +5,13 @@ import { Presence } from "@zoen/authority/ports/worlds/context";
 import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01IdentityDatabase } from "./database.ts";
+import { withIdentityDatabase } from "./database.ts";
 import { cookieCredential, createAccount, postAuth } from "./http.ts";
 
 it.live(
   "EX09 real password signup/login and logout produce a UUID presence without a domain grant",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* sessions() {
         const presence = yield* Presence;
         const account = yield* createAccount(fixture.config.baseUrl);

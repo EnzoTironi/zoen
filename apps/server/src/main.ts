@@ -3,7 +3,7 @@ import { Effect, Layer } from "effect";
 import { HttpRouter } from "effect/unstable/http";
 
 import { httpListener } from "./adapters/http.ts";
-import { makeD01Application } from "./composition.ts";
+import { makeApplication } from "./composition.ts";
 import { loadConfiguration } from "./configuration.ts";
 import { webRoutes } from "./http/web.ts";
 import { logServerFailed, serverMainRuntimeOptions } from "./server-failed.ts";
@@ -12,7 +12,7 @@ const program = loadConfiguration.pipe(
   Effect.flatMap(({ application, listenHost, listenPort }) =>
     Layer.launch(
       HttpRouter.serve(
-        Layer.mergeAll(makeD01Application(application), webRoutes),
+        Layer.mergeAll(makeApplication(application), webRoutes),
         {
           disableLogger: true,
         }

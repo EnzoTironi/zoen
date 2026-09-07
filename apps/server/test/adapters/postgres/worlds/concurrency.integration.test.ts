@@ -4,13 +4,13 @@ import { expect, it } from "@effect/vitest";
 import { Deferred, Effect, Exit, Fiber, Result, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "./database.ts";
+import { withWorldsDatabase } from "./database.ts";
 import { claimRow, seedEvidence } from "./seed.ts";
 
 it.live(
-  "D01 repeatable read keeps head, membership and predicates on one cut across a concurrent commit",
+  "Worlds repeatable read keeps head, membership and predicates on one cut across a concurrent commit",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* snapshots() {
         const sql = yield* SqlClient.SqlClient;
         // READ COMMITTED is the negative control: this exact interleaving tears its cut.
@@ -65,9 +65,9 @@ it.live(
 );
 
 it.live(
-  "D01 concurrent physical identity collision commits one claim and rolls back the losing transaction",
+  "Worlds concurrent physical identity collision commits one claim and rolls back the losing transaction",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* collision() {
         const sql = yield* SqlClient.SqlClient;
         const seed = yield* seedEvidence();

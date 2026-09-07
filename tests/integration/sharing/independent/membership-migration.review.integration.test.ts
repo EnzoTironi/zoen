@@ -5,8 +5,8 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { Migrator, SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
-import type { D01TestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import type { WorldsTestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import {
   claimRow,
   seedEvidence,
@@ -16,9 +16,9 @@ import {
   applySharingMigrations,
 } from "../../../../ops/migrations/run.ts";
 
-const migrationServices = (database: D01TestDatabase) =>
+const migrationServices = (database: WorldsTestDatabase) =>
   Layer.mergeAll(database.migration, NodeServices.layer);
-const installBaseline = (database: D01TestDatabase) =>
+const installBaseline = (database: WorldsTestDatabase) =>
   applyApplicationMigrations(database.names).pipe(
     Effect.provide(migrationServices(database))
   );
@@ -52,7 +52,7 @@ const history = Effect.gen(function* history() {
     yield* sql`SELECT nspname, nspowner, nspacl FROM pg_namespace WHERE nspname IN ('authority', 'identity', 'jobs', 'public') ORDER BY nspname`;
   return rows;
 });
-const roleFlags = (database: D01TestDatabase) =>
+const roleFlags = (database: WorldsTestDatabase) =>
   SqlClient.SqlClient.use(
     (sql) =>
       sql`SELECT rolname, rolsuper, rolinherit, rolcreaterole, rolcreatedb, rolcanlogin, rolreplication, rolbypassrls FROM pg_roles WHERE rolname IN (${database.names.authority}, ${database.names.identity}, ${database.names.progress}, ${database.names.migration}) ORDER BY rolname`
@@ -65,7 +65,7 @@ const membershipSchema = SqlClient.SqlClient.use(
 it.live(
   "independent SH-10 migration preserves baseline history and privileges while allowing viewers and one owner per World realm",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         Effect.gen(function* migrateValidHistory() {
           const sql = yield* SqlClient.SqlClient;
@@ -173,7 +173,7 @@ for (const owners of [0, 2]) {
   it.live(
     `independent SH-10 migration rejects ${owners} historical owners atomically without repairing history`,
     () =>
-      withD01Database(
+      withWorldsDatabase(
         (database) =>
           Effect.gen(function* rejectInvalidHistory() {
             const sql = yield* SqlClient.SqlClient;
@@ -234,7 +234,7 @@ for (const owners of [0, 2]) {
 it.live(
   "independent SH-10 limit: the unique index does not preserve an owner against direct privileged SQL",
   () =>
-    withD01Database(
+    withWorldsDatabase(
       (database) =>
         Effect.gen(function* ownerExistenceLimit() {
           const sql = yield* SqlClient.SqlClient;

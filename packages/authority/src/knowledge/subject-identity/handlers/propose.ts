@@ -27,7 +27,7 @@ import {
 import type { WorldRef } from "@zoen/contracts/worlds/values";
 import {
   CaseRef,
-  D01_LIMITS,
+  WorldLimits,
   QuestionRef,
   Revision,
 } from "@zoen/contracts/worlds/values";
@@ -67,7 +67,7 @@ import { loadIdentityFrame } from "./frame.js";
 const ensureQuestionFits = Effect.fn("subjectIdentity.ensureQuestionFits")(
   function* ensureQuestionFits(question: IdentityQuestion) {
     const encoded = new TextEncoder().encode(yield* canonicalJson(question));
-    if (encoded.byteLength > D01_LIMITS.responseBytes) {
+    if (encoded.byteLength > WorldLimits.responseBytes) {
       return yield* new QuotaExceeded({ code: "QUOTA_EXCEEDED" });
     }
     return encoded;

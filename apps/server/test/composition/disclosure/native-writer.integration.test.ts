@@ -17,7 +17,7 @@ import { SqlClient } from "effect/unstable/sql";
 import { makeDisclosureFenceLayer } from "../../../src/adapters/postgres/disclosure/fence.ts";
 import { makePrivateJsonEmitter } from "../../../src/http/disclosure.ts";
 import { responseSecurity } from "../../../src/http/security.ts";
-import { withD01Database } from "../../adapters/postgres/worlds/database.ts";
+import { withWorldsDatabase } from "../../adapters/postgres/worlds/database.ts";
 
 const digest = (bytes: Uint8Array) =>
   createHash("sha256").update(bytes).digest("hex");
@@ -25,7 +25,7 @@ const digest = (bytes: Uint8Array) =>
 it.live.each([64, 1_048_576])(
   "EX23 native JSON writer submits exactly %i bytes before acknowledging its durable permit",
   (size) =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* nativeWriterComponent() {
         const sql = yield* SqlClient.SqlClient;
         const fence = yield* DisclosureFence;

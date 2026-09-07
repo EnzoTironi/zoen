@@ -1,4 +1,4 @@
-import type { D01Error } from "@zoen/contracts/worlds/errors";
+import type { SemanticError } from "@zoen/contracts/worlds/errors";
 import type { VisibleFrame } from "@zoen/contracts/worlds/evidence";
 import type { EvidenceOpened } from "@zoen/contracts/worlds/operations";
 import type { ValidTime } from "@zoen/contracts/worlds/values";
@@ -13,7 +13,7 @@ export const intervalLabel = (interval: ValidTime) =>
     ? "Período desconhecido"
     : `${interval.from} até ${interval.to} (fim exclusivo)`;
 
-export const errorMessage = (error: D01Error) => {
+export const errorMessage = (error: SemanticError) => {
   switch (error._tag) {
     case "Unauthenticated": {
       return "Sua sessão terminou. Entre novamente.";
@@ -55,7 +55,7 @@ export const errorMessage = (error: D01Error) => {
   }
 };
 
-export const errorView = (error: D01Error): WorkspaceView => {
+export const errorView = (error: SemanticError): WorkspaceView => {
   if (error._tag === "InvalidInput" || error._tag === "QuotaExceeded") {
     return { kind: "empty" };
   }

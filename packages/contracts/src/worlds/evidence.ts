@@ -4,7 +4,7 @@ import {
   ClaimRef,
   CorrectionRef,
   Currency,
-  D01_LIMITS,
+  WorldLimits,
   DateInterval,
   DecimalText,
   EvidenceRef,
@@ -44,7 +44,7 @@ export const ImportRecord = Schema.Struct({
 export const ImportDocument = Schema.Struct({
   records: Schema.Array(ImportRecord).check(
     Schema.isMinLength(1),
-    Schema.isMaxLength(D01_LIMITS.records)
+    Schema.isMaxLength(WorldLimits.records)
   ),
   schemaVersion: Schema.Literal("worlds.v1"),
   source: SourceDescriptor,
@@ -59,7 +59,7 @@ export const VisibleClaim = Schema.Struct({
   recordId: RecordKey,
   recordIndex: Schema.Int.check(
     Schema.isGreaterThanOrEqualTo(0),
-    Schema.isLessThan(D01_LIMITS.records)
+    Schema.isLessThan(WorldLimits.records)
   ),
   source: SourceDescriptor,
   sourceRef: SourceRef,
@@ -77,7 +77,7 @@ export const Selection = Schema.Union([
   Schema.TaggedStruct("set-valued", {
     claimRefs: Schema.Array(ClaimRef).check(
       Schema.isMinLength(1),
-      Schema.isMaxLength(D01_LIMITS.frameClaims)
+      Schema.isMaxLength(WorldLimits.frameClaims)
     ),
   }).annotate(exact),
 ]);
@@ -104,13 +104,13 @@ export type ScopedCorrection = typeof ScopedCorrection.Type;
 
 export const VisibleFrame = Schema.Struct({
   claims: Schema.Array(VisibleClaim).check(
-    Schema.isMaxLength(D01_LIMITS.frameClaims)
+    Schema.isMaxLength(WorldLimits.frameClaims)
   ),
   contested: Schema.Boolean,
   coverage: Coverage,
   frameRef: FrameRef,
   scopedCorrections: Schema.Array(ScopedCorrection).check(
-    Schema.isMaxLength(D01_LIMITS.frameClaims)
+    Schema.isMaxLength(WorldLimits.frameClaims)
   ),
   selection: Selection,
   subjectKey: SubjectKey,

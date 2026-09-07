@@ -3,7 +3,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { NodeServices } from "@effect/platform-node";
 import { DateTime, Effect, Layer, Redacted, Schema } from "effect";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/worlds/database.js";
 import { applyIdentityBasisMigrations } from "../../../../ops/migrations/run.js";
 import {
@@ -12,7 +12,7 @@ import {
 } from "../../../../packages/authority/src/ports/worlds/context.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 
-type Database = Parameters<Parameters<typeof withD01Database>[0]>[0];
+type Database = Parameters<Parameters<typeof withWorldsDatabase>[0]>[0];
 export const withSharingDatabase = <A, E, R>(
   run: (fixture: {
     readonly database: Database;
@@ -25,7 +25,7 @@ export const withSharingDatabase = <A, E, R>(
     readonly runtime: ReturnType<typeof makeTestIdentityLayer>;
   }) => Effect.Effect<A, E, R>
 ) =>
-  withD01Database(
+  withWorldsDatabase(
     (database) => {
       const config = {
         baseUrl: "http://localhost:3000",

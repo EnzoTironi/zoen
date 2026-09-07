@@ -4,7 +4,7 @@ import { expect, it } from "@effect/vitest";
 import { DateTime, Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
+import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { authorizeWorld } from "../../../../packages/authority/src/access/world.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import {
@@ -22,7 +22,7 @@ import {
   canonicalJson,
   structuredDigest,
 } from "../../../../packages/authority/src/values/canonical.js";
-import { D01Error } from "../../../../packages/contracts/src/worlds/errors.js";
+import { SemanticError } from "../../../../packages/contracts/src/worlds/errors.js";
 import { ImportEvidence } from "../../../../packages/contracts/src/worlds/operations.js";
 import { WorldRef } from "../../../../packages/contracts/src/worlds/values.js";
 import { configuration, makeInput } from "./fixture.js";
@@ -30,7 +30,7 @@ import { configuration, makeInput } from "./fixture.js";
 it.live(
   "EX05 changed predicate/domain basis rejects a mutation without recomputing its consent",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* staleBasis() {
         const { context, request } = yield* makeInput();
         const created = yield* createPersonalWorld(context, request);
@@ -131,7 +131,7 @@ it.live(
 it.live(
   "EX05 another principal and an absent world have the same denial envelope",
   () =>
-    withD01Database((database) =>
+    withWorldsDatabase((database) =>
       Effect.gen(function* privateWorldDenial() {
         const { context, request } = yield* makeInput();
         const created = yield* createPersonalWorld(context, request);
@@ -147,8 +147,10 @@ it.live(
           Effect.flip
         );
         const absent = yield* authorizeWorld(other, missing).pipe(Effect.flip);
-        const deniedJson = yield* Schema.encodeUnknownEffect(D01Error)(denied);
-        const absentJson = yield* Schema.encodeUnknownEffect(D01Error)(absent);
+        const deniedJson =
+          yield* Schema.encodeUnknownEffect(SemanticError)(denied);
+        const absentJson =
+          yield* Schema.encodeUnknownEffect(SemanticError)(absent);
         expect(yield* canonicalJson(deniedJson)).toBe(
           yield* canonicalJson(absentJson)
         );

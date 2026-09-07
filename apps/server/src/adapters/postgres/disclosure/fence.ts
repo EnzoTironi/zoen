@@ -10,7 +10,7 @@ import type { Instant } from "@zoen/contracts/worlds/values";
 import { Clock, Effect, Layer, Redacted } from "effect";
 import { Pool } from "pg";
 
-import type { D01PostgresConfig } from "../worlds/postgres.ts";
+import type { WorldsPostgresConfig } from "../worlds/postgres.ts";
 import { reserve } from "./connection.ts";
 import type { Lock } from "./connection.ts";
 import { checkDisclosurePool } from "./health.ts";
@@ -27,7 +27,7 @@ const remaining = (deadline: typeof Instant.Type) =>
   );
 
 /** A bounded, separate pool in the physical authority database. */
-export const makeDisclosureFenceLayer = (config: D01PostgresConfig) =>
+export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
   Layer.effect(
     DisclosureFence,
     Effect.gen(function* makeFence() {

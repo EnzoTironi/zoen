@@ -84,9 +84,9 @@ test("EX12 real browser preserves sources and clears private views across sessio
   const secondLabel = `Fonte B ${randomUUID()}`;
   await signUp(page);
   await page.getByRole("button", { name: "Criar espaço privado" }).click();
-  await expect(page.locator(".d01-world-id span")).toBeVisible();
+  await expect(page.locator(".worlds-world-id span")).toBeVisible();
   const world = Schema.decodeUnknownSync(WorldId)(
-    await page.locator(".d01-world-id span").textContent()
+    await page.locator(".worlds-world-id span").textContent()
   );
   await page
     .getByLabel("Adicionar arquivos", { exact: true })
@@ -155,7 +155,7 @@ test("EX12 real browser preserves sources and clears private views across sessio
       _tag: "NotFoundOrDenied",
       code: "NOT_FOUND_OR_DENIED",
     });
-    await expect(other.locator(".d01-world-id")).toHaveCount(0);
+    await expect(other.locator(".worlds-world-id")).toHaveCount(0);
     await expect(other.getByLabel("Identificador da obrigação")).toHaveCount(0);
     // Opening now checks access before exposing the form. A direct read must still be denied.
     const deniedRead = await other.request.post("/api/worlds/execute", {
@@ -220,9 +220,9 @@ test("EX12 real membership revocation removes a visible frame and evidence", asy
     await sessionResponse.json()
   );
   await page.getByRole("button", { name: "Criar espaço privado" }).click();
-  await expect(page.locator(".d01-world-id span")).toBeVisible();
+  await expect(page.locator(".worlds-world-id span")).toBeVisible();
   const world = Schema.decodeUnknownSync(WorldId)(
-    await page.locator(".d01-world-id span").textContent()
+    await page.locator(".worlds-world-id span").textContent()
   );
   await page
     .getByLabel("Adicionar arquivos", { exact: true })

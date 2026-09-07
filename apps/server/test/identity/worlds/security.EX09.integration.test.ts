@@ -4,17 +4,17 @@ import { expect, it } from "@effect/vitest";
 import { Presence } from "@zoen/authority/ports/worlds/context";
 import { Effect, Redacted, Schema } from "effect";
 
-import { D01Auth } from "../../../src/identity/worlds/identity.ts";
-import { withD01IdentityDatabase } from "./database.ts";
+import { IdentityAuth } from "../../../src/identity/worlds/identity.ts";
+import { withIdentityDatabase } from "./database.ts";
 import { UserResponse, createAccount, postAuth } from "./http.ts";
 
 it.live(
   "EX09 fixed audience, trusted origins, callback validation and real login CSRF checks protect secure cookies",
   () =>
-    withD01IdentityDatabase(
+    withIdentityDatabase(
       (fixture) =>
         Effect.gen(function* security() {
-          const auth = yield* D01Auth;
+          const auth = yield* IdentityAuth;
           const presence = yield* Presence;
           const account = yield* createAccount(fixture.config.baseUrl);
           const flags = account.response.headers.getSetCookie().join(";");
@@ -97,9 +97,9 @@ it.live(
 it.live(
   "EX09 another account, forged actor headers and client supplied IDs cannot impersonate the first account",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* forgedIdentity() {
-        const auth = yield* D01Auth;
+        const auth = yield* IdentityAuth;
         const presence = yield* Presence;
         const first = yield* createAccount(fixture.config.baseUrl);
         const second = yield* createAccount(fixture.config.baseUrl, {

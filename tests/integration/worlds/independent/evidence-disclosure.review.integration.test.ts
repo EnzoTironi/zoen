@@ -12,7 +12,7 @@ import { Deferred, Effect, Fiber, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
 import {
   createAccount,
   postAuth,
@@ -27,7 +27,7 @@ const encode = (value: unknown) =>
 it.live(
   "independent EX08/EX09 deny retained frame, evidence and import replay after membership revocation, including an in-flight read",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       withStorage(() =>
         Effect.scoped(
           Effect.gen(function* disclosureReview() {

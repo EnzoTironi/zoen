@@ -10,7 +10,7 @@ import {
 import { Config, Deferred, Effect, Schema } from "effect";
 
 const baseURL = Effect.runSync(Config.string("ZOEN_TEST_SHARING_WEB_URL"));
-const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
@@ -97,7 +97,7 @@ test("independent EX23 denial during another read clears data immediately and ig
     const principalRef = await signup(readerContext.request);
     const created = Schema.decodeUnknownSync(WorldCreated)(
       await send(page.request, "/api/worlds/execute", {
-        ...d01,
+        ...worldsBasis,
         input: {},
         operation: "CreatePersonalWorld",
         operationId: randomUUID(),
@@ -129,7 +129,7 @@ test("independent EX23 denial during another read clears data immediately and ig
       },
     });
     await send(page.request, "/api/worlds/execute", {
-      ...d01,
+      ...worldsBasis,
       input: { document },
       operation: "ImportEvidence",
       operationId: randomUUID(),
@@ -243,7 +243,7 @@ test("independent EX23 denial during another read clears data immediately and ig
     events.push("real.denial.delivered.while.evidence.busy");
     await expect
       .soft(
-        reader.locator(".d01-world-id"),
+        reader.locator(".worlds-world-id"),
         "Observed denial must immediately invalidate the current World, even while another request is busy"
       )
       .toHaveCount(0, { timeout: 1000 });
@@ -251,7 +251,7 @@ test("independent EX23 denial during another read clears data immediately and ig
     await evidenceDelivered.promise;
     await reader.waitForFunction(
       () =>
-        globalThis.document.querySelector(".d01-world-id") === null ||
+        globalThis.document.querySelector(".worlds-world-id") === null ||
         globalThis.document.querySelector("blockquote") !== null
     );
     await expect
@@ -261,7 +261,7 @@ test("independent EX23 denial during another read clears data immediately and ig
       )
       .toHaveCount(0, { timeout: 1000 });
     await expect
-      .soft(reader.locator(".d01-world-id"))
+      .soft(reader.locator(".worlds-world-id"))
       .toHaveCount(0, { timeout: 1000 });
     await testInfo.attach("real-response-order", {
       body: JSON.stringify({ events, sourceLabel, worldRef }, null, 2),
@@ -285,7 +285,7 @@ test("independent EX23 Stale requires a new confirmation and a replayed grant re
     const principalRef = await signup(recipient.request);
     const { worldRef } = Schema.decodeUnknownSync(WorldCreated)(
       await send(page.request, "/api/worlds/execute", {
-        ...d01,
+        ...worldsBasis,
         input: {},
         operation: "CreatePersonalWorld",
         operationId: randomUUID(),
@@ -467,7 +467,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
     const principalRef = await signup(readerContext.request);
     const created = Schema.decodeUnknownSync(WorldCreated)(
       await send(page.request, "/api/worlds/execute", {
-        ...d01,
+        ...worldsBasis,
         input: {},
         operation: "CreatePersonalWorld",
         operationId: randomUUID(),
@@ -499,7 +499,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
       },
     });
     await send(page.request, "/api/worlds/execute", {
-      ...d01,
+      ...worldsBasis,
       input: { document },
       operation: "ImportEvidence",
       operationId: randomUUID(),
@@ -590,7 +590,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
     });
     await expect
       .soft(
-        reader.locator(".d01-world-id"),
+        reader.locator(".worlds-world-id"),
         "A real denial in the same World and epoch must invalidate even when the displayed Frame changed"
       )
       .toHaveCount(0, { timeout: 1000 });

@@ -3,23 +3,23 @@ import { getMigrations } from "better-auth/db/migration";
 import { Effect, Schema } from "effect";
 
 import {
-  D01IdentityConfig,
-  d01AuthOptions,
+  IdentityConfig,
+  identityAuthOptions,
 } from "../../../src/identity/worlds/configuration.ts";
-import { acquireD01IdentityPool } from "../../../src/identity/worlds/database.ts";
-import { withD01IdentityDatabase } from "./database.ts";
+import { acquireIdentityPool } from "../../../src/identity/worlds/database.ts";
+import { withIdentityDatabase } from "./database.ts";
 
 it.live(
   "EX09 applied identity schema has no outstanding Better Auth migrations",
   () =>
-    withD01IdentityDatabase((fixture) =>
+    withIdentityDatabase((fixture) =>
       Effect.gen(function* migrationCompatibility() {
-        const config = yield* Schema.decodeEffect(D01IdentityConfig)(
+        const config = yield* Schema.decodeEffect(IdentityConfig)(
           fixture.config
         );
-        const pool = yield* acquireD01IdentityPool(config.databaseUrl);
+        const pool = yield* acquireIdentityPool(config.databaseUrl);
         const pending = yield* Effect.tryPromise(() =>
-          getMigrations(d01AuthOptions(config, pool))
+          getMigrations(identityAuthOptions(config, pool))
         );
         expect({
           additions: pending.toBeAdded,

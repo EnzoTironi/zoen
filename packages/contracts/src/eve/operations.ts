@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { D01Error } from "../worlds/errors.js";
+import { SemanticError } from "../worlds/errors.js";
 import { Purpose, WorldRef, exact } from "../worlds/values.js";
 import {
   ConversationId,
@@ -145,5 +145,5 @@ export const EveConversationSuccess = Schema.Union([
 ]);
 export type EveConversationSuccess = typeof EveConversationSuccess.Type;
 
-export const EveConversationFailure = D01Error;
+export const EveConversationFailure = SemanticError;
 export type EveConversationFailure = typeof EveConversationFailure.Type;

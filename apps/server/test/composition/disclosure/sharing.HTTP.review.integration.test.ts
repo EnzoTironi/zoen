@@ -23,16 +23,16 @@ import {
   http,
   jsonBody,
   responseCookie,
-  withD01Http,
+  withWorldsHttp,
 } from "../worlds/fixture.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
 };
-const d01Path = "/api/worlds/execute";
+const worldsExecutePath = "/api/worlds/execute";
 const sharingPath = "/api/d03/sharing";
 const correctionPath = "/api/corrections/execute";
 const denied = { _tag: "NotFoundOrDenied", code: "NOT_FOUND_OR_DENIED" };
@@ -78,7 +78,7 @@ const semanticRows = Effect.gen(function* semanticRows() {
 it.live(
   "independent SH01/02/04/06 HTTP sharing preserves audience, denies writes and private Frames, and separates historical replay from current access",
   () =>
-    withD01Http(({ database, origin }) =>
+    withWorldsHttp(({ database, origin }) =>
       Effect.gen(function* publicSharingJourney() {
         const checked = Effect.fn("review.checkedJson")(function* checked(
           response: HttpClientResponse.HttpClientResponse,
@@ -143,32 +143,33 @@ it.live(
           http(origin, path, json(request), account.cookie).pipe(
             Effect.flatMap((response) => checked(response, status))
           );
-        const world = yield* send(d01Path, {
-          ...d01,
+        const world = yield* send(worldsExecutePath, {
+          ...worldsBasis,
           input: {},
           operation: "CreatePersonalWorld",
           operationId: randomUUID(),
         }).pipe(Effect.flatMap(Schema.decodeUnknownEffect(WorldCreated)));
         const { worldRef } = world;
         const importRequest = {
-          ...d01,
+          ...worldsBasis,
           input: { document },
           operation: "ImportEvidence",
           operationId: randomUUID(),
           worldRef,
         };
-        const evidence = yield* send(d01Path, importRequest).pipe(
+        const evidence = yield* send(worldsExecutePath, importRequest).pipe(
           Effect.flatMap(Schema.decodeUnknownEffect(EvidenceImported))
         );
         const inspectRequest = (atFrame: string | null = null) => ({
-          ...d01,
+          ...worldsBasis,
           input: { atFrame, subjectKey: "invoice-1" },
           operation: "Inspect",
           worldRef,
         });
-        const ownerFrame = yield* send(d01Path, inspectRequest()).pipe(
-          Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected))
-        );
+        const ownerFrame = yield* send(
+          worldsExecutePath,
+          inspectRequest()
+        ).pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
         const [claim] = ownerFrame.frame.claims;
         if (claim === undefined) {
           throw new Error("Real import must produce a claim");
@@ -179,7 +180,7 @@ it.live(
           validTime,
         };
         const proposalRequest = {
-          ...d01,
+          ...worldsBasis,
           input: { consequence, frameRef: ownerFrame.frame.frameRef },
           operation: "ProposeCorrection",
           operationId: randomUUID(),
@@ -189,7 +190,7 @@ it.live(
           Effect.flatMap(Schema.decodeUnknownEffect(CorrectionProposed))
         );
         const answerRequest = {
-          ...d01,
+          ...worldsBasis,
           input: {
             answer: "confirm",
             consequenceDigest: proposal.consequenceDigest,
@@ -202,9 +203,10 @@ it.live(
         const applied = yield* send(correctionPath, answerRequest).pipe(
           Effect.flatMap(Schema.decodeUnknownEffect(CorrectionApplied))
         );
-        const correctedOwner = yield* send(d01Path, inspectRequest()).pipe(
-          Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected))
-        );
+        const correctedOwner = yield* send(
+          worldsExecutePath,
+          inspectRequest()
+        ).pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
         expect(correctedOwner.frame.scopedCorrections).toHaveLength(1);
         expect(correctedOwner.frame.scopedCorrections[0]?.correctionRef).toBe(
           applied.correctionRef
@@ -245,23 +247,29 @@ it.live(
           Effect.flatMap(Schema.decodeUnknownEffect(WorldAccessInspected))
         );
         expect(self.membership).toStrictEqual(grant.membershipAtCommit);
-        const viewed = yield* send(d01Path, inspectRequest(), viewer).pipe(
-          Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected))
-        );
+        const viewed = yield* send(
+          worldsExecutePath,
+          inspectRequest(),
+          viewer
+        ).pipe(Effect.flatMap(Schema.decodeUnknownEffect(FrameInspected)));
         expect(viewed.frame.claims).toStrictEqual(ownerFrame.frame.claims);
         expect(viewed.frame.scopedCorrections).toStrictEqual([]);
         expect(viewed.frame.verification).toBe("unverified");
         expect(viewed.frame.frameRef).not.toBe(ownerFrame.frame.frameRef);
         expect(
-          yield* send(d01Path, inspectRequest(viewed.frame.frameRef), viewer)
+          yield* send(
+            worldsExecutePath,
+            inspectRequest(viewed.frame.frameRef),
+            viewer
+          )
         ).toStrictEqual(viewed);
         const openRequest = {
-          ...d01,
+          ...worldsBasis,
           input: { evidenceRef: evidence.evidenceRef },
           operation: "OpenEvidence",
           worldRef,
         };
-        const opened = yield* send(d01Path, openRequest, viewer).pipe(
+        const opened = yield* send(worldsExecutePath, openRequest, viewer).pipe(
           Effect.flatMap(Schema.decodeUnknownEffect(EvidenceOpened))
         );
         expect(opened).toStrictEqual({
@@ -277,17 +285,17 @@ it.live(
         const deniedRequests = [
           {
             account: viewer,
-            path: d01Path,
+            path: worldsExecutePath,
             request: inspectRequest(ownerFrame.frame.frameRef),
           },
           {
             account: viewer,
-            path: d01Path,
+            path: worldsExecutePath,
             request: inspectRequest(correctedOwner.frame.frameRef),
           },
           {
             account: viewer,
-            path: d01Path,
+            path: worldsExecutePath,
             request: { ...importRequest, operationId: randomUUID() },
           },
           {
@@ -304,7 +312,7 @@ it.live(
             account: viewer,
             path: correctionPath,
             request: {
-              ...d01,
+              ...worldsBasis,
               input: {
                 correctionRef: applied.correctionRef,
                 frameRef: viewed.frame.frameRef,
@@ -341,13 +349,17 @@ it.live(
               operationId: randomUUID(),
             },
           },
-          { account: stranger, path: d01Path, request: inspectRequest() },
-          { account: stranger, path: d01Path, request: openRequest },
+          {
+            account: stranger,
+            path: worldsExecutePath,
+            request: inspectRequest(),
+          },
+          { account: stranger, path: worldsExecutePath, request: openRequest },
           { account: stranger, path: sharingPath, request: access(null) },
           { account: stranger, path: sharingPath, request: grantRequest },
           {
             account: stranger,
-            path: d01Path,
+            path: worldsExecutePath,
             request: {
               ...inspectRequest(),
               worldRef: { ...worldRef, worldId: randomUUID() },
@@ -383,9 +395,9 @@ it.live(
           inspectRequest(viewed.frame.frameRef),
           openRequest,
         ]) {
-          expect(yield* send(d01Path, request, viewer, 404)).toStrictEqual(
-            denied
-          );
+          expect(
+            yield* send(worldsExecutePath, request, viewer, 404)
+          ).toStrictEqual(denied);
         }
         expect(
           yield* send(sharingPath, access(null), viewer, 404)
@@ -404,9 +416,9 @@ it.live(
           membership: revoked.membershipAtCommit,
           worldRef,
         });
-        expect(yield* send(d01Path, openRequest, viewer, 404)).toStrictEqual(
-          denied
-        );
+        expect(
+          yield* send(worldsExecutePath, openRequest, viewer, 404)
+        ).toStrictEqual(denied);
         const regrant = yield* send(sharingPath, {
           ...grantRequest,
           input: { expectedRevision: "1", principalRef: viewer.principal },
@@ -420,9 +432,15 @@ it.live(
           role: "viewer",
           state: "active",
         });
-        expect(yield* send(d01Path, openRequest, viewer)).toStrictEqual(opened);
         expect(
-          yield* send(d01Path, inspectRequest(viewed.frame.frameRef), viewer)
+          yield* send(worldsExecutePath, openRequest, viewer)
+        ).toStrictEqual(opened);
+        expect(
+          yield* send(
+            worldsExecutePath,
+            inspectRequest(viewed.frame.frameRef),
+            viewer
+          )
         ).toStrictEqual(viewed);
       })
     )

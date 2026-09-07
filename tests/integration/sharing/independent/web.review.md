@@ -1,6 +1,6 @@
 # Independent EX23 Web review
 
-Reviewed candidate `956998c` (W1), with the frozen `docs/contracts/d03-sharing.md` and the equivalent CLI command builder. The runtime baseline is root build `4e26895`, isolated `sharing-baseline` profile at `http://127.0.0.1:4314`; no deployment or release acceptance is implied.
+Reviewed candidate `956998c` (W1), with the frozen `docs/contracts/sharing.md` and the equivalent CLI command builder. The runtime baseline is root build `4e26895`, isolated `sharing-baseline` profile at `http://127.0.0.1:4314`; no deployment or release acceptance is implied.
 
 ## WEB-01 — confirmed: denial is ignored while another request is busy
 
@@ -14,9 +14,9 @@ Independent real-browser reproduction on 2026-09-05 at 17:46 America/Sao_Paulo:
 4. Confirm a real semantic revoke through the owner API. Release the access request: the real server returns HTTP 404 with exactly `NotFoundOrDenied`.
 5. While OpenEvidence remains busy, the World remains displayed. Release its original successful response: the evidence document appears after the received denial.
 
-The unchanged clear-on-denial assertion failed: `.d01-world-id` expected 0, received 1, both immediately after denial and after delayed success. The browser test failed in 7.6 seconds. It does not claim that the server emitted bytes after a confirmed revoke: the successful response was emitted earlier. The defect is client handling of the denial and an already emitted response.
+The unchanged clear-on-denial assertion failed: `.worlds-world-id` expected 0, received 1, both immediately after denial and after delayed success. The browser test failed in 7.6 seconds. It does not claim that the server emitted bytes after a confirmed revoke: the successful response was emitted earlier. The defect is client handling of the denial and an already emitted response.
 
-Preserved local artifacts under `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788641183328/integration-d03-sharing-in-06a21-es-the-delayed-real-success-chromium/`: `error-context.md`, `test-failed-1.png`, `test-failed-2.png`. Independent visual inspection of the second screenshot confirms the source label, amount `712.45 BRL`, Frame reference and evidence JSON remain visible. The synthetic data fed real services; no provider or executor response was fabricated.
+Preserved local artifacts under `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788641183328/integration-sharing-in-06a21-es-the-delayed-real-success-chromium/`: `error-context.md`, `test-failed-1.png`, `test-failed-2.png`. Independent visual inspection of the second screenshot confirms the source label, amount `712.45 BRL`, Frame reference and evidence JSON remain visible. The synthetic data fed real services; no provider or executor response was fabricated.
 
 The initial late-success assertion could observe absence before the delivered response rendered; the independent reviewer will tighten that observation without changing its expected outcome. The World-retention failures and screenshot already reproduce the defect. W1 was informed after baseline capture and owns the correction.
 
@@ -52,7 +52,7 @@ Independent baseline against `956998c`/4314 on 2026-09-05 around 17:53:
 4. Commit real owner revoke, then release the earlier historical Inspect. The server returns the exact HTTP 404 NotFoundOrDenied body.
 5. Require immediate absence of the World and its private source/evidence control. Both checks fail: expected 0, received 1.
 
-The test failed in 18.0 seconds. Artifacts remain under `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788641583749/integration-d03-sharing-in-3098d-wer-Frame-in-the-same-World-chromium/` (`error-context.md`, both screenshots). W1 received the reproducible finding and owns the correction; no production source was edited by the reviewer.
+The test failed in 18.0 seconds. Artifacts remain under `/Users/enzotironi/zoen-ex03/test-results/acceptance-1788641583749/integration-sharing-in-3098d-wer-Frame-in-the-same-World-chromium/` (`error-context.md`, both screenshots). W1 received the reproducible finding and owns the correction; no production source was edited by the reviewer.
 
 An earlier attempt against 4315 stopped at a real signup HTTP 429 while root's acceptance suite authenticated concurrently. It never reached the Frame test and is not counted as product evidence. The provider guard was not changed; the completed baseline used the separate 4314 profile.
 
@@ -65,7 +65,7 @@ On 2026-09-05 around 17:57, root served complete treatment build `767f757` at `h
 Command, using Node 24.18.1 and the unchanged assertions from the independently owned test file:
 
 ```sh
-ZOEN_TEST_SHARING_WEB_URL=http://127.0.0.1:4316 pnpm exec playwright test --config playwright.acceptance.config.ts apps/web/test/integration/d03-sharing/independent/web-race.review.browser.spec.ts
+ZOEN_TEST_SHARING_WEB_URL=http://127.0.0.1:4316 pnpm exec playwright test --config playwright.acceptance.config.ts apps/web/test/integration/sharing/independent/web-race.review.browser.spec.ts
 ```
 
 All three passed, 42.8 seconds total:
