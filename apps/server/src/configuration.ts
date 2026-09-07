@@ -77,20 +77,19 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
     Config.withDefault("big-pickle"),
     Config.option
   );
-  const applicationWithOpenCode =
-    Option.isSome(openCodeApiKey)
-      ? {
-          ...application,
-          openCodeZen: {
-            apiKey: openCodeApiKey.value,
-            baseUrl: Option.isSome(openCodeBaseUrl)
-              ? openCodeBaseUrl.value
-              : "https://opencode.ai/zen/v1",
-            model: Option.isSome(openCodeModel)
-              ? openCodeModel.value
-              : "big-pickle",
-          },
-        }
-      : application;
+  const applicationWithOpenCode = Option.isSome(openCodeApiKey)
+    ? {
+        ...application,
+        openCodeZen: {
+          apiKey: openCodeApiKey.value,
+          baseUrl: Option.isSome(openCodeBaseUrl)
+            ? openCodeBaseUrl.value
+            : "https://opencode.ai/zen/v1",
+          model: Option.isSome(openCodeModel)
+            ? openCodeModel.value
+            : "big-pickle",
+        },
+      }
+    : application;
   return { application: applicationWithOpenCode, listenHost, listenPort };
 });
