@@ -1,4 +1,4 @@
-import { createHash, randomBytes, randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 import {
@@ -22,6 +22,11 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
 import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
+import { digestReleaseBytes } from "../src/all-in-one-release-align.ts";
+import {
+  applyHostedReleaseAlign,
+  HostedReleaseAlignError,
+} from "../src/all-in-one-release-apply.ts";
 
 class BootstrapError extends Schema.TaggedError<BootstrapError>()(
   "BootstrapError",
@@ -39,6 +44,47 @@ const names = {
 } as const;
 
 const databaseName = "zoen";
+
+const alignExistingHostedRelease = (input: {
+  readonly encodeInstallation: typeof encodeJson;
+  readonly fs: FileSystem.FileSystem;
+  readonly installationPath: string;
+  readonly releaseFile: string;
+  readonly runtimeEnvPath: string;
+}) =>
+  applyHostedReleaseAlign({
+    encodeInstallation: (value) =>
+      input.encodeInstallation(value).pipe(Effect.orDie),
+    fs: input.fs,
+    installationPath: input.installationPath,
+    reconcileWorlds: (step) =>
+      Effect.gen(function* rewriteWorldsReleaseDigest() {
+        const sql = yield* SqlClient.SqlClient;
+        yield* sql`
+          UPDATE authority.worlds
+          SET release_digest = ${step.releaseDigest}
+          WHERE cell_id = ${step.cellId}::uuid
+            AND generation_id = ${step.generationId}::uuid
+        `;
+      }).pipe(
+        Effect.provide(
+          PgClient.layer({
+            maxConnections: 1,
+            url: Redacted.make(step.authorityUrl),
+          })
+        ),
+        Effect.orDie
+      ),
+    releaseFile: input.releaseFile,
+    runtimeEnvPath: input.runtimeEnvPath,
+  }).pipe(
+    Effect.mapError((error) =>
+      Schema.is(HostedReleaseAlignError)(error)
+        ? new BootstrapError({ code: error.code })
+        : new BootstrapError({ code: "RELEASE_ALIGN_FAILED" })
+    ),
+    Effect.tap((result) => Effect.logInfo(result))
+  );
 
 const program = Effect.gen(function* bootstrapAllInOne() {
   const fs = yield* FileSystem.FileSystem;
@@ -75,7 +121,13 @@ const program = Effect.gen(function* bootstrapAllInOne() {
         code: "BOOTSTRAP_MARKER_INCONSISTENT",
       });
     }
-    return yield* Effect.logInfo({ event: "all-in-one.bootstrap.skip" });
+    return yield* alignExistingHostedRelease({
+      encodeInstallation: encodeJson,
+      fs,
+      installationPath,
+      releaseFile,
+      runtimeEnvPath,
+    });
   }
 
   const authSecret = yield* Config.redacted("ZOEN_AUTH_SECRET").pipe(
@@ -104,7 +156,7 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     cellEpoch: "1",
     cellId: randomUUID(),
     generationId: randomUUID(),
-    releaseDigest: createHash("sha256").update(release).digest("hex"),
+    releaseDigest: digestReleaseBytes(release),
   };
 
   yield* fs.makeDirectory(stateDir, { mode: 0o700, recursive: true });
