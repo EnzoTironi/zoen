@@ -232,15 +232,21 @@ def validate_owned_inventory(root: Path, inventory: dict[str, Any]) -> dict[str,
     return validated
 
 
-def ownership_from_interrupted_marker(root: Path, inventory: dict[str, Any]) -> dict[str, Any]:
+def ownership_from_interrupted_marker(
+    root: Path, inventory: dict[str, Any]
+) -> tuple[dict[str, Any], bool]:
     """Re-validate interrupted reset markers before any destructive resume/retry.
 
+    Returns (inventory, allow_deprovision).
+
     When resources.json remains, its resource tuple must exactly match the marker
-    (plus checkout/profile/compose). When resources.json is missing after a started
-    marker whose ownership validates for this checkout, treat as incomplete cleanup:
-    resume with the validated marker inventory so deprovision (tolerate already-gone)
-    and profile-file removal can finish and staging:up can recreate.
-    Foreign/malformed markers are still refused by validate_owned_inventory.
+    (plus checkout/profile/compose) and allow_deprovision is True.
+
+    When resources.json is already gone after a started marker whose checkout/
+    profile/compose ownership validates for this repository, treat as incomplete
+    file cleanup: return the validated marker inventory with allow_deprovision
+    False so the caller finishes remove_profile_files / clears the marker without
+    calling --reset-owned. Marker-alone must never authorize wiping foreign DBs.
     """
     validated = validate_owned_inventory(root, inventory)
     env_path, profile_dir = profile_paths(root)
@@ -250,9 +256,10 @@ def ownership_from_interrupted_marker(root: Path, inventory: dict[str, Any]) -> 
             ensure_no_symlinks(root, path)
 
     if not resources_path.is_file():
-        # Incomplete cleanup: remove_profile_files was interrupted after
-        # resources.json was gone but reset-operation.json (status=started) remains.
-        return validated
+        # Incomplete cleanup: remove_profile_files interrupted after resources.json
+        # removed but reset-operation.json (status=started) remains. File cleanup
+        # only — never --reset-owned from marker resource ids alone.
+        return validated, False
 
     live = load_inventory(root)
     if (
@@ -264,7 +271,7 @@ def ownership_from_interrupted_marker(root: Path, inventory: dict[str, Any]) -> 
             "Interrupted reset marker resource tuple does not match staging ownership "
             "inventory; refuse foreign marker"
         )
-    return live
+    return live, True
 
 
 def remove_named_profile_files(root: Path, profile: str) -> None:
@@ -360,12 +367,13 @@ def wipe_shared_volumes(root: Path) -> int:
 
 def reset_owned_profile(root: Path) -> int:
     existing = read_operation(root)
+    allow_deprovision = True
     if existing is not None and existing.get("status") == "started":
         inventory = existing.get("inventory")
         if not isinstance(inventory, dict):
             raise ValueError("Incomplete reset operation has unusable inventory; blocked")
         # Resume/retry must re-validate ownership; never trust marker resource ids alone.
-        validated = ownership_from_interrupted_marker(root, inventory)
+        validated, allow_deprovision = ownership_from_interrupted_marker(root, inventory)
     else:
         # Refuse before any mutation when inventory/paths are unsafe.
         if not (root / f".env.{PROFILE}").exists() and not (root / ".local" / PROFILE).exists():
@@ -374,13 +382,21 @@ def reset_owned_profile(root: Path) -> int:
         validated = load_inventory(root)
         write_operation(root, validated, "started")
 
-    deprovision_owned(root, validated)
+    if allow_deprovision:
+        deprovision_owned(root, validated)
     remove_profile_files(root)
-    print(
-        "Staging profile resources owned by this checkout were removed. "
-        "Shared Compose volumes and other profiles were not targeted. "
-        "Run `pnpm staging:up` to recreate."
-    )
+    if allow_deprovision:
+        print(
+            "Staging profile resources owned by this checkout were removed. "
+            "Shared Compose volumes and other profiles were not targeted. "
+            "Run `pnpm staging:up` to recreate."
+        )
+    else:
+        print(
+            "Interrupted staging cleanup finished (ownership inventory already gone; "
+            "skipped --reset-owned). Shared Compose volumes and other profiles were "
+            "not targeted. Run `pnpm staging:up` to recreate."
+        )
     return 0
 
 
