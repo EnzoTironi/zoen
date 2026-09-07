@@ -23,7 +23,7 @@ dockerfile = "../containers/all-in-one.Dockerfile"
 [env]
 ZOEN_LISTEN_HOST = "0.0.0.0"
 ZOEN_PORT = "4310"
-ZOEN_PUBLIC_URL = "https://zoen-rebuild.fly.dev"
+ZOEN_PUBLIC_URL = "https://zoen.tironi.xyz"
 ZOEN_S3_ENDPOINT = "http://127.0.0.1:9000"
 ZOEN_S3_REGION = "us-east-1"
 ZOEN_S3_BUCKET = "zoen"

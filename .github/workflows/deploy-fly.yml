@@ -1,0 +1,71 @@
+name: Deploy Fly
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+concurrency:
+  group: deploy-fly-zoen-rebuild
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Wait for Verify success on this commit
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          SHA="${{ github.sha }}"
+          echo "Waiting for Verify (verify.yml) on ${SHA}"
+          for _ in $(seq 1 120); do
+            row="$(gh run list --repo "${{ github.repository }}" --workflow verify.yml --commit "${SHA}" --limit 1 --json status,conclusion)"
+            status="$(echo "${row}" | jq -r '.[0].status // empty')"
+            conclusion="$(echo "${row}" | jq -r '.[0].conclusion // empty')"
+            echo "status=${status:-none} conclusion=${conclusion:-none}"
+            if [ "${status}" = "completed" ]; then
+              if [ "${conclusion}" = "success" ]; then
+                exit 0
+              fi
+              echo "Verify did not succeed (conclusion=${conclusion}); refusing deploy."
+              exit 1
+            fi
+            sleep 30
+          done
+          echo "Timed out waiting for Verify on ${SHA}"
+          exit 1
+
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+
+      - name: Setup flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1
+        with:
+          version: "0.4.99"
+
+      - name: Deploy zoen-rebuild
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: flyctl deploy -a zoen-rebuild --config ops/fly/fly.toml
+
+      - name: Health check (fail closed)
+        run: |
+          set -euo pipefail
+          # Verify also runs on main; this post-deploy probe fails closed if the
+          # new release is not ready (Fly http_service checks alone are not enough).
+          for _ in $(seq 1 36); do
+            if curl -fsS https://zoen-rebuild.fly.dev/ready; then
+              echo
+              echo "ready ok"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Health check failed after deploy"
+          exit 1
