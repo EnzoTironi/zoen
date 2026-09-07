@@ -1,29 +1,51 @@
-# Zoen — redesenho para execução
+# Zoen
 
-Este branch contém o redesenho solicitado em 5 de setembro de 2026. O objetivo continua sendo um sistema em que pessoas, Eve, apps e integrações trabalham sobre a mesma verdade, com evidência, direitos e consequências explícitas. A execução passa a começar por uma jornada útil e crescer por entregas verificáveis.
+[![Verify](https://github.com/EnzoTironi/zoen/actions/workflows/verify.yml/badge.svg)](https://github.com/EnzoTironi/zoen/actions/workflows/verify.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Node.js](https://img.shields.io/badge/Node.js-24-green.svg)](.node-version)
 
-**Estado: implementação em andamento.** A primeira jornada já executa autenticação real, criação de World, importação JSON/CSV, inspeção com evidência e correção/unknown/undo em web e CLI sobre PostgreSQL e S3. O proprietário também pode conceder e revogar leitura do World. As provas de [D01/D02](docs/verification/d01-d02-local.md), [CSV](docs/verification/csv-local.md) e [compartilhamento](docs/verification/sharing-local.md) registram revisão independente, integração, navegador e interrupção de processo. As entregas completas ainda exigem expansões. O [progresso atual](planning/progress.json) é distinto do plano original.
+Shared governed Worlds for private truth — with evidence, rights, and erasure as first-class consequences.
 
-Foram analisadas as 325 entradas do catálogo, as 56 specs nele contidas, as 157 capacidades e os 2.341 alvos do registro de arquivos. Isso cobre os registros integralmente; não equivale a revisar semanticamente cada arquivo de pseudocódigo ou a aceitar a implementação anterior.
+## Who it’s for
 
-- [Roadmap e decisões de escopo](docs/roadmap.md): seis fases, 22 entregas e dependências de produto.
-- [Leis do produto](docs/invariants.md): 24 invariantes preservadas e contratos mínimos para a primeira composição.
-- [Arquitetura](docs/architecture.md): cinco workspaces iniciais, Effect 4 e um único executor.
-- [Execução com subagentes](docs/execution.md): GPT-6-Astra low, três workers, propriedade de arquivos e primeiras ondas.
-- [Qualidade e CI](docs/quality.md): TS7, Ultracite, serviços reais e prova por camada.
-- [Auditoria e rastreabilidade](docs/audit.md): limites da análise, destinos de todos os itens e validação do plano.
+Same grammar across ICPs already named in the roadmap (no new commercial personas):
 
-Os detalhes executáveis das primeiras tarefas estão em [planning/execution.json](planning/execution.json). O restante permanece em entregas com resultados e critérios claros; arquivos e tarefas são detalhados quando seus contratos se tornam estáveis. Não serão recriados milhares de arquivos de plano vazios.
+- **Doméstico / household** — Import divergent household lists (bills, chores, commitments); see which source said what; correct one item and undo without losing history.
+- **Confeitaria / bakery shop** — Reconcile orders, recipes, and stock notes from CSV/JSON dumps; keep shop meaning inspectable before anyone acts on it.
+- **Clínica / clinic** — Keep administrative schedule truth under current rights; inspect evidence when two sources disagree; clinical scope stays a separate, qualified profile.
+- **Finanças / personal or small-business finance** — Admit statements and ledgers as sources; distinguish known vs unknown; never treat a local interpretation as bank settlement.
 
-Os PRs da pilha anterior foram fechados. O histórico foi preservado em Git e em bundle externo; o trabalho novo está isolado em `codex/rebuild`. `archives/` permanece histórico imutável. Os registros em `reference/2026-09-05/` são entradas históricas da análise, com hashes; não são instruções ativas.
+## What you do
 
-O branch de implementação é publicado para executar a CI real, sem deploy ou alteração de dados de produção. Integrações externas continuam exigindo contas, APIs e evidências reais para ativação.
+1. Authenticate
+2. Create a World
+3. Import divergent sources (JSON/CSV) about the same commitment
+4. Inspect meaning with evidence
+5. Correct / mark unknown / undo — history stays
+6. Share and revoke (when enabled)
+7. Retention / erasure when qualified
 
-## Executar o incremento local
+Surfaces first: **web** and **CLI** (same verbs). Agent, SDK, and MCP come later as adapters over that grammar. Eve is an optional conversation/voice layer (D05) over the same semantic executor — not part of the application grammar.
 
-Com Node da versão em `.node-version`, pnpm de `package.json`, Python 3 e Docker disponíveis, em um checkout novo:
+## Live
 
-```sh
+[https://zoen.tironi.xyz](https://zoen.tironi.xyz)
+
+## Development
+
+Trunk is `main`. There is no paid Fly staging app — staging is local Docker only (zero Fly staging cost).
+
+Today: `docker compose --env-file .env.infra -f ops/compose.yaml` plus `pnpm provision:local` / `pnpm start:server` (see Quickstart).
+
+Upcoming: `pnpm staging:up` will wrap that loop; details will live in [docs/development.md](docs/development.md) when that doc lands.
+
+PRs against `main`. Protect main requires the Verify job named `required`.
+
+## Quickstart
+
+Node 24, pnpm, Docker, and Python 3:
+
+```bash
+git clone https://github.com/EnzoTironi/zoen.git
+cd zoen
 pnpm install --frozen-lockfile
 pnpm build
 python3 tooling/prepare_infra.py
@@ -32,17 +54,39 @@ pnpm provision:local
 pnpm start:server
 ```
 
-Abra `http://127.0.0.1:4310` e crie uma conta normal. Em outro terminal, execute a aceitação contra esse servidor:
+Open `http://127.0.0.1:4310` and create a normal account. `pnpm cli --help` lists CLI commands. Acceptance against that server:
 
-```sh
+```bash
 ZOEN_TEST_WEB_URL=http://127.0.0.1:4310 \
 ZOEN_TEST_CSV_WEB_URL=http://127.0.0.1:4310 \
 ZOEN_TEST_SHARING_WEB_URL=http://127.0.0.1:4310 \
 pnpm test:acceptance
 ```
 
-`pnpm cli --help` apresenta os comandos. O JSON admitido está especificado em [D01](docs/contracts/d01.md), e o dialeto CSV em [seu contrato](docs/contracts/d01-csv.md). CSV exige seleção explícita na web ou `import --format csv` na CLI. Compartilhamento exige o UUID da conta destinatária e confirmação da audiência de leitura de todo o World. O perfil aceita somente dados cuja retenção sem apagamento possa cumprir; não habilita dados sensíveis, hold ou prazo legal.
+Do not commit Fly secrets or `.env*` files. See [SECURITY.md](SECURITY.md).
 
-Os dois provisionadores recusam sobrescrever arquivos existentes. Para reiniciar o mesmo build, basta subir os serviços e executar `pnpm start:server`. Uma versão nova usa `ZOEN_LOCAL_PROFILE=<nome>` em `provision:local`, `start:server` e `test:acceptance`, criando banco, papéis e bucket próprios. Isso não migra Worlds anteriores. Cada instalação verifica os bytes do build admitido antes de abrir conexões; preserve seu artefato e seus dados até existir um upgrade qualificado.
+## Monorepo
 
-`pnpm test:container` constrói a imagem real, provisiona uma instalação pelo manifesto extraído dela e executa a mesma aceitação contra seu servidor/web, com a CLI compilada do host. A imagem usa porta 4313 durante o teste. Logs ficam em `.local/*-proof/`; configurações, banco e bucket são preservados localmente. A CI usa volumes descartáveis próprios. A prova em contêiner não é deploy Fly nem recuperação de dados apagados.
+| Path | Role |
+| --- | --- |
+| `apps/web` | Browser UI over the shared HTTP client |
+| `apps/server` | HTTP surface, identity, adapters (PostgreSQL / S3) |
+| `apps/cli` | Same verbs as the web, over the same client |
+| `packages/contracts` | Effect Schema, HttpApi, public DTOs |
+| `packages/authority` | Commit boundary, access, evidence, knowledge, semantic executor |
+| `ops/` | Compose, containers, migrations, Fly |
+| `tests/` | Integration and acceptance on real components |
+
+## Docs
+
+- [Architecture](docs/architecture.md) — workspaces and composition
+- [Invariants](docs/invariants.md) — product laws
+- [Roadmap](docs/roadmap.md) — phases and deliveries
+- [Quality](docs/quality.md) — gates and proof layers
+- [Contributing](CONTRIBUTING.md) — setup and PR rules
+- [Security](SECURITY.md) — private vulnerability reporting
+- [Releasing](docs/releasing.md) — tags and first GitHub Release
+
+## License
+
+[MIT](LICENSE) © 2026 Enzo Tironi
