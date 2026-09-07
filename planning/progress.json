@@ -903,9 +903,7 @@
     {
       "date": "2026-09-07",
       "commit": "b011fdfcc9cddd769515f9d6c1e5da35d0921ae5",
-      "packages": [
-        "EX44"
-      ],
+      "packages": ["EX44"],
       "state": "verified_for_profile",
       "profile": "d03-local-erasable-v1 (new Worlds; Object Lock at provision; restoreAfterErasure false)",
       "evidence": "docs/verification/erasure-storage-qualification.md",
