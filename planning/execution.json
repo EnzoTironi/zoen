@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "status": "planned",
-  "scope": "Pacotes D01/D02, CSV, compartilhamento local, primeiro incremento de erasure (contrato) e primeiro incremento hosted D04 (freeze/stubs); estados planejados são requisitos, progresso executado fica em planning/progress.json",
+  "scope": "Pacotes D01/D02, CSV, compartilhamento local, primeiro incremento de erasure (contrato) e primeiro incremento hosted D04 (freeze/stubs); estados planejados são requisitos, progresso executado fica em planning/progress.json; primeiro incremento Eve D05 (freeze/schemas/journal stub)",
   "workers": {
     "worker-1": {
       "model": "gpt-6-astra",
@@ -148,7 +148,9 @@
         "hard": [],
         "optional": []
       },
-      "acceptance_requires": ["EX01"],
+      "acceptance_requires": [
+        "EX01"
+      ],
       "contracts_consumed": [
         "Vocabulário concreto descrito na seção contract_inputs deste arquivo; API real de Effect Schema/HttpApi a confirmar na versão instalada EX01"
       ],
@@ -205,7 +207,12 @@
       "persistence_handoff": {
         "artifact": "docs/contracts/d01.md",
         "producer": "EX02",
-        "consumers": ["EX05", "EX06", "EX08", "EX09"],
+        "consumers": [
+          "EX05",
+          "EX06",
+          "EX08",
+          "EX09"
+        ],
         "required_content": [
           "tabelas/colunas/chaves mínimas de World, head, membership, operation, receipt, outbox, capture/evidence, claim e cuts",
           "unicidade genesis/principal e demais operações World/principal/semanticOperation/operationId, sem transporte",
@@ -242,7 +249,9 @@
         "hard": [],
         "optional": []
       },
-      "acceptance_requires": ["EX01"],
+      "acceptance_requires": [
+        "EX01"
+      ],
       "contracts_consumed": [
         "Estados visuais concretos: vazio; upload em andamento; duas fontes divergentes; erro de autorização; recurso indisponível. Estes exemplos visuais não são respostas de serviço."
       ],
@@ -293,7 +302,9 @@
       "title": "Valores puros de quantidade, identidade e tempo",
       "owner": "worker-3",
       "depends_on": {
-        "hard": ["EX02"],
+        "hard": [
+          "EX02"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -349,10 +360,17 @@
       "title": "Executor único, commit/access e genesis",
       "owner": "worker-1",
       "depends_on": {
-        "hard": ["EX02"],
-        "optional": ["EX04"]
+        "hard": [
+          "EX02"
+        ],
+        "optional": [
+          "EX04"
+        ]
       },
-      "acceptance_requires": ["EX01", "EX06"],
+      "acceptance_requires": [
+        "EX01",
+        "EX06"
+      ],
       "contracts_consumed": [
         "SqlClient e driver Effect reais EX01; schemas/contexto EX02; sem port transacional genérico duplicado"
       ],
@@ -418,10 +436,14 @@
       "title": "Adapter PostgreSQL e schema candidato mínimo",
       "owner": "worker-2",
       "depends_on": {
-        "hard": ["EX02"],
+        "hard": [
+          "EX02"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX01"],
+      "acceptance_requires": [
+        "EX01"
+      ],
       "contracts_consumed": [
         "SqlClient/driver Effect reais e schema mínimo acordado em EX02; semântica do commit pertence EX05"
       ],
@@ -476,10 +498,14 @@
       "title": "Adapter S3 e captura limitada de bytes",
       "owner": "worker-3",
       "depends_on": {
-        "hard": ["EX02"],
+        "hard": [
+          "EX02"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX01"],
+      "acceptance_requires": [
+        "EX01"
+      ],
       "contracts_consumed": [
         "Porta de armazenamento privada EX02; limite de bytes/content type e refs opacas; digest definido no contrato"
       ],
@@ -510,7 +536,11 @@
         "pnpm typecheck",
         "pnpm test:integration -- EX07"
       ],
-      "source_ticket_ids": ["ZN-0025", "ZN-0027", "ZN-0029"],
+      "source_ticket_ids": [
+        "ZN-0025",
+        "ZN-0027",
+        "ZN-0029"
+      ],
       "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
       "required_read": [
         "docs/invariants.md",
@@ -525,10 +555,17 @@
       "title": "Admitir evidência e inspecionar divergência",
       "owner": "worker-1",
       "depends_on": {
-        "hard": ["EX02", "EX04", "EX05"],
+        "hard": [
+          "EX02",
+          "EX04",
+          "EX05"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX06", "EX07"],
+      "acceptance_requires": [
+        "EX06",
+        "EX07"
+      ],
       "contracts_consumed": [
         "Commit/access/executor EX05; SqlClient Effect real; storage privado EX02/EX07; Frame/VisibleFrame EX02; contrato de persistência e política docs/contracts/d01.md"
       ],
@@ -594,10 +631,16 @@
       "title": "Identidade real e sessão web sem autoridade implícita",
       "owner": "worker-2",
       "depends_on": {
-        "hard": ["EX02", "EX06"],
+        "hard": [
+          "EX02",
+          "EX06"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX01", "EX05"],
+      "acceptance_requires": [
+        "EX01",
+        "EX05"
+      ],
       "contracts_consumed": [
         "Porta presence EX02; provider/session real e versão compatível confirmados; membership/grant EX05"
       ],
@@ -629,7 +672,12 @@
         "pnpm typecheck",
         "pnpm test:integration -- EX09"
       ],
-      "source_ticket_ids": ["ZN-0013", "ZN-0015", "ZN-0017", "ZN-0018"],
+      "source_ticket_ids": [
+        "ZN-0013",
+        "ZN-0015",
+        "ZN-0017",
+        "ZN-0018"
+      ],
       "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
       "required_read": [
         "docs/invariants.md",
@@ -720,10 +768,15 @@
       "title": "CLI mínima sobre o HttpApi real",
       "owner": "worker-3",
       "depends_on": {
-        "hard": ["EX02"],
+        "hard": [
+          "EX02"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX09", "EX10"],
+      "acceptance_requires": [
+        "EX09",
+        "EX10"
+      ],
       "contracts_consumed": [
         "Operações e erros públicos EX02; mecanismo real de autenticação/entrada EX09"
       ],
@@ -739,7 +792,10 @@
         "Executar processo CLI real contra EX10 com as mesmas operações e base usadas no browser.",
         "Alterar identidade/corte/retry e observar denials/idempotência reais."
       ],
-      "owns": ["apps/cli/src/d01/**", "apps/cli/test/d01/**"],
+      "owns": [
+        "apps/cli/src/d01/**",
+        "apps/cli/test/d01/**"
+      ],
       "status": "planned",
       "reviewer": "worker-2",
       "model": "gpt-6-astra",
@@ -756,12 +812,19 @@
         {
           "owner": "root",
           "trigger": "Candidato do worker com export real e checks locais; estado implemented_unverified, EX10 disponível.",
-          "owns": ["apps/cli/src/main.ts"],
+          "owns": [
+            "apps/cli/src/main.ts"
+          ],
           "action": "Ligar comando derivado de HttpApiClient e fluxo real de sessão ao entrypoint real com imports explícitos; instalar/configurar dependência somente se necessária; não criar handler fake.",
           "completion": "Executar a aplicação real com o worker e só então concluir aceitação do pacote; não depende EX14."
         }
       ],
-      "source_ticket_ids": ["ZN-0045", "ZN-0046", "ZN-0291", "ZN-0292"],
+      "source_ticket_ids": [
+        "ZN-0045",
+        "ZN-0046",
+        "ZN-0291",
+        "ZN-0292"
+      ],
       "source_semantics": "Referências de requisitos e oráculos pertinentes; o pacote cobre somente seu recorte descrito, não conclui automaticamente o ticket/capacidade original.",
       "required_read": [
         "docs/invariants.md",
@@ -776,10 +839,16 @@
       "title": "Web conectada com sessão, importação e evidência",
       "owner": "worker-2",
       "depends_on": {
-        "hard": ["EX02", "EX03"],
+        "hard": [
+          "EX02",
+          "EX03"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX09", "EX10"],
+      "acceptance_requires": [
+        "EX09",
+        "EX10"
+      ],
       "contracts_consumed": [
         "Componentes puros EX03; HttpApi/Frame EX02; sessão real EX09"
       ],
@@ -795,7 +864,10 @@
         "Jornada Playwright contra app+server+SQL+S3 reais, sem interceptação de respostas.",
         "Duas sessões reais, logout/back e erro de autorização; keyboard e zoom 200%."
       ],
-      "owns": ["apps/web/src/features/d01/**", "apps/web/test/features/d01/**"],
+      "owns": [
+        "apps/web/src/features/d01/**",
+        "apps/web/test/features/d01/**"
+      ],
       "status": "planned",
       "reviewer": "worker-3",
       "model": "gpt-6-astra",
@@ -812,7 +884,9 @@
         {
           "owner": "root",
           "trigger": "Candidato do worker com export real e checks locais; estado implemented_unverified, EX10 disponível.",
-          "owns": ["apps/web/src/main.tsx"],
+          "owns": [
+            "apps/web/src/main.tsx"
+          ],
           "action": "Ligar componente raiz da feature e cliente HttpApi ao entrypoint real com imports explícitos; instalar/configurar dependência somente se necessária; não criar handler fake.",
           "completion": "Executar a aplicação real com o worker e só então concluir aceitação do pacote; não depende EX14."
         }
@@ -841,10 +915,18 @@
       "title": "Correção limitada, unknown e undo com histórico",
       "owner": "worker-1",
       "depends_on": {
-        "hard": ["EX02", "EX04", "EX05", "EX08"],
+        "hard": [
+          "EX02",
+          "EX04",
+          "EX05",
+          "EX08"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX06", "EX07"],
+      "acceptance_requires": [
+        "EX06",
+        "EX07"
+      ],
       "contracts_consumed": [
         "Contrato de correção reservado em EX02: target/question digest, base/guards, explicit answer kind e operation identity; append-only receipt EX05"
       ],
@@ -897,7 +979,12 @@
       "title": "Integrar correção nas mesmas superfícies",
       "owner": "root",
       "depends_on": {
-        "hard": ["EX10", "EX11", "EX12", "EX13"],
+        "hard": [
+          "EX10",
+          "EX11",
+          "EX12",
+          "EX13"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -961,7 +1048,12 @@
       "title": "Verificação independente de D01 e primeiro incremento D02",
       "owner": "worker-3",
       "depends_on": {
-        "hard": ["EX10", "EX11", "EX12", "EX14"],
+        "hard": [
+          "EX10",
+          "EX11",
+          "EX12",
+          "EX14"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1045,7 +1137,9 @@
       "title": "Congelar handoff CSV e migração aditiva real",
       "owner": "root",
       "depends_on": {
-        "hard": ["EX14"],
+        "hard": [
+          "EX14"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1108,10 +1202,14 @@
       "title": "Parser CSV limitado e admissão pelo executor existente",
       "owner": "worker-1",
       "depends_on": {
-        "hard": ["EX16"],
+        "hard": [
+          "EX16"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX18"],
+      "acceptance_requires": [
+        "EX18"
+      ],
       "contracts_consumed": [
         "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
       ],
@@ -1177,7 +1275,9 @@
       "title": "Storage S3 com formato vinculado à captura",
       "owner": "worker-2",
       "depends_on": {
-        "hard": ["EX16"],
+        "hard": [
+          "EX16"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1210,7 +1310,11 @@
         "pnpm test:unit",
         "pnpm test:integration"
       ],
-      "source_ticket_ids": ["ZN-0025", "ZN-0027", "ZN-0029"],
+      "source_ticket_ids": [
+        "ZN-0025",
+        "ZN-0027",
+        "ZN-0029"
+      ],
       "source_semantics": "Recorte CSV de captura/evidência/prova. Não conclui os tickets ou D01 completos.",
       "required_read": [
         "docs/invariants.md",
@@ -1225,10 +1329,15 @@
       "title": "Expor CSV explícito em web/CLI e provar jornada mista",
       "owner": "root",
       "depends_on": {
-        "hard": ["EX17", "EX18"],
+        "hard": [
+          "EX17",
+          "EX18"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX15"],
+      "acceptance_requires": [
+        "EX15"
+      ],
       "contracts_consumed": [
         "docs/contracts/d01-csv.md congelado; contratos e composição D01/D02 reais"
       ],
@@ -1286,7 +1395,9 @@
     },
     {
       "depends_on": {
-        "hard": ["EX19"],
+        "hard": [
+          "EX19"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1351,10 +1462,14 @@
     },
     {
       "depends_on": {
-        "hard": ["EX20"],
+        "hard": [
+          "EX20"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX22"],
+      "acceptance_requires": [
+        "EX22"
+      ],
       "status": "planned",
       "reviewer": "worker-3",
       "model": "gpt-6-astra",
@@ -1426,7 +1541,9 @@
     },
     {
       "depends_on": {
-        "hard": ["EX20"],
+        "hard": [
+          "EX20"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1490,7 +1607,10 @@
     },
     {
       "depends_on": {
-        "hard": ["EX21", "EX22"],
+        "hard": [
+          "EX21",
+          "EX22"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1563,7 +1683,9 @@
     },
     {
       "depends_on": {
-        "hard": ["EX23"],
+        "hard": [
+          "EX23"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1578,7 +1700,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_ticket_ids": [
+        "ZN-0038",
+        "ZN-0039",
+        "ZN-0040"
+      ],
       "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
       "required_read": [
         "docs/invariants.md",
@@ -1614,7 +1740,9 @@
     },
     {
       "depends_on": {
-        "hard": ["EX23"],
+        "hard": [
+          "EX23"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1629,7 +1757,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_ticket_ids": [
+        "ZN-0038",
+        "ZN-0039",
+        "ZN-0040"
+      ],
       "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
       "required_read": [
         "docs/invariants.md",
@@ -1683,10 +1815,15 @@
     },
     {
       "depends_on": {
-        "hard": ["EX24", "EX25"],
+        "hard": [
+          "EX24",
+          "EX25"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX27"],
+      "acceptance_requires": [
+        "EX27"
+      ],
       "status": "planned",
       "verification_state": "not_run",
       "commands_status": "Comandos reais disponíveis; provas do novo incremento ainda não executadas.",
@@ -1698,7 +1835,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_ticket_ids": [
+        "ZN-0038",
+        "ZN-0039",
+        "ZN-0040"
+      ],
       "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
       "required_read": [
         "docs/invariants.md",
@@ -1723,13 +1864,18 @@
         "ID-01–15 aplicáveis em integração/processos reais; separar provas puras e de provider.",
         "Revisão SQL/grants preserva bancos e dados anteriores; somente recursos exclusivos de teste."
       ],
-      "owns": ["tests/integration/d02-identity/independent/**"],
+      "owns": [
+        "tests/integration/d02-identity/independent/**"
+      ],
       "model": "gpt-6-astra",
       "reasoning_effort": "low"
     },
     {
       "depends_on": {
-        "hard": ["EX24", "EX25"],
+        "hard": [
+          "EX24",
+          "EX25"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1744,7 +1890,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_ticket_ids": [
+        "ZN-0038",
+        "ZN-0039",
+        "ZN-0040"
+      ],
       "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
       "required_read": [
         "docs/invariants.md",
@@ -1794,10 +1944,14 @@
     },
     {
       "depends_on": {
-        "hard": ["EX24"],
+        "hard": [
+          "EX24"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX27"],
+      "acceptance_requires": [
+        "EX27"
+      ],
       "status": "planned",
       "verification_state": "not_run",
       "commands_status": "Web/CLI identity verified_for_profile with EX29 at cae72de. execution status remains planned/not_run for verify_plan; progress in progress.json.",
@@ -1809,7 +1963,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_ticket_ids": [
+        "ZN-0038",
+        "ZN-0039",
+        "ZN-0040"
+      ],
       "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
       "required_read": [
         "docs/invariants.md",
@@ -1845,7 +2003,11 @@
     },
     {
       "depends_on": {
-        "hard": ["EX26", "EX27", "EX28"],
+        "hard": [
+          "EX26",
+          "EX27",
+          "EX28"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -1860,7 +2022,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0038", "ZN-0039", "ZN-0040"],
+      "source_ticket_ids": [
+        "ZN-0038",
+        "ZN-0039",
+        "ZN-0040"
+      ],
       "source_semantics": "Identidade temporal privada com fechamento transitivo, split, undo e recuperação estrutural; não conclui C024/C025, ACL por fonte ou D02 completos.",
       "required_read": [
         "docs/invariants.md",
@@ -1904,8 +2070,12 @@
     },
     {
       "depends_on": {
-        "hard": ["EX23"],
-        "optional": ["EX29"]
+        "hard": [
+          "EX23"
+        ],
+        "optional": [
+          "EX29"
+        ]
       },
       "acceptance_requires": [],
       "status": "planned",
@@ -1965,7 +2135,9 @@
     },
     {
       "depends_on": {
-        "hard": ["EX30"],
+        "hard": [
+          "EX30"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2024,7 +2196,9 @@
     },
     {
       "depends_on": {
-        "hard": ["EX31"],
+        "hard": [
+          "EX31"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2097,10 +2271,14 @@
     },
     {
       "depends_on": {
-        "hard": ["EX30"],
+        "hard": [
+          "EX30"
+        ],
         "optional": []
       },
-      "acceptance_requires": ["EX32"],
+      "acceptance_requires": [
+        "EX32"
+      ],
       "status": "planned",
       "verification_state": "not_run",
       "commands_status": "HTTP/CLI/Web Closing surfaces with EX30–EX34 local Closing/register only. execution status remains planned/not_run for verify_plan; progress in progress.json. Not full D03 (no purge/Erased/restore).",
@@ -2158,7 +2336,11 @@
     },
     {
       "depends_on": {
-        "hard": ["EX31", "EX32", "EX33"],
+        "hard": [
+          "EX31",
+          "EX32",
+          "EX33"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2233,8 +2415,12 @@
     },
     {
       "depends_on": {
-        "hard": ["EX23"],
-        "optional": ["EX34"]
+        "hard": [
+          "EX23"
+        ],
+        "optional": [
+          "EX34"
+        ]
       },
       "acceptance_requires": [],
       "status": "planned",
@@ -2248,7 +2434,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0049", "ZN-0287", "ZN-0288"],
+      "source_ticket_ids": [
+        "ZN-0049",
+        "ZN-0287",
+        "ZN-0288"
+      ],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2287,7 +2477,9 @@
     },
     {
       "depends_on": {
-        "hard": ["EX35"],
+        "hard": [
+          "EX35"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2302,7 +2494,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0049", "ZN-0287", "ZN-0288"],
+      "source_ticket_ids": [
+        "ZN-0049",
+        "ZN-0287",
+        "ZN-0288"
+      ],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2354,7 +2550,9 @@
     },
     {
       "depends_on": {
-        "hard": ["EX35"],
+        "hard": [
+          "EX35"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2369,7 +2567,10 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0049", "ZN-0287"],
+      "source_ticket_ids": [
+        "ZN-0049",
+        "ZN-0287"
+      ],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2397,13 +2598,17 @@
         "Integração disposable PG/S3 (compose local) backup/restore round-trip.",
         "Negativo: não divulgar conteúdo fora do escopo restaurado."
       ],
-      "owns": ["tests/integration/hosted/restore/**"],
+      "owns": [
+        "tests/integration/hosted/restore/**"
+      ],
       "model": null,
       "reasoning_effort": null
     },
     {
       "depends_on": {
-        "hard": ["EX35"],
+        "hard": [
+          "EX35"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2418,7 +2623,10 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0288", "ZN-0287"],
+      "source_ticket_ids": [
+        "ZN-0288",
+        "ZN-0287"
+      ],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2456,7 +2664,12 @@
     },
     {
       "depends_on": {
-        "hard": ["EX35", "EX36", "EX37", "EX38"],
+        "hard": [
+          "EX35",
+          "EX36",
+          "EX37",
+          "EX38"
+        ],
         "optional": []
       },
       "acceptance_requires": [],
@@ -2471,7 +2684,11 @@
         "pnpm test:integration",
         "pnpm build"
       ],
-      "source_ticket_ids": ["ZN-0049", "ZN-0287", "ZN-0288"],
+      "source_ticket_ids": [
+        "ZN-0049",
+        "ZN-0287",
+        "ZN-0288"
+      ],
       "source_semantics": "Primeiro incremento D04: perfil hosted retained novo, stubs Fly sem deploy, restore só do escopo habilitado e admission flags honestos. Não conclui D04 ativado, cutover do app legado, MPG/Tigris, nem piloto sensível com restore-após-erasure.",
       "required_read": [
         "docs/invariants.md",
@@ -2519,55 +2736,233 @@
           ]
         }
       ]
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX14"
+        ],
+        "optional": [
+          "EX39"
+        ]
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Freeze+schemas landed under eve/**; execution remains planned/not_run for verify_plan; progress in progress.json. Not full D05; no live model/voice.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0052",
+        "ZN-0053",
+        "ZN-0056",
+        "ZN-0061",
+        "ZN-0063"
+      ],
+      "source_semantics": "Primeiro incremento D05: freeze F01–F09, schemas eve.v1 / eve-local-stub-v1, chat textual com fatos/incerteza/cancel/journal; voz e modelo real bloqueados. Não conclui D05, spend de LLM, voz, nem processo Eve separado.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/roadmap.md",
+        "docs/contracts/eve.md",
+        "docs/contracts/eve-freeze.md",
+        "docs/contracts/d04-hosted-freeze.md",
+        "docs/contracts/d03-erasure-freeze.md"
+      ],
+      "contracts_consumed": [
+        "Freeze F01–F09 em docs/contracts/eve-freeze.md: INV-01 sem credencial de autoridade no journal; texto grounded; voz/modelo real bloqueados; perfil eve-local-stub-v1 só proofs locais.",
+        "D01 superfícies (EX14) disponíveis; D04 hosted bootstrap local opcional e não requerido para o stub Eve."
+      ],
+      "id": "EX40",
+      "owner": "root",
+      "reviewer": "worker-3",
+      "title": "Congelar primeiro incremento Eve e schemas de conversa/journal",
+      "scope": "Freeze F01–F09 + schemas eve.v1 / eve-local-stub-v1 sob eve/**; sem ativar modelo real, voz ou composição de servidor.",
+      "acceptance": [
+        "Freeze lista F01–F09 e gates bloqueados; voz e modelo real explicitamente fechados.",
+        "Schemas Accept/Cancel/Settle/Recover compiláveis; authorityCredentialPresent literal false no snapshot."
+      ],
+      "planned_direct_checks": [
+        "python3 tooling/verify_plan.py",
+        "pnpm exec vitest run --project unit packages/contracts/test/eve"
+      ],
+      "owns": [
+        "docs/contracts/eve.md",
+        "docs/contracts/eve-freeze.md",
+        "docs/verification/eve-local.md",
+        "packages/contracts/src/eve/**",
+        "packages/contracts/test/eve/**"
+      ],
+      "model": null,
+      "reasoning_effort": null
+    },
+    {
+      "depends_on": {
+        "hard": [
+          "EX40"
+        ],
+        "optional": []
+      },
+      "acceptance_requires": [],
+      "status": "planned",
+      "verification_state": "not_run",
+      "commands_status": "Journal stubMemoryLayer + unit recoverability green under ports/eve; execution remains planned/not_run for verify_plan; progress in progress.json. Not full D05; no live model/voice/PG journal.",
+      "planned_commands": [
+        "pnpm format:check",
+        "pnpm lint",
+        "pnpm typecheck",
+        "pnpm test:unit",
+        "pnpm test:integration",
+        "pnpm build"
+      ],
+      "source_ticket_ids": [
+        "ZN-0052",
+        "ZN-0056",
+        "ZN-0063"
+      ],
+      "source_semantics": "Primeiro incremento D05: freeze F01–F09, schemas eve.v1 / eve-local-stub-v1, chat textual com fatos/incerteza/cancel/journal; voz e modelo real bloqueados. Não conclui D05, spend de LLM, voz, nem processo Eve separado.",
+      "required_read": [
+        "docs/invariants.md",
+        "docs/architecture.md",
+        "docs/quality.md",
+        "docs/roadmap.md",
+        "docs/contracts/eve.md",
+        "docs/contracts/eve-freeze.md",
+        "docs/verification/eve-local.md"
+      ],
+      "contracts_consumed": [
+        "Freeze F01–F09 em docs/contracts/eve-freeze.md: journal recuperável sem modelo ao vivo no stub; real-model/voice Blocked.",
+        "Schemas EX40 sob packages/contracts/src/eve/**."
+      ],
+      "id": "EX41",
+      "owner": "worker-1",
+      "reviewer": "worker-3",
+      "title": "Porta de journal Eve com recoverability stub local",
+      "scope": "EveJournal port + stubMemoryLayer in-memory: accept/cancel/settle/recover sem LLM; providers reais/voz fail-closed.",
+      "acceptance": [
+        "Recover preserva ordem de turnos/mensagens após accept/settle/cancel no stub.",
+        "real-model-blocked e voice-blocked nunca fabricam sucesso; authorityCredentialPresent permanece false."
+      ],
+      "planned_direct_checks": [
+        "pnpm exec vitest run --project unit packages/authority/test/ports/eve",
+        "python3 tooling/verify_plan.py"
+      ],
+      "owns": [
+        "packages/authority/src/ports/eve/**",
+        "packages/authority/test/ports/eve/**"
+      ],
+      "model": null,
+      "reasoning_effort": null,
+      "integrator_steps": [
+        {
+          "owner": "root",
+          "trigger": "EX41 journal stub e testes de unidade verdes.",
+          "completion": "Opcional: exportar porta nos indexes e compor layer só em installs de proof — sem ativar modelo real nem redeploy.",
+          "owns": [
+            "packages/authority/src/index.ts",
+            "apps/server/src/composition.ts"
+          ]
+        }
+      ]
     }
   ],
   "suggested_schedule": [
     {
       "wave": "A",
-      "worker-1": ["EX02"],
-      "worker-2": ["EX03"],
+      "worker-1": [
+        "EX02"
+      ],
+      "worker-2": [
+        "EX03"
+      ],
       "worker-3": [
         "preparar contraprovas concretas de EX04, sem implementar contratos ainda não aceitos"
       ],
-      "root": ["EX01"]
+      "root": [
+        "EX01"
+      ]
     },
     {
       "wave": "B",
-      "worker-1": ["EX05"],
-      "worker-2": ["EX06"],
-      "worker-3": ["EX04", "EX07"],
+      "worker-1": [
+        "EX05"
+      ],
+      "worker-2": [
+        "EX06"
+      ],
+      "worker-3": [
+        "EX04",
+        "EX07"
+      ],
       "root": [
         "validar contrato EX02 e revisar instalação real, sem duplicar trabalho"
       ]
     },
     {
       "wave": "C",
-      "worker-1": ["EX08"],
-      "worker-2": ["EX09"],
+      "worker-1": [
+        "EX08"
+      ],
+      "worker-2": [
+        "EX09"
+      ],
       "worker-3": [
         "EX11 — implementação de parser/formatter; aceitação espera EX10"
       ],
-      "root": ["integrar exports/configs demandados por contratos reais"]
+      "root": [
+        "integrar exports/configs demandados por contratos reais"
+      ]
     },
     {
       "wave": "D",
-      "worker-1": ["EX13"],
-      "worker-2": ["EX12 — implementação; aceitação espera EX10"],
-      "worker-3": ["EX11 contra EX10 quando disponível"],
-      "root": ["EX10"]
+      "worker-1": [
+        "EX13"
+      ],
+      "worker-2": [
+        "EX12 — implementação; aceitação espera EX10"
+      ],
+      "worker-3": [
+        "EX11 contra EX10 quando disponível"
+      ],
+      "root": [
+        "EX10"
+      ]
     },
     {
       "wave": "E",
-      "worker-1": ["corrigir falhas independentes identificadas"],
-      "worker-2": ["revisão independente da CLI EX11"],
-      "worker-3": ["EX15 após EX14"],
-      "root": ["EX14", "revisão final da evidência e CI"]
+      "worker-1": [
+        "corrigir falhas independentes identificadas"
+      ],
+      "worker-2": [
+        "revisão independente da CLI EX11"
+      ],
+      "worker-3": [
+        "EX15 após EX14"
+      ],
+      "root": [
+        "EX14",
+        "revisão final da evidência e CI"
+      ]
     },
     {
       "wave": "F-erasure",
-      "worker-1": ["EX31", "EX32"],
-      "worker-2": ["EX33 após schemas EX30"],
-      "worker-3": ["contraprovas erasure independent quando Closing existir"],
+      "worker-1": [
+        "EX31",
+        "EX32"
+      ],
+      "worker-2": [
+        "EX33 após schemas EX30"
+      ],
+      "worker-3": [
+        "contraprovas erasure independent quando Closing existir"
+      ],
       "root": [
         "EX30 freeze/schemas",
         "EX34 compose quando gates mínimos de Closing"
@@ -2575,12 +2970,34 @@
     },
     {
       "wave": "G-hosted",
-      "worker-1": ["EX36"],
-      "worker-2": ["EX37"],
-      "worker-3": ["EX38"],
+      "worker-1": [
+        "EX36"
+      ],
+      "worker-2": [
+        "EX37"
+      ],
+      "worker-3": [
+        "EX38"
+      ],
       "root": [
         "EX35 freeze/stubs",
         "EX39 compose quando EX36–EX38 prontos — sem fly deploy"
+      ]
+    },
+    {
+      "wave": "H-eve",
+      "worker-1": [
+        "EX41"
+      ],
+      "worker-2": [
+        "preparar contraprovas de turn fence quando EX41 verde"
+      ],
+      "worker-3": [
+        "revisão independente dos schemas EX40"
+      ],
+      "root": [
+        "EX40 freeze/schemas",
+        "compor evidência eve-local sem modelo real"
       ]
     }
   ],
@@ -2589,6 +3006,7 @@
     "D02 merge/split reversível de identidade, workbench/priorização e closure para futuros consumers permanecem no mapa original; subject-identity-v2 verified_for_profile não conta como D02 integral.",
     "D03 erasure: freeze mínimo EX30+; purge real, controlador, Object Lock, catálogo de backups e restore após erasure continuam bloqueados.",
     "D04 hosted: EX35 freeze/stubs; app zoen-rebuild, MPG/Tigris, secrets redesign, deploy real e cutover do legado zoen não feitos; Docker local não prova cloud.",
+    "D05 Eve: EX40 freeze/schemas + EX41 journal stub local; modelo/API real, voz, máquina de turnos completa, processo Eve separado e D05 integral não feitos; sem spend de LLM.",
     "Modelos, canais, fontes externas, efeitos, runners e finanças seguem fora da primeira composição; indisponíveis, nunca simulados."
   ],
   "max_active_workers": 3,
