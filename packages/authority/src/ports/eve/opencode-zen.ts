@@ -1,10 +1,10 @@
 import { randomBytes } from "node:crypto";
 
-import { Blocked, Unavailable } from "@zoen/contracts/d01/errors";
 import type {
   ConversationId,
   UncertaintyKind,
 } from "@zoen/contracts/eve/values";
+import { Blocked, Unavailable } from "@zoen/contracts/worlds/errors";
 import { Context, Effect, Layer, Redacted } from "effect";
 import type { Effect as EffectType } from "effect";
 

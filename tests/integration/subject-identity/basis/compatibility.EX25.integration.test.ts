@@ -1,7 +1,7 @@
 import { randomBytes, randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { InternalBasis } from "@zoen/authority/ports/d01/basis";
+import { InternalBasis } from "@zoen/authority/ports/worlds/basis";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { canonicalJson } from "@zoen/authority/values/canonical";
 import {
@@ -11,11 +11,11 @@ import {
   EvidenceImported,
   FrameInspected,
   WorldCreated,
-} from "@zoen/contracts/d01/operations";
+} from "@zoen/contracts/worlds/operations";
 import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { D01Auth } from "../../../../apps/server/src/identity/d01/identity.ts";
+import { D01Auth } from "../../../../apps/server/src/identity/worlds/identity.ts";
 import {
   http,
   jsonBody,
@@ -28,16 +28,16 @@ const encodeBytes = (value: unknown) =>
   canonicalJson(value).pipe(
     Effect.map((text) => new TextEncoder().encode(text))
   );
-const envelope = { purpose: "personal-records", schemaVersion: "d01.v1" };
-const executePath = "/api/d01/execute";
-const correctionsPath = "/api/d01/corrections";
+const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const executePath = "/api/worlds/execute";
+const correctionsPath = "/api/corrections/execute";
 const validTime = {
   _tag: "DateInterval" as const,
   from: "2026-09-01",
   to: "2026-10-01",
 };
 const csvDocument =
-  "schemaVersion,sourceNamespace,sourceExternalId,sourceRevision,sourceLabel,recordExternalId,subjectKey,predicate,valueTag,amount,currency,validTimeTag,validFrom,validTo\r\nd01.csv.v1,manual,billing-csv,1,CSV source,row-1,invoice-a,obligation.amount,Known,50.00,BRL,DateInterval,2026-09-01,2026-10-01\r\n";
+  "schemaVersion,sourceNamespace,sourceExternalId,sourceRevision,sourceLabel,recordExternalId,subjectKey,predicate,valueTag,amount,currency,validTimeTag,validFrom,validTo\r\nworlds.csv.v1,manual,billing-csv,1,CSV source,row-1,invoice-a,obligation.amount,Known,50.00,BRL,DateInterval,2026-09-01,2026-10-01\r\n";
 
 const jsonDocument = (revision: string, amount: string) =>
   json({
@@ -50,7 +50,7 @@ const jsonDocument = (revision: string, amount: string) =>
         value: { _tag: "Known", amount, currency: "BRL" },
       },
     ],
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
     source: {
       externalId: "billing-json",
       label: "JSON source",
@@ -113,7 +113,7 @@ it.live(
           },
           {
             ...envelope,
-            input: { document: csvDocument, format: "d01.csv.v1" },
+            input: { document: csvDocument, format: "worlds.csv.v1" },
             operation: "ImportEvidence",
             operationId: randomUUID(),
             worldRef,

@@ -1,10 +1,10 @@
 import { Schema } from "effect";
 
-import { exact } from "../../d01/values.js";
+import { exact } from "../../worlds/values.js";
 
 /**
  * Candidate hosted retained profile for NEW Worlds only (freeze H01).
- * Existing d01-local-retained-v1 / d03-local-erasable-v1 Worlds are never rebound.
+ * Existing worlds-local-retained-v1 / d03-local-erasable-v1 Worlds are never rebound.
  */
 export const HostedRetainedPolicyProfileId = Schema.Literal(
   "d04-hosted-retained-v1"

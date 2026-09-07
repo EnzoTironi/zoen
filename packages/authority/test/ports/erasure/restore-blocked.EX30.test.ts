@@ -1,15 +1,15 @@
 import { describe, expect, it } from "@effect/vitest";
-import { OperationId, WorldId } from "@zoen/contracts/d01/values";
+import { OperationId, WorldId } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
-import {
-  DataPolicySchema,
-  PrincipalId,
-} from "../../../src/ports/d01/context.js";
 import {
   ErasureAttemptRegister,
   blocksWorldActivation,
 } from "../../../src/ports/erasure/attempt-register.js";
+import {
+  DataPolicySchema,
+  PrincipalId,
+} from "../../../src/ports/worlds/context.js";
 
 const blockedIdentity = {
   deploymentEpoch: "test-epoch",
@@ -39,7 +39,7 @@ describe("EX30/EX31 erasure gates still blocked", () => {
       erasure: false,
       legalHold: false,
       licensedExpiry: false,
-      profileId: "d01-local-retained-v1",
+      profileId: "worlds-local-retained-v1",
       restoreAfterErasure: false,
       retention: "while-pinned",
     });

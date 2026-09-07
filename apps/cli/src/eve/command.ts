@@ -1,4 +1,3 @@
-import type { OperationId, Realm, WorldId } from "@zoen/contracts/d01/values";
 import {
   ConversationId,
   IngressId,
@@ -6,6 +5,11 @@ import {
   RelationshipId,
   TurnId,
 } from "@zoen/contracts/eve/values";
+import type {
+  OperationId,
+  Realm,
+  WorldId,
+} from "@zoen/contracts/worlds/values";
 import type { Effect } from "effect";
 import { Command, Flag } from "effect/unstable/cli";
 

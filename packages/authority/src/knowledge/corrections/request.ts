@@ -1,6 +1,6 @@
-import { InvalidInput } from "@zoen/contracts/d01/errors";
-import { CorrectionRequest } from "@zoen/contracts/d01/operations";
-import { D01_LIMITS } from "@zoen/contracts/d01/values";
+import { InvalidInput } from "@zoen/contracts/worlds/errors";
+import { CorrectionRequest } from "@zoen/contracts/worlds/operations";
+import { D01_LIMITS } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { parseJsonBytes } from "../../values/json.js";

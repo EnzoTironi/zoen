@@ -7,9 +7,9 @@ import { DateTime, Effect, FileSystem, Layer, Result, Schema } from "effect";
 import type { Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.ts";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/d01/database.ts";
-import { createAccount } from "../../../../apps/server/test/identity/d01/http.ts";
+import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
+import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
+import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
 import { inspectWorldAccess } from "../../../../packages/authority/src/access/sharing/inspect.ts";
 import {
   grantWorldReadAccess,
@@ -20,20 +20,25 @@ import {
   AuthorityInstallationSchema,
 } from "../../../../packages/authority/src/commit/configuration.ts";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.ts";
-import { importEvidence } from "../../../../packages/authority/src/evidence/d01/import.ts";
-import { openEvidence } from "../../../../packages/authority/src/evidence/d01/open.ts";
+import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.ts";
+import { openEvidence } from "../../../../packages/authority/src/evidence/worlds/open.ts";
 import { answerQuestion } from "../../../../packages/authority/src/knowledge/corrections/answer.ts";
 import { proposeCorrection } from "../../../../packages/authority/src/knowledge/corrections/propose.ts";
 import { undoCorrection } from "../../../../packages/authority/src/knowledge/corrections/undo.ts";
-import { inspect } from "../../../../packages/authority/src/knowledge/d01/inspect.ts";
+import { inspect } from "../../../../packages/authority/src/knowledge/worlds/inspect.ts";
 import {
   Presence,
   VerifiedRequestContext,
-} from "../../../../packages/authority/src/ports/d01/context.ts";
+} from "../../../../packages/authority/src/ports/worlds/context.ts";
 import {
   canonicalJson,
   digestBytes,
 } from "../../../../packages/authority/src/values/canonical.ts";
+import {
+  GrantWorldReadAccess,
+  InspectWorldAccess,
+  RevokeWorldReadAccess,
+} from "../../../../packages/contracts/src/sharing/operations.ts";
 import {
   AnswerQuestion,
   CreatePersonalWorld,
@@ -42,14 +47,9 @@ import {
   OpenEvidence,
   ProposeCorrection,
   UndoCorrection,
-} from "../../../../packages/contracts/src/d01/operations.ts";
-import type { WorldRef } from "../../../../packages/contracts/src/d01/values.ts";
-import {
-  GrantWorldReadAccess,
-  InspectWorldAccess,
-  RevokeWorldReadAccess,
-} from "../../../../packages/contracts/src/sharing/operations.ts";
-import { configuration } from "../../d01/commit/fixture.ts";
+} from "../../../../packages/contracts/src/worlds/operations.ts";
+import type { WorldRef } from "../../../../packages/contracts/src/worlds/values.ts";
+import { configuration } from "../../worlds/commit/fixture.ts";
 
 type Fixture = Parameters<Parameters<typeof withD01IdentityDatabase>[0]>[0];
 const installSharing = (fixture: Fixture) =>
@@ -90,7 +90,7 @@ const createRequest = () =>
     operation: "CreatePersonalWorld",
     operationId: randomUUID(),
     purpose: "personal-records",
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
   });
 const importRequest = (worldRef: WorldRef, revision = "1") =>
   Effect.gen(function* prepareImportRequest() {
@@ -112,7 +112,7 @@ const importRequest = (worldRef: WorldRef, revision = "1") =>
           },
         },
       ],
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       source: {
         externalId: "billing",
         label: `Original ${revision}`,
@@ -125,7 +125,7 @@ const importRequest = (worldRef: WorldRef, revision = "1") =>
       operation: "ImportEvidence",
       operationId: randomUUID(),
       purpose: "personal-records",
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       worldRef,
     });
   });
@@ -272,14 +272,14 @@ it.live(
               input: { atFrame: null, subjectKey: "A" },
               operation: "Inspect",
               purpose: "personal-records",
-              schemaVersion: "d01.v1",
+              schemaVersion: "worlds.v1",
               worldRef,
             });
             const openInput = yield* Schema.decodeEffect(OpenEvidence)({
               input: { evidenceRef: first.evidenceRef },
               operation: "OpenEvidence",
               purpose: "personal-records",
-              schemaVersion: "d01.v1",
+              schemaVersion: "worlds.v1",
               worldRef,
             });
             const visibleBefore = yield* inspect(viewerContext, inspectInput);
@@ -305,7 +305,7 @@ it.live(
                 operation: "ProposeCorrection",
                 operationId: randomUUID(),
                 purpose: "personal-records",
-                schemaVersion: "d01.v1",
+                schemaVersion: "worlds.v1",
                 worldRef,
               }
             );
@@ -323,7 +323,7 @@ it.live(
               operation: "AnswerQuestion",
               operationId: randomUUID(),
               purpose: "personal-records",
-              schemaVersion: "d01.v1",
+              schemaVersion: "worlds.v1",
               worldRef,
             });
             for (const questionRef of [proposal.questionRef, randomUUID()]) {
@@ -433,7 +433,7 @@ it.live(
                   operation: "UndoCorrection",
                   operationId: randomUUID(),
                   purpose: "personal-records",
-                  schemaVersion: "d01.v1",
+                  schemaVersion: "worlds.v1",
                   worldRef,
                 })
               ).pipe(Effect.flip)

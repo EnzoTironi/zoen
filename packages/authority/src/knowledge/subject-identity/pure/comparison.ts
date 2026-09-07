@@ -1,12 +1,12 @@
-import type { InvalidInput } from "@zoen/contracts/d01/errors";
-import { QuotaExceeded } from "@zoen/contracts/d01/errors";
-import type { VisibleClaim } from "@zoen/contracts/d01/evidence";
 import type {
   IdentityComparison,
   IdentityComparisonCell,
   IdentitySegment,
 } from "@zoen/contracts/subject-identity/frame";
 import { SUBJECT_IDENTITY_LIMITS } from "@zoen/contracts/subject-identity/values";
+import type { InvalidInput } from "@zoen/contracts/worlds/errors";
+import { QuotaExceeded } from "@zoen/contracts/worlds/errors";
+import type { VisibleClaim } from "@zoen/contracts/worlds/evidence";
 import { Effect } from "effect";
 
 import { compareAmounts } from "../../../values/amount.js";

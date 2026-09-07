@@ -1,7 +1,7 @@
 import { Schema } from "effect";
 
-import { D01Error } from "../d01/errors.js";
-import { Purpose, WorldRef, exact } from "../d01/values.js";
+import { D01Error } from "../worlds/errors.js";
+import { Purpose, WorldRef, exact } from "../worlds/values.js";
 import {
   ConversationId,
   EveEvidenceLink,

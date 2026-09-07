@@ -70,7 +70,9 @@ describe("EX30 erasure schemas", () => {
       Schema.decodeUnknownSync(ErasurePolicyProfileId)("d03-local-erasable-v1")
     ).toBe("d03-local-erasable-v1");
     expect(() =>
-      Schema.decodeUnknownSync(ErasurePolicyProfileId)("d01-local-retained-v1")
+      Schema.decodeUnknownSync(ErasurePolicyProfileId)(
+        "worlds-local-retained-v1"
+      )
     ).toThrow(/./u);
   });
 

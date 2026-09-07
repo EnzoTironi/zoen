@@ -4,12 +4,12 @@ import { PgMigrator } from "@effect/sql-pg";
 import { Effect, FileSystem } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { grantD01Roles } from "../../apps/server/sql/proposals/d01/grants.ts";
-import type { D01DatabaseRoles } from "../../apps/server/sql/proposals/d01/grants.ts";
 import { grantDisclosureRole } from "../../apps/server/sql/proposals/disclosure/grants.ts";
 import { grantErasureRole } from "../../apps/server/sql/proposals/erasure/grants.ts";
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
-import { grantD01IdentityRole } from "../../apps/server/src/identity/d01/grants.ts";
+import { grantD01Roles } from "../../apps/server/sql/proposals/worlds/grants.ts";
+import type { D01DatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
+import { grantD01IdentityRole } from "../../apps/server/src/identity/worlds/grants.ts";
 
 /** Called only by the migration owner, never by the server's runtime pool. */
 export const applyD01Migrations = Effect.fn("migrations.applyD01")(

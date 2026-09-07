@@ -3,13 +3,16 @@ import { fileURLToPath } from "node:url";
 
 import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { EvidenceImported, WorldCreated } from "@zoen/contracts/d01/operations";
-import { SubjectKey } from "@zoen/contracts/d01/values";
 import {
   IdentityProposed,
   IdentityResolved,
   SubjectIdentityInspected,
 } from "@zoen/contracts/subject-identity/operations";
+import {
+  EvidenceImported,
+  WorldCreated,
+} from "@zoen/contracts/worlds/operations";
+import { SubjectKey } from "@zoen/contracts/worlds/values";
 import { Effect, FileSystem, Schema, Stream } from "effect";
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 
@@ -18,8 +21,8 @@ import {
   jsonBody,
   responseCookie,
   withD01Http,
-} from "../../../server/test/composition/d01/fixture.ts";
-import { saveSession } from "../../src/d01/session.js";
+} from "../../../server/test/composition/worlds/fixture.ts";
+import { saveSession } from "../../src/worlds/session.js";
 
 const subjectKey = Schema.decodeSync(SubjectKey);
 
@@ -31,7 +34,7 @@ const read = <E, R>(stream: Stream.Stream<Uint8Array, E, R>) =>
   );
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const interval = {
   _tag: "DateInterval",
   from: "2026-09-01",
@@ -55,7 +58,7 @@ const document = json({
       value: { _tag: "Known", amount: "120.00", currency: "BRL" },
     },
   ],
-  schemaVersion: "d01.v1",
+  schemaVersion: "worlds.v1",
   source: {
     externalId: "billing",
     label: "Billing",
@@ -127,7 +130,7 @@ it.live(
 
         const worldResponse = yield* http(
           origin,
-          "/api/d01/execute",
+          "/api/worlds/execute",
           json({
             ...d01,
             input: {},
@@ -143,7 +146,7 @@ it.live(
         const { worldRef } = created;
         const imported = yield* http(
           origin,
-          "/api/d01/execute",
+          "/api/worlds/execute",
           json({
             ...d01,
             input: { document },

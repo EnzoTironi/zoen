@@ -4,7 +4,7 @@ Reviewed candidate `956998c` (W1), with the frozen `docs/contracts/d03-sharing.m
 
 ## WEB-01 — confirmed: denial is ignored while another request is busy
 
-`apps/web/src/features/d01/state.ts`, `revalidateContent`, checks `state.busy` before examining the returned access failure. The UI can therefore receive a real `NotFoundOrDenied` and retain the World, Frame and source data. An earlier response that the server legitimately emitted before revocation can also populate the evidence panel afterward because the denial did not invalidate the controller epoch.
+`apps/web/src/features/worlds/state.ts`, `revalidateContent`, checks `state.busy` before examining the returned access failure. The UI can therefore receive a real `NotFoundOrDenied` and retain the World, Frame and source data. An earlier response that the server legitimately emitted before revocation can also populate the evidence panel afterward because the denial did not invalidate the controller epoch.
 
 Independent real-browser reproduction on 2026-09-05 at 17:46 America/Sao_Paulo:
 

@@ -4,7 +4,7 @@
 
 O recorte proposto permite que o owner de um World existente conceda leitura a outro principal de uma conta local existente e revogue esse acesso. Usa o mesmo executor semântico, autoridade PostgreSQL, identidade Better Auth e storage S3 já compostos. Não cria convite, envio de mensagem, descoberta de usuário por email, conta automática ou integração de provider.
 
-A entrega [D03](../../planning/deliveries.json) também exige apagamento e supressão que sobreviva a restore. Este incremento **não conclui D03**. Mantém somente `d01-local-retained-v1`, `live`, dados admitidos não sensíveis, retenção enquanto pinned, sem apagamento, hold, expiração de licença ou restore após apagamento. Uma política que exija essas operações permanece `Blocked`; revogar acesso não remove evidência, pins, histórico ou cópias já recebidas. Sessão de app, guest e link de continuação dependem de D08 e ficam fora deste contrato.
+A entrega [D03](../../planning/deliveries.json) também exige apagamento e supressão que sobreviva a restore. Este incremento **não conclui D03**. Mantém somente `worlds-local-retained-v1`, `live`, dados admitidos não sensíveis, retenção enquanto pinned, sem apagamento, hold, expiração de licença ou restore após apagamento. Uma política que exija essas operações permanece `Blocked`; revogar acesso não remove evidência, pins, histórico ou cópias já recebidas. Sessão de app, guest e link de continuação dependem de D08 e ficam fora deste contrato.
 
 ## Base atual e mudanças indispensáveis
 
@@ -15,11 +15,11 @@ As leis aplicáveis estão em [invariants.md](../invariants.md), especialmente I
 | [access/world.ts](../../packages/authority/src/access/world.ts), `AccessRow` e `authorizeWorld` | Aceitam exclusivamente `role = owner`. A função verifica presença, realm, membership ativa, emergency deny e perfil, mas não distingue a capacidade de leitura da de mutação. Aceitar `viewer` no schema, sozinho, permitiria usar handlers de escrita. |
 | [001_d01_authority.sql](../../ops/migrations/001_d01_authority.sql), `memberships` | A chave é `(world_id, realm, principal_id)`; há estado, revisão e constraint de role owner. Genesis cria uma membership owner. A constraint atual não limita o número de owners por World. Não editar a migração aplicada. |
 | [commit/mutation.ts](../../packages/authority/src/commit/mutation.ts) e [receipt.ts](../../packages/authority/src/commit/receipt.ts) | SERIALIZABLE, locks ordenados, identidade de operação por principal/World, reautorização, estado/receipt/outbox no mesmo commit. Resultados e intenção ainda não aceitam operações de compartilhamento. |
-| [inspect.ts](../../packages/authority/src/knowledge/d01/inspect.ts) | Lê claims do World, grava Frame/pins e faz recheck após o snapshot. Frame histórico exige o mesmo principal, propósito e sujeito. Leitura semântica pode gravar metadados internos; não classificar permissões por verbos SQL. |
+| [inspect.ts](../../packages/authority/src/knowledge/worlds/inspect.ts) | Lê claims do World, grava Frame/pins e faz recheck após o snapshot. Frame histórico exige o mesmo principal, propósito e sujeito. Leitura semântica pode gravar metadados internos; não classificar permissões por verbos SQL. |
 | [corrections/projection.ts](../../packages/authority/src/knowledge/corrections/projection.ts), [frame.ts](../../packages/authority/src/knowledge/corrections/frame.ts) e [case.ts](../../packages/authority/src/knowledge/corrections/case.ts) | Correções, Frames e Questions continuam privados por principal. O DTO aceita apenas `authoredBy: current-principal`; não admite apresentar a correção do owner como autoria do leitor. |
-| [open.ts](../../packages/authority/src/evidence/d01/open.ts) | Lê bytes exatos de S3, verifica digest e relê localização/autorização antes de retornar. Não entrega chave, versão S3 ou URL presigned. |
+| [open.ts](../../packages/authority/src/evidence/worlds/open.ts) | Lê bytes exatos de S3, verifica digest e relê localização/autorização antes de retornar. Não entrega chave, versão S3 ou URL presigned. |
 | [semantic/executor.ts](../../packages/authority/src/semantic/executor.ts) | Verifica novamente a sessão e a membership antes de retornar o DTO. Essa checagem ainda antecede a entrega pelo transporte; não prova, sozinha, exclusão de uma corrida entre o último SELECT e o início da emissão HTTP. |
-| [grants.ts](../../apps/server/sql/proposals/d01/grants.ts) e [identity/grants.ts](../../apps/server/src/identity/d01/grants.ts) | Os papéis SQL são de componentes. Authority não lê identity; identity não escreve authority/jobs. Viewer é papel semântico de membership, não um login SQL novo. |
+| [grants.ts](../../apps/server/sql/proposals/worlds/grants.ts) e [identity/grants.ts](../../apps/server/src/identity/worlds/grants.ts) | Os papéis SQL são de componentes. Authority não lê identity; identity não escreve authority/jobs. Viewer é papel semântico de membership, não um login SQL novo. |
 
 ## Audiência e papéis propostos
 
@@ -112,7 +112,7 @@ Um teste que pause apenas antes do último SELECT demonstra reautorização, mas
 
 ## Oráculos necessários, com componentes reais
 
-Estes são checks a implementar, **não resultados executados**. Reusar os fixtures reais de PostgreSQL/S3/Better Auth, o processo CLI e os padrões de barreira de [EX15](../../tests/integration/d01-d02-independent/README.md). Cada cenário usa recursos descartáveis próprios. Papéis normais atendem requests; o papel de migração pode observar/segurar barreiras do harness, nunca representar uma identidade privilegiada de usuário.
+Estes são checks a implementar, **não resultados executados**. Reusar os fixtures reais de PostgreSQL/S3/Better Auth, o processo CLI e os padrões de barreira de [EX15](../../tests/integration/worlds-corrections-independent/README.md). Cada cenário usa recursos descartáveis próprios. Papéis normais atendem requests; o papel de migração pode observar/segurar barreiras do harness, nunca representar uma identidade privilegiada de usuário.
 
 | ID local | Testemunha e resultado requerido |
 | --- | --- |
@@ -135,10 +135,10 @@ A atribuição executável está em EX20–EX23 de `planning/execution.json`; a 
 
 | Segmento/dono sugerido | Caminhos a atribuir | Contrato consumido |
 | --- | --- | --- |
-| Core/contratos — worker-1 | Novos `packages/contracts/src/sharing/**` e testes; `packages/authority/src/access/sharing/**`; extensão delimitada de `access/world.ts`, `commit/{intent,mutation,receipt}.ts`, `ports/d01/{basis,context,persistence}.ts` e testes respectivos | Roles/capacidades, operações, revisões, replay e audience deste documento. Não criar autorização paralela. |
+| Core/contratos — worker-1 | Novos `packages/contracts/src/sharing/**` e testes; `packages/authority/src/access/sharing/**`; extensão delimitada de `access/world.ts`, `commit/{intent,mutation,receipt}.ts`, `ports/worlds/{basis,context,persistence}.ts` e testes respectivos | Roles/capacidades, operações, revisões, replay e audience deste documento. Não criar autorização paralela. |
 | Identidade — worker-2 | Novo `apps/server/src/identity/sharing/**` e testes; porta estreita proposta em `packages/authority/src/ports/sharing/**` atribuída ao core antes do adapter | Elegibilidade exata de PrincipalRef pelo pool real identity; nenhuma busca por email nem transferência de credencial. |
-| Composição/fence/migração — root | `packages/authority/src/semantic/executor.ts`; pontos de união de `packages/contracts/src/d01/{operations,api}.ts`; `apps/server/src/{composition,http/**}.ts`; grants/readiness; **nova** migração numerada pelo integrador, `ops/migrations/run.ts` e fixtures | Mesma execução/finalização em todas as famílias; ordem de divulgação/revogação testável; histórico SQL preservado. O fence não entra como API presumida sem revisão. |
-| CLI — worker-3, revisão por outro agente | Novo `apps/cli/src/sharing/**` e composição delimitada em `d01/{command,transport,output}.ts`, testes de processo | Requests públicos explícitos, nenhuma política local; replay histórico distinguido do estado atual. |
+| Composição/fence/migração — root | `packages/authority/src/semantic/executor.ts`; pontos de união de `packages/contracts/src/worlds/{operations,api}.ts`; `apps/server/src/{composition,http/**}.ts`; grants/readiness; **nova** migração numerada pelo integrador, `ops/migrations/run.ts` e fixtures | Mesma execução/finalização em todas as famílias; ordem de divulgação/revogação testável; histórico SQL preservado. O fence não entra como API presumida sem revisão. |
+| CLI — worker-3, revisão por outro agente | Novo `apps/cli/src/sharing/**` e composição delimitada em `worlds/{command,transport,output}.ts`, testes de processo | Requests públicos explícitos, nenhuma política local; replay histórico distinguido do estado atual. |
 | Web — worker-2, revisão por outro agente | Novo `apps/web/src/features/sharing/**` e composição delimitada de estado/transportes existentes; testes de componentes e browser | Papéis para apresentação, confirmação da audiência completa, destinatário exato, revisão e recuperação de Stale. |
 | Prova independente — worker distinto dos autores | `tests/integration/d03-sharing/**`, `tests/security/d03-sharing/**`, `tests/acceptance/d03-sharing/**` | SH-01–12 com componentes reais; falha volta ao dono, sem editar resultados esperados para aprovar. |
 

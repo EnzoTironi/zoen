@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { ClaimRef, EvidenceRef, WorldRef, exact } from "../d01/values.js";
+import { ClaimRef, EvidenceRef, WorldRef, exact } from "../worlds/values.js";
 
 /** Wire schema version for Eve DTOs (distinct from d01.v1 / erasure.v1 / hosted.v1). */
 export const EveSchemaVersion = Schema.Literal("eve.v1");

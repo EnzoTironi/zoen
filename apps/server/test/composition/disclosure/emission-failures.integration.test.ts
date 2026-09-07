@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto";
 import { NodeHttpServer } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
-import { WorldCreated } from "@zoen/contracts/d01/operations";
+import { WorldCreated } from "@zoen/contracts/worlds/operations";
 import { Deferred, Effect, Exit, Fiber, Layer, Schedule, Schema } from "effect";
 import {
   HttpClient,
@@ -13,18 +13,18 @@ import {
 } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
 
-import { configuration } from "../../../../../tests/integration/d01/commit/fixture.ts";
 import { withSharingDatabase } from "../../../../../tests/integration/d03-sharing/core/fixture.ts";
+import { configuration } from "../../../../../tests/integration/worlds/commit/fixture.ts";
 import { makePrivateJsonEmitter } from "../../../src/http/disclosure.ts";
 import { ResponseSecurityHeaders } from "../../../src/http/security.ts";
-import { withStorage } from "../../adapters/object-storage/d01/fixture.ts";
-import { createAccount } from "../../identity/d01/http.ts";
+import { withStorage } from "../../adapters/object-storage/worlds/fixture.ts";
+import { createAccount } from "../../identity/worlds/http.ts";
 
 const bytes = (value: unknown) =>
   new TextEncoder().encode(
     Schema.encodeSync(Schema.fromJsonString(Schema.Unknown))(value)
   );
-const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",

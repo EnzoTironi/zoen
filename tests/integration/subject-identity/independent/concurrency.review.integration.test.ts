@@ -10,7 +10,7 @@ import {
   EvidenceImported,
   FrameInspected,
   WorldCreated,
-} from "@zoen/contracts/d01/operations";
+} from "@zoen/contracts/worlds/operations";
 import { Deferred, Effect, Fiber, Result, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -22,8 +22,8 @@ import {
 } from "./harness.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
-const envelope = { purpose: "personal-records", schemaVersion: "d01.v1" };
-const executePath = "/api/d01/execute";
+const envelope = { purpose: "personal-records", schemaVersion: "worlds.v1" };
+const executePath = "/api/worlds/execute";
 const validTime = {
   _tag: "DateInterval" as const,
   from: "2026-09-01",
@@ -40,7 +40,7 @@ const jsonDocument = (revision: string, amount: string) =>
         value: { _tag: "Known", amount, currency: "BRL" },
       },
     ],
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
     source: {
       externalId: "billing-json",
       label: "JSON source",

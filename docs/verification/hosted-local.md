@@ -15,7 +15,7 @@ Em 2026-09-06 (PT), tip verificado: `7e91940` (`7e9194024a551f2ba99faf00d726b4bb
 | D04 ativado / cutover `zoen` | **Não** |
 | D03 purge / restore-após-erasure | **Bloqueado** |
 
-Default de composition/provision permanece `d01-local-retained-v1`. Perfil candidato `d04-hosted-retained-v1` só via provisionamento explícito de instalação **nova**. Sem rebind/migração de Worlds `d01-*` / `d03-*` (H01).
+Default de composition/provision permanece `worlds-local-retained-v1`. Perfil candidato `d04-hosted-retained-v1` só via provisionamento explícito de instalação **nova**. Sem rebind/migração de Worlds `d01-*` / `d03-*` (H01).
 
 ## Provisionamento local (EX39)
 

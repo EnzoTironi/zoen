@@ -5,7 +5,7 @@ import {
   CorrectionRequest,
   D01Request,
   SemanticRequest,
-} from "../../src/d01/operations.js";
+} from "../../src/worlds/operations.js";
 
 const grant = {
   input: {
@@ -61,7 +61,7 @@ describe("SH exact transitions at the public boundary", () => {
         ...read,
         input: { principalRef: grant.input.principalRef },
       }),
-      Schema.is(SemanticRequest)({ ...grant, schemaVersion: "d01.v1" }),
+      Schema.is(SemanticRequest)({ ...grant, schemaVersion: "worlds.v1" }),
     ]).toStrictEqual([true, false, false, true, false]);
   });
 });

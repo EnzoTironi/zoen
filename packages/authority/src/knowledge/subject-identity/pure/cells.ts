@@ -1,10 +1,10 @@
-import { InvalidInput, QuotaExceeded } from "@zoen/contracts/d01/errors";
-import { VisibleClaim } from "@zoen/contracts/d01/evidence";
-import type { DateInterval } from "@zoen/contracts/d01/values";
 import {
   IdentityCellRef,
   SUBJECT_IDENTITY_LIMITS,
 } from "@zoen/contracts/subject-identity/values";
+import { InvalidInput, QuotaExceeded } from "@zoen/contracts/worlds/errors";
+import { VisibleClaim } from "@zoen/contracts/worlds/evidence";
+import type { DateInterval } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import { canonicalJson, digestBytes } from "../../../values/canonical.js";

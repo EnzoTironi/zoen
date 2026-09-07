@@ -1,16 +1,16 @@
-import { QuotaExceeded, Unavailable } from "@zoen/contracts/d01/errors";
-import { ScopedCorrection } from "@zoen/contracts/d01/evidence";
+import { QuotaExceeded, Unavailable } from "@zoen/contracts/worlds/errors";
+import { ScopedCorrection } from "@zoen/contracts/worlds/evidence";
 import {
   CorrectionRef,
   D01_LIMITS,
   ReceiptRef,
-} from "@zoen/contracts/d01/values";
-import type { SubjectKey, WorldRef } from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/values";
+import type { SubjectKey, WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import type { VerifiedRequestContext } from "../../ports/d01/context.js";
-import { CorrectionAnswer } from "../../ports/d01/persistence.js";
+import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
+import { CorrectionAnswer } from "../../ports/worlds/persistence.js";
 import { classifyAnswer } from "./scope.js";
 
 const EffectiveRow = Schema.Struct({

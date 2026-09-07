@@ -1,5 +1,3 @@
-import { Blocked, Conflict, Unsupported } from "@zoen/contracts/d01/errors";
-import type { NotFoundOrDenied, Unavailable } from "@zoen/contracts/d01/errors";
 import type {
   AcceptConversationTurn,
   CancelConversationTurn,
@@ -7,10 +5,15 @@ import type {
   RecoverConversationJournal,
   SettleConversationMessage,
 } from "@zoen/contracts/eve/operations";
+import { Blocked, Conflict, Unsupported } from "@zoen/contracts/worlds/errors";
+import type {
+  NotFoundOrDenied,
+  Unavailable,
+} from "@zoen/contracts/worlds/errors";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 
-import type { VerifiedRequestContext } from "../d01/context.js";
+import type { VerifiedRequestContext } from "../worlds/context.js";
 import { EveJournal } from "./journal.js";
 import type { EveOpenCodeZen } from "./opencode-zen.js";
 import { runEveTurn } from "./turn.js";

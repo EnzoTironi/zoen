@@ -1,6 +1,6 @@
 import { Schema } from "effect";
 
-import { DateInterval, SubjectKey, exact } from "../d01/values.js";
+import { DateInterval, SubjectKey, exact } from "../worlds/values.js";
 import {
   IdentityAssertionRef,
   IdentityEffectRef,

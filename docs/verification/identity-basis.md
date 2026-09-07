@@ -53,7 +53,7 @@ ZOEN_TEST_LEGACY_ROOT=.../identity-baseline-20260905-2203/source \
 | BC-08 | Passou: falha injetada no meio do SQL 007 faz rollback sem registrar migração 7; CHECK parcial sem linha `identity` deixa `readCut` em Unavailable preservando worlds/evidence/receipts; `applyIdentityBasisMigrations` recupera |
 | BC-09 | Passou (componente): `executeWithEmission` emite DTO literal `FrameInspected` após a transição; revogação vencedora impede emissão (`NotFoundOrDenied`, emit não chamado). UI Web/CLI de identidade é EX28 e permanece bloqueada; ordenações concorrentes SH07/08 do fence continuam evidência EX23 |
 
-O pacote EX25 permanece **não** marcado como `verified_for_profile`: falta a revisão independente (worker-3). O contrato completo está em [d02-basis-compatibility.md](../contracts/d02-basis-compatibility.md).
+O pacote EX25 permanece **não** marcado como `verified_for_profile`: falta a revisão independente (worker-3). O contrato completo está em [corrections-basis-compatibility.md](../contracts/corrections-basis-compatibility.md).
 
 ## Contraprovas independentes (EX26, worker-3)
 
@@ -74,7 +74,7 @@ ZOEN_TEST_LEGACY_ROOT=.../identity-baseline-20260905-2203/source \
   --no-file-parallelism tests/integration/subject-identity/independent/
 ```
 
-Lacunas restantes para EX26 completo: suite completa grafo/ausência/recuperação (EX27 avançou: ProposeIdentitySplit real + provas core/independent de split/Stale; ID-08/13 completos e limites de Question de recuperação ainda parciais), Web/CLI de identidade (EX28 vertical slice: HTTP `/api/d02/subject-identity`, CLI journey real, painel owner; ID-15 browser/polish ainda aberto). EX25 componente BC-01..09 permanece coberto; `verified_for_profile` ainda exige essas lacunas honestas.
+Lacunas restantes para EX26 completo: suite completa grafo/ausência/recuperação (EX27 avançou: ProposeIdentitySplit real + provas core/independent de split/Stale; ID-08/13 completos e limites de Question de recuperação ainda parciais), Web/CLI de identidade (EX28 vertical slice: HTTP `/api/subject-identity/execute`, CLI journey real, painel owner; ID-15 browser/polish ainda aberto). EX25 componente BC-01..09 permanece coberto; `verified_for_profile` ainda exige essas lacunas honestas.
 
 ## Perfil de instalação novo (EX29)
 

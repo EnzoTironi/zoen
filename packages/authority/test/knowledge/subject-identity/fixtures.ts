@@ -1,5 +1,5 @@
-import { VisibleClaim } from "@zoen/contracts/d01/evidence";
-import { DateInterval, SubjectKey } from "@zoen/contracts/d01/values";
+import { VisibleClaim } from "@zoen/contracts/worlds/evidence";
+import { DateInterval, SubjectKey } from "@zoen/contracts/worlds/values";
 import { Schema } from "effect";
 
 import {

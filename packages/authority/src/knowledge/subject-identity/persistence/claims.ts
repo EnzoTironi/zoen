@@ -1,9 +1,9 @@
-import { QuotaExceeded } from "@zoen/contracts/d01/errors";
-import type { SubjectKey, WorldRef } from "@zoen/contracts/d01/values";
 import { SUBJECT_IDENTITY_LIMITS } from "@zoen/contracts/subject-identity/values";
+import { QuotaExceeded } from "@zoen/contracts/worlds/errors";
+import type { SubjectKey, WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 
-import { readClaims } from "../../d01/claims.js";
+import { readClaims } from "../../worlds/claims.js";
 
 /** Authorized closure members only; caller supplies the closed anchor set. */
 export const readClosureClaims = Effect.fn("subjectIdentity.readClosureClaims")(

@@ -1,15 +1,15 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { Presence, PrincipalId } from "@zoen/authority/ports/d01/context";
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
 import { PrincipalDirectory } from "@zoen/authority/ports/sharing/directory";
-import { Instant, WorldRef } from "@zoen/contracts/d01/values";
+import { Presence, PrincipalId } from "@zoen/authority/ports/worlds/context";
+import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
 import { DateTime, Deferred, Effect, Fiber, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withD01IdentityDatabase } from "../d01/database.ts";
-import { createAccount, postAuth } from "../d01/http.ts";
+import { withD01IdentityDatabase } from "../worlds/database.ts";
+import { createAccount, postAuth } from "../worlds/http.ts";
 
 it.live(
   "EX22 real logout stays unavailable across pending ACK, then confirms absence on retry",

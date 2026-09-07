@@ -10,11 +10,11 @@ import {
 import {
   DataPolicy,
   DataPolicySchema,
-} from "@zoen/authority/ports/d01/context";
+} from "@zoen/authority/ports/worlds/context";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { canonicalJson } from "@zoen/authority/values/canonical";
-import { WorldCreated } from "@zoen/contracts/d01/operations";
 import { SharingMutationSuccess } from "@zoen/contracts/sharing/operations";
+import { WorldCreated } from "@zoen/contracts/worlds/operations";
 import {
   Deferred,
   Effect,
@@ -29,10 +29,10 @@ import {
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.ts";
-import { createAccount } from "../../../../apps/server/test/identity/d01/http.ts";
-import { makeProcessConfiguration } from "../../d01-d02-independent/process-configuration.ts";
-import { configuration } from "../../d01/commit/fixture.ts";
+import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
+import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
+import { makeProcessConfiguration } from "../../worlds-corrections-independent/process-configuration.ts";
+import { configuration } from "../../worlds/commit/fixture.ts";
 import { withSharingDatabase } from "./fixture.ts";
 
 const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
@@ -62,7 +62,7 @@ it.live.each(["GrantWorldReadAccess", "RevokeWorldReadAccess"] as const)(
             const recipient = yield* createAccount(fixture.config.baseUrl);
             const envelope = {
               purpose: "personal-records",
-              schemaVersion: "d01.v1",
+              schemaVersion: "worlds.v1",
             };
             const created = yield* executor
               .execute(
@@ -151,7 +151,7 @@ it.live.each(["GrantWorldReadAccess", "RevokeWorldReadAccess"] as const)(
                   [
                     fileURLToPath(
                       new URL(
-                        "../../d01-d02-independent/executor-process.ts",
+                        "../../worlds-corrections-independent/executor-process.ts",
                         import.meta.url
                       )
                     ),

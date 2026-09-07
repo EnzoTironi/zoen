@@ -8,8 +8,8 @@ Em 2026-09-06 (PT), o incremento **EX37** prova backup→restore **descartável*
 | --- | --- |
 | Dump lógico `pg_dump` → restore em DB descartável | World `d04-hosted-retained-v1` reaparece com o mesmo `data_policy_id`; destino dropado após a prova |
 | Acesso pós-restore sob política hosted | `authorizeWorld` succede com `d04-hosted-retained-v1` |
-| Sem rebind do default local | Mesmo World sob `d01-local-retained-v1` → `PROFILE_BLOCKED` |
-| Escopo só retained habilitado | Restore/cópia filtrada **não** divulga World `d01-local-retained-v1` vizinho |
+| Sem rebind do default local | Mesmo World sob `worlds-local-retained-v1` → `PROFILE_BLOCKED` |
+| Escopo só retained habilitado | Restore/cópia filtrada **não** divulga World `worlds-local-retained-v1` vizinho |
 | Gates de erasure | `erasure:false`, `restoreAfterErasure:false` (ausência de ledger ≠ erasure) |
 | S3 disposable | Put → copy-backup → delete → restore-copy → get; chave fora do escopo permanece ausente |
 

@@ -14,22 +14,22 @@ import {
 } from "effect";
 import { SqlClient, SqlError } from "effect/unstable/sql";
 
-import { createAccount } from "../../../../apps/server/test/identity/d01/http.js";
+import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
 import {
   grantWorldReadAccess,
   revokeWorldReadAccess,
 } from "../../../../packages/authority/src/access/sharing/mutation.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import type { VerifiedRequestContext } from "../../../../packages/authority/src/ports/d01/context.js";
 import {
   membershipDisclosureKey,
   sessionDisclosureKey,
 } from "../../../../packages/authority/src/ports/disclosure/keys.js";
+import type { VerifiedRequestContext } from "../../../../packages/authority/src/ports/worlds/context.js";
 import {
   GrantWorldReadAccess,
   RevokeWorldReadAccess,
 } from "../../../../packages/contracts/src/sharing/operations.js";
-import { configuration } from "../../d01/commit/fixture.js";
+import { configuration } from "../../worlds/commit/fixture.js";
 import {
   genesisRequest,
   verifiedContext,

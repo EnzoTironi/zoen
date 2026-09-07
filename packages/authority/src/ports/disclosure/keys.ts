@@ -1,6 +1,6 @@
-import type { WorldRef } from "@zoen/contracts/d01/values";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 
-import type { PrincipalId, VerifiedPresence } from "../d01/context.js";
+import type { PrincipalId, VerifiedPresence } from "../worlds/context.js";
 
 /** Readers and writers hash these same names in the same physical PostgreSQL. */
 export const sessionDisclosureKey = (presence: VerifiedPresence): string =>

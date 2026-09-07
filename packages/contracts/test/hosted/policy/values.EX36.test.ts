@@ -44,7 +44,7 @@ describe("EX36 hosted retained policy schemas", () => {
     expect(
       Result.isFailure(
         Schema.decodeUnknownResult(HostedRetainedPolicyProfileId)(
-          "d01-local-retained-v1"
+          "worlds-local-retained-v1"
         )
       )
     ).toBeTruthy();
@@ -61,7 +61,7 @@ describe("EX36 hosted retained policy schemas", () => {
     for (const amendment of [
       { erasure: true },
       { restoreAfterErasure: true },
-      { profileId: "d01-local-retained-v1" },
+      { profileId: "worlds-local-retained-v1" },
       { profileId: "d03-local-erasable-v1" },
     ]) {
       expect(
@@ -105,7 +105,7 @@ describe("EX36 hosted retained policy schemas", () => {
     ).toBeTruthy();
     expect(
       Result.isFailure(
-        Schema.decodeUnknownResult(HostedSchemaVersion)("d01.v1")
+        Schema.decodeUnknownResult(HostedSchemaVersion)("worlds.v1")
       )
     ).toBeTruthy();
   });

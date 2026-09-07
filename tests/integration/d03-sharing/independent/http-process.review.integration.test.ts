@@ -10,26 +10,26 @@ import {
   AuthorityInstallationSchema,
 } from "@zoen/authority/commit/configuration";
 import {
-  DataPolicy,
-  DataPolicySchema,
-  PrincipalId,
-  VerifiedPresence,
-} from "@zoen/authority/ports/d01/context";
-import {
   membershipDisclosureKey,
   sessionDisclosureKey,
 } from "@zoen/authority/ports/disclosure/keys";
 import {
-  EvidenceImported,
-  EvidenceOpened,
-  FrameInspected,
-  WorldCreated,
-} from "@zoen/contracts/d01/operations";
+  DataPolicy,
+  DataPolicySchema,
+  PrincipalId,
+  VerifiedPresence,
+} from "@zoen/authority/ports/worlds/context";
 import {
   PrincipalRef,
   WorldReadAccessGranted,
   WorldReadAccessRevoked,
 } from "@zoen/contracts/sharing/operations";
+import {
+  EvidenceImported,
+  EvidenceOpened,
+  FrameInspected,
+  WorldCreated,
+} from "@zoen/contracts/worlds/operations";
 import {
   Config,
   Effect,
@@ -52,10 +52,10 @@ import { SqlClient } from "effect/unstable/sql";
 import {
   sdk,
   withStorage,
-} from "../../../../apps/server/test/adapters/object-storage/d01/fixture.ts";
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
+} from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { applyIdentityBasisMigrations } from "../../../../ops/migrations/run.ts";
-import { configuration } from "../../d01/commit/fixture.ts";
+import { configuration } from "../../worlds/commit/fixture.ts";
 import { makeHttpProcessConfiguration } from "./http-process-configuration.ts";
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
@@ -67,12 +67,12 @@ const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
     }),
     Effect.timeout("8 seconds")
   );
-const d01 = { purpose: "personal-records", schemaVersion: "d01.v1" };
+const d01 = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
   schemaVersion: "d03.sharing.v1",
 };
-const path = "/api/d01/execute";
+const path = "/api/worlds/execute";
 const sharingPath = "/api/d03/sharing";
 const document = json({
   records: [
@@ -84,7 +84,7 @@ const document = json({
       value: { _tag: "Known", amount: "42.25", currency: "BRL" },
     },
   ],
-  schemaVersion: "d01.v1",
+  schemaVersion: "worlds.v1",
   source: {
     externalId: "orders",
     label: "Private HTTP process bytes — ação",

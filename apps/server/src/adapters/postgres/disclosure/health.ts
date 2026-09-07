@@ -1,10 +1,10 @@
 import { PgClient } from "@effect/sql-pg";
-import { Unavailable } from "@zoen/contracts/d01/errors";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import type { Pool } from "pg";
 
-import { checkD01RuntimeRole } from "../d01/postgres.ts";
+import { checkD01RuntimeRole } from "../worlds/postgres.ts";
 
 /** Readiness verifies the actual coordinator role, schema and required grants. */
 export const checkDisclosurePool = (pool: Pool) =>

@@ -1,27 +1,27 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { SubjectKey } from "@zoen/contracts/d01/values";
+import { SubjectKey } from "@zoen/contracts/worlds/values";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/d01/s3.js";
-import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/d01/database.js";
+import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.js";
+import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
+import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
 import {
   createAccount,
   postAuth,
-} from "../../../../apps/server/test/identity/d01/http.js";
+} from "../../../../apps/server/test/identity/worlds/http.js";
 import { SemanticExecutor } from "../../../../packages/authority/src/semantic/executor.js";
 import { canonicalJson } from "../../../../packages/authority/src/values/canonical.js";
-import { WorldCreated } from "../../../../packages/contracts/src/d01/operations.js";
 import {
   IdentityProposed,
   IdentityResolved,
   SubjectIdentityInspected,
   IdentityRecoveryInspected,
 } from "../../../../packages/contracts/src/subject-identity/operations.js";
-import { configuration } from "../../d01/commit/fixture.js";
+import { WorldCreated } from "../../../../packages/contracts/src/worlds/operations.js";
+import { configuration } from "../../worlds/commit/fixture.js";
 
 const subjectKey = Schema.decodeSync(SubjectKey);
 const CountRow = Schema.Struct({ n: Schema.Finite });
@@ -38,7 +38,7 @@ const envelope = {
 };
 const d01 = {
   purpose: "personal-records" as const,
-  schemaVersion: "d01.v1" as const,
+  schemaVersion: "worlds.v1" as const,
 };
 
 const documentFor = (subjects: readonly { key: string; amount: string }[]) =>
@@ -54,7 +54,7 @@ const documentFor = (subjects: readonly { key: string; amount: string }[]) =>
       },
       value: { _tag: "Known", amount: subject.amount, currency: "BRL" },
     })),
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
     source: {
       externalId: "billing",
       label: "Billing",

@@ -1,6 +1,6 @@
 # D03 — contrato candidato de supressão, erasure e restore
 
-Status: candidato + **congelamento mínimo** em `docs/contracts/d03-erasure-freeze.md` (2026-09-06, tip `cae72de`). O freeze cobre ER-R01 (registro externo antes de Closing), perfil novo `d03-local-erasable-v1` só para Worlds novos, escopo World, restore-after-erasure bloqueado e Unavailable indefinido se o desfecho se perder. **Não** é admissão de purge, controlador, Object Lock, backups nem alteração de Worlds `d01-local-retained-v1`. Revisão ER-R01–05 em `d03-erasure.review.md` (`843ddad` + `9af5eec`) permanece autoritativa para gates ainda abertos. Não autoriza EX30+ a apagar dados reais antes dos gates do freeze.
+Status: candidato + **congelamento mínimo** em `docs/contracts/d03-erasure-freeze.md` (2026-09-06, tip `cae72de`). O freeze cobre ER-R01 (registro externo antes de Closing), perfil novo `d03-local-erasable-v1` só para Worlds novos, escopo World, restore-after-erasure bloqueado e Unavailable indefinido se o desfecho se perder. **Não** é admissão de purge, controlador, Object Lock, backups nem alteração de Worlds `worlds-local-retained-v1`. Revisão ER-R01–05 em `d03-erasure.review.md` (`843ddad` + `9af5eec`) permanece autoritativa para gates ainda abertos. Não autoriza EX30+ a apagar dados reais antes dos gates do freeze.
 
 ## Autoridade e fatos atuais
 
@@ -8,7 +8,7 @@ Esta proposta se subordina a `docs/invariants.md`, em particular às regras de r
 
 | Fato verificado no candidato atual | Consequência |
 | --- | --- |
-| `DataPolicySchema` em `packages/authority/src/ports/d01/context.ts` exige `d01-local-retained-v1`, `erasure:false`, `restoreAfterErasure:false`, `retention:'while-pinned'` | Não há autorização para apagar dados desses Worlds. |
+| `DataPolicySchema` em `packages/authority/src/ports/worlds/context.ts` exige `worlds-local-retained-v1`, `erasure:false`, `restoreAfterErasure:false`, `retention:'while-pinned'` | Não há autorização para apagar dados desses Worlds. |
 | Esse perfil também exige `admitted-non-sensitive`, `live`, `legalHold:false` e `licensedExpiry:false` | Ausência de suporte a hold ou expiração licenciada não permite ignorá-los. |
 | A autorização de World verifica membership, perfil e emergency deny | Não existe hoje lifecycle admitido de erasure de World. |
 | O armazenamento admite referências a versões específicas | Apagar somente a versão corrente ou criar delete marker é insuficiente. |

@@ -1,8 +1,8 @@
 import { createHash } from "node:crypto";
 
-import { Conflict, Unavailable } from "@zoen/contracts/d01/errors";
-import { Digest, exact } from "@zoen/contracts/d01/values";
 import { ErasureAttemptExternalState } from "@zoen/contracts/erasure/values";
+import { Conflict, Unavailable } from "@zoen/contracts/worlds/errors";
+import { Digest, exact } from "@zoen/contracts/worlds/values";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import type { SqlError } from "effect/unstable/sql";

@@ -1,8 +1,8 @@
 import { useId } from "react";
 
-import { field } from "../d01/form.ts";
-import type { WorkspaceState } from "../d01/model.ts";
-import type { WorkspaceController } from "../d01/state.ts";
+import { field } from "../worlds/form.ts";
+import type { WorkspaceState } from "../worlds/model.ts";
+import type { WorkspaceController } from "../worlds/state.ts";
 import { privateAudience, recoveryNotice } from "./model.ts";
 
 const FrameSummary = ({ state }: { readonly state: WorkspaceState }) => {
@@ -138,7 +138,7 @@ export const SubjectIdentityPanel = ({
   return (
     <section
       aria-label="Identidade de assuntos"
-      className="d01-workspace d01-context"
+      className="worlds-workspace d01-context"
     >
       <div className="d01-context-inner">
         <h2>Identidade privada entre assuntos</h2>

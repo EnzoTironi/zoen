@@ -1,5 +1,5 @@
-import { Conflict } from "@zoen/contracts/d01/errors";
-import type { Digest } from "@zoen/contracts/d01/values";
+import { Conflict } from "@zoen/contracts/worlds/errors";
+import type { Digest } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 
 export const requireSameIntent = (

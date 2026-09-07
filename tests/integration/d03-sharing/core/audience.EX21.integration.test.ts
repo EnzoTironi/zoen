@@ -8,21 +8,26 @@ import { SqlClient } from "effect/unstable/sql";
 import {
   sdk,
   withStorage,
-} from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
-import { createAccount } from "../../../../apps/server/test/identity/d01/http.js";
+} from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
+import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
 import { inspectWorldAccess } from "../../../../packages/authority/src/access/sharing/inspect.js";
 import {
   grantWorldReadAccess,
   revokeWorldReadAccess,
 } from "../../../../packages/authority/src/access/sharing/mutation.js";
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { importEvidence } from "../../../../packages/authority/src/evidence/d01/import.js";
-import { openEvidence } from "../../../../packages/authority/src/evidence/d01/open.js";
+import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.js";
+import { openEvidence } from "../../../../packages/authority/src/evidence/worlds/open.js";
 import { answerQuestion } from "../../../../packages/authority/src/knowledge/corrections/answer.js";
 import { proposeCorrection } from "../../../../packages/authority/src/knowledge/corrections/propose.js";
 import { undoCorrection } from "../../../../packages/authority/src/knowledge/corrections/undo.js";
-import { inspect } from "../../../../packages/authority/src/knowledge/d01/inspect.js";
+import { inspect } from "../../../../packages/authority/src/knowledge/worlds/inspect.js";
 import { canonicalJson } from "../../../../packages/authority/src/values/canonical.js";
+import {
+  GrantWorldReadAccess,
+  InspectWorldAccess,
+  RevokeWorldReadAccess,
+} from "../../../../packages/contracts/src/sharing/operations.js";
 import {
   AnswerQuestion,
   ImportEvidence,
@@ -30,13 +35,8 @@ import {
   OpenEvidence,
   ProposeCorrection,
   UndoCorrection,
-} from "../../../../packages/contracts/src/d01/operations.js";
-import {
-  GrantWorldReadAccess,
-  InspectWorldAccess,
-  RevokeWorldReadAccess,
-} from "../../../../packages/contracts/src/sharing/operations.js";
-import { configuration } from "../../d01/commit/fixture.js";
+} from "../../../../packages/contracts/src/worlds/operations.js";
+import { configuration } from "../../worlds/commit/fixture.js";
 import {
   genesisRequest,
   verifiedContext,
@@ -74,7 +74,7 @@ it.live(
                 value: { _tag: "Known", amount: "100", currency: "BRL" },
               },
             ],
-            schemaVersion: "d01.v1",
+            schemaVersion: "worlds.v1",
             source: {
               externalId: "original",
               label: "Retained source",
@@ -94,7 +94,7 @@ it.live(
             input: { atFrame: null, subjectKey: "billing" },
             operation: "Inspect",
             purpose: "personal-records",
-            schemaVersion: "d01.v1",
+            schemaVersion: "worlds.v1",
             worldRef,
           });
           const ownerFrame = yield* inspect(ownerContext, read);

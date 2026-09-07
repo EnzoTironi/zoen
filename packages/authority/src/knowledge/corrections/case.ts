@@ -1,13 +1,13 @@
-import { NotFoundOrDenied, Unavailable } from "@zoen/contracts/d01/errors";
-import { CorrectionConsequence } from "@zoen/contracts/d01/operations";
-import { CaseRef, FrameRef, SubjectKey } from "@zoen/contracts/d01/values";
-import type { QuestionRef, WorldRef } from "@zoen/contracts/d01/values";
+import { NotFoundOrDenied, Unavailable } from "@zoen/contracts/worlds/errors";
+import { CorrectionConsequence } from "@zoen/contracts/worlds/operations";
+import { CaseRef, FrameRef, SubjectKey } from "@zoen/contracts/worlds/values";
+import type { QuestionRef, WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { InternalBasis } from "../../ports/d01/basis.js";
-import type { VerifiedRequestContext } from "../../ports/d01/context.js";
-import { CaseState, StoredQuestion } from "../../ports/d01/persistence.js";
+import { InternalBasis } from "../../ports/worlds/basis.js";
+import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
+import { CaseState, StoredQuestion } from "../../ports/worlds/persistence.js";
 
 const CaseRow = Schema.Struct({
   case_id: CaseRef,

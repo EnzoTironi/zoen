@@ -1,4 +1,4 @@
-import { Expired, Unavailable } from "@zoen/contracts/d01/errors";
+import { Expired, Unavailable } from "@zoen/contracts/worlds/errors";
 import { Deferred, Effect } from "effect";
 import type { Pool, PoolClient } from "pg";
 

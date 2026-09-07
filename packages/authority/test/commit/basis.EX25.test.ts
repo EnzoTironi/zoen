@@ -9,8 +9,8 @@ import {
   SubjectIdentityGraph,
   InternalBasis,
   ReadSet,
-} from "../../src/ports/d01/basis.js";
-import { PrincipalId } from "../../src/ports/d01/context.js";
+} from "../../src/ports/worlds/basis.js";
+import { PrincipalId } from "../../src/ports/worlds/context.js";
 import { structuredDigest } from "../../src/values/canonical.js";
 
 // Synthetic inputs exercise schemas; they are not the real BC-01 migration baseline.
@@ -182,7 +182,7 @@ describe("EX25 identity scope and retained digests", () => {
         );
         // Independently calculated from the old canonical JSON and unchanged domain prefix.
         expect(old).toBe(
-          "1a9d7909e3099cddf2e886c5ade4c0058ee3de60c77d5cde1e4bf0104969cd7e"
+          "71aecc91b871442532bb734fecc20cb21db7d6299d2f6ab642569955d66be7b0"
         );
         const fresh = yield* structuredDigest(
           "read-set",

@@ -1,25 +1,25 @@
 import {
-  InvalidInput,
-  NotFoundOrDenied,
-  Stale,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
-import { Revision } from "@zoen/contracts/d01/values";
-import {
   GrantWorldReadAccess,
   RevokeWorldReadAccess,
   SharingMutationSuccess,
   WorldReadAccessGranted,
   WorldReadAccessRevoked,
 } from "@zoen/contracts/sharing/operations";
+import {
+  InvalidInput,
+  NotFoundOrDenied,
+  Stale,
+  Unavailable,
+} from "@zoen/contracts/worlds/errors";
+import { Revision } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { bindWorldIntent } from "../../commit/intent.js";
 import { commitMutation, readMutationReplay } from "../../commit/mutation.js";
-import type { VerifiedRequestContext } from "../../ports/d01/context.js";
 import { membershipDisclosureKey } from "../../ports/disclosure/keys.js";
 import { PrincipalDirectory } from "../../ports/sharing/directory.js";
+import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
 import { authorizeWorld } from "../world.js";
 import { principalIdFromRef, readMembership } from "./membership.js";
 

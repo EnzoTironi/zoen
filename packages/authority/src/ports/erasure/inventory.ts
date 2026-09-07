@@ -1,6 +1,6 @@
-import { Unavailable } from "@zoen/contracts/d01/errors";
-import type { WorldRef } from "@zoen/contracts/d01/values";
 import type { ErasureVersionManifest } from "@zoen/contracts/erasure/values";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Context, Effect, Layer } from "effect";
 import type { Effect as EffectType } from "effect";
 

@@ -3,8 +3,8 @@ import { Console, Effect, Layer, Result } from "effect";
 import { CliError, CliOutput, Command } from "effect/unstable/cli";
 import { FetchHttpClient } from "effect/unstable/http";
 
-import { d01Command } from "./d01/command.ts";
-import { CliFailure, formatFailure } from "./d01/output.ts";
+import { d01Command } from "./worlds/command.ts";
+import { CliFailure, formatFailure } from "./worlds/output.ts";
 
 const program = Effect.gen(function* cliMain() {
   const terminal = yield* Console.Console;

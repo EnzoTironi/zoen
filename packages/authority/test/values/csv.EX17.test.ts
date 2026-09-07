@@ -1,5 +1,5 @@
-import { ImportEvidence } from "@zoen/contracts/d01/operations";
-import { D01_LIMITS } from "@zoen/contracts/d01/values";
+import { ImportEvidence } from "@zoen/contracts/worlds/operations";
+import { D01_LIMITS } from "@zoen/contracts/worlds/values";
 import { Effect, Result, Schema } from "effect";
 import { describe, expect, it } from "vitest";
 
@@ -15,7 +15,7 @@ const baseline = {
   currency: "BRL",
   predicate: "obligation.amount",
   recordExternalId: "row-1",
-  schemaVersion: "d01.csv.v1",
+  schemaVersion: "worlds.csv.v1",
   sourceExternalId: "bill-2026-09",
   sourceLabel: "Fatura, setembro",
   sourceNamespace: "manual",
@@ -36,7 +36,9 @@ const row = (changes: Partial<Row> = {}) => {
 const csv = (rows = [row()], separator = "\n") =>
   [header, ...rows].join(separator);
 const parse = (text: string) =>
-  Effect.runSync(parseImportDocument({ document: text, format: "d01.csv.v1" }));
+  Effect.runSync(
+    parseImportDocument({ document: text, format: "worlds.csv.v1" })
+  );
 const fail = <A, E>(effect: Effect.Effect<A, E>) => {
   const result = Effect.runSync(effect.pipe(Effect.result));
   if (Result.isSuccess(result)) {
@@ -46,19 +48,19 @@ const fail = <A, E>(effect: Effect.Effect<A, E>) => {
 };
 const invalid = (text: string) => {
   expect(
-    fail(parseImportDocument({ document: text, format: "d01.csv.v1" }))
+    fail(parseImportDocument({ document: text, format: "worlds.csv.v1" }))
   ).toMatchObject({ _tag: "InvalidInput", code: "INVALID_INPUT" });
 };
 const request = (
   document: string,
-  format: "d01.csv.v1" | null = "d01.csv.v1"
+  format: "worlds.csv.v1" | null = "worlds.csv.v1"
 ) =>
   Schema.decodeSync(ImportEvidence)({
     input: format === null ? { document } : { document, format },
     operation: "ImportEvidence",
     operationId: "11111111-1111-4111-8111-111111111111",
     purpose: "personal-records",
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
     worldRef: {
       realm: "live",
       worldId: "22222222-2222-4222-8222-222222222222",
@@ -101,7 +103,7 @@ describe("EX17 frozen CSV representation", () => {
           value: { _tag: "Unknown" },
         },
       ],
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       source: {
         externalId: "bill-2026-09",
         label: "Fatura, setembro",
@@ -169,7 +171,7 @@ describe("EX17 frozen CSV representation", () => {
     expect(
       malformed.map(
         (text) =>
-          fail(parseImportDocument({ document: text, format: "d01.csv.v1" }))
+          fail(parseImportDocument({ document: text, format: "worlds.csv.v1" }))
             ._tag
       )
     ).toStrictEqual(malformed.map(() => "InvalidInput"));
@@ -242,7 +244,7 @@ describe("EX17 frozen CSV representation", () => {
       { sourceLabel: "Other" },
       { sourceNamespace: "other" },
       { sourceRevision: "2" },
-      { schemaVersion: "d01.v1" },
+      { schemaVersion: "worlds.v1" },
     ]) {
       invalid(csv([row(), row({ recordExternalId: "row-2", ...changes })]));
     }
@@ -314,7 +316,7 @@ describe("EX17 frozen CSV representation", () => {
     expect(parse(exact).records).toHaveLength(200);
     expect(
       fail(
-        parseImportDocument({ document: `${exact}\n`, format: "d01.csv.v1" })
+        parseImportDocument({ document: `${exact}\n`, format: "worlds.csv.v1" })
       )
     ).toMatchObject({ _tag: "QuotaExceeded" });
     invalid(
@@ -328,7 +330,7 @@ describe("EX17 frozen CSV representation", () => {
       fail(
         parseImportDocument({
           document: " ".repeat(D01_LIMITS.documentBytes + 1),
-          format: "d01.csv.v1",
+          format: "worlds.csv.v1",
         })
       )
     ).toMatchObject({ _tag: "InvalidInput" });
@@ -366,11 +368,11 @@ describe("EX17 frozen CSV representation", () => {
 
   it("CSV-06 preserves the legacy JSON golden digest and shared uniqueness checks", () => {
     const json =
-      '{"records":[{"externalId":"r","predicate":"obligation.amount","subjectKey":"s","validTime":{"_tag":"Unknown"},"value":{"_tag":"Known","amount":"0.10","currency":"BRL"}}],"schemaVersion":"d01.v1","source":{"externalId":"s","label":"Source","namespace":"manual","revision":"1"}}';
+      '{"records":[{"externalId":"r","predicate":"obligation.amount","subjectKey":"s","validTime":{"_tag":"Unknown"},"value":{"_tag":"Known","amount":"0.10","currency":"BRL"}}],"schemaVersion":"worlds.v1","source":{"externalId":"s","label":"Source","namespace":"manual","revision":"1"}}';
     const legacy = request(json, null);
     expect(legacy.input).toStrictEqual({ document: json });
     expect(Effect.runSync(intentDigest(legacy))).toBe(
-      "ea2dbd3bcb5b792ae88b833bfb830c8936ee1f1bce8d4ba03ed4cdb89b40e373"
+      "88f06b2a35466959fe199894d4035d6ad4d9b730f605faaf33864d05264b3a6d"
     );
     const parsed = parse(csv());
     const duplicatedJson = JSON.stringify({

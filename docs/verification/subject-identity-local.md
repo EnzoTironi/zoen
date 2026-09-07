@@ -4,7 +4,7 @@ Em 2026-09-06 (PT), o incremento **EX24–EX29** (`subject-identity-v2`) está c
 
 - Tip verificado: `cae72de` (`cae72de2be45c59ab63d1fbfc742a51ba34ae1b6`).
 - CI Main Verify **verde** (inclui container): https://github.com/EnzoTironi/zoen/actions/runs/34062093334
-- Política de dados dos Worlds continua `d01-local-retained-v1`: admitidos não sensíveis, **sem** apagamento ou restore. Erasure segue em D03 (freeze em `docs/contracts/d03-erasure-freeze.md`).
+- Política de dados dos Worlds continua `worlds-local-retained-v1`: admitidos não sensíveis, **sem** apagamento ou restore. Erasure segue em D03 (freeze em `docs/contracts/d03-erasure-freeze.md`).
 
 **Isto não conclui D02 integral.** Merge/split stewardship além da identidade temporal deste incremento, workbench/priorização, ACL por fonte, cloud e as demais entregas do mapa permanecem fora deste checkpoint.
 
@@ -12,11 +12,11 @@ O profile **`subject-identity-v2`** (`http://127.0.0.1:4319`) e a imagem de acei
 
 ## Dívida de caminho HTTP
 
-Rotas/arquivos novos preferem `subject-identity`. O endpoint HTTP composto permanece `POST /api/d02/subject-identity`. Renomeação em massa de caminhos `d01`/`d02` existentes ficou **adiada** por Enzo; trate `/api/d02/` como dívida conhecida.
+Rotas/arquivos novos preferem `subject-identity`. O endpoint HTTP composto permanece `POST /api/subject-identity/execute`. Renomeação em massa de caminhos `d01`/`d02` existentes ficou **adiada** por Enzo; trate `/api/corrections/` como dívida conhecida.
 
 ## Correção de composição (cliente)
 
-`apps/web/src/features/d01/state.ts` deixou de marcar `identity.stale` e `sharing.stale` juntos em qualquer `Stale`. Cada família (subject-identity vs sharing) só acende o alerta correspondente.
+`apps/web/src/features/worlds/state.ts` deixou de marcar `identity.stale` e `sharing.stale` juntos em qualquer `Stale`. Cada família (subject-identity vs sharing) só acende o alerta correspondente.
 
 ## Evidência do checkpoint `verified_for_profile`
 

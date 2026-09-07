@@ -1,7 +1,7 @@
 import { Schema } from "effect";
 
 import type { AuthorityInstallationSchema } from "../../../../packages/authority/src/commit/configuration.ts";
-import type { DataPolicySchema } from "../../../../packages/authority/src/ports/d01/context.ts";
+import type { DataPolicySchema } from "../../../../packages/authority/src/ports/worlds/context.ts";
 
 export const makeHttpProcessConfiguration = (
   installation: typeof AuthorityInstallationSchema,

@@ -1,10 +1,3 @@
-import {
-  Conflict,
-  InvalidInput,
-  QuotaExceeded,
-} from "@zoen/contracts/d01/errors";
-import { DateInterval } from "@zoen/contracts/d01/values";
-import type { SubjectKey } from "@zoen/contracts/d01/values";
 import type {
   IdentityCellStructure,
   IdentitySegment,
@@ -13,6 +6,13 @@ import {
   IdentityAnchors,
   SUBJECT_IDENTITY_LIMITS,
 } from "@zoen/contracts/subject-identity/values";
+import {
+  Conflict,
+  InvalidInput,
+  QuotaExceeded,
+} from "@zoen/contracts/worlds/errors";
+import { DateInterval } from "@zoen/contracts/worlds/values";
+import type { SubjectKey } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import type { IdentityProjection } from "./events.js";

@@ -1,8 +1,8 @@
 import { Schema } from "effect";
 
-import { exact } from "../d01/values.js";
+import { exact } from "../worlds/values.js";
 
-/** Candidate profile for NEW Worlds only; retained Worlds stay d01-local-retained-v1. */
+/** Candidate profile for NEW Worlds only; retained Worlds stay worlds-local-retained-v1. */
 export const ErasurePolicyProfileId = Schema.Literal("d03-local-erasable-v1");
 export type ErasurePolicyProfileId = typeof ErasurePolicyProfileId.Type;
 

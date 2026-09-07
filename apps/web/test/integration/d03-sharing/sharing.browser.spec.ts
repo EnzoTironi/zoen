@@ -6,7 +6,7 @@ import type { Page } from "@playwright/test";
 import {
   FrameInspected,
   SemanticRequest,
-} from "@zoen/contracts/d01/operations";
+} from "@zoen/contracts/worlds/operations";
 import { Config, Effect, Option, Schema } from "effect";
 
 const baseURL = Effect.runSync(Config.string("ZOEN_TEST_SHARING_WEB_URL"));
@@ -16,7 +16,7 @@ const waitForOperation = (
 ) =>
   page.waitForResponse((response) => {
     if (
-      !response.url().includes("/api/d01/") &&
+      !response.url().includes("/api/worlds/") &&
       !response.url().endsWith("/api/d03/sharing")
     ) {
       return false;
@@ -112,7 +112,7 @@ test("EX23 owner confirms the whole World; viewer reads own history and clears p
           value: { _tag: "Known", amount: "100.00", currency: "BRL" },
         },
       ],
-      schemaVersion: "d01.v1",
+      schemaVersion: "worlds.v1",
       source: {
         externalId: randomUUID(),
         label: sourceLabel,

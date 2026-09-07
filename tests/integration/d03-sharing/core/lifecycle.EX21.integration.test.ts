@@ -4,7 +4,7 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { createAccount } from "../../../../apps/server/test/identity/d01/http.js";
+import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
 import { inspectWorldAccess } from "../../../../packages/authority/src/access/sharing/inspect.js";
 import {
   grantWorldReadAccess,
@@ -16,7 +16,7 @@ import {
   InspectWorldAccess,
   RevokeWorldReadAccess,
 } from "../../../../packages/contracts/src/sharing/operations.js";
-import { configuration } from "../../d01/commit/fixture.js";
+import { configuration } from "../../worlds/commit/fixture.js";
 import {
   genesisRequest,
   verifiedContext,

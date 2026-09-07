@@ -1,5 +1,5 @@
-import { InvalidInput } from "@zoen/contracts/d01/errors";
-import { DecimalText, ExactAmount } from "@zoen/contracts/d01/values";
+import { InvalidInput } from "@zoen/contracts/worlds/errors";
+import { DecimalText, ExactAmount } from "@zoen/contracts/worlds/values";
 import { BigDecimal, Effect, Schema } from "effect";
 
 const invalid = () => new InvalidInput({ code: "INVALID_INPUT" });

@@ -9,7 +9,7 @@ Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verifi
 | ID | Decisão | Efeito |
 | --- | --- | --- |
 | F01 / ER-R01 | Registrar a **existência da tentativa** em unidade fora do rollback da aplicação **antes** do commit local irreversível de Closing. | Sem registro externo confirmado (Registrada), nenhuma decisão local de erasure. Registro pendente **não** é supressão, consentimento, grant nem autorização de purge. |
-| F02 | Perfil **novo** somente na criação de Worlds novos; `d01-local-retained-v1` intacto (`erasure:false`, `restoreAfterErasure:false`). | Sem rebind/migração implícita de Worlds antigos. Identificador congelado do perfil candidato: `d03-local-erasable-v1`. |
+| F02 | Perfil **novo** somente na criação de Worlds novos; `worlds-local-retained-v1` intacto (`erasure:false`, `restoreAfterErasure:false`). | Sem rebind/migração implícita de Worlds antigos. Identificador congelado do perfil candidato: `d03-local-erasable-v1`. |
 | F03 | Escopo = **World inteiro** (Frames, Questions, correções, grants de conteúdo, imports, objetos admitidos/staged e versões órfãs do namespace). | Não apaga conta, outros Worlds, nem bytes já liberados ao transporte / cópias de terceiros. |
 | F04 | `restoreAfterErasure` permanece **false** / restore após erasure **bloqueado** até controlador, âncora anti-rollback, catálogo de cópias e fencing estarem qualificados. | Nenhum ticket pode oferecer reopen de conteúdo apagado. |
 | F05 | Commit local de Closing (receipt imutável + outbox) é o ponto irreversível da **decisão autorizada**; HTTP de sucesso só após observar Confirmada no registro. | Replay não promove Closing→Erased; progresso fica em inspeção administrativa. |
@@ -42,6 +42,6 @@ Ver `planning/execution.json`: **EX30** (congelar + schemas) → **EX31** (porta
 ## O que este freeze NÃO é
 
 - Não marca D03 integral nem D02 merge/split stewardship completos.
-- Não autoriza apagar dados de Worlds `d01-local-retained-v1`.
+- Não autoriza apagar dados de Worlds `worlds-local-retained-v1`.
 - Não substitui oráculos ER01–ER31 nem revisão independente.
 - Não inventa RPO/RTO, KMS por World ou APIs de fornecedor.

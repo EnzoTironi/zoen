@@ -4,23 +4,26 @@ import { randomUUID } from "node:crypto";
 import { expect, it } from "@effect/vitest";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { canonicalJson } from "@zoen/authority/values/canonical";
-import { EvidenceImported, WorldCreated } from "@zoen/contracts/d01/operations";
 import {
   IdentityProposed,
   IdentityResolved,
   SubjectIdentityInspected,
 } from "@zoen/contracts/subject-identity/operations";
+import {
+  EvidenceImported,
+  WorldCreated,
+} from "@zoen/contracts/worlds/operations";
 import { Deferred, Effect, Fiber, Layer, Result, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/d01/s3.js";
-import { withStorage } from "../../../../apps/server/test/adapters/object-storage/d01/fixture.js";
-import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/d01/database.js";
+import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.js";
+import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
+import { withD01IdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
 import {
   createAccount,
   postAuth,
-} from "../../../../apps/server/test/identity/d01/http.js";
-import { configuration } from "../../d01/commit/fixture.js";
+} from "../../../../apps/server/test/identity/worlds/http.js";
+import { configuration } from "../../worlds/commit/fixture.js";
 
 const bytes = (value: unknown) =>
   canonicalJson(value).pipe(
@@ -29,7 +32,7 @@ const bytes = (value: unknown) =>
 
 const d01 = {
   purpose: "personal-records" as const,
-  schemaVersion: "d01.v1" as const,
+  schemaVersion: "worlds.v1" as const,
 };
 const envelope = {
   purpose: "personal-records" as const,
@@ -52,7 +55,7 @@ const documentFor = (
       },
       value: { _tag: "Known", amount: subject.amount, currency: "BRL" },
     })),
-    schemaVersion: "d01.v1",
+    schemaVersion: "worlds.v1",
     source: {
       externalId: `billing-${revision}`,
       label: `Billing ${revision}`,

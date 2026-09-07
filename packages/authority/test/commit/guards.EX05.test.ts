@@ -1,9 +1,9 @@
 import { describe, expect, it } from "@effect/vitest";
-import { Instant } from "@zoen/contracts/d01/values";
+import { Instant } from "@zoen/contracts/worlds/values";
 import { Schema } from "effect";
 
 import { temporalGuardsHold } from "../../src/commit/guards.js";
-import { ReadSet } from "../../src/ports/d01/basis.js";
+import { ReadSet } from "../../src/ports/worlds/basis.js";
 
 const instant = Schema.decodeSync(Instant);
 const readSet = Schema.decodeSync(ReadSet)({

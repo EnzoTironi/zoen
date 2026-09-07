@@ -118,7 +118,7 @@
       "effort": null,
       "worktree": "/Users/enzotironi/zoen-rebuild",
       "state": "schemas_landed_unit_green",
-      "notes": "Hosted retained DataPolicy d04-hosted-retained-v1 under hosted/**; union in ports/d01/context.ts; composition/provision still default local retained. Unit proofs green. execution.json kept planned/not_run for verify_plan. NOT D04 activated; no deploy/MPG/Tigris; no World rebind."
+      "notes": "Hosted retained DataPolicy d04-hosted-retained-v1 under hosted/**; union in ports/worlds/context.ts; composition/provision still default local retained. Unit proofs green. execution.json kept planned/not_run for verify_plan. NOT D04 activated; no deploy/MPG/Tigris; no World rebind."
     },
     {
       "agent": "tickets_redesign",
@@ -151,7 +151,7 @@
   "temporary_ownership": [
     {
       "task": "EX05",
-      "path": "tests/integration/d01/commit/**",
+      "path": "tests/integration/worlds/commit/**",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em su\u00edte transversal, sem import de servidor nas fontes authority."
@@ -165,7 +165,7 @@
     },
     {
       "task": "EX08",
-      "path": "tests/integration/d01/evidence/**",
+      "path": "tests/integration/worlds/evidence/**",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Provar publica\u00e7\u00e3o, leitura e GC com PostgreSQL e S3 reais."
@@ -179,21 +179,21 @@
     },
     {
       "task": "EX09",
-      "path": "apps/server/src/adapters/postgres/d01/postgres.ts",
+      "path": "apps/server/src/adapters/postgres/worlds/postgres.ts",
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "Compartilhar admiss\u00e3o com a conex\u00e3o real de identidade e corrigir escalada por roles."
     },
     {
       "task": "EX10",
-      "path": "apps/server/test/adapters/postgres/d01/database.ts",
+      "path": "apps/server/test/adapters/postgres/worlds/database.ts",
       "owner": "root",
       "integration_owner": "root",
       "reason": "Permitir instala\u00e7\u00e3o numerada em banco vazio reutilizando provisionamento isolado."
     },
     {
       "task": "EX05-EX06-review",
-      "path": "tests/integration/d01/independent/**",
+      "path": "tests/integration/worlds/independent/**",
       "owner": "worker-3",
       "integration_owner": "root",
       "reason": "Preservar contraprovas independentes de prazo e escalada de role."
@@ -221,28 +221,28 @@
     },
     {
       "task": "D01-CSV-contract",
-      "path": "docs/contracts/d01-csv.md",
+      "path": "docs/contracts/worlds-csv.md",
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "Contrato candidato de importa\u00e7\u00e3o CSV pelo mesmo executor; n\u00e3o autoriza parser heur\u00edstico."
     },
     {
       "task": "EX19-web",
-      "path": "apps/web/src/features/d01/**",
+      "path": "apps/web/src/features/worlds/**",
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "SeletorCSV expl\u00edcito no mesmo cliente; entrypoints/config permanecem root."
     },
     {
       "task": "EX16-independent-migration-review",
-      "path": "tests/integration/d01/independent/document-format-migration.review.integration.test.ts",
+      "path": "tests/integration/worlds/independent/document-format-migration.review.integration.test.ts",
       "owner": "worker-3",
       "integration_owner": "root",
       "reason": "Contraprova real da migra\u00e7\u00e3o004 e preserva\u00e7\u00e3o JSON hist\u00f3rica."
     },
     {
       "task": "EX22",
-      "path": "apps/server/test/identity/d01/**",
+      "path": "apps/server/test/identity/worlds/**",
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "Compor a cerca real do banco de autoridade nos fixtures standalone de identidade; sem adapter opcional ou falso."
@@ -263,7 +263,7 @@
     },
     {
       "task": "EX23-web",
-      "path": "apps/web/src/components/d01/{d01-workspace.tsx,presentation.ts}",
+      "path": "apps/web/src/components/worlds/{worlds-workspace.tsx,presentation.ts}",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Permitir readOnly no componente existente e ocultar importa\u00e7\u00e3o e ajustes para viewer; extens\u00e3o autorizada antes da implementa\u00e7\u00e3o."
@@ -409,7 +409,7 @@
         "EX15"
       ],
       "state": "local_journey_verified_container_pending",
-      "evidence": "docs/verification/d01-d02-local.md",
+      "evidence": "docs/verification/worlds-corrections-local.md",
       "unit_tests": 173,
       "integration_tests": 86,
       "browser_component_tests": 7,
@@ -438,7 +438,7 @@
         "EX15"
       ],
       "state": "verified_for_profile",
-      "profile": "d01-local-retained-v1 / JSON + scoped-corrections",
+      "profile": "worlds-local-retained-v1 / JSON + scoped-corrections",
       "remote_ci": {
         "commit": "e13ad12b881010870570f35e90499f080926d51c",
         "result": "success",
@@ -456,7 +456,7 @@
       "commit": "048d937",
       "packages": ["EX16", "EX17", "EX18", "EX19"],
       "state": "local_csv_journey_verified_container_pending",
-      "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
+      "profile": "worlds-local-retained-v1 / JSON + CSV + scoped-corrections",
       "evidence": "docs/verification/csv-local.md",
       "browser_acceptance_tests": 7,
       "browser_component_tests": 7,
@@ -467,7 +467,7 @@
       "commit": "92c26a73549a9bb3f92b48b82d23a66ac1d4f864",
       "packages": ["EX16", "EX17", "EX18", "EX19"],
       "state": "verified_for_profile",
-      "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections",
+      "profile": "worlds-local-retained-v1 / JSON + CSV + scoped-corrections",
       "evidence": "docs/verification/csv-local.md",
       "remote_ci": {
         "commit": "92c26a73549a9bb3f92b48b82d23a66ac1d4f864",
@@ -502,7 +502,7 @@
       "commit": "dd4f781",
       "packages": ["EX20", "EX21", "EX22", "EX23"],
       "state": "independently_reviewed_and_verified_locally_ci_pending",
-      "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
+      "profile": "worlds-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
       "evidence": "docs/verification/sharing-local.md",
       "unit_tests": 198,
       "integration_tests_last_full_run": 166,
@@ -551,7 +551,7 @@
       "commit": "aaa30db2aeac2e4b6abf96569f6efca236147c69",
       "packages": ["EX20", "EX21", "EX22", "EX23"],
       "state": "verified_for_profile",
-      "profile": "d01-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
+      "profile": "worlds-local-retained-v1 / JSON + CSV + scoped-corrections + owner/viewer sharing",
       "evidence": "docs/verification/sharing-local.md",
       "remote_ci": {
         "commit": "aaa30db2aeac2e4b6abf96569f6efca236147c69",
@@ -583,7 +583,7 @@
       "commit": "dd4afed62c53fa1be4be1ee27c2fcb37c87dc867",
       "packages": ["EX24", "EX25", "EX26", "EX27", "EX28", "EX29"],
       "state": "local_and_container_partial_quality_ci_pending",
-      "profile": "d01-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
+      "profile": "worlds-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
       "evidence": "docs/verification/subject-identity-local.md",
       "unit_tests": 241,
       "identity_integration_files": 12,
@@ -597,7 +597,7 @@
       "commit": "88bb3c7d2b29dcac1671d676905b1d609d663624",
       "packages": ["EX27", "EX28", "EX29"],
       "state": "identity_writer_and_viewer_proofs_local_green_not_verified_for_profile",
-      "profile": "d01-local-retained-v1 / subject-identity-v2",
+      "profile": "worlds-local-retained-v1 / subject-identity-v2",
       "evidence": "docs/verification/subject-identity-local.md",
       "scope": "Landed independent ResolveIdentity SIGKILL + concurrency counterproofs; EX28 Playwright viewer denial (UI + HTTP); light undo button. 14/14 acceptance green locally. Not verified_for_profile: recovery Question limits + remote CI/image tip.",
       "tests": {
@@ -611,7 +611,7 @@
       "commit": "dc8857b9ac6b57fe2e68733d53dea6a2de5a7463",
       "packages": ["EX27", "EX28", "EX29"],
       "state": "recovery_question_limits_oracle_local_green_not_verified_for_profile",
-      "profile": "d01-local-retained-v1 / subject-identity-v2",
+      "profile": "worlds-local-retained-v1 / subject-identity-v2",
       "evidence": "docs/verification/subject-identity-local.md",
       "scope": "Fixed CI lint from identity writer/viewer tip; added recovery Question byte/entry/depth unit oracle; ensureQuestionFits QuotaExceeded on propose paths."
     },
@@ -620,7 +620,7 @@
       "commit": "cae72de2be45c59ab63d1fbfc742a51ba34ae1b6",
       "packages": ["EX24", "EX25", "EX26", "EX27", "EX28", "EX29"],
       "state": "verified_for_profile",
-      "profile": "d01-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
+      "profile": "worlds-local-retained-v1 / subject-identity-v2 (v1 preserved; no World rebind)",
       "evidence": "docs/verification/subject-identity-local.md",
       "remote_ci": {
         "commit": "cae72de2be45c59ab63d1fbfc742a51ba34ae1b6",
@@ -678,7 +678,7 @@
       "commit": "66b958b84684ba080fdaacf2360f05e511d3d68c",
       "packages": ["EX30", "EX31", "EX32", "EX33", "EX34"],
       "state": "verified_for_profile",
-      "profile": "d03-local-erasable-v1 (new Worlds only) / Closing+register local surface; d01-local-retained-v1 default preserved",
+      "profile": "d03-local-erasable-v1 (new Worlds only) / Closing+register local surface; worlds-local-retained-v1 default preserved",
       "evidence": "docs/verification/erasure-local.md",
       "scope": "Local Closing/register surface verified_for_profile for EX30\u2013EX34: numbered migrations 009/010, erasable provision for NEW Worlds only, independent Closing/retained oracles, Web/CLI confirmation. Does NOT conclude full D03: purge/Erased, qualified controller, Object Lock, backup catalog, World fence ER-R02, restoreAfterErasure remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
       "tests": {
@@ -719,7 +719,7 @@
       "packages": ["EX36"],
       "state": "d04_hosted_retained_policy_schemas_landed",
       "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; composition defaults local retained)",
-      "evidence": "packages/contracts/src/hosted/policy/**; packages/authority/src/ports/hosted/**; packages/authority/src/ports/d01/context.ts",
+      "evidence": "packages/contracts/src/hosted/policy/**; packages/authority/src/ports/hosted/**; packages/authority/src/ports/worlds/context.ts",
       "scope": "EX36 schemas/policy union + unit proofs. erasure:false restoreAfterErasure:false admitted-non-sensitive while-pinned live. No rebind of d01/d03 Worlds; no fly deploy. EX37 restore disposable next. Does NOT conclude D04 or full D03.",
       "fly_deployed": false,
       "unit_tests": [
@@ -734,7 +734,7 @@
       "state": "d04_hosted_retained_restore_disposable_landed",
       "profile": "d04-hosted-retained-v1 (candidate; disposable restore of enabled retained scope only)",
       "evidence": "tests/integration/hosted/restore/**; docs/verification/hosted-retained-restore.md",
-      "scope": "EX37 local stand-in for hosted restore path: pg_dump\u2192restore discarded after proof; scoped copy excludes d01-local-retained-v1; S3 disposable marker; erasure/restoreAfterErasure stay closed. No Fly deploy/MPG/Tigris; no ZN-0116. Does NOT conclude D04 or full D03.",
+      "scope": "EX37 local stand-in for hosted restore path: pg_dump\u2192restore discarded after proof; scoped copy excludes worlds-local-retained-v1; S3 disposable marker; erasure/restoreAfterErasure stay closed. No Fly deploy/MPG/Tigris; no ZN-0116. Does NOT conclude D04 or full D03.",
       "fly_deployed": false,
       "integration_tests": [
         "tests/integration/hosted/restore/retained-restore.EX37.integration.test.ts"
@@ -759,7 +759,7 @@
       "commit": "7e9194024a551f2ba99faf00d726b4bb465dc020",
       "packages": ["EX35", "EX36", "EX37", "EX38", "EX39"],
       "state": "verified_for_profile",
-      "profile": "d04-hosted-retained-v1 (new Worlds only) / local hosted-retained bootstrap; d01-local-retained-v1 default preserved; ops/fly stubs only",
+      "profile": "d04-hosted-retained-v1 (new Worlds only) / local hosted-retained bootstrap; worlds-local-retained-v1 default preserved; ops/fly stubs only",
       "evidence": "docs/verification/hosted-local.md",
       "scope": "Local hosted-retained bootstrap verified_for_profile for EX35\u2013EX39: freeze/stubs, DataPolicy schemas, disposable restore, admission flags, provision/composition wiring for NEW Worlds only, independent oracles. Does NOT conclude D04 activated or production Fly: no apps create/deploy/MPG/Tigris/secrets redesign/cutover. D03 purge/restore-after-erasure remain blocked. Structural execution.json statuses remain planned/not_run so verify_plan passes; this checkpoint is the progress source of truth.",
       "tests": {
@@ -1066,7 +1066,7 @@
       "hosted_retained_policy_schemas": true,
       "profile_id": "d04-hosted-retained-v1",
       "data_policy_union": true,
-      "composition_default": "d01-local-retained-v1",
+      "composition_default": "worlds-local-retained-v1",
       "hosted_retained_disposable_restore": true,
       "restore_after_erasure": false,
       "zn_0116_claimed": false,

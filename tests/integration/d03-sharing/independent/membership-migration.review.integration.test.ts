@@ -5,12 +5,12 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer } from "effect";
 import { Migrator, SqlClient } from "effect/unstable/sql";
 
-import { withD01Database } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
-import type { D01TestDatabase } from "../../../../apps/server/test/adapters/postgres/d01/database.ts";
+import { withD01Database } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
+import type { D01TestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import {
   claimRow,
   seedEvidence,
-} from "../../../../apps/server/test/adapters/postgres/d01/seed.ts";
+} from "../../../../apps/server/test/adapters/postgres/worlds/seed.ts";
 import {
   applyApplicationMigrations,
   applySharingMigrations,

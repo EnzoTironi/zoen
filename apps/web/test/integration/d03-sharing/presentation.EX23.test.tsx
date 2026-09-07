@@ -8,11 +8,11 @@ import {
 import { Schema } from "effect";
 import { renderToStaticMarkup } from "react-dom/server";
 
-import { D01Workspace } from "../../../src/components/d01/d01-workspace.tsx";
-import { initialState } from "../../../src/features/d01/model.ts";
-import { createWorkspaceController } from "../../../src/features/d01/state.ts";
+import { D01Workspace } from "../../../src/components/worlds/worlds-workspace.tsx";
 import { audience } from "../../../src/features/sharing/model.ts";
 import { SharingPanel } from "../../../src/features/sharing/panel.tsx";
+import { initialState } from "../../../src/features/worlds/model.ts";
+import { createWorkspaceController } from "../../../src/features/worlds/state.ts";
 
 // Synthetic presentation inputs exercise actual components; no service is replaced.
 const controller = createWorkspaceController("http://127.0.0.1");

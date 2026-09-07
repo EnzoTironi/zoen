@@ -1,19 +1,19 @@
 import { randomUUID } from "node:crypto";
 
-import { InvalidInput, Unavailable } from "@zoen/contracts/d01/errors";
+import { InvalidInput, Unavailable } from "@zoen/contracts/worlds/errors";
 import {
   CorrectionProposed,
   ProposeCorrection,
-} from "@zoen/contracts/d01/operations";
-import { CaseRef, QuestionRef, Revision } from "@zoen/contracts/d01/values";
+} from "@zoen/contracts/worlds/operations";
+import { CaseRef, QuestionRef, Revision } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { bindWorldIntent } from "../../commit/intent.js";
 import { commitMutation, readMutationReplay } from "../../commit/mutation.js";
-import { CurrentInternalBasis, DomainKey } from "../../ports/d01/basis.js";
-import type { VerifiedRequestContext } from "../../ports/d01/context.js";
-import { StoredQuestion } from "../../ports/d01/persistence.js";
+import { CurrentInternalBasis, DomainKey } from "../../ports/worlds/basis.js";
+import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
+import { StoredQuestion } from "../../ports/worlds/persistence.js";
 import { canonicalJson, structuredDigest } from "../../values/canonical.js";
 import { loadCorrectionFrame } from "./frame.js";
 import { validateCorrectionScope } from "./scope.js";
@@ -54,7 +54,7 @@ export const proposeCorrection = Effect.fn("authority.corrections.propose")(
             allowedAnswers: ["confirm", "unknown"],
             consequenceDigest,
             questionRef,
-            version: "d01.v1",
+            version: "worlds.v1",
           });
           const revision = yield* Schema.decodeEffect(Revision)(
             (BigInt(cut.cases) + 1n).toString()

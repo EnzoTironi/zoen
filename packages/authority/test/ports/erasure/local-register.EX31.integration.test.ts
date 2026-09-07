@@ -2,12 +2,11 @@ import { randomBytes, randomUUID } from "node:crypto";
 
 import { PgClient } from "@effect/sql-pg";
 import { expect, it } from "@effect/vitest";
-import { Unavailable } from "@zoen/contracts/d01/errors";
-import { OperationId, WorldId } from "@zoen/contracts/d01/values";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
+import { OperationId, WorldId } from "@zoen/contracts/worlds/values";
 import { Config, Effect, Layer, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { PrincipalId } from "../../../src/ports/d01/context.js";
 import {
   ErasureAttemptRegister,
   blocksWorldActivation,
@@ -20,6 +19,7 @@ import {
   applyErasureAttemptSchema,
   localErasureAttemptRegisterLayer,
 } from "../../../src/ports/erasure/local-pg.js";
+import { PrincipalId } from "../../../src/ports/worlds/context.js";
 
 const profile = (url: Redacted.Redacted, name: string) => ({
   applicationName: `zoen-ex31-${name}`,
