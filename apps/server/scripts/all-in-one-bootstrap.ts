@@ -245,6 +245,33 @@ const program = Effect.gen(function* bootstrapAllInOne() {
         ZOEN_S3_SECRET_KEY: appSecret,
       });
     }
+    // Marker path previously skipped schema migrates; ZA-08 health requires
+    // disclosure_writer_epochs/recovery. Rotate migration password via infra
+    // admin (password is not persisted in runtime.env) then apply idempotent DDL.
+    const migrationPassword = randomBytes(32).toString("hex");
+    yield* Effect.gen(function* rotateMigrationPassword() {
+      const sql = yield* SqlClient.SqlClient;
+      yield* sql.unsafe(
+        `ALTER ROLE "${names.migration}" WITH LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS NOREPLICATION PASSWORD '${migrationPassword}'`
+      );
+    }).pipe(
+      Effect.provide(PgClient.layer({ maxConnections: 1, url: adminUrl }))
+    );
+    const migrationUrl = (() => {
+      const url = new URL(Redacted.value(adminUrl));
+      url.pathname = `/${databaseName}`;
+      url.username = names.migration;
+      url.password = migrationPassword;
+      return url.href;
+    })();
+    yield* applyErasureMigrations(names).pipe(
+      Effect.provide(
+        PgClient.layer({
+          maxConnections: 1,
+          url: Redacted.make(migrationUrl),
+        })
+      )
+    );
     return yield* alignExistingHostedRelease({
       encodeInstallation: encodeJson,
       fs,
