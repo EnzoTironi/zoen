@@ -12,7 +12,7 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 ## Hosted persistence (decisão)
 
 - **All-in-one VM** com volume único — **não** MPG, **não** Tigris (rejeitados).
-- App Fly `zoen-rebuild` existe (pending até deploy da imagem all-in-one).
+- App Fly `zoen-rebuild` **live** all-in-one (PG+RustFS+app no volume, `min_machines_running=1`, https://zoen-rebuild.fly.dev); secrets incluem `ZOEN_OPENCODE_*`.
 - Secret mínimo esperado: `ZOEN_AUTH_SECRET`; URLs DB/S3 loopback no container/volume.
 - App legado `zoen` não é evidência do monólito modular (topologia/segredos distintos; sem cutover).
 
@@ -47,4 +47,4 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 - Doc: `docs/verification/hosted-local.md`
 - Independent: `tests/integration/hosted/independent/**`
 - `ops/fly/**` all-in-one; **sem** MPG/Tigris
-- `verified_for_profile` **somente** bootstrap local hosted-retained — não produção Fly
+- `verified_for_profile` **somente** bootstrap local hosted-retained (EX35–EX39) — app Fly live não marca D04 `activated` / piloto sensível / cutover

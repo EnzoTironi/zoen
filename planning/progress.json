@@ -904,10 +904,10 @@
   "verified_deliveries": [],
   "external_blockers": [
     {
-      "id": "fly-hosted-persistence",
+      "id": "fly-hosted-retained-gaps",
       "delivery": "D04",
-      "detail": "Fly auth present on maintainer Mac, but zoen-rebuild app, Managed Postgres, Tigris/object store, and redesign secrets are not provisioned; deploy/spend deferred by freeze H07.",
-      "since": "2026-09-06"
+      "detail": "Fly app zoen-rebuild is live all-in-one (PG+RustFS+app on volume, min_machines_running=1, https://zoen-rebuild.fly.dev; secrets include ZOEN_OPENCODE_*). MPG/Tigris destroyed by design — do not revive. Remaining gaps block full D04: backup catalog for admitted restore beyond disposable, sensitive pilot (needs D03 purge/restore-after-erasure), and legacy zoen / DNS cutover (explicit human decision).",
+      "since": "2026-09-07"
     },
     {
       "id": "d03-purge-restore-after-erasure",
@@ -918,7 +918,7 @@
     {
       "id": "eve-real-model-provider",
       "delivery": "D05",
-      "detail": "OpenCode Zen free qualified for eve-opencode-zen-v1 when ZOEN_OPENCODE_API_KEY present (see docs/verification/eve-opencode-zen.md). Broader multi-provider routing / paid tiers and full D05 remain open; voice still blocked.",
+      "detail": "OpenCode Zen free qualified for profile eve-opencode-zen-v1 when ZOEN_OPENCODE_API_KEY (or ZOEN_OPENCODE_*) present — see docs/verification/eve-opencode-zen.md. Broader multi-provider routing / paid tiers and full D05 remain open; voice still blocked.",
       "since": "2026-09-07"
     },
     {
