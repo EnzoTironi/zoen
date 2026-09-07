@@ -20,6 +20,7 @@ import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 
+import { uncertaintyFromEvidenceBasis } from "./admission.js";
 import { EveJournal } from "./journal.js";
 import { EveOpenCodeZen } from "./opencode-zen.js";
 
@@ -166,12 +167,20 @@ export const runEveTurn = (
       return yield* new Conflict({ code: "CONFLICT" });
     }
 
+    const evidenceLinks = [...(input.evidenceLinks ?? [])];
+    // ZA-17 / F10: identifier-only links are not an authorized basis. Until
+    // ZA-19 resolves + authorizes citations for this world/principal/claim,
+    // settle Partial even when callers supply structurally valid links.
     const message = yield* journal.settleMessage({
       conversationId: input.conversationId,
-      evidenceLinks: [...(input.evidenceLinks ?? [])],
+      evidenceLinks,
       messageId: input.messageId,
       turnId: input.turnId,
-      uncertainty: completion.uncertainty,
+      uncertainty: uncertaintyFromEvidenceBasis({
+        citationsAuthorized: false,
+        evidenceLinks,
+        generatedText: completion.visibleText,
+      }),
       visibleText: completion.visibleText,
     });
 

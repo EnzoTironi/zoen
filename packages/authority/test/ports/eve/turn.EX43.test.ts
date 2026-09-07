@@ -6,6 +6,7 @@ import {
   RelationshipId,
   TurnId,
 } from "@zoen/contracts/eve/values";
+import { EvidenceRef } from "@zoen/contracts/worlds/values";
 import { Effect, Layer, Redacted, Schema } from "effect";
 
 import { EveJournal } from "../../../src/ports/eve/journal.js";
@@ -102,12 +103,45 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
         messageCount: 1,
         phase: "Settled",
         state: "Visible",
-        uncertainty: "Known",
+        uncertainty: "Partial",
         visibleHasEveOk: true,
         wireHasAuthHeader: false,
         wireHasKey: false,
         wireHasSecretPhrase: false,
       });
+    }).pipe(Effect.provide(zenLayer))
+  );
+
+  it.effect("unverified evidenceLinks cannot settle Known (ZA-17)", () =>
+    Effect.gen(function* unverifiedLinks() {
+      const evidenceRef = Schema.decodeSync(EvidenceRef)(
+        "00000000-0000-4000-8000-000000000490"
+      );
+      const linkConversation = Schema.decodeSync(ConversationId)(
+        "00000000-0000-4000-8000-000000000491"
+      );
+      const linkIngress = Schema.decodeSync(IngressId)(
+        "00000000-0000-4000-8000-000000000492"
+      );
+      const linkTurn = Schema.decodeSync(TurnId)(
+        "00000000-0000-4000-8000-000000000493"
+      );
+      const linkMessage = Schema.decodeSync(MessageId)(
+        "00000000-0000-4000-8000-000000000494"
+      );
+      const result = yield* runEveTurn({
+        conversationId: linkConversation,
+        evidenceLinks: [{ claimRef: null, evidenceRef }],
+        ingressId: linkIngress,
+        messageId: linkMessage,
+        profileId: "eve-opencode-zen-v1",
+        providerAdmission: "opencode-zen",
+        relationshipId,
+        turnId: linkTurn,
+        userText: "reply with eve-ok",
+      });
+      expect(result.message.evidenceLinks).toHaveLength(1);
+      expect(result.message.uncertainty).toBe("Partial");
     }).pipe(Effect.provide(zenLayer))
   );
 

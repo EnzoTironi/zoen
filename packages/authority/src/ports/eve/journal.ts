@@ -27,9 +27,10 @@ import type { Effect as EffectType } from "effect";
  * Owns conversation/turn/message recoverability — never domain authority credentials
  * and never OpenCode / authority API keys (INV-01).
  *
- * EX41: in-memory disposable layer proves recoverability.
- * EX42+: admits `opencode-zen` / `eve-opencode-zen-v1` as the text product path.
- * EX44+: admits `web-speech` / `eve-web-speech-v1` as the browser voice I/O path.
+ * EX41: `stubMemoryLayer` is an in-memory disposable unit-proof layer only — not
+ * durable ownership, crash recovery, or product admission (ZA-17 / F12).
+ * Product composition must use `blockedProvidersLayer` until ZA-18 qualifies a
+ * durable actor-bound journal.
  * Unqualified real-model / voice-blocked stay fail-closed Blocked (F05/F06).
  */
 export interface AcceptTurnInput {
@@ -128,8 +129,9 @@ export class EveJournal extends Context.Service<
   );
 
   /**
-   * In-memory journal for local proofs and live OpenCode Zen turn path.
+   * In-memory journal for offline unit proofs only.
    * Does not persist PG/S3; does not embed API keys in snapshots.
+   * Must not be installed as the product Eve surface (ZA-17-03).
    */
   static readonly stubMemoryLayer = Layer.effect(
     EveJournal,

@@ -13,10 +13,14 @@ Fonte tip de partida (stub): `644d400`. Tip Zen live: ver `docs/verification/eve
 | F03 | Journal único de interação é a fonte de retomada; ordem de conversa/turnos é preservada após falha do worker. | Recover sem re-chamar o modelo; stream provisório ≠ mensagem visível settled. |
 | F04 | Resumos/compaction **não** viram evidência nem autoridade factual. | C006: compaction só contexto; fatos continuam nos refs de evidência/claims. |
 | F05 | **Voz = Web Speech API** no `@zoen/web` (`eve-web-speech-v1` / `web-speech`): STT `SpeechRecognition` + TTS `speechSynthesis`. Sem cloud STT/TTS inventado; OpenCode Zen não tem modelos de voz. `voice-blocked` permanece literal fail-closed para tentativas não qualificadas. | Transcript → turn texto (Zen) → speakText; APIs ausentes → Unavailable/Blocked honestos. |
-| F06 | **OpenCode Zen free** é o caminho de **texto** admitido quando `ZOEN_OPENCODE_API_KEY` (ou Fly secret) está presente; falhas upstream são `Blocked`/`Unavailable` honestas — nunca mock-saudáveis. | Qualificação registrada em `docs/verification/eve-opencode-zen.md` (headers free-tier, model `big-pickle`). |
-| F07 | Perfis: produto texto `eve-opencode-zen-v1` / `opencode-zen`; produto voz `eve-web-speech-v1` / `web-speech`; `eve-local-stub-v1` / `stub-local` **somente** proofs offline de unidade. | Sem rebind de Worlds/`DataPolicy` existentes; stub não é o path de produto. |
+| F06 | **OpenCode Zen free** é o candidato de **texto**; a **key sozinha não admite** o produto (ZA-17). Sem journal durável + grounding + aceitação de perfil (ZA-18/19/20), a composição instala `blockedProvidersLayer` + `blockedLayer` — `Blocked`/`Unavailable` honestos, nunca stubMemory/live como substituto. | Smoke Zen documentado em `docs/verification/eve-opencode-zen.md` não é admissão de produto. |
+| F07 | Perfis candidatos: texto `eve-opencode-zen-v1` / `opencode-zen`; voz `eve-web-speech-v1` / `web-speech`; `eve-local-stub-v1` / `stub-local` **somente** proofs offline de unidade — **removido da composição de produto** (ZA-17). | Worlds/`DataPolicy` intactos; stubMemory não é journal durável. |
 | F08 | Paths de domínio: `eve/**`, `conversation`, `journal`, `evidence`. | Sem pastas/arquivos/funções novas `D0x`/`d0x`; `D05` só como id de entrega/roadmap/título de freeze. |
 | F09 | Ferramentas/efeitos cruzam a fronteira semântica idempotente; Eve não é pré-requisito de leituras estruturadas. | Structured calls seguem independentes (SPEC-009 refinement). |
+
+## Honestidade pós-ZA-17
+
+Composição de produto **não** ativa Eve com `stubMemoryLayer` nem Zen live só porque a key existe. Worlds/web/CLI centrais continuam usáveis; rotas Eve autenticadas devolvem `Blocked`/`Unavailable` explícitos até provas ZA-18/19/20. Incerteza `Known` exige base de evidência autorizada — comprimento de prosa do modelo nunca é input epistêmico.
 
 ## Ainda bloqueado (gates antes de D05 integral)
 

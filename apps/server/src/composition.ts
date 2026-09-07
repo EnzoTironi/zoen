@@ -7,11 +7,12 @@ import {
   d04HostedRetainedAdmissionFlags,
 } from "@zoen/authority/hosted/admission/flags";
 import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
-import { EveJournal } from "@zoen/authority/ports/eve/journal";
 import {
-  DEFAULT_OPENCODE_USER_AGENT,
-  EveOpenCodeZen,
-} from "@zoen/authority/ports/eve/opencode-zen";
+  currentProductEveAdmissionInput,
+  isProductEveAdmitted,
+} from "@zoen/authority/ports/eve/admission";
+import { EveJournal } from "@zoen/authority/ports/eve/journal";
+import { EveOpenCodeZen } from "@zoen/authority/ports/eve/opencode-zen";
 import {
   DataPolicy,
   DataPolicySchema,
@@ -50,6 +51,7 @@ export interface D01ApplicationConfig {
   /**
    * Optional OpenCode Zen free credentials (D05 / ZN-0063).
    * Present only when ZOEN_OPENCODE_API_KEY is set; never logged or journaled.
+   * Presence does **not** admit product Eve until ZA-18/19/20 safety proofs (ZA-17).
    */
   readonly openCodeZen?: {
     readonly apiKey: Redacted.Redacted;
@@ -76,6 +78,28 @@ export const hostedAdmissionLayerFor = (
   policy.profileId === "d04-hosted-retained-v1"
     ? hostedAdmissionLayer
     : Layer.empty;
+
+/**
+ * Product Eve surface for the current tip (ZA-17).
+ * OpenCode key presence alone never installs stubMemory or live Zen — only
+ * blocked journal + blocked provider until ZA-18/19/20 qualify admission.
+ * Exported so unit tests pin the same selection `makeD01Application` uses.
+ */
+export const makeProductEveSurface = (openCodeKeyPresent: boolean) => {
+  const admission = currentProductEveAdmissionInput(openCodeKeyPresent);
+  if (isProductEveAdmitted(admission)) {
+    // Tripwire: flipping admission flags without durable/live layers is unsafe.
+    return Effect.die(
+      "ZA-17: product Eve admitted without durable journal/grounding layers"
+    );
+  }
+  return Effect.succeed(
+    Layer.mergeAll(
+      EveJournal.blockedProvidersLayer,
+      EveOpenCodeZen.blockedLayer
+    )
+  );
+};
 
 /** One explicit composition for every public semantic operation. */
 export const makeD01Application = (config: D01ApplicationConfig) =>
@@ -110,18 +134,9 @@ export const makeD01Application = (config: D01ApplicationConfig) =>
       const erasureRegister = localErasureAttemptRegisterLayer.pipe(
         Layer.provide(erasureAttemptPg)
       );
-      const eveOpenCode =
-        config.openCodeZen === undefined
-          ? EveOpenCodeZen.blockedLayer
-          : EveOpenCodeZen.liveLayer({
-              apiKey: config.openCodeZen.apiKey,
-              baseUrl: config.openCodeZen.baseUrl,
-              model: config.openCodeZen.model,
-              userAgent: DEFAULT_OPENCODE_USER_AGENT,
-            });
-      const eveSurface = Layer.mergeAll(
-        EveJournal.stubMemoryLayer,
-        eveOpenCode
+      // ZA-17: key alone must not admit stubMemory or live Zen.
+      const eveSurface = yield* makeProductEveSurface(
+        config.openCodeZen !== undefined
       );
       const infrastructure = Layer.mergeAll(
         Layer.effectDiscard(checkD01AuthorityRole).pipe(

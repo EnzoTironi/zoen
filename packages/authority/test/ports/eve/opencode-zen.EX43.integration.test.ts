@@ -49,49 +49,84 @@ const loadLocalOpenCodeEnv = (): void => {
 
 loadLocalOpenCodeEnv();
 const settings = readOpenCodeZenSettingsFromEnv();
-const describeLive = settings === null ? describe.skip : describe;
 
-describeLive("EX43 OpenCode Zen live smoke (gated)", () => {
-  it.effect("accept → live model → settle returns non-empty model text", () => {
-    if (settings === null) {
-      return Effect.void;
-    }
-    const liveSettings = settings;
-    const conversationId = Schema.decodeSync(ConversationId)(randomUUID());
-    const relationshipId = Schema.decodeSync(RelationshipId)(randomUUID());
-    const ingressId = Schema.decodeSync(IngressId)(randomUUID());
-    const turnId = Schema.decodeSync(TurnId)(randomUUID());
-    const messageId = Schema.decodeSync(MessageId)(randomUUID());
-    const layer = Layer.mergeAll(
-      EveJournal.stubMemoryLayer,
-      EveOpenCodeZen.liveLayer(liveSettings)
-    );
-    return Effect.gen(function* live() {
-      const result = yield* runEveTurn({
-        conversationId,
-        ingressId,
-        messageId,
-        profileId: "eve-opencode-zen-v1",
-        providerAdmission: "opencode-zen",
-        relationshipId,
-        turnId,
-        userText: "Reply with exactly the token eve-ok and nothing else.",
-      });
-      expect(result.message.state).toBe("Visible");
-      expect(result.message.visibleText.trim().length).toBeGreaterThan(0);
-      expect(["Known", "Partial", "Unknown"]).toContain(
-        result.message.uncertainty
-      );
-
-      const journal = yield* EveJournal;
-      const snapshot = yield* journal.recover(conversationId);
-      expect(snapshot.authorityCredentialPresent).toBeFalsy();
-      const wire = JSON.stringify(snapshot);
-      expect(wire.includes("sk-")).toBeFalsy();
-      const keyValue = process.env.ZOEN_OPENCODE_API_KEY;
-      if (keyValue !== undefined && keyValue.length > 0) {
-        expect(wire.includes(keyValue)).toBeFalsy();
+describe("EX43 OpenCode Zen live smoke / admission (ZA-17)", () => {
+  it.effect(
+    "ZA-17-01: missing provider settings stay fail-closed Blocked (not skipped)",
+    () => {
+      if (settings !== null) {
+        // Key present in this environment — live path covered below; still prove
+        // blockedLayer refuses fabrication.
+        return Effect.gen(function* blocked() {
+          const client = yield* EveOpenCodeZen;
+          const exit = yield* Effect.exit(
+            client.completeChat({
+              conversationId: Schema.decodeSync(ConversationId)(randomUUID()),
+              userText: "ping",
+            })
+          );
+          expect(exit._tag).toBe("Failure");
+        }).pipe(Effect.provide(EveOpenCodeZen.blockedLayer));
       }
-    }).pipe(Effect.provide(layer));
-  });
+      return Effect.gen(function* absent() {
+        expect(settings).toBeNull();
+        const client = yield* EveOpenCodeZen;
+        const exit = yield* Effect.exit(
+          client.completeChat({
+            conversationId: Schema.decodeSync(ConversationId)(randomUUID()),
+            userText: "ping",
+          })
+        );
+        expect(exit._tag).toBe("Failure");
+      }).pipe(Effect.provide(EveOpenCodeZen.blockedLayer));
+    }
+  );
+
+  it.effect(
+    "product composition surface stays Blocked even when host key is present",
+    () =>
+      Effect.gen(function* productBlocked() {
+        const exit = yield* Effect.exit(
+          runEveTurn({
+            conversationId: Schema.decodeSync(ConversationId)(randomUUID()),
+            ingressId: Schema.decodeSync(IngressId)(randomUUID()),
+            messageId: Schema.decodeSync(MessageId)(randomUUID()),
+            profileId: "eve-opencode-zen-v1",
+            providerAdmission: "opencode-zen",
+            relationshipId: Schema.decodeSync(RelationshipId)(randomUUID()),
+            turnId: Schema.decodeSync(TurnId)(randomUUID()),
+            userText: "Reply with exactly the token eve-ok and nothing else.",
+          })
+        );
+        expect(exit._tag).toBe("Failure");
+      }).pipe(
+        Effect.provide(
+          // Same pairing product composition installs (ZA-17) — never stubMemory.
+          Layer.mergeAll(
+            EveJournal.blockedProvidersLayer,
+            EveOpenCodeZen.blockedLayer
+          )
+        )
+      )
+  );
+
+  it.effect(
+    "live provider HTTP boundary only when key present (not product journal)",
+    () => {
+      if (settings === null) {
+        return Effect.void;
+      }
+      // Isolate OpenCode HTTP at the provider boundary. Do not pair live Zen
+      // with EveJournal.stubMemoryLayer — that combination is never product.
+      const liveSettings = settings;
+      return Effect.gen(function* liveBoundary() {
+        const client = yield* EveOpenCodeZen;
+        const completion = yield* client.completeChat({
+          conversationId: Schema.decodeSync(ConversationId)(randomUUID()),
+          userText: "Reply with exactly the token eve-ok and nothing else.",
+        });
+        expect(completion.visibleText.trim().length).toBeGreaterThan(0);
+      }).pipe(Effect.provide(EveOpenCodeZen.liveLayer(liveSettings)));
+    }
+  );
 });

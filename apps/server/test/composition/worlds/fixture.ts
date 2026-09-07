@@ -55,10 +55,20 @@ const erasablePolicy = {
   retention: "while-pinned",
 } as const;
 
+export interface WithD01HttpOptions {
+  /** When set, exercises ZA-17 key-present composition (still fail-closed). */
+  readonly openCodeZen?: {
+    readonly apiKey: Redacted.Redacted;
+    readonly baseUrl: string;
+    readonly model: string;
+  };
+}
+
 export const withD01Http = <A, E>(
   run: (
     fixture: HttpFixture
-  ) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>
+  ) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>,
+  options?: WithD01HttpOptions
 ) =>
   withD01Database(
     (database) =>
@@ -109,6 +119,9 @@ export const withD01Http = <A, E>(
               sessionSeconds: 3600,
             },
             installation,
+            ...(options?.openCodeZen === undefined
+              ? {}
+              : { openCodeZen: options.openCodeZen }),
             policy,
             storage,
           });
