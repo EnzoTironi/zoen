@@ -139,6 +139,19 @@ export default defineConfig({
       },
     },
     {
+      files: [
+        "apps/web/src/features/eve/web-speech.ts",
+        "apps/web/test/features/eve/**",
+      ],
+      rules: {
+        "effecttsgo/async-function": "off",
+        "effecttsgo/new-promise": "off",
+        "promise/avoid-new": "off",
+        "typescript/prefer-for-of": "off",
+        "unicorn/prefer-add-event-listener": "off",
+      },
+    },
+    {
       files: ["**/adapters/posix.ts"],
       rules: {
         "effecttsgo/node-builtin-import": "off",

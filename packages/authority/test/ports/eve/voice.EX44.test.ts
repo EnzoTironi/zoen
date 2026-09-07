@@ -65,13 +65,17 @@ const zenLayer = Layer.mergeAll(
   EveOpenCodeZen.liveLayer(settings, mockOkFetch)
 );
 
+const MockSpeechRecognition = function MockSpeechRecognition() {
+  /* ctor stand-in for capability probe */
+};
+
 const capable = probeWebSpeechCapabilities({
-  SpeechRecognition: class {},
-  speechSynthesis: { speak: () => undefined },
+  SpeechRecognition: MockSpeechRecognition,
+  speechSynthesis: { speak: () => null },
 });
 
 const recognitionOnly = probeWebSpeechCapabilities({
-  webkitSpeechRecognition: class {},
+  webkitSpeechRecognition: MockSpeechRecognition,
 });
 
 const missing = probeWebSpeechCapabilities({});

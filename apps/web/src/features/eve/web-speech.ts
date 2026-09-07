@@ -10,7 +10,14 @@ import {
  * Uses SpeechRecognition + speechSynthesis — not a stub, not cloud STT/TTS.
  */
 
-type SpeechRecognitionLike = {
+interface SpeechRecognitionEventLike {
+  readonly results: ArrayLike<{
+    readonly isFinal: boolean;
+    readonly 0?: { readonly transcript: string };
+  }>;
+}
+
+interface SpeechRecognitionLike {
   continuous: boolean;
   interimResults: boolean;
   lang: string;
@@ -19,14 +26,7 @@ type SpeechRecognitionLike = {
   onend: (() => void) | null;
   start: () => void;
   stop: () => void;
-};
-
-type SpeechRecognitionEventLike = {
-  readonly results: ArrayLike<{
-    readonly isFinal: boolean;
-    readonly 0?: { readonly transcript: string };
-  }>;
-};
+}
 
 type SpeechRecognitionCtor = new () => SpeechRecognitionLike;
 
@@ -109,7 +109,11 @@ export const listenOnce = (options?: {
       const parts: string[] = [];
       for (let i = 0; i < event.results.length; i += 1) {
         const row = event.results[i];
-        if (row?.isFinal === true && row[0]?.transcript !== undefined) {
+        if (
+          row !== undefined &&
+          row.isFinal &&
+          row[0]?.transcript !== undefined
+        ) {
           parts.push(row[0].transcript);
         }
       }
@@ -147,7 +151,9 @@ export const speakText = (
   try {
     assertVoiceSpeechReady();
   } catch (error) {
-    return Promise.reject(error);
+    return Promise.reject(
+      error instanceof Error ? error : new Error(String(error))
+    );
   }
   const trimmed = text.trim();
   if (trimmed.length === 0) {

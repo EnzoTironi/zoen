@@ -16,18 +16,18 @@ export interface VoiceIngressResult {
   readonly transcript: string;
 }
 
-export const captureVoiceIngress = async (options?: {
+export const captureVoiceIngress = (options?: {
   readonly lang?: string;
   readonly signal?: AbortSignal;
 }): Promise<VoiceIngressResult> => {
   const capabilities = readWebSpeechCapabilities();
-  const transcript = await listenOnce(options);
-  return { capabilities, transcript };
+  return listenOnce(options).then((transcript) => ({
+    capabilities,
+    transcript,
+  }));
 };
 
-export const speakSettledReply = async (
+export const speakSettledReply = (
   visibleText: string,
   options?: { readonly lang?: string }
-): Promise<void> => {
-  await speakText(visibleText, options);
-};
+): Promise<void> => speakText(visibleText, options);

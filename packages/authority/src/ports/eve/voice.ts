@@ -1,9 +1,5 @@
-import {
-  Blocked,
-  Conflict,
-  NotFoundOrDenied,
-  Unavailable,
-} from "@zoen/contracts/d01/errors";
+import { Blocked, Unavailable } from "@zoen/contracts/d01/errors";
+import type { Conflict, NotFoundOrDenied } from "@zoen/contracts/d01/errors";
 import type {
   ConversationId,
   EveEvidenceLink,
@@ -15,15 +11,14 @@ import type {
   TurnId,
 } from "@zoen/contracts/eve/values";
 import {
-  probeWebSpeechCapabilities,
   voiceRecognitionReady,
   voiceSynthesisReady,
 } from "@zoen/contracts/eve/web-speech";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 
-import { EveJournal } from "./journal.js";
-import { EveOpenCodeZen } from "./opencode-zen.js";
+import type { EveJournal } from "./journal.js";
+import type { EveOpenCodeZen } from "./opencode-zen.js";
 import { runEveTurn } from "./turn.js";
 import type { RunEveTurnResult } from "./turn.js";
 
@@ -40,7 +35,7 @@ export {
   probeWebSpeechCapabilities,
   voiceRecognitionReady,
   voiceSynthesisReady,
-};
+} from "@zoen/contracts/eve/web-speech";
 export type { EveSpeechHost } from "@zoen/contracts/eve/web-speech";
 
 export interface RunEveVoiceTurnInput {

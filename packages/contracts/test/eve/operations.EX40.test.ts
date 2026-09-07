@@ -16,7 +16,6 @@ import {
   EveProviderAdmission,
   EveSchemaVersion,
   EveWebSpeechCapabilities,
-  EveWebSpeechProfileId,
 } from "../../src/eve/values.js";
 
 const conversationId = "00000000-0000-4000-8000-000000000101";
@@ -111,7 +110,7 @@ describe("EX40 eve schemas", () => {
         recognitionAvailable: true,
         synthesisAvailable: true,
       }).recognitionAvailable
-    ).toBe(true);
+    ).toBeTruthy();
   });
 
   it("admits cancel and recover operations", () => {

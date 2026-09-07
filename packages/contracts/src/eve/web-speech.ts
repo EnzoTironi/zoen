@@ -15,8 +15,8 @@ export const probeWebSpeechCapabilities = (
   host: EveSpeechHost
 ): EveWebSpeechCapabilities => {
   const recognitionAvailable =
-    typeof host.SpeechRecognition !== "undefined" ||
-    typeof host.webkitSpeechRecognition !== "undefined";
+    host.SpeechRecognition !== undefined ||
+    host.webkitSpeechRecognition !== undefined;
   const synthesisAvailable =
     host.speechSynthesis !== undefined &&
     host.speechSynthesis !== null &&
