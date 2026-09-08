@@ -55,13 +55,19 @@ export const markObjectWriteSubmitted = Effect.fn(
   readonly captureId: string;
 }) {
   const sql = yield* SqlClient.SqlClient;
+  // Refuse submit once cleanup/purge moved the capture off reserved — closes the
+  // late stageCapture race before PutObject (G-STORAGE-FENCE still Blocked for
+  // already-submitted I/O).
   const rows = yield* sql`
-    UPDATE jobs.object_write_attempts
+    UPDATE jobs.object_write_attempts AS a
     SET state = 'external_submitted',
         submitted_at = clock_timestamp()
-    WHERE world_id = ${input.world.worldId} AND realm = ${input.world.realm}
-      AND capture_id = ${input.captureId} AND state = 'registered'
-    RETURNING attempt_id::text AS attempt_id
+    FROM jobs.captures AS c
+    WHERE a.world_id = ${input.world.worldId} AND a.realm = ${input.world.realm}
+      AND a.capture_id = ${input.captureId} AND a.state = 'registered'
+      AND c.world_id = a.world_id AND c.realm = a.realm AND c.capture_id = a.capture_id
+      AND c.state = 'reserved'
+    RETURNING a.attempt_id::text AS attempt_id
   `;
   if (rows.length !== 1) {
     return yield* new Unavailable({ code: "UNAVAILABLE" });

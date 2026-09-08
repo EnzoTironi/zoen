@@ -412,10 +412,17 @@ export const layer = (
             if (response.IsTruncated !== true) {
               break;
             }
-            if (response.NextKeyMarker === undefined) {
+            // General-purpose / versioned buckets require both continuation markers;
+            // KeyMarker-only pages can skip same-key uploads and falsely empty inventory.
+            if (
+              response.NextKeyMarker === undefined ||
+              response.NextKeyMarker.length === 0 ||
+              response.NextUploadIdMarker === undefined ||
+              response.NextUploadIdMarker.length === 0
+            ) {
               return yield* unavailable();
             }
-            const cursor = `${response.NextKeyMarker}\u0000${response.NextUploadIdMarker ?? ""}`;
+            const cursor = `${response.NextKeyMarker}\u0000${response.NextUploadIdMarker}`;
             if (visited.has(cursor)) {
               return yield* unavailable();
             }

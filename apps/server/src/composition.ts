@@ -7,6 +7,7 @@ import {
   hostedRetainedAdmissionFlags,
 } from "@zoen/authority/hosted/admission/flags";
 import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
+import { ErasureObjectWriteSettlement } from "@zoen/authority/ports/erasure/object-write";
 import {
   currentProductEveAdmissionInput,
   isProductEveAdmitted,
@@ -149,6 +150,8 @@ export const makeApplication = (config: ApplicationConfig) =>
         Layer.succeed(DataPolicy, policy),
         hostedAdmissionLayerFor(policy),
         erasureRegister,
+        // Honest G-STORAGE-FENCE: Blocked — no fictitious vendor containment.
+        ErasureObjectWriteSettlement.unqualifiedLayer,
         eveSurface
       );
       const executor = SemanticExecutor.layerWithoutEve.pipe(
