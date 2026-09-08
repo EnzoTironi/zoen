@@ -56,11 +56,16 @@ CREATE TABLE IF NOT EXISTS erasure_attempt.controller_head (
   sequence bigint NOT NULL CHECK (sequence >= 0),
   head_digest text COLLATE "C" NOT NULL
     CHECK (head_digest ~ '^[0-9a-f]{64}$'),
-  updated_at timestamptz NOT NULL DEFAULT clock_timestamp()
+  pending_sequence bigint
+    CHECK (pending_sequence IS NULL OR pending_sequence > 0),
+  updated_at timestamptz NOT NULL DEFAULT clock_timestamp(),
+  CHECK (
+    pending_sequence IS NULL OR pending_sequence = sequence
+  )
 );
 
-INSERT INTO erasure_attempt.controller_head (singleton, sequence, head_digest)
-VALUES (true, 0, repeat('0', 64))
+INSERT INTO erasure_attempt.controller_head (singleton, sequence, head_digest, pending_sequence)
+VALUES (true, 0, repeat('0', 64), NULL)
 ON CONFLICT (singleton) DO NOTHING;
 `;
 
@@ -81,6 +86,7 @@ const AttemptRow = Schema.Struct({
 
 const HeadRow = Schema.Struct({
   head_digest: Digest,
+  pending_sequence: Schema.NullOr(Schema.String),
   sequence: Schema.String,
 }).annotate(exact);
 
@@ -142,7 +148,7 @@ const preferWorldState = (
 };
 
 interface AnchorService {
-  readonly inspect: () => Effect.Effect<
+  readonly inspect: Effect.Effect<
     { readonly admittedSequence: bigint },
     Unavailable
   >;
@@ -160,7 +166,7 @@ const buildRegister = (options: {
 
   const loadHead = Effect.gen(function* loadControllerHead() {
     const rows = yield* sql`
-      SELECT sequence::text, head_digest
+      SELECT sequence::text, head_digest, pending_sequence::text AS pending_sequence
       FROM erasure_attempt.controller_head
       WHERE singleton = true
     `.pipe(Effect.mapError(() => unavailable()));
@@ -172,51 +178,99 @@ const buildRegister = (options: {
     }
     return {
       digest: decoded[0].head_digest,
+      pending:
+        decoded[0].pending_sequence === null
+          ? null
+          : BigInt(decoded[0].pending_sequence),
       sequence: BigInt(decoded[0].sequence),
     };
   });
 
-  // Head must exactly match the admitted external anchor sequence.
-  // Behind ⇒ rolled-back controller; ahead ⇒ crash window. Both fail closed.
+  const clearPending = (sequence: bigint) =>
+    sql`
+      UPDATE erasure_attempt.controller_head
+      SET pending_sequence = NULL, updated_at = clock_timestamp()
+      WHERE singleton = true
+        AND sequence = ${sequence.toString()}
+        AND pending_sequence = ${sequence.toString()}
+    `.pipe(
+      Effect.mapError(() => unavailable()),
+      Effect.asVoid
+    );
+
+  // Recover interrupted DB→anchor commits; reject genuine rollbacks (behind).
   const ensureFresh =
     requireFreshAnchor && anchor !== null
-      ? loadHead.pipe(
-          Effect.flatMap((head) =>
-            anchor
-              .inspect()
-              .pipe(
-                Effect.flatMap((admitted) =>
-                  head.sequence === admitted.admittedSequence
-                    ? Effect.void
-                    : unavailable()
-                )
-              )
-          )
-        )
+      ? Effect.gen(function* ensureControllerFresh() {
+          const head = yield* loadHead;
+          let admitted = yield* anchor.inspect;
+          if (head.pending !== null && head.pending === head.sequence) {
+            if (admitted.admittedSequence + 1n === head.sequence) {
+              // Crash window: DB committed forward, external anchor still lagging.
+              admitted = yield* anchor.advance(head.sequence);
+              yield* clearPending(head.sequence);
+            } else if (admitted.admittedSequence === head.sequence) {
+              yield* clearPending(head.sequence);
+            } else {
+              return yield* unavailable();
+            }
+          } else if (head.pending !== null) {
+            return yield* unavailable();
+          }
+          if (head.sequence !== admitted.admittedSequence) {
+            return yield* unavailable();
+          }
+          return yield* Effect.void;
+        })
       : Effect.void;
 
-  const bumpHead = Effect.gen(function* bumpControllerHead() {
+  /** Advance DB head (+ pending flag when anchored) inside the caller's transaction. */
+  const bumpHeadInTransaction = Effect.gen(function* bumpControllerHeadTx() {
     const head = yield* loadHead;
+    if (head.pending !== null) {
+      return yield* unavailable();
+    }
     const nextSequence = head.sequence + 1n;
     const nextDigest = headDigestOf(nextSequence, head.digest);
-    const updated = yield* sql`
-      UPDATE erasure_attempt.controller_head
-      SET sequence = ${nextSequence.toString()},
-          head_digest = ${nextDigest},
-          updated_at = clock_timestamp()
-      WHERE singleton = true
-        AND sequence = ${head.sequence.toString()}
-        AND head_digest = ${head.digest}
-      RETURNING sequence::text
-    `.pipe(Effect.mapError(() => unavailable()));
+    const updated = yield* (
+      requireFreshAnchor
+        ? sql`
+            UPDATE erasure_attempt.controller_head
+            SET sequence = ${nextSequence.toString()},
+                head_digest = ${nextDigest},
+                pending_sequence = ${nextSequence.toString()},
+                updated_at = clock_timestamp()
+            WHERE singleton = true
+              AND sequence = ${head.sequence.toString()}
+              AND head_digest = ${head.digest}
+              AND pending_sequence IS NULL
+            RETURNING sequence::text
+          `
+        : sql`
+            UPDATE erasure_attempt.controller_head
+            SET sequence = ${nextSequence.toString()},
+                head_digest = ${nextDigest},
+                updated_at = clock_timestamp()
+            WHERE singleton = true
+              AND sequence = ${head.sequence.toString()}
+              AND head_digest = ${head.digest}
+              AND pending_sequence IS NULL
+            RETURNING sequence::text
+          `
+    ).pipe(Effect.mapError(() => unavailable()));
     if (updated.length !== 1) {
       return yield* unavailable();
     }
-    if (requireFreshAnchor && anchor !== null) {
-      yield* anchor.advance(nextSequence);
-    }
     return nextSequence;
   });
+
+  const completeAnchor = (nextSequence: bigint) =>
+    requireFreshAnchor && anchor !== null
+      ? Effect.gen(function* mirrorExternalAnchor() {
+          yield* anchor.advance(nextSequence);
+          yield* clearPending(nextSequence);
+        })
+      : Effect.void;
 
   const load = (identity: ErasureAttemptIdentity) =>
     Effect.gen(function* loadAttempt() {
@@ -286,20 +340,31 @@ const buildRegister = (options: {
     mirrorLocalOutcome: (identity, outcome) =>
       Effect.gen(function* mirrorOutcome() {
         yield* ensureFresh;
-        const updated = yield* sql`
-          UPDATE erasure_attempt.attempts
-          SET state = ${outcome}, resolved_at = clock_timestamp()
-          WHERE deployment_epoch = ${identity.deploymentEpoch}
-            AND operation_id = ${identity.operationId}
-            AND principal_id = ${identity.principalId}
-            AND world_id = ${identity.worldRef.worldId}
-            AND realm = ${identity.worldRef.realm}
-            AND state = ${"Registered"}
-          RETURNING state
-        `.pipe(Effect.mapError(() => unavailable()));
-        if (updated.length === 1) {
-          yield* bumpHead;
-          return observe(outcome);
+        const mirrored = yield* sql
+          .withTransaction(
+            Effect.gen(function* mutateAndBump() {
+              const updated = yield* sql`
+                UPDATE erasure_attempt.attempts
+                SET state = ${outcome}, resolved_at = clock_timestamp()
+                WHERE deployment_epoch = ${identity.deploymentEpoch}
+                  AND operation_id = ${identity.operationId}
+                  AND principal_id = ${identity.principalId}
+                  AND world_id = ${identity.worldRef.worldId}
+                  AND realm = ${identity.worldRef.realm}
+                  AND state = ${"Registered"}
+                RETURNING state
+              `.pipe(Effect.mapError(() => unavailable()));
+              if (updated.length === 1) {
+                const next = yield* bumpHeadInTransaction;
+                return { _tag: "bumped" as const, next, state: outcome };
+              }
+              return { _tag: "missing" as const };
+            })
+          )
+          .pipe(Effect.mapError(() => unavailable()));
+        if (mirrored._tag === "bumped") {
+          yield* completeAnchor(mirrored.next);
+          return observe(mirrored.state);
         }
         const existing = yield* load(identity);
         if (existing._tag === "missing") {
@@ -324,27 +389,38 @@ const buildRegister = (options: {
       Effect.gen(function* registerAttempt() {
         yield* ensureFresh;
         const digest = yield* intentionDigestOf(intention);
-        const inserted = yield* sql`
-          INSERT INTO erasure_attempt.attempts (
-            deployment_epoch, operation_id, principal_id, world_id, realm,
-            intention_digest, state
-          ) VALUES (
-            ${identity.deploymentEpoch}, ${identity.operationId},
-            ${identity.principalId}, ${identity.worldRef.worldId},
-            ${identity.worldRef.realm}, ${digest}, ${"Registered"}
+        const registered = yield* sql
+          .withTransaction(
+            Effect.gen(function* insertAndBump() {
+              const inserted = yield* sql`
+                INSERT INTO erasure_attempt.attempts (
+                  deployment_epoch, operation_id, principal_id, world_id, realm,
+                  intention_digest, state
+                ) VALUES (
+                  ${identity.deploymentEpoch}, ${identity.operationId},
+                  ${identity.principalId}, ${identity.worldRef.worldId},
+                  ${identity.worldRef.realm}, ${digest}, ${"Registered"}
+                )
+                ON CONFLICT (deployment_epoch, operation_id) DO NOTHING
+                RETURNING state
+              `.pipe(
+                Effect.catchTag("SqlError", (error: SqlError.SqlError) => {
+                  if (error.reason._tag === "UniqueViolation") {
+                    return Effect.succeed([] as readonly unknown[]);
+                  }
+                  return Effect.fail(unavailable());
+                })
+              );
+              if (inserted.length > 0) {
+                const next = yield* bumpHeadInTransaction;
+                return { _tag: "bumped" as const, next };
+              }
+              return { _tag: "conflict" as const };
+            })
           )
-          ON CONFLICT (deployment_epoch, operation_id) DO NOTHING
-          RETURNING state
-        `.pipe(
-          Effect.catchTag("SqlError", (error: SqlError.SqlError) => {
-            if (error.reason._tag === "UniqueViolation") {
-              return Effect.succeed([] as readonly unknown[]);
-            }
-            return Effect.fail(unavailable());
-          })
-        );
-        if (inserted.length > 0) {
-          yield* bumpHead;
+          .pipe(Effect.mapError(() => unavailable()));
+        if (registered._tag === "bumped") {
+          yield* completeAnchor(registered.next);
           return observe("Registered");
         }
         const existing = yield* load(identity);
@@ -353,6 +429,34 @@ const buildRegister = (options: {
         }
         if (existing.digest !== digest) {
           return yield* conflict();
+        }
+        // Proved Abort of the same intention may retry: re-arm Registered + head.
+        if (existing.state === "Aborted") {
+          const rearmed = yield* sql
+            .withTransaction(
+              Effect.gen(function* rearmAborted() {
+                const updated = yield* sql`
+                  UPDATE erasure_attempt.attempts
+                  SET state = ${"Registered"}, resolved_at = NULL
+                  WHERE deployment_epoch = ${identity.deploymentEpoch}
+                    AND operation_id = ${identity.operationId}
+                    AND intention_digest = ${digest}
+                    AND state = ${"Aborted"}
+                  RETURNING state
+                `.pipe(Effect.mapError(() => unavailable()));
+                if (updated.length !== 1) {
+                  return { _tag: "missing" as const };
+                }
+                const next = yield* bumpHeadInTransaction;
+                return { _tag: "bumped" as const, next };
+              })
+            )
+            .pipe(Effect.mapError(() => unavailable()));
+          if (rearmed._tag === "bumped") {
+            yield* completeAnchor(rearmed.next);
+            return observe("Registered");
+          }
+          return observe("Unknown");
         }
         return observe(existing.state);
       }),

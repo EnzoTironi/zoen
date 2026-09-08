@@ -108,69 +108,70 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
       return yield* new Conflict({ code: "CONFLICT" });
     }
 
-    const result = yield* commitMutation(context, bound, {
-      apply: (receiptRef) =>
-        Effect.gen(function* applyClosing() {
-          const sql = yield* SqlClient.SqlClient;
-          const world = request.worldRef;
-          yield* sql`
+    const closingOutcome = yield* Effect.result(
+      commitMutation(context, bound, {
+        apply: (receiptRef) =>
+          Effect.gen(function* applyClosing() {
+            const sql = yield* SqlClient.SqlClient;
+            const world = request.worldRef;
+            yield* sql`
             SELECT world_id FROM authority.worlds
             WHERE world_id = ${world.worldId} AND realm = ${world.realm}
             FOR UPDATE
           `;
-          // Identity write so a reservation waiting on FOR SHARE cannot keep a
-          // pre-Closing snapshot after we commit (SSI aborts the stale reader).
-          yield* sql`
+            // Identity write so a reservation waiting on FOR SHARE cannot keep a
+            // pre-Closing snapshot after we commit (SSI aborts the stale reader).
+            yield* sql`
             UPDATE authority.worlds
             SET security_revision = security_revision
             WHERE world_id = ${world.worldId} AND realm = ${world.realm}
           `;
-          yield* fenceWorldDisclosures(world);
-          const [progress] = yield* sql`
+            yield* fenceWorldDisclosures(world);
+            const [progress] = yield* sql`
             SELECT phase, erasure_revision::text, closing_operation_id,
               closing_receipt_id, policy_version
             FROM authority.world_erasure_progress
             WHERE world_id = ${world.worldId} AND realm = ${world.realm}
             FOR UPDATE
           `;
-          const current =
-            progress === undefined
-              ? {
-                  closing_operation_id: null,
-                  closing_receipt_id: null,
-                  erasure_revision: "0",
-                  phase: "Active" as const,
-                  policy_version: null,
-                }
-              : yield* Schema.decodeUnknownEffect(ProgressRow)(progress).pipe(
-                  Effect.mapError(
-                    () => new Unavailable({ code: "UNAVAILABLE" })
-                  )
-                );
-          if (current.phase !== "Active") {
-            if (
-              current.closing_operation_id === request.operationId &&
-              current.closing_receipt_id !== null
-            ) {
-              return yield* new Unavailable({ code: "UNAVAILABLE" });
+            const current =
+              progress === undefined
+                ? {
+                    closing_operation_id: null,
+                    closing_receipt_id: null,
+                    erasure_revision: "0",
+                    phase: "Active" as const,
+                    policy_version: null,
+                  }
+                : yield* Schema.decodeUnknownEffect(ProgressRow)(progress).pipe(
+                    Effect.mapError(
+                      () => new Unavailable({ code: "UNAVAILABLE" })
+                    )
+                  );
+            if (current.phase !== "Active") {
+              if (
+                current.closing_operation_id === request.operationId &&
+                current.closing_receipt_id !== null
+              ) {
+                return yield* new Unavailable({ code: "UNAVAILABLE" });
+              }
+              return yield* new Conflict({ code: "CONFLICT" });
             }
-            return yield* new Conflict({ code: "CONFLICT" });
-          }
-          const expected = request.input.expectedErasureRevision;
-          const matches =
-            expected === null
-              ? current.erasure_revision === "0"
-              : expected === current.erasure_revision;
-          if (!matches) {
-            return yield* new Stale({ code: "STALE" });
-          }
-          const nextRevision = yield* Schema.decodeEffect(Revision)(
-            (BigInt(current.erasure_revision) + 1n).toString()
-          ).pipe(
-            Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
-          );
-          yield* progress === undefined
-            ? sql`
+            const expected = request.input.expectedErasureRevision;
+            const matches =
+              expected === null
+                ? current.erasure_revision === "0"
+                : expected === current.erasure_revision;
+            if (!matches) {
+              return yield* new Stale({ code: "STALE" });
+            }
+            const nextRevision = yield* Schema.decodeEffect(Revision)(
+              (BigInt(current.erasure_revision) + 1n).toString()
+            ).pipe(
+              Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+            );
+            yield* progress === undefined
+              ? sql`
               INSERT INTO authority.world_erasure_progress (
                 world_id, realm, phase, erasure_revision,
                 closing_operation_id, closing_receipt_id, policy_version
@@ -179,7 +180,7 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
                 ${request.operationId}, ${receiptRef}, ${request.input.policyVersion}
               )
             `
-            : sql`
+              : sql`
               UPDATE authority.world_erasure_progress
               SET phase = ${"Closing"},
                   erasure_revision = ${nextRevision},
@@ -190,7 +191,7 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
               WHERE world_id = ${world.worldId} AND realm = ${world.realm}
                 AND phase = ${"Active"}
             `;
-          yield* sql`
+            yield* sql`
             INSERT INTO authority.world_erasure_receipts (
               world_id, realm, operation_id, principal_id, receipt_id,
               intention_digest, policy_version, erasure_revision
@@ -200,23 +201,34 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
               ${bound.digest}, ${request.input.policyVersion}, ${nextRevision}
             )
           `;
-          const stored = yield* Schema.decodeEffect(WorldErasureRequested)({
-            _tag: "WorldErasureRequested",
-            attemptExternalState: "Registered",
-            phase: "Closing",
-            policyVersion: request.input.policyVersion,
-            receiptRef,
-            restoreAfterErasure: false,
-            revision: nextRevision,
-            worldRef: world,
-          }).pipe(
-            Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
-          );
-          return { changedDomains: [], result: stored };
-        }),
-      basis: null,
-      domains: ["membership"],
-    });
+            const stored = yield* Schema.decodeEffect(WorldErasureRequested)({
+              _tag: "WorldErasureRequested",
+              attemptExternalState: "Registered",
+              phase: "Closing",
+              policyVersion: request.input.policyVersion,
+              receiptRef,
+              restoreAfterErasure: false,
+              revision: nextRevision,
+              worldRef: world,
+            }).pipe(
+              Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+            );
+            return { changedDomains: [], result: stored };
+          }),
+        basis: null,
+        domains: ["membership"],
+      })
+    );
+    if (closingOutcome._tag === "Failure") {
+      // Proved non-erasure local outcome (live emission, conflict, stale, …):
+      // mirror Abort so content is not wedged Registered (F01/F06).
+      const aborted = yield* register.mirrorLocalOutcome(identity, "Aborted");
+      if (aborted.state !== "Aborted" && aborted.state !== "Unknown") {
+        return yield* new Unavailable({ code: "UNAVAILABLE" });
+      }
+      return yield* closingOutcome.failure;
+    }
+    const result = closingOutcome.success;
 
     const closed = yield* Schema.decodeUnknownEffect(WorldErasureRequested)(
       result

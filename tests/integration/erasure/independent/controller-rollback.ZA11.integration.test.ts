@@ -198,7 +198,8 @@ const withIndependentControllerRuntime = <A, E, R>(
     );
     const register = anchoredLocalErasureAttemptRegisterLayer.pipe(
       Layer.provide(controllerPg),
-      Layer.provide(fileErasureExternalAnchorLayer(anchorPath))
+      Layer.provide(fileErasureExternalAnchorLayer(anchorPath)),
+      Layer.provide(NodeServices.layer)
     );
 
     return yield* Effect.scoped(

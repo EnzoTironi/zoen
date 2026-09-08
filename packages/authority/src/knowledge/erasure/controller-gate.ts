@@ -28,4 +28,4 @@ export const requireControllerAlignedContent = Effect.fn(
 /** Full/hosted controller activation — fail closed unless H-01 + G-OPS qualify. */
 export const assertFullControllerNotActivated = (
   qualification: ErasureControllerQualification
-): boolean => isFullIndependentControllerAdmitted(qualification);
+): boolean => !isFullIndependentControllerAdmitted(qualification);

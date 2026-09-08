@@ -18,10 +18,7 @@ export class ErasureExternalAnchor extends Context.Service<
   ErasureExternalAnchor,
   {
     /** Current admitted monotone sequence (never decreases). */
-    readonly inspect: () => EffectType.Effect<
-      ErasureAnchorObservation,
-      Unavailable
-    >;
+    readonly inspect: EffectType.Effect<ErasureAnchorObservation, Unavailable>;
     /**
      * Advance the admitted sequence to at least `sequence`. Refuses to move
      * backward; equal is a no-op replay.
@@ -39,7 +36,7 @@ export class ErasureExternalAnchor extends Context.Service<
     ErasureExternalAnchor,
     ErasureExternalAnchor.of({
       advance: () => failUnavailable(),
-      inspect: () => failUnavailable(),
+      inspect: failUnavailable(),
     })
   );
 }

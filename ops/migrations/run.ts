@@ -96,11 +96,12 @@ export const applyDisclosureMigrations = Effect.fn(
       "6_durable_disclosure": sql.unsafe(disclosure).pipe(Effect.asVoid),
     }),
   });
-  // Apply progress / orphaned-recovery / world-closing / object-write DDL without
-  // migrator ids 10/12/14/15 here: Effect migrator skips any id <= latest, so
-  // recording them before 7/8 would skip identity events. Erasure migrator
-  // records 10/12/14/15 after 7–11. Capture admission (ZA-09/ZA-10) needs
-  // progress + object_write_attempts DDL+grants on retained installs too
+  // Apply progress / orphaned-recovery / world-closing / object-write /
+  // attempt-register / controller-head DDL without migrator ids 9/10/12/14/15/17
+  // here: Effect migrator skips any id <= latest, so recording them before 7/8
+  // would skip identity events. Erasure migrator records those ids after 7–11.
+  // Capture admission (ZA-09/ZA-10/ZA-11) needs progress + object_write_attempts
+  // + erasure_attempt observeWorld DDL+grants on retained installs too
   // (F02: schema without enabling erasure).
   const progress = yield* fs.readFileString(
     fileURLToPath(new URL("010_world_erasure_closing.sql", import.meta.url))
@@ -120,8 +121,19 @@ export const applyDisclosureMigrations = Effect.fn(
     fileURLToPath(new URL("015_object_write_settlement.sql", import.meta.url))
   );
   yield* sql.withTransaction(sql.unsafe(objectWrite));
+  // ZA-11: capture admission consults controller observeWorld even on retained
+  // installs (F02 schema without enabling erasure). Apply attempt + head DDL
+  // without migrator ids 9/17 here so identity events 7/8 still record.
+  const attemptRegister = yield* fs.readFileString(
+    fileURLToPath(new URL("009_erasure_attempt_register.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(attemptRegister));
+  const controllerHead = yield* fs.readFileString(
+    fileURLToPath(new URL("017_erasure_controller_head.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(controllerHead));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
-  // Progress + object-write admit grants for capture on retained paths (F02).
+  // Progress + object-write + controller observe grants for capture (F02).
   yield* sql.withTransaction(grantContentBarrierAdmit(roles.authority));
   return [...base, ...durable];
 });
