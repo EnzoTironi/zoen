@@ -56,7 +56,7 @@ COPY ops/containers/all-in-one-entrypoint.sh /usr/local/bin/all-in-one-entrypoin
 COPY ops/containers/rustfs-ensure-app-user.py /usr/local/bin/rustfs-ensure-app-user.py
 COPY ops/containers/rustfs-ensure-app-user.py /app/ops/containers/rustfs-ensure-app-user.py
 COPY apps/server/sql ./apps/server/sql
-COPY apps/server/src/identity/worlds/grants.ts ./apps/server/src/identity/worlds/grants.ts
+COPY apps/server/src/identity/grants.ts ./apps/server/src/identity/grants.ts
 COPY apps/server/src/all-in-one-release-align.ts ./apps/server/src/all-in-one-release-align.ts
 COPY apps/server/src/all-in-one-release-apply.ts ./apps/server/src/all-in-one-release-apply.ts
 

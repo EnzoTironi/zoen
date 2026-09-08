@@ -5,8 +5,8 @@ import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { requireControllerAlignedContent } from "../../knowledge/erasure/controller-gate.js";
-import { requireRestoreAlignedContent } from "../../knowledge/erasure/restore-activation.js";
+import { requireControllerAlignedContent } from "../../erasure/controller-gate.js";
+import { requireRestoreAlignedContent } from "../../erasure/restore-activation.js";
 
 const ProgressAdmission = Schema.Struct({
   erasure_revision: Revision,

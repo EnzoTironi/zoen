@@ -15,7 +15,7 @@ import { canonicalJson } from "@zoen/ontology/values/canonical";
 import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { IdentityAuth } from "../../../../apps/server/src/identity/worlds/identity.ts";
+import { IdentityAuth } from "../../../../apps/server/src/identity/identity.ts";
 import {
   asCurrentCredential,
   realignIntentDigest,

@@ -12,11 +12,11 @@ import { Deferred, Effect, Fiber, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/database.ts";
 import {
   createAccount,
   postAuth,
-} from "../../../../apps/server/test/identity/worlds/http.ts";
+} from "../../../../apps/server/test/identity/http.ts";
 import { configuration } from "../commit/fixture.ts";
 
 const encode = (value: unknown) =>

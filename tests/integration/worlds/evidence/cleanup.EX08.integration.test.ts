@@ -8,8 +8,8 @@ import { createPersonalWorld } from "../../../../packages/ontology/src/commit/ge
 import {
   reserveCapture,
   stageCapture,
-} from "../../../../packages/ontology/src/evidence/worlds/capture.js";
-import { sweepExpiredCaptures } from "../../../../packages/ontology/src/evidence/worlds/cleanup.js";
+} from "../../../../packages/ontology/src/evidence/capture.js";
+import { sweepExpiredCaptures } from "../../../../packages/ontology/src/evidence/cleanup.js";
 import { EvidenceObjectStore } from "../../../../packages/ontology/src/ports/worlds/storage.js";
 import { configuration, makeInput } from "../commit/fixture.js";
 

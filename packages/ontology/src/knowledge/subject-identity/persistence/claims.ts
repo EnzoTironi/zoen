@@ -3,7 +3,7 @@ import { QuotaExceeded } from "@zoen/contracts/worlds/errors";
 import type { SubjectKey, WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 
-import { readClaims } from "../../worlds/claims.js";
+import { readClaims } from "../../claims.js";
 
 /** Authorized closure members only; caller supplies the closed anchor set. */
 export const readClosureClaims = Effect.fn("subjectIdentity.readClosureClaims")(

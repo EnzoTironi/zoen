@@ -4,7 +4,7 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
+import { createAccount } from "../../../../apps/server/test/identity/http.js";
 import {
   GrantWorldReadAccess,
   InspectWorldAccess,

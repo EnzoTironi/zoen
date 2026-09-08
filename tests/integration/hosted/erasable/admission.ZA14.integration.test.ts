@@ -25,9 +25,9 @@ import {
   gatesAdmitFullHostedErased,
   refuseProtectedResource,
 } from "../../../../packages/ontology/src/hosted/erasable/admission.js";
-import { purgeWorldContent } from "../../../../packages/ontology/src/knowledge/erasure/handlers/purge.js";
-import { requestWorldErasure } from "../../../../packages/ontology/src/knowledge/erasure/handlers/request.js";
-import { applyWorldErasureSchema } from "../../../../packages/ontology/src/knowledge/erasure/schema.js";
+import { purgeWorldContent } from "../../../../packages/ontology/src/erasure/handlers/purge.js";
+import { requestWorldErasure } from "../../../../packages/ontology/src/erasure/handlers/request.js";
+import { applyWorldErasureSchema } from "../../../../packages/ontology/src/erasure/schema.js";
 import {
   ErasureAttemptRegister,
   blocksWorldContentAdmission,

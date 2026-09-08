@@ -49,8 +49,8 @@ import { responseSecurity } from "./http/security.ts";
 import { makeSharingHttpGroup } from "./http/sharing.ts";
 import { makeSubjectIdentityHttpGroup } from "./http/subject-identity.ts";
 import { makeWorldsHttpGroup } from "./http/worlds.ts";
-import { IdentityConfig } from "./identity/worlds/configuration.ts";
-import { makeIdentityLayer } from "./identity/worlds/identity.ts";
+import { IdentityConfig } from "./identity/configuration.ts";
+import { makeIdentityLayer } from "./identity/identity.ts";
 import { captureMaintenance } from "./maintenance/captures.ts";
 
 export interface ApplicationConfig {

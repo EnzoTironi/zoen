@@ -1,6 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
 
-import { assertFullControllerNotActivated } from "../../../src/knowledge/erasure/controller-gate.js";
+import { assertFullControllerNotActivated } from "../../../src/erasure/controller-gate.js";
 import {
   isFullIndependentControllerAdmitted,
   localNarrowControllerQualification,

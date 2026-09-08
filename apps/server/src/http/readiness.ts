@@ -7,7 +7,7 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { S3Health } from "../adapters/object-storage/worlds/health.ts";
 import { checkAuthorityRole } from "../adapters/postgres/worlds/authority-role.ts";
-import { IdentityAuth } from "../identity/worlds/identity.ts";
+import { IdentityAuth } from "../identity/identity.ts";
 
 export const readinessRoutes = Layer.effectDiscard(
   Effect.gen(function* buildReadinessRoutes() {

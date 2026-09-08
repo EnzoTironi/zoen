@@ -9,7 +9,7 @@ import {
   sdk,
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
+import { createAccount } from "../../../../apps/server/test/identity/http.js";
 import {
   GrantWorldReadAccess,
   InspectWorldAccess,
@@ -29,12 +29,12 @@ import {
   revokeWorldReadAccess,
 } from "../../../../packages/ontology/src/access/sharing/mutation.js";
 import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
-import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.js";
-import { openEvidence } from "../../../../packages/ontology/src/evidence/worlds/open.js";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/import.js";
+import { openEvidence } from "../../../../packages/ontology/src/evidence/open.js";
 import { answerQuestion } from "../../../../packages/ontology/src/knowledge/corrections/answer.js";
 import { proposeCorrection } from "../../../../packages/ontology/src/knowledge/corrections/propose.js";
 import { undoCorrection } from "../../../../packages/ontology/src/knowledge/corrections/undo.js";
-import { inspect } from "../../../../packages/ontology/src/knowledge/worlds/inspect.js";
+import { inspect } from "../../../../packages/ontology/src/knowledge/inspect.js";
 import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.js";
 import { configuration } from "../../worlds/commit/fixture.js";
 import {

@@ -7,9 +7,9 @@ import {
 } from "@zoen/contracts/erasure/operations";
 import { CreatePersonalWorld } from "@zoen/contracts/worlds/operations";
 import { createPersonalWorld } from "@zoen/ontology/commit/genesis";
-import { reserveCapture } from "@zoen/ontology/evidence/worlds/capture";
-import { purgeWorldContent } from "@zoen/ontology/knowledge/erasure/handlers/purge";
-import { requestWorldErasure } from "@zoen/ontology/knowledge/erasure/handlers/request";
+import { purgeWorldContent } from "@zoen/ontology/erasure/handlers/purge";
+import { requestWorldErasure } from "@zoen/ontology/erasure/handlers/request";
+import { reserveCapture } from "@zoen/ontology/evidence/capture";
 import { Deferred, Effect, Fiber, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

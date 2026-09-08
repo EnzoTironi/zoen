@@ -8,7 +8,7 @@ import { SqlClient } from "effect/unstable/sql";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { Digest } from "../../../../packages/contracts/src/worlds/values.js";
 import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
-import { isRestoreEligible } from "../../../../packages/ontology/src/knowledge/erasure/copy-catalog.js";
+import { isRestoreEligible } from "../../../../packages/ontology/src/erasure/copy-catalog.js";
 import {
   applyControlledCopyCatalogSchema,
   localErasureCopyCatalogLayer,

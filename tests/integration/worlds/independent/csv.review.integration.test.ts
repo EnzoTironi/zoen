@@ -5,8 +5,8 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
-import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/database.ts";
+import { createAccount } from "../../../../apps/server/test/identity/http.ts";
 import {
   EvidenceImported,
   EvidenceOpened,

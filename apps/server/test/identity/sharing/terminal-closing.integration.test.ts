@@ -8,8 +8,8 @@ import { Presence } from "@zoen/ontology/ports/worlds/context";
 import { DateTime, Deferred, Effect, Fiber, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withIdentityDatabase } from "../worlds/database.ts";
-import { cookieCredential, createAccount, postAuth } from "../worlds/http.ts";
+import { withIdentityDatabase } from "../database.ts";
+import { cookieCredential, createAccount, postAuth } from "../http.ts";
 
 const target = Effect.gen(function* disclosureTarget() {
   const now = yield* DateTime.now;

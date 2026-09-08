@@ -11,7 +11,7 @@ import { createPersonalWorld } from "../../../../packages/ontology/src/commit/ge
 import { readCut } from "../../../../packages/ontology/src/commit/guards.js";
 import { bindWorldIntent } from "../../../../packages/ontology/src/commit/intent.js";
 import { commitMutation } from "../../../../packages/ontology/src/commit/mutation.js";
-import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.js";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/import.js";
 import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.js";
 import { configuration, makeInput } from "../commit/fixture.js";
 

@@ -18,10 +18,11 @@ packages/
   contracts/src/          # Effect Schema, HttpApi, operações e DTOs públicos
   ontology/src/
     commit/               # única fronteira de mutação e idempotência
-    access/               # direitos e disclosure
-    evidence/             # captura, retenção e referências
-    knowledge/            # interpretação, identidade e correção
-    semantic/             # executor e handlers por família
+    access/               # direitos e membership/disclosure
+    evidence/             # captura, import, open e cleanup
+    knowledge/            # claims, interpretação, correções e subject identity
+    erasure/              # política World-wide de suppression/purge
+    semantic/             # executor e composição explícita por família
 ops/
   compose.yaml            # PostgreSQL e S3 compatível reais
   migrations/             # sequência global, somente integrador

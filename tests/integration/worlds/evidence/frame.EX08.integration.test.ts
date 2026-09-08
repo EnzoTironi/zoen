@@ -12,10 +12,10 @@ import {
   OpenEvidence,
 } from "../../../../packages/contracts/src/worlds/operations.js";
 import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
-import { sweepExpiredCaptures } from "../../../../packages/ontology/src/evidence/worlds/cleanup.js";
-import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.js";
-import { openEvidence } from "../../../../packages/ontology/src/evidence/worlds/open.js";
-import { inspect } from "../../../../packages/ontology/src/knowledge/worlds/inspect.js";
+import { sweepExpiredCaptures } from "../../../../packages/ontology/src/evidence/cleanup.js";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/import.js";
+import { openEvidence } from "../../../../packages/ontology/src/evidence/open.js";
+import { inspect } from "../../../../packages/ontology/src/knowledge/inspect.js";
 import {
   EvidenceObjectStore,
   ObjectLocation,

@@ -12,8 +12,8 @@ import {
 } from "../../../../packages/contracts/src/worlds/operations.js";
 import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
 import { readCut } from "../../../../packages/ontology/src/commit/guards.js";
-import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.js";
-import { inspect } from "../../../../packages/ontology/src/knowledge/worlds/inspect.js";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/import.js";
+import { inspect } from "../../../../packages/ontology/src/knowledge/inspect.js";
 import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.js";
 import { configuration, makeInput } from "../commit/fixture.js";
 

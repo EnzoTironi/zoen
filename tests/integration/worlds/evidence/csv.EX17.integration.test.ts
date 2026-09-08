@@ -12,8 +12,8 @@ import {
   sdk,
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
-import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/database.js";
+import { createAccount } from "../../../../apps/server/test/identity/http.js";
 import {
   EvidenceImported,
   EvidenceOpened,
@@ -23,8 +23,8 @@ import {
 import {
   reserveCapture,
   stageCapture,
-} from "../../../../packages/ontology/src/evidence/worlds/capture.js";
-import { sweepExpiredCaptures } from "../../../../packages/ontology/src/evidence/worlds/cleanup.js";
+} from "../../../../packages/ontology/src/evidence/capture.js";
+import { sweepExpiredCaptures } from "../../../../packages/ontology/src/evidence/cleanup.js";
 import {
   Presence,
   VerifiedRequestContext,

@@ -8,8 +8,8 @@ import type { Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
-import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/database.ts";
+import { createAccount } from "../../../../apps/server/test/identity/http.ts";
 import {
   GrantWorldReadAccess,
   InspectWorldAccess,
@@ -35,12 +35,12 @@ import {
   AuthorityInstallationSchema,
 } from "../../../../packages/ontology/src/commit/configuration.ts";
 import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.ts";
-import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.ts";
-import { openEvidence } from "../../../../packages/ontology/src/evidence/worlds/open.ts";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/import.ts";
+import { openEvidence } from "../../../../packages/ontology/src/evidence/open.ts";
 import { answerQuestion } from "../../../../packages/ontology/src/knowledge/corrections/answer.ts";
 import { proposeCorrection } from "../../../../packages/ontology/src/knowledge/corrections/propose.ts";
 import { undoCorrection } from "../../../../packages/ontology/src/knowledge/corrections/undo.ts";
-import { inspect } from "../../../../packages/ontology/src/knowledge/worlds/inspect.ts";
+import { inspect } from "../../../../packages/ontology/src/knowledge/inspect.ts";
 import {
   Presence,
   VerifiedRequestContext,

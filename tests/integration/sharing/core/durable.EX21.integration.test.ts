@@ -14,7 +14,7 @@ import {
 } from "effect";
 import { SqlClient, SqlError } from "effect/unstable/sql";
 
-import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
+import { createAccount } from "../../../../apps/server/test/identity/http.js";
 import {
   GrantWorldReadAccess,
   RevokeWorldReadAccess,

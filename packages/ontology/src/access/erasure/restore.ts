@@ -2,7 +2,7 @@ import { Unavailable } from "@zoen/contracts/worlds/errors";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 
-import { requireRestoreAlignedContent } from "../../knowledge/erasure/restore-activation.js";
+import { requireRestoreAlignedContent } from "../../erasure/restore-activation.js";
 import {
   allowsContentServingReadiness,
   currentRestoreActivationQualification,

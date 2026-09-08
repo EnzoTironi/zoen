@@ -29,17 +29,18 @@ import {
 import { parseSharingBytes } from "../access/sharing/request.js";
 import { authorizeWorld, operationCapability } from "../access/world.js";
 import { createPersonalWorld } from "../commit/genesis.js";
-import { importEvidence } from "../evidence/worlds/import.js";
-import { openEvidence } from "../evidence/worlds/open.js";
+import { inspectWorldErasure } from "../erasure/handlers/inspect.js";
+import { purgeWorldContent } from "../erasure/handlers/purge.js";
+import { requestWorldErasure } from "../erasure/handlers/request.js";
+import { parseErasureBytes } from "../erasure/request.js";
+import { requireRestoreCredentialPromotion } from "../erasure/restore-activation.js";
+import { importEvidence } from "../evidence/import.js";
+import { openEvidence } from "../evidence/open.js";
 import { answerQuestion } from "../knowledge/corrections/answer.js";
 import { proposeCorrection } from "../knowledge/corrections/propose.js";
 import { parseCorrectionBytes } from "../knowledge/corrections/request.js";
 import { undoCorrection } from "../knowledge/corrections/undo.js";
-import { inspectWorldErasure } from "../knowledge/erasure/handlers/inspect.js";
-import { purgeWorldContent } from "../knowledge/erasure/handlers/purge.js";
-import { requestWorldErasure } from "../knowledge/erasure/handlers/request.js";
-import { parseErasureBytes } from "../knowledge/erasure/request.js";
-import { requireRestoreCredentialPromotion } from "../knowledge/erasure/restore-activation.js";
+import { inspect } from "../knowledge/inspect.js";
 import {
   inspectIdentityRecovery,
   inspectSubjectIdentity,
@@ -51,7 +52,6 @@ import {
 } from "../knowledge/subject-identity/handlers/propose.js";
 import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.js";
 import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
-import { inspect } from "../knowledge/worlds/inspect.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
 import { ErasureAttemptRegister } from "../ports/erasure/attempt-register.js";
 import { ErasureCopyCatalog } from "../ports/erasure/copy-catalog.js";

@@ -4,7 +4,7 @@ Estado: **contrato congelado para implementação por root em 2026-09-05, após 
 
 ## Base observada e decisões propostas
 
-Este candidato parte de [invariants.md](../invariants.md), [worlds.md](worlds.md) e do caminho executável atual: `packages/contracts/src/worlds/{values,evidence,operations}.ts`, `packages/ontology/src/values/{json,canonical}.ts`, `packages/ontology/src/evidence/worlds/{import,capture,open}.ts`, `packages/ontology/src/ports/worlds/storage.ts`, `apps/server/src/adapters/object-storage/worlds/s3.ts` e leitores web/CLI. Nenhuma referência histórica foi necessária.
+Este candidato parte de [invariants.md](../invariants.md), [worlds.md](worlds.md) e do caminho executável atual: `packages/contracts/src/worlds/{values,evidence,operations}.ts`, `packages/ontology/src/values/{json,canonical}.ts`, `packages/ontology/src/evidence/{import,capture,open}.ts`, `packages/ontology/src/ports/worlds/storage.ts`, `apps/server/src/adapters/object-storage/worlds/s3.ts` e leitores web/CLI. Nenhuma referência histórica foi necessária.
 
 O envelope atual contém **`input.document`**, uma string com o texto JSON original; não há campo executável `documentJson`. O parser JSON estrito valida duplicatas, Unicode e limites. A importação e `intentDigest` validam o documento interno separadamente. O adapter S3 fixa `application/json` tanto no PUT quanto na conferência do GET. Acrescentar apenas um parser no frontend deixaria esses contratos incoerentes.
 
@@ -109,7 +109,7 @@ A implementação segue EX16–EX19 e as provas estão em [csv-local.md](../veri
 | --- | --- | --- |
 | Contratos públicos | `packages/contracts/src/worlds/operations.ts`, `values.ts` e testes correspondentes | União exata de input, formato compartilhado e MIME de EvidenceOpened; compatibilidade de envelope legado |
 | Parser e normalizador | `packages/ontology/src/values/csv.ts` e `document.ts` novos; `json.ts`, `canonical.ts`; `packages/ontology/test/values/**` | Gramática limitada, uma validação de documento para import e digest, sem mudar canonicalização legada |
-| Captura e admissão | `packages/ontology/src/evidence/worlds/{import,capture,open,cleanup}.ts`, `ports/worlds/storage.ts`; `tests/integration/worlds/evidence/**` | Formato vinculado à captura/localização e mesma admissão/retention/replay |
+| Captura e admissão | `packages/ontology/src/evidence/{import,capture,open,cleanup}.ts`, `ports/worlds/storage.ts`; `tests/integration/worlds/evidence/**` | Formato vinculado à captura/localização e mesma admissão/retention/replay |
 | Adapter S3 | `apps/server/src/adapters/object-storage/worlds/s3.ts` e testes reais em `apps/server/test/adapters/object-storage/worlds/**` | MIME correto, verificação fechada e recuperação reais nos dois formatos |
 | Web | `apps/web/src/features/worlds/{feature,requests,file,client,presentation}.ts*`; helpers/componentes novos somente se consumidos; testes de features/integration | Seletor explícito, raw text intacto, coordenada lógica/evidência CSV e jornadas reais |
 | CLI | `apps/cli/src/worlds/{command,input,input-stream}.ts` e testes CLI/integração | Flag explícita, raw stdin/file preservado, mesmo operationId e executor |
