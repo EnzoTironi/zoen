@@ -9,6 +9,7 @@ import {
 } from "@zoen/contracts/eve/values";
 import { EveJournal } from "@zoen/ontology/ports/eve/journal";
 import { EveOpenCodeZen } from "@zoen/ontology/ports/eve/opencode-zen";
+import { EveTurnService } from "@zoen/ontology/ports/eve/turn-service";
 import { PrincipalId } from "@zoen/ontology/ports/worlds/context";
 import { Effect, Schema } from "effect";
 
@@ -106,3 +107,26 @@ describe("ZA-17 product Eve composition admission", () => {
       })
   );
 });
+
+it.effect(
+  "ZA-19 grounding flag still fails closed without text profile / G-PROVIDER",
+  () =>
+    Effect.gen(function* groundedStillBlocked() {
+      const surface = yield* makeProductEveSurface(true, {
+        evidenceGroundingQualified: true,
+      });
+      yield* Effect.gen(function* assertBlocked() {
+        const zen = yield* EveOpenCodeZen;
+        const turns = yield* EveTurnService;
+        const zenExit = yield* Effect.exit(
+          zen.completeChat({
+            conversationId,
+            userText: "ping",
+          })
+        );
+        // groundSubject without DB/context rights → fails closed (Blocked or Unavailable)
+        expect(zenExit._tag).toBe("Failure");
+        expect(turns).toBeDefined();
+      }).pipe(Effect.provide(surface));
+    })
+);

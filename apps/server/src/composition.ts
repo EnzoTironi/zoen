@@ -24,7 +24,6 @@ import {
   isProductEveAdmitted,
 } from "@zoen/ontology/ports/eve/admission";
 import { EveJournal } from "@zoen/ontology/ports/eve/journal";
-import { EveOpenCodeZen } from "@zoen/ontology/ports/eve/opencode-zen";
 import {
   DataPolicy,
   DataPolicySchema,
@@ -41,6 +40,8 @@ import { makeDisclosureFenceLayer } from "./adapters/postgres/disclosure/fence.t
 import { checkAuthorityRole } from "./adapters/postgres/worlds/authority-role.ts";
 import { makeWorldsPostgresLayer } from "./adapters/postgres/worlds/postgres.ts";
 import { eveJournalLayerForUrl } from "./eve/journal-layer.ts";
+import { blockedModelPortLayer } from "./eve/model-port.ts";
+import { groundedEveTurnServiceLayer } from "./eve/turn-service.ts";
 import { makeCorrectionHttpGroup } from "./http/corrections.ts";
 import { makeErasureHttpGroup } from "./http/erasure.ts";
 import { makeEveHttpGroup } from "./http/eve.ts";
@@ -99,31 +100,42 @@ export const hostedAdmissionLayerFor = (
     : Layer.empty;
 
 /**
- * Product Eve surface (ZA-17/ZA-18).
+ * Product Eve surface (ZA-17/ZA-18/ZA-19).
  * OpenCode key alone never admits live Zen. Durable journal installs only when
- * a restricted journal DB URL is configured (G-RESOURCES). Product Eve stays
- * fail-closed until ZA-19/ZA-20 also qualify — do not set activated from ZA-18 alone.
+ * a restricted journal DB URL is configured (G-RESOURCES). Grounded TurnService
+ * + ModelPort wire here; G-PROVIDER missing keeps ModelPort blocked. Product Eve
+ * stays fail-closed until ZA-20 text-profile acceptance — do not set activated.
  */
 export const makeProductEveSurface = (
   openCodeKeyPresent: boolean,
-  options?: { readonly eveJournalDatabaseUrl?: Redacted.Redacted }
+  options?: {
+    readonly eveJournalDatabaseUrl?: Redacted.Redacted;
+    readonly evidenceGroundingQualified?: boolean;
+  }
 ) => {
   const durableJournalQualified = options?.eveJournalDatabaseUrl !== undefined;
+  const evidenceGroundingQualified =
+    options?.evidenceGroundingQualified === true;
   const admission = currentProductEveAdmissionInput(openCodeKeyPresent, {
     durableJournalQualified,
+    evidenceGroundingQualified,
   });
   if (isProductEveAdmitted(admission)) {
-    // Tripwire: all gates true without grounding/live layers is unsafe.
+    // Tripwire: all gates true without live provider + profile proof is unsafe.
     return Effect.die(
-      "ZA-17/18: product Eve admitted without grounding/profile layers"
+      "ZA-17/19: product Eve admitted without G-PROVIDER/profile layers"
     );
   }
   const journalLayer =
     options?.eveJournalDatabaseUrl === undefined
       ? EveJournal.blockedProvidersLayer
       : eveJournalLayerForUrl(options.eveJournalDatabaseUrl);
+  // G-PROVIDER: never install live ModelPort from this PR (capability disabled).
+  const modelLayer = blockedModelPortLayer;
+  // Grounded TurnService is always composed after ZA-19; admission flag records proof.
+  void evidenceGroundingQualified;
   return Effect.succeed(
-    Layer.mergeAll(journalLayer, EveOpenCodeZen.blockedLayer)
+    Layer.mergeAll(journalLayer, modelLayer, groundedEveTurnServiceLayer)
   );
 };
 
@@ -195,11 +207,15 @@ export const makeApplication = (config: ApplicationConfig) =>
       const restoreActivation = ErasureRestoreActivation.unqualifiedLayer;
       // ZA-17/18: key alone must not admit stubMemory or live Zen.
       // Journal URL wires durable actor-bound journal; Zen stays blocked.
+      // ZA-19: grounded TurnService/ModelPort composed; G-PROVIDER still blocked.
       const eveSurface = yield* makeProductEveSurface(
         config.openCodeZen !== undefined,
-        config.eveJournalDatabaseUrl === undefined
-          ? undefined
-          : { eveJournalDatabaseUrl: config.eveJournalDatabaseUrl }
+        {
+          evidenceGroundingQualified: true,
+          ...(config.eveJournalDatabaseUrl === undefined
+            ? {}
+            : { eveJournalDatabaseUrl: config.eveJournalDatabaseUrl }),
+        }
       );
       const infrastructure = Layer.mergeAll(
         Layer.effectDiscard(checkAuthorityRole).pipe(

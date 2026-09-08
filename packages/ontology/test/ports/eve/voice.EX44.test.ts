@@ -18,6 +18,7 @@ import { Effect, Layer, Redacted, Schema } from "effect";
 import { EveJournal } from "../../../src/ports/eve/journal.js";
 import type { EveFetch } from "../../../src/ports/eve/opencode-zen.js";
 import { EveOpenCodeZen } from "../../../src/ports/eve/opencode-zen.js";
+import { EveTurnService } from "../../../src/ports/eve/turn-service.js";
 import { runEveVoiceTurn } from "../../../src/ports/eve/voice.js";
 import { PrincipalId } from "../../../src/ports/worlds/context.js";
 
@@ -71,7 +72,8 @@ const mockOkFetch: EveFetch = () =>
 
 const zenLayer = Layer.mergeAll(
   EveJournal.stubMemoryLayer,
-  EveOpenCodeZen.liveLayer(settings, mockOkFetch)
+  EveOpenCodeZen.liveLayer(settings, mockOkFetch),
+  EveTurnService.legacyWithoutGroundingLayer
 );
 
 const MockSpeechRecognition = function MockSpeechRecognition() {

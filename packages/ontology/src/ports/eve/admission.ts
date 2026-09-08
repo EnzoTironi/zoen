@@ -23,17 +23,22 @@ export interface ProductEveAdmissionInput {
 }
 
 /**
- * Snapshot of current tip proofs. All qualification flags stay false until
- * later tickets land real durable journal + grounding + profile acceptance.
+ * Snapshot of current tip proofs. Text-profile acceptance stays false until
+ * ZA-20. Evidence grounding may be marked when ZA-19 composition wires tools;
+ * G-PROVIDER (live Zen) remains a separate qualification gate.
  */
 export const currentProductEveAdmissionInput = (
   openCodeKeyPresent: boolean,
-  options?: { readonly durableJournalQualified?: boolean }
+  options?: {
+    readonly durableJournalQualified?: boolean;
+    readonly evidenceGroundingQualified?: boolean;
+  }
 ): ProductEveAdmissionInput => ({
   // ZA-18 sets durableJournalQualified when a restricted journal identity is wired.
-  // Evidence grounding + text profile remain false until ZA-19/ZA-20.
+  // ZA-19 sets evidenceGroundingQualified when grounded TurnService is composed.
+  // Text profile remains false until ZA-20 — product Eve stays unadmitted.
   durableJournalQualified: options?.durableJournalQualified === true,
-  evidenceGroundingQualified: false,
+  evidenceGroundingQualified: options?.evidenceGroundingQualified === true,
   openCodeKeyPresent,
   textProfileAccepted: false,
 });

@@ -9,7 +9,7 @@ import { HttpApiBuilder } from "effect/unstable/httpapi";
 import { makePrivateJsonEmitter } from "./disclosure.ts";
 import { checkRequestAudience, readJsonBody } from "./request.ts";
 
-/** Eve HTTP surface — fail-closed Blocked/Unavailable when journal/grounding/key are unqualified (ZA-17). Worlds remain on separate routes. */
+/** Eve HTTP surface — fail-closed Blocked/Unavailable when journal/G-PROVIDER/profile are unqualified (ZA-17/19). Grounded tools share SemanticExecutor. Worlds remain on separate routes. */
 export const makeEveHttpGroup = (publicUrl: URL) =>
   HttpApiBuilder.group(
     ApplicationApi,

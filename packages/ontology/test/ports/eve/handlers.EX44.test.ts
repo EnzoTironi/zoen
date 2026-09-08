@@ -25,6 +25,7 @@ import {
 import { EveJournal } from "../../../src/ports/eve/journal.js";
 import type { EveFetch } from "../../../src/ports/eve/opencode-zen.js";
 import { EveOpenCodeZen } from "../../../src/ports/eve/opencode-zen.js";
+import { EveTurnService } from "../../../src/ports/eve/turn-service.js";
 import type { VerifiedRequestContext } from "../../../src/ports/worlds/context.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
@@ -85,7 +86,8 @@ const mockOkFetch: EveFetch = () =>
 
 const zenLayer = Layer.mergeAll(
   EveJournal.stubMemoryLayer,
-  EveOpenCodeZen.liveLayer(settings, mockOkFetch)
+  EveOpenCodeZen.liveLayer(settings, mockOkFetch),
+  EveTurnService.legacyWithoutGroundingLayer
 );
 
 const acceptRequest = Schema.decodeSync(AcceptConversationTurn)({
@@ -163,7 +165,11 @@ describe("EX44 Eve HTTP handlers (product surface)", () => {
       expect(exit._tag).toBe("Failure");
     }).pipe(
       Effect.provide(
-        Layer.mergeAll(EveJournal.stubMemoryLayer, EveOpenCodeZen.blockedLayer)
+        Layer.mergeAll(
+          EveJournal.stubMemoryLayer,
+          EveOpenCodeZen.blockedLayer,
+          EveTurnService.legacyWithoutGroundingLayer
+        )
       )
     )
   );

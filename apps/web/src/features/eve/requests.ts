@@ -14,7 +14,7 @@ const envelope = {
 
 const invalid = () => new InvalidInput({ code: "INVALID_INPUT" });
 
-/** Candidate path eve-opencode-zen-v1 / opencode-zen — server fails closed until ZA-18/19/20 (ZA-17). */
+/** Candidate path eve-opencode-zen-v1 / opencode-zen — server fails closed until G-PROVIDER + ZA-20 (ZA-17/19). Domain tools share Inspect. */
 export const acceptEveTurnRequest = (
   worldRef: WorldRef,
   input: {

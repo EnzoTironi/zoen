@@ -10,6 +10,7 @@ import type {
 import { AttemptId } from "@zoen/contracts/eve/values";
 import { Blocked, Conflict, Unsupported } from "@zoen/contracts/worlds/errors";
 import type {
+  InvalidInput,
   NotFoundOrDenied,
   Unavailable,
 } from "@zoen/contracts/worlds/errors";
@@ -19,11 +20,12 @@ import type { Effect as EffectType } from "effect";
 import type { VerifiedRequestContext } from "../worlds/context.js";
 import { EveJournal } from "./journal.js";
 import type { EveOpenCodeZen } from "./opencode-zen.js";
-import { runEveTurn } from "./turn.js";
+import { EveTurnService } from "./turn-service.js";
 
 type EveHandlerFailure =
   | Blocked
   | Conflict
+  | InvalidInput
   | NotFoundOrDenied
   | Unavailable
   | Unsupported;
@@ -60,7 +62,7 @@ export const acceptConversationTurn = (
 ): EffectType.Effect<
   EveConversationSuccess,
   EveHandlerFailure,
-  EveJournal | EveOpenCodeZen
+  EveJournal | EveOpenCodeZen | EveTurnService
 > =>
   Effect.gen(function* accept() {
     yield* assertProductAdmission(
@@ -68,6 +70,7 @@ export const acceptConversationTurn = (
       request.input.providerAdmission
     );
     const journal = yield* EveJournal;
+    const turnService = yield* EveTurnService;
     const {
       presence: { principalId: ownerPrincipalId },
       purpose,
@@ -132,7 +135,7 @@ export const acceptConversationTurn = (
       return yield* new Conflict({ code: "CONFLICT" });
     }
 
-    const result = yield* runEveTurn({
+    const result = yield* turnService.run({
       attemptId,
       conversationId: request.input.conversationId,
       ingressId: request.input.ingressId,
@@ -144,6 +147,7 @@ export const acceptConversationTurn = (
       relationshipId: request.input.relationshipId,
       turnId: request.input.turnId,
       userText: request.input.userText,
+      verifiedContext: context,
       worldRef: request.worldRef,
     });
 
