@@ -1,10 +1,11 @@
 -- ZA-18: actor-owned Eve interaction journal (operational, not domain truth).
 -- Restricted schema: runtime uses a dedicated journal role (no authority.* access).
 -- INV-01: never store model/API credentials or authority DB secrets here.
-CREATE SCHEMA eve;
+-- Idempotent: disclosure/erasure migrate paths may apply this DDL more than once.
+CREATE SCHEMA IF NOT EXISTS eve;
 REVOKE ALL ON SCHEMA eve FROM PUBLIC;
 
-CREATE TABLE eve.conversations (
+CREATE TABLE IF NOT EXISTS eve.conversations (
   conversation_id uuid PRIMARY KEY,
   owner_principal_id uuid NOT NULL,
   relationship_id uuid NOT NULL,
@@ -38,10 +39,10 @@ CREATE TABLE eve.conversations (
   )
 );
 
-CREATE INDEX eve_conversations_owner
+CREATE INDEX IF NOT EXISTS eve_conversations_owner
   ON eve.conversations (owner_principal_id, conversation_id);
 
-CREATE TABLE eve.turns (
+CREATE TABLE IF NOT EXISTS eve.turns (
   conversation_id uuid NOT NULL
     REFERENCES eve.conversations (conversation_id),
   turn_id uuid NOT NULL,
@@ -74,7 +75,7 @@ CREATE TABLE eve.turns (
   )
 );
 
-CREATE TABLE eve.messages (
+CREATE TABLE IF NOT EXISTS eve.messages (
   conversation_id uuid NOT NULL,
   turn_id uuid NOT NULL,
   message_id uuid NOT NULL,
@@ -91,7 +92,7 @@ CREATE TABLE eve.messages (
     REFERENCES eve.turns (conversation_id, turn_id)
 );
 
-CREATE TABLE eve.provider_attempts (
+CREATE TABLE IF NOT EXISTS eve.provider_attempts (
   conversation_id uuid NOT NULL,
   turn_id uuid NOT NULL,
   attempt_id uuid NOT NULL,
@@ -110,6 +111,6 @@ CREATE TABLE eve.provider_attempts (
   )
 );
 
-CREATE INDEX eve_provider_attempts_unresolved
+CREATE INDEX IF NOT EXISTS eve_provider_attempts_unresolved
   ON eve.provider_attempts (conversation_id, turn_id)
   WHERE state = 'unresolved';

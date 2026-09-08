@@ -9,10 +9,10 @@ import {
   grantContentBarrierAdmit,
   grantErasureRole,
 } from "../../apps/server/sql/proposals/erasure/grants.ts";
+import { grantEveJournalRole } from "../../apps/server/sql/proposals/eve/grants.ts";
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantWorldsRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
 import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
-import { grantEveJournalRole } from "../../apps/server/src/adapters/postgres/eve/grants.ts";
 import { grantIdentityRole } from "../../apps/server/src/identity/grants.ts";
 
 /** Called only by the migration owner, never by the server's runtime pool. */
@@ -133,6 +133,14 @@ export const applyDisclosureMigrations = Effect.fn(
     fileURLToPath(new URL("017_erasure_controller_head.sql", import.meta.url))
   );
   yield* sql.withTransaction(sql.unsafe(controllerHead));
+  // ZA-18: eve journal schema must exist on every retained/disclosure install
+  // before runtime role checks probe has_schema_privilege(..., 'eve', ...).
+  // Apply without migrator id 19 here so identity events 7/8 still record;
+  // applyErasureMigrations records id 19 after 7–18.
+  const eveJournal = yield* fs.readFileString(
+    fileURLToPath(new URL("019_eve_owned_durable_journal.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(eveJournal));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
   // Progress + object-write + controller observe grants for capture (F02).
   yield* sql.withTransaction(grantContentBarrierAdmit(roles.authority));

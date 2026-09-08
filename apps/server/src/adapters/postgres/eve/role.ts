@@ -29,7 +29,10 @@ export const checkEveJournalRuntimeRole = Effect.gen(
         )
         OR has_database_privilege(oid, current_database(), 'CREATE')
         OR has_database_privilege(oid, current_database(), 'TEMPORARY')
-        OR has_schema_privilege(oid, 'eve', 'CREATE')
+        OR (
+          EXISTS (SELECT FROM pg_namespace WHERE nspname = 'eve')
+          AND has_schema_privilege(oid, 'eve', 'CREATE')
+        )
         OR has_schema_privilege(oid, 'authority', 'CREATE')
         OR has_schema_privilege(oid, 'identity', 'CREATE')
         OR has_schema_privilege(oid, 'jobs', 'CREATE')
