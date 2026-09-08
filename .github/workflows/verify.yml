@@ -48,6 +48,7 @@ jobs:
 
   integration:
     runs-on: ubuntu-24.04
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
@@ -76,6 +77,7 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:container
       - run: pnpm test:container:identity
+      - run: pnpm test:container:lifecycle
       - if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -89,6 +91,12 @@ jobs:
             .local/*-identity/fail-closed.log
             .local/*-identity/entrypoint-fail-closed.log
             .local/*-identity/result.json
+            .local/*-lifecycle/build.log
+            .local/*-lifecycle/container.log
+            .local/*-lifecycle/reset-required.log
+            .local/*-lifecycle/bootstrap-error.txt
+            .local/*-lifecycle/crash-after-installation.log
+            .local/*-lifecycle/result.json
           include-hidden-files: true
           if-no-files-found: ignore
       - if: always() && steps.services-config.outcome == 'success'

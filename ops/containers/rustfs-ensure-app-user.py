@@ -34,6 +34,7 @@ def signed_request(
     body: bytes,
     access_key: str,
     secret_key: str,
+    ok_statuses: set[int] | None = None,
 ) -> None:
     region = "us-east-1"
     service = "s3"
@@ -79,12 +80,15 @@ def signed_request(
     if body:
         headers["Content-Type"] = "application/json"
     request = urllib.request.Request(request_url, data=body or None, headers=headers, method=method)
+    accepted = ok_statuses or set()
     try:
         with urllib.request.urlopen(request, timeout=10) as response:
             if response.status < 200 or response.status >= 300:
-                raise RuntimeError(f"RUSTFS_ADMIN_{response.status}")
+                if response.status not in accepted:
+                    raise RuntimeError(f"RUSTFS_ADMIN_{response.status}")
     except urllib.error.HTTPError as error:
-        raise RuntimeError(f"RUSTFS_ADMIN_{error.code}") from error
+        if error.code not in accepted:
+            raise RuntimeError(f"RUSTFS_ADMIN_{error.code}") from error
 
 
 def main() -> int:
@@ -127,7 +131,9 @@ def main() -> int:
         body=json.dumps(policy_document, separators=(",", ":")).encode(),
         access_key=admin_access,
         secret_key=admin_secret,
+        ok_statuses={409},
     )
+    # Idempotent on resume: same pending access key may already exist (ZA-06).
     signed_request(
         method="PUT",
         endpoint=endpoint,
@@ -136,6 +142,7 @@ def main() -> int:
         body=json.dumps({"secretKey": app_secret, "status": "enabled"}, separators=(",", ":")).encode(),
         access_key=admin_access,
         secret_key=admin_secret,
+        ok_statuses={409},
     )
     signed_request(
         method="PUT",

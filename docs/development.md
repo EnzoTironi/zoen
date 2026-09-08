@@ -68,3 +68,23 @@ pnpm test:acceptance
 ### What not to commit
 
 `.env*`, `.local/`, Fly secrets, and tokens stay off git (see `.gitignore` and `SECURITY.md` when present).
+
+## All-in-one install lifecycle (ZA-06)
+
+Local and Fly all-in-one images pin `installation.releaseDigest` to the first-boot `release.json`.
+
+| State | Meaning | Operator action |
+| --- | --- | --- |
+| Ready (same digest) | Marker + installation + runtime.env consistent with the running image | Restart is safe; World/policy/receipt identities are preserved |
+| Incomplete | First install interrupted before `.bootstrap-complete` | Restart resumes; credentials are rewritten to match roles. No silent success with half-written state |
+| Reset-required | Image `release.json` digest ≠ volume installation | **Refuse** before serving. No automatic wipe, rebind, or digest rewrite |
+
+### Local / CI disposable reset
+
+Isolated Docker named volumes used by `pnpm test:container:identity` / `pnpm test:container:lifecycle` are disposable: remove the volume (`docker volume rm …`) and boot again. Staging profile reset remains `pnpm staging:reset` (owned inventory only).
+
+### Hosted (`zoen-rebuild`) gate — unchanged by this ticket
+
+Do **not** treat hosted data as disposable because local volumes are. An incompatible hosted volume stays not-ready until an **explicitly authorized** operator action replaces that named volume or an separately admitted ordinary migration lands. This ticket does not implement live hosted reset, automatic rollback, or silent digest replacement.
+
+Open PR #92 (migrate schema on existing same-release volumes) is the admitted migrate seam; it must not run after a digest mismatch.

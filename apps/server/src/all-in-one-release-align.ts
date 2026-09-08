@@ -15,9 +15,10 @@ export interface HostedInstallationFile {
 }
 
 /**
- * Hosted all-in-one: when a new image ships a new release.json, rewrite the
- * volume installation.releaseDigest (Pre-launch disposable). Callers must also
- * UPDATE authority.worlds.release_digest for the same cell/generation.
+ * Pure projection of an installation onto a target release digest.
+ * ZA-06: automatic bootstrap must NOT apply this on mismatch — use
+ * {@link planReleaseAlign} which returns RESET_REQUIRED instead. Kept for
+ * explicit admitted tooling / tests that assert cell/generation preservation.
  */
 export const alignInstallationRelease = (
   installed: HostedInstallationFile,
@@ -115,68 +116,48 @@ export type ReleaseAlignPlan =
       readonly generationId: string;
       readonly kind: "ready";
       readonly releaseDigest: string;
-      /**
-       * When non-null, atomically replace installation.json after worlds
-       * reconcile. When null, installation already matches the image — still
-       * reconcile worlds (crash/rollback recovery).
-       */
-      readonly rewriteInstallation: {
-        readonly next: HostedInstallationFile;
-        readonly previousDigest: string;
-      } | null;
     }
   | {
       readonly code:
         | "INVALID_INSTALLATION_FILE"
         | "RUNTIME_ENV_MISSING_AUTHORITY"
-        | "RUNTIME_ENV_MALFORMED";
+        | "RUNTIME_ENV_MALFORMED"
+        | "RESET_REQUIRED";
       readonly kind: "error";
+      /** Present when code is RESET_REQUIRED — installed vs image digests. */
+      readonly installedDigest?: string;
+      readonly releaseDigest?: string;
     };
 
-export type ReleaseAlignStep =
-  | {
-      readonly authorityUrl: string;
-      readonly cellId: string;
-      readonly generationId: string;
-      readonly releaseDigest: string;
-      readonly step: "reconcile-worlds";
-    }
-  | {
-      readonly next: HostedInstallationFile;
-      readonly previousDigest: string;
-      readonly step: "rewrite-installation";
-    };
+export interface ReleaseAlignStep {
+  readonly authorityUrl: string;
+  readonly cellId: string;
+  readonly generationId: string;
+  readonly releaseDigest: string;
+  readonly step: "reconcile-worlds";
+}
 
 /**
- * Ordered side effects for a ready plan. Worlds reconcile always runs first so
- * a crash after DB update + image rollback still heals on the next boot of the
- * restored image (installation matches → rewrite null → worlds forced back).
+ * Same-release restart only: reconcile worlds to the pinned installation
+ * digest. Digest mismatch is never a rewrite step (ZA-06 fail-closed).
  */
 export const releaseAlignSteps = (
   plan: Extract<ReleaseAlignPlan, { readonly kind: "ready" }>
-): readonly ReleaseAlignStep[] => {
-  const steps: ReleaseAlignStep[] = [
-    {
-      authorityUrl: plan.authorityUrl,
-      cellId: plan.cellId,
-      generationId: plan.generationId,
-      releaseDigest: plan.releaseDigest,
-      step: "reconcile-worlds",
-    },
-  ];
-  if (plan.rewriteInstallation !== null) {
-    steps.push({
-      next: plan.rewriteInstallation.next,
-      previousDigest: plan.rewriteInstallation.previousDigest,
-      step: "rewrite-installation",
-    });
-  }
-  return steps;
-};
+): readonly ReleaseAlignStep[] => [
+  {
+    authorityUrl: plan.authorityUrl,
+    cellId: plan.cellId,
+    generationId: plan.generationId,
+    releaseDigest: plan.releaseDigest,
+    step: "reconcile-worlds",
+  },
+];
 
 /**
- * Decide how a volume with `.bootstrap-complete` aligns to the image
- * release.json. Pure — bootstrap applies FS/SQL from {@link releaseAlignSteps}.
+ * Decide whether a volume with `.bootstrap-complete` may continue on this
+ * image. Same digest → ready (reconcile worlds). Different digest →
+ * RESET_REQUIRED (explicit named local reset or admitted migration; never
+ * silent digest replacement).
  */
 export const planReleaseAlign = (
   installationText: string,
@@ -202,16 +183,17 @@ export const planReleaseAlign = (
     return { code: "RUNTIME_ENV_MISSING_AUTHORITY", kind: "error" };
   }
   const releaseDigest = digestReleaseBytes(releaseBytes);
-  const aligned = alignInstallationRelease(hosted, releaseDigest);
-  const { cellId, generationId } = hosted.installation;
-  if (!aligned.changed) {
+  const {
+    cellId,
+    generationId,
+    releaseDigest: installedDigest,
+  } = hosted.installation;
+  if (installedDigest !== releaseDigest) {
     return {
-      authorityUrl,
-      cellId,
-      generationId,
-      kind: "ready",
+      code: "RESET_REQUIRED",
+      installedDigest,
+      kind: "error",
       releaseDigest,
-      rewriteInstallation: null,
     };
   }
   return {
@@ -220,9 +202,5 @@ export const planReleaseAlign = (
     generationId,
     kind: "ready",
     releaseDigest,
-    rewriteInstallation: {
-      next: aligned.next,
-      previousDigest: hosted.installation.releaseDigest,
-    },
   };
 };
