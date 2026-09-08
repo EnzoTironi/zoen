@@ -2,6 +2,7 @@ import { Effect, Schema } from "effect";
 import type { FileSystem } from "effect/FileSystem";
 
 import {
+  hostedReleaseRestartOrder,
   planReleaseAlign,
   releaseAlignSteps,
 } from "./all-in-one-release-align.ts";
@@ -57,6 +58,7 @@ export const applyHostedReleaseAlign = (input: {
   ) => Effect.Effect<void>;
   readonly releaseFile: string;
   readonly runtimeEnvPath: string;
+  readonly volumeGate?: PlanReleaseAlignOptions["volumeGate"];
 }) =>
   Effect.gen(function* applyReleaseAlign() {
     const {
@@ -67,11 +69,14 @@ export const applyHostedReleaseAlign = (input: {
       reconcileWorlds,
       releaseFile,
       runtimeEnvPath,
+      volumeGate,
     } = input;
-    const planOptions: PlanReleaseAlignOptions | undefined =
-      admitHostedReleaseUpgrade === true
+    const planOptions: PlanReleaseAlignOptions = {
+      ...(admitHostedReleaseUpgrade === true
         ? { admitHostedReleaseUpgrade: true }
-        : undefined;
+        : {}),
+      ...(volumeGate === undefined ? {} : { volumeGate }),
+    };
     const plan = planReleaseAlign(
       yield* fs.readFileString(installationPath),
       yield* fs.readFile(releaseFile),
@@ -108,4 +113,32 @@ export const applyHostedReleaseAlign = (input: {
       from: rewrittenFrom,
       to: plan.releaseDigest,
     };
+  });
+
+/**
+ * Testable ZA-08 / tip-upgrade orchestration: migrate-then-align for admitted
+ * upgrades, align-then-migrate for same-release restarts. Bootstrap must call
+ * this (or preserve the same order) so ordering regressions fail unit tests.
+ */
+export const runHostedReleaseRestartSeams = <EA, EM, EB, EC, R>(input: {
+  readonly align: () => Effect.Effect<void, EA, R>;
+  readonly beginUpgrade?: () => Effect.Effect<void, EB, R>;
+  readonly completeUpgrade?: () => Effect.Effect<void, EC, R>;
+  readonly migrate: () => Effect.Effect<void, EM, R>;
+  readonly releaseUpgrade: boolean;
+}): Effect.Effect<void, EA | EM | EB | EC, R> =>
+  Effect.gen(function* hostedReleaseRestartSeams() {
+    for (const step of hostedReleaseRestartOrder(input.releaseUpgrade)) {
+      if (step === "migrate-schema") {
+        if (input.releaseUpgrade && input.beginUpgrade !== undefined) {
+          yield* input.beginUpgrade();
+        }
+        yield* input.migrate();
+        continue;
+      }
+      yield* input.align();
+      if (input.releaseUpgrade && input.completeUpgrade !== undefined) {
+        yield* input.completeUpgrade();
+      }
+    }
   });

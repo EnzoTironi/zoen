@@ -7,6 +7,7 @@ import type { ReleaseAlignStep } from "../src/all-in-one-release-align.ts";
 import {
   applyHostedReleaseAlign,
   HostedReleaseAlignError,
+  runHostedReleaseRestartSeams,
 } from "../src/all-in-one-release-apply.ts";
 
 const encodeJson = Schema.encodeEffect(Schema.fromJsonString(Schema.Unknown));
@@ -259,5 +260,64 @@ describe("applyHostedReleaseAlign workflow", () => {
       ).pipe(
         Effect.provide(Layer.mergeAll(NodeFileSystem.layer, NodePath.layer))
       )
+  );
+
+  it.effect(
+    "runs migrate before align for admitted upgrade orchestration",
+    () =>
+      Effect.gen(function* assertUpgradeOrder() {
+        const order: string[] = [];
+        yield* runHostedReleaseRestartSeams({
+          align: () =>
+            Effect.sync(() => {
+              order.push("align-release");
+            }),
+          beginUpgrade: () =>
+            Effect.sync(() => {
+              order.push("begin-upgrade");
+            }),
+          completeUpgrade: () =>
+            Effect.sync(() => {
+              order.push("complete-upgrade");
+            }),
+          migrate: () =>
+            Effect.sync(() => {
+              order.push("migrate-schema");
+            }),
+          releaseUpgrade: true,
+        });
+        expect(order).toStrictEqual([
+          "begin-upgrade",
+          "migrate-schema",
+          "align-release",
+          "complete-upgrade",
+        ]);
+      })
+  );
+
+  it.effect("runs align before migrate for same-release orchestration", () =>
+    Effect.gen(function* assertSameReleaseOrder() {
+      const order: string[] = [];
+      yield* runHostedReleaseRestartSeams({
+        align: () =>
+          Effect.sync(() => {
+            order.push("align-release");
+          }),
+        beginUpgrade: () =>
+          Effect.sync(() => {
+            order.push("begin-upgrade");
+          }),
+        completeUpgrade: () =>
+          Effect.sync(() => {
+            order.push("complete-upgrade");
+          }),
+        migrate: () =>
+          Effect.sync(() => {
+            order.push("migrate-schema");
+          }),
+        releaseUpgrade: false,
+      });
+      expect(order).toStrictEqual(["align-release", "migrate-schema"]);
+    })
   );
 });

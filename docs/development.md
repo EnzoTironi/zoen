@@ -90,6 +90,11 @@ ZA-06 still refuses digest mismatch by default (no silent rewrite). Continuous t
 
 Upgrade order is fixed: schema migrate (ZA-08 / #92) runs **before** digest rewrite. Same-release restarts still admit digest first, then migrate.
 
+Admission is directional and durable on the volume (`.hosted-release-upgrade.json`):
+
+- Before migrate, bootstrap records an upgrade-in-progress target; only that image may continue until installation rewrite succeeds.
+- Digests that have successfully owned the volume are recorded; redeploying an older completed digest with the flag set is `RESET_REQUIRED` (no older image onto a newer schema).
+
 Without that env (or after it is removed for production durability), operators must roll back to the last matching image or perform an explicitly authorized volume replace — do not edit digests by hand on a live volume.
 
 ## Pre-launch wire and development baseline (ZA-03)

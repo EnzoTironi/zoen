@@ -24,14 +24,21 @@ import { SqlClient } from "effect/unstable/sql";
 import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
 import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
 import {
+  beginHostedReleaseUpgrade,
+  completeHostedReleaseUpgrade,
   digestReleaseBytes,
+  emptyHostedReleaseUpgradeGate,
+  encodeHostedReleaseUpgradeGate,
+  noteHostedReleaseDigest,
   parseHostedInstallationFile,
+  parseHostedReleaseUpgradeGate,
   parseQuotedEnvFile,
   planReleaseAlign,
 } from "../src/all-in-one-release-align.ts";
 import {
   applyHostedReleaseAlign,
   HostedReleaseAlignError,
+  runHostedReleaseRestartSeams,
 } from "../src/all-in-one-release-apply.ts";
 
 class BootstrapError extends Schema.TaggedError<BootstrapError>()(
@@ -113,6 +120,45 @@ const writeAtomicString = (
     return yield* Effect.void;
   });
 
+const hostedReleaseUpgradeGatePath = (installationPath: string): string => {
+  const stateDir = installationPath.includes("/")
+    ? installationPath.slice(0, installationPath.lastIndexOf("/"))
+    : ".";
+  return `${stateDir}/.hosted-release-upgrade.json`;
+};
+
+const readHostedReleaseUpgradeGate = (
+  fs: FileSystem.FileSystem,
+  installationPath: string
+) =>
+  Effect.gen(function* readUpgradeGate() {
+    const gatePath = hostedReleaseUpgradeGatePath(installationPath);
+    if (!(yield* fs.exists(gatePath))) {
+      return emptyHostedReleaseUpgradeGate();
+    }
+    const parsed = parseHostedReleaseUpgradeGate(
+      yield* fs.readFileString(gatePath)
+    );
+    if (parsed === null) {
+      return yield* new BootstrapError({
+        code: "HOSTED_RELEASE_UPGRADE_GATE_MALFORMED",
+      });
+    }
+    return parsed;
+  });
+
+const writeHostedReleaseUpgradeGate = (
+  fs: FileSystem.FileSystem,
+  installationPath: string,
+  gate: ReturnType<typeof emptyHostedReleaseUpgradeGate>
+) =>
+  writeAtomicString(
+    fs,
+    hostedReleaseUpgradeGatePath(installationPath),
+    encodeHostedReleaseUpgradeGate(gate),
+    0o600
+  );
+
 const writeRuntimeEnv = (
   fs: FileSystem.FileSystem,
   runtimeEnvPath: string,
@@ -158,42 +204,49 @@ const alignExistingHostedRelease = (input: {
   readonly releaseFile: string;
   readonly runtimeEnvPath: string;
 }) =>
-  applyHostedReleaseAlign({
-    ...(input.admitHostedReleaseUpgrade === true
-      ? { admitHostedReleaseUpgrade: true }
-      : {}),
-    encodeInstallation: (value) =>
-      input.encodeInstallation(value).pipe(Effect.orDie),
-    fs: input.fs,
-    installationPath: input.installationPath,
-    reconcileWorlds: (step) =>
-      Effect.gen(function* rewriteWorldsReleaseDigest() {
-        const sql = yield* SqlClient.SqlClient;
-        yield* sql`
+  Effect.gen(function* alignWithVolumeGate() {
+    const volumeGate = yield* readHostedReleaseUpgradeGate(
+      input.fs,
+      input.installationPath
+    );
+    return yield* applyHostedReleaseAlign({
+      ...(input.admitHostedReleaseUpgrade === true
+        ? { admitHostedReleaseUpgrade: true }
+        : {}),
+      encodeInstallation: (value) =>
+        input.encodeInstallation(value).pipe(Effect.orDie),
+      fs: input.fs,
+      installationPath: input.installationPath,
+      reconcileWorlds: (step) =>
+        Effect.gen(function* rewriteWorldsReleaseDigest() {
+          const sql = yield* SqlClient.SqlClient;
+          yield* sql`
           UPDATE authority.worlds
           SET release_digest = ${step.releaseDigest}
           WHERE cell_id = ${step.cellId}::uuid
             AND generation_id = ${step.generationId}::uuid
         `;
-      }).pipe(
-        Effect.provide(
-          PgClient.layer({
-            maxConnections: 1,
-            url: Redacted.make(step.authorityUrl),
-          })
+        }).pipe(
+          Effect.provide(
+            PgClient.layer({
+              maxConnections: 1,
+              url: Redacted.make(step.authorityUrl),
+            })
+          ),
+          Effect.orDie
         ),
-        Effect.orDie
+      releaseFile: input.releaseFile,
+      runtimeEnvPath: input.runtimeEnvPath,
+      volumeGate,
+    }).pipe(
+      Effect.mapError((error) =>
+        Schema.is(HostedReleaseAlignError)(error)
+          ? new BootstrapError({ code: error.code })
+          : new BootstrapError({ code: "RELEASE_ALIGN_FAILED" })
       ),
-    releaseFile: input.releaseFile,
-    runtimeEnvPath: input.runtimeEnvPath,
-  }).pipe(
-    Effect.mapError((error) =>
-      Schema.is(HostedReleaseAlignError)(error)
-        ? new BootstrapError({ code: error.code })
-        : new BootstrapError({ code: "RELEASE_ALIGN_FAILED" })
-    ),
-    Effect.tap((result) => Effect.logInfo(result))
-  );
+      Effect.tap((result) => Effect.logInfo(result))
+    );
+  });
 
 const admitIncompleteInstallation = (
   fs: FileSystem.FileSystem,
@@ -334,13 +387,20 @@ const bootstrapSameReleaseRestart = (input: {
     const admitHostedReleaseUpgrade = yield* Config.boolean(
       "ZOEN_ADMIT_HOSTED_RELEASE_UPGRADE"
     ).pipe(Config.withDefault(false));
+    const volumeGate = yield* readHostedReleaseUpgradeGate(
+      fs,
+      installationPath
+    );
     const releasePlan = planReleaseAlign(
       yield* fs.readFileString(installationPath),
       yield* fs.readFile(releaseFile),
       yield* fs.readFileString(runtimeEnvPath),
-      admitHostedReleaseUpgrade
-        ? { admitHostedReleaseUpgrade: true }
-        : undefined
+      {
+        volumeGate,
+        ...(admitHostedReleaseUpgrade
+          ? { admitHostedReleaseUpgrade: true }
+          : {}),
+      }
     );
     if (releasePlan.kind === "error") {
       return yield* new BootstrapError({ code: releasePlan.code });
@@ -348,20 +408,54 @@ const bootstrapSameReleaseRestart = (input: {
     const releaseUpgrade = releasePlan.releaseUpgrade === true;
     // --- ZA-08 seam (migrate on existing volumes) ---
     // Same-release: migrate after digest admission. Admitted tip upgrade:
-    // migrate BEFORE rewriting installation.releaseDigest / worlds digests.
-    if (releaseUpgrade) {
-      yield* migrateExistingVolumeSchema(adminUrl);
-    }
-    yield* alignExistingHostedRelease({
-      admitHostedReleaseUpgrade,
-      encodeInstallation: encodeJson,
-      fs,
-      installationPath,
-      releaseFile,
-      runtimeEnvPath,
+    // persist upgrade-in-progress, migrate BEFORE rewriting digests, then
+    // clear the marker only after align succeeds (fail-closed for old images).
+    yield* runHostedReleaseRestartSeams({
+      align: () =>
+        alignExistingHostedRelease({
+          ...(admitHostedReleaseUpgrade
+            ? { admitHostedReleaseUpgrade: true }
+            : {}),
+          encodeInstallation: encodeJson,
+          fs,
+          installationPath,
+          releaseFile,
+          runtimeEnvPath,
+        }).pipe(Effect.asVoid),
+      beginUpgrade: () =>
+        Effect.gen(function* beginUpgradeMarker() {
+          const fromDigest =
+            releasePlan.rewriteInstallation?.previousDigest ??
+            releasePlan.releaseDigest;
+          const nextGate = beginHostedReleaseUpgrade(
+            volumeGate,
+            fromDigest,
+            releasePlan.releaseDigest
+          );
+          yield* writeHostedReleaseUpgradeGate(fs, installationPath, nextGate);
+        }),
+      completeUpgrade: () =>
+        Effect.gen(function* completeUpgradeMarker() {
+          const current = yield* readHostedReleaseUpgradeGate(
+            fs,
+            installationPath
+          );
+          yield* writeHostedReleaseUpgradeGate(
+            fs,
+            installationPath,
+            completeHostedReleaseUpgrade(current, releasePlan.releaseDigest)
+          );
+        }),
+      migrate: () => migrateExistingVolumeSchema(adminUrl),
+      releaseUpgrade,
     });
     if (!releaseUpgrade) {
-      yield* migrateExistingVolumeSchema(adminUrl);
+      const current = yield* readHostedReleaseUpgradeGate(fs, installationPath);
+      yield* writeHostedReleaseUpgradeGate(
+        fs,
+        installationPath,
+        noteHostedReleaseDigest(current, releasePlan.releaseDigest)
+      );
     }
     // --- end ZA-08 seam ---
     const adminAccess = Redacted.value(adminAccessKeyId);
@@ -618,6 +712,11 @@ const program = Effect.gen(function* bootstrapAllInOne() {
   yield* writeRuntimeEnv(fs, runtimeEnvPath, environment);
   yield* maybeCrashAfter("runtime-env");
   yield* writeAtomicString(fs, markerPath, "ok\n", 0o600);
+  yield* writeHostedReleaseUpgradeGate(
+    fs,
+    installationPath,
+    noteHostedReleaseDigest(emptyHostedReleaseUpgradeGate(), releaseDigest)
+  );
   if (yield* fs.exists(pendingCredentialsPath)) {
     yield* fs.remove(pendingCredentialsPath);
   }

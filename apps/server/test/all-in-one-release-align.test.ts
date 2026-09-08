@@ -3,7 +3,10 @@ import { describe, expect, it } from "@effect/vitest";
 import {
   alignHostedInstallationPolicy,
   alignInstallationRelease,
+  beginHostedReleaseUpgrade,
+  completeHostedReleaseUpgrade,
   digestReleaseBytes,
+  hostedReleaseRestartOrder,
   parseHostedInstallationFile,
   parseQuotedEnvFile,
   planReleaseAlign,
@@ -368,6 +371,131 @@ describe("all-in-one release align", () => {
     expect(releaseAlignSteps(plan).map((step) => step.step)).toStrictEqual([
       "reconcile-worlds",
     ]);
+  });
+
+  it("refuses rollback onto a previously completed digest even with admission", () => {
+    const oldBytes = new TextEncoder().encode('{"format":"old"}\n');
+    const newBytes = new TextEncoder().encode('{"format":"new"}\n');
+    const oldDigest = digestReleaseBytes(oldBytes);
+    const newDigest = digestReleaseBytes(newBytes);
+    const installed = {
+      ...sampleInstallation,
+      installation: {
+        ...sampleInstallation.installation,
+        releaseDigest: newDigest,
+      },
+    };
+    const plan = planReleaseAlign(
+      `${JSON.stringify(installed)}\n`,
+      oldBytes,
+      authorityEnv,
+      {
+        admitHostedReleaseUpgrade: true,
+        volumeGate: {
+          completedDigests: [oldDigest, newDigest],
+          inProgress: null,
+        },
+      }
+    );
+    expect(plan).toStrictEqual({
+      code: "RESET_REQUIRED",
+      installedDigest: newDigest,
+      kind: "error",
+      releaseDigest: oldDigest,
+    });
+  });
+
+  it("refuses old image while upgrade-in-progress after migrate", () => {
+    const oldBytes = new TextEncoder().encode('{"format":"old"}\n');
+    const newBytes = new TextEncoder().encode('{"format":"new"}\n');
+    const oldDigest = digestReleaseBytes(oldBytes);
+    const newDigest = digestReleaseBytes(newBytes);
+    const installed = {
+      ...sampleInstallation,
+      installation: {
+        ...sampleInstallation.installation,
+        releaseDigest: oldDigest,
+      },
+    };
+    const plan = planReleaseAlign(
+      `${JSON.stringify(installed)}\n`,
+      oldBytes,
+      authorityEnv,
+      {
+        admitHostedReleaseUpgrade: true,
+        volumeGate: {
+          completedDigests: [oldDigest],
+          inProgress: { fromDigest: oldDigest, toDigest: newDigest },
+        },
+      }
+    );
+    expect(plan).toStrictEqual({
+      code: "RESET_REQUIRED",
+      installedDigest: oldDigest,
+      kind: "error",
+      releaseDigest: oldDigest,
+    });
+  });
+
+  it("resumes admitted upgrade when image matches in-progress target", () => {
+    const oldBytes = new TextEncoder().encode('{"format":"old"}\n');
+    const newBytes = new TextEncoder().encode('{"format":"new"}\n');
+    const oldDigest = digestReleaseBytes(oldBytes);
+    const newDigest = digestReleaseBytes(newBytes);
+    const installed = {
+      ...sampleInstallation,
+      installation: {
+        ...sampleInstallation.installation,
+        releaseDigest: oldDigest,
+      },
+    };
+    const plan = planReleaseAlign(
+      `${JSON.stringify(installed)}\n`,
+      newBytes,
+      authorityEnv,
+      {
+        admitHostedReleaseUpgrade: true,
+        volumeGate: {
+          completedDigests: [oldDigest],
+          inProgress: { fromDigest: oldDigest, toDigest: newDigest },
+        },
+      }
+    );
+    expect(plan.kind).toBe("ready");
+    if (plan.kind !== "ready") {
+      return;
+    }
+    expect(plan.releaseUpgrade).toBeTruthy();
+    expect(plan.releaseDigest).toBe(newDigest);
+  });
+
+  it("orders migrate before align for admitted upgrades", () => {
+    expect(hostedReleaseRestartOrder(true)).toStrictEqual([
+      "migrate-schema",
+      "align-release",
+    ]);
+    expect(hostedReleaseRestartOrder(false)).toStrictEqual([
+      "align-release",
+      "migrate-schema",
+    ]);
+  });
+
+  it("begin/complete upgrade gate records ownership and clears in-progress", () => {
+    const fromDigest = "a".repeat(64);
+    const toDigest = "b".repeat(64);
+    const started = beginHostedReleaseUpgrade(
+      { completedDigests: [], inProgress: null },
+      fromDigest,
+      toDigest
+    );
+    expect(started).toStrictEqual({
+      completedDigests: [fromDigest],
+      inProgress: { fromDigest, toDigest },
+    });
+    expect(completeHostedReleaseUpgrade(started, toDigest)).toStrictEqual({
+      completedDigests: [fromDigest, toDigest],
+      inProgress: null,
+    });
   });
 });
 

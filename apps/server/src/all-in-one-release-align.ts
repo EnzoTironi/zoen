@@ -249,6 +249,115 @@ export const releaseAlignSteps = (
   return steps;
 };
 
+/** Durable volume gate for tip release upgrades (fail-closed). */
+export interface HostedReleaseUpgradeInProgress {
+  readonly fromDigest: string;
+  readonly toDigest: string;
+}
+
+export interface HostedReleaseVolumeGate {
+  /** Digests that successfully owned this volume (blocks rollback admission). */
+  readonly completedDigests: readonly string[];
+  /** Set before migrate; cleared only after installation rewrite succeeds. */
+  readonly inProgress: HostedReleaseUpgradeInProgress | null;
+}
+
+export const emptyHostedReleaseUpgradeGate = (): HostedReleaseVolumeGate => ({
+  completedDigests: [],
+  inProgress: null,
+});
+
+export const parseHostedReleaseUpgradeGate = (
+  text: string
+): HostedReleaseVolumeGate | null => {
+  let unknown: unknown;
+  try {
+    unknown = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  if (typeof unknown !== "object" || unknown === null) {
+    return null;
+  }
+  if (!("completedDigests" in unknown) || !("inProgress" in unknown)) {
+    return null;
+  }
+  const completedRaw: unknown = Reflect.get(unknown, "completedDigests");
+  if (!Array.isArray(completedRaw)) {
+    return null;
+  }
+  const completedDigests: string[] = [];
+  for (const entry of completedRaw) {
+    if (typeof entry !== "string" || entry.length === 0) {
+      return null;
+    }
+    completedDigests.push(entry);
+  }
+  const inProgressRaw: unknown = Reflect.get(unknown, "inProgress");
+  if (inProgressRaw === null) {
+    return { completedDigests, inProgress: null };
+  }
+  if (typeof inProgressRaw !== "object" || inProgressRaw === null) {
+    return null;
+  }
+  const fromDigest = readStringField(inProgressRaw, "fromDigest");
+  const toDigest = readStringField(inProgressRaw, "toDigest");
+  if (fromDigest === undefined || toDigest === undefined) {
+    return null;
+  }
+  return {
+    completedDigests,
+    inProgress: { fromDigest, toDigest },
+  };
+};
+
+export const encodeHostedReleaseUpgradeGate = (
+  gate: HostedReleaseVolumeGate
+): string => `${JSON.stringify(gate)}\n`;
+
+export const beginHostedReleaseUpgrade = (
+  gate: HostedReleaseVolumeGate,
+  fromDigest: string,
+  toDigest: string
+): HostedReleaseVolumeGate => ({
+  completedDigests: gate.completedDigests.includes(fromDigest)
+    ? gate.completedDigests
+    : [...gate.completedDigests, fromDigest],
+  inProgress: { fromDigest, toDigest },
+});
+
+export const completeHostedReleaseUpgrade = (
+  gate: HostedReleaseVolumeGate,
+  toDigest: string
+): HostedReleaseVolumeGate => ({
+  completedDigests: gate.completedDigests.includes(toDigest)
+    ? gate.completedDigests
+    : [...gate.completedDigests, toDigest],
+  inProgress: null,
+});
+
+export const noteHostedReleaseDigest = (
+  gate: HostedReleaseVolumeGate,
+  digest: string
+): HostedReleaseVolumeGate =>
+  gate.completedDigests.includes(digest)
+    ? gate
+    : {
+        completedDigests: [...gate.completedDigests, digest],
+        inProgress: gate.inProgress,
+      };
+
+/**
+ * Fixed ZA-08 / ZA-06 seam order. Admitted tip upgrades migrate before align;
+ * same-release restarts align (digest admission) then migrate.
+ */
+export const hostedReleaseRestartOrder = (
+  releaseUpgrade: boolean
+): readonly ("migrate-schema" | "align-release")[] =>
+  releaseUpgrade
+    ? ["migrate-schema", "align-release"]
+    : ["align-release", "migrate-schema"];
+
 export interface PlanReleaseAlignOptions {
   /**
    * Pre-launch tip continuous-deploy admission (AGENTS.md Evolution). When
@@ -256,14 +365,23 @@ export interface PlanReleaseAlignOptions {
    * of RESET_REQUIRED. Default false — ZA-06 fail-closed.
    */
   readonly admitHostedReleaseUpgrade?: boolean;
+  /**
+   * Volume-local upgrade gate. Refuses rollbacks onto digests that already
+   * completed ownership, and refuses any image other than an in-progress
+   * target after migrate has started.
+   */
+  readonly volumeGate?: HostedReleaseVolumeGate;
 }
 
 /**
  * Decide whether a volume with `.bootstrap-complete` may continue on this
  * image. Different digest → RESET_REQUIRED unless
  * {@link PlanReleaseAlignOptions.admitHostedReleaseUpgrade} is set (explicit
- * tip-deploy admission; never silent). Same digest → ready, optionally
- * rewriting known ZA-03 legacy policy profile ids in installation.json.
+ * tip-deploy admission; never silent) AND the volume gate permits a forward
+ * transition (not a rollback onto a previously completed digest, not a
+ * non-target image while upgrade-in-progress). Same digest → ready,
+ * optionally rewriting known ZA-03 legacy policy profile ids in
+ * installation.json.
  */
 export const planReleaseAlign = (
   installationText: string,
@@ -303,8 +421,40 @@ export const planReleaseAlign = (
     generationId,
     releaseDigest: installedDigest,
   } = hosted.installation;
+  const { volumeGate: gateOption } = options ?? {};
+  const gate = gateOption ?? emptyHostedReleaseUpgradeGate();
+  const { inProgress } = gate;
+  // After migrate starts, only the target image may boot — even if installation
+  // still advertises the old digest (failed-upgrade non-admission).
+  if (inProgress !== null && inProgress.toDigest !== releaseDigest) {
+    return {
+      code: "RESET_REQUIRED",
+      installedDigest,
+      kind: "error",
+      releaseDigest,
+    };
+  }
   if (installedDigest !== releaseDigest) {
-    if (options?.admitHostedReleaseUpgrade !== true) {
+    if (inProgress !== null) {
+      if (options?.admitHostedReleaseUpgrade !== true) {
+        return {
+          code: "RESET_REQUIRED",
+          installedDigest,
+          kind: "error",
+          releaseDigest,
+        };
+      }
+    } else if (options?.admitHostedReleaseUpgrade !== true) {
+      return {
+        code: "RESET_REQUIRED",
+        installedDigest,
+        kind: "error",
+        releaseDigest,
+      };
+    } else if (gate.completedDigests.includes(releaseDigest)) {
+      // Directional admission: a digest that already owned this volume cannot
+      // be re-admitted as an "upgrade" (blocks older-image rollback onto a
+      // newer schema after a successful tip rollout).
       return {
         code: "RESET_REQUIRED",
         installedDigest,
