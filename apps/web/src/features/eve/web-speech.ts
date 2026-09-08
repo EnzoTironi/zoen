@@ -1,13 +1,17 @@
+import { unavailableReasonFromRecognitionError } from "@zoen/contracts/eve/browser-voice";
+import type { EveBrowserVoiceUnavailableReason } from "@zoen/contracts/eve/browser-voice";
 import type { EveWebSpeechCapabilities } from "@zoen/contracts/eve/values";
 import {
   probeWebSpeechCapabilities,
   voiceRecognitionReady,
   voiceSynthesisReady,
 } from "@zoen/contracts/eve/web-speech";
+import { Data } from "effect";
 
 /**
- * Browser Web Speech adapter for Eve voice (ZN-0063 / EX44).
+ * Browser Web Speech adapter for Eve voice (ZN-0063 / EX44 / ZA-21).
  * Uses SpeechRecognition + speechSynthesis — not a stub, not cloud STT/TTS.
+ * One-shot explicit capture only; never continuous background listening.
  */
 
 interface SpeechRecognitionEventLike {
@@ -26,9 +30,15 @@ interface SpeechRecognitionLike {
   onend: (() => void) | null;
   start: () => void;
   stop: () => void;
+  abort?: () => void;
 }
 
 type SpeechRecognitionCtor = new () => SpeechRecognitionLike;
+
+export class EveWebSpeechError extends Data.TaggedError("EveWebSpeechError")<{
+  readonly message: string;
+  readonly reason: EveBrowserVoiceUnavailableReason;
+}> {}
 
 const recognitionCtor = (): SpeechRecognitionCtor | null => {
   const host = globalThis as typeof globalThis & {
@@ -45,7 +55,10 @@ export const assertVoiceIngressReady = (
   capabilities: EveWebSpeechCapabilities = readWebSpeechCapabilities()
 ): EveWebSpeechCapabilities => {
   if (!voiceRecognitionReady(capabilities)) {
-    throw new Error("eve-web-speech: SpeechRecognition unavailable");
+    throw new EveWebSpeechError({
+      message: "eve-web-speech: SpeechRecognition unavailable",
+      reason: "api-missing",
+    });
   }
   return capabilities;
 };
@@ -54,9 +67,20 @@ export const assertVoiceSpeechReady = (
   capabilities: EveWebSpeechCapabilities = readWebSpeechCapabilities()
 ): EveWebSpeechCapabilities => {
   if (!voiceSynthesisReady(capabilities)) {
-    throw new Error("eve-web-speech: speechSynthesis unavailable");
+    throw new EveWebSpeechError({
+      message: "eve-web-speech: speechSynthesis unavailable",
+      reason: "synthesis-missing",
+    });
   }
   return capabilities;
+};
+
+/** Stop any queued/current synthesis immediately (cancel/revoke boundary). */
+export const cancelSpeechOutput = (): void => {
+  const synthesis = globalThis.speechSynthesis;
+  if (synthesis !== undefined && typeof synthesis.cancel === "function") {
+    synthesis.cancel();
+  }
 };
 
 /** One-shot STT → final transcript string (rejects if recognition missing). */
@@ -67,12 +91,16 @@ export const listenOnce = (options?: {
   const ctor = recognitionCtor();
   if (ctor === null) {
     return Promise.reject(
-      new Error("eve-web-speech: SpeechRecognition unavailable")
+      new EveWebSpeechError({
+        message: "eve-web-speech: SpeechRecognition unavailable",
+        reason: "api-missing",
+      })
     );
   }
 
   return new Promise((resolve, reject) => {
     const recognition = new ctor();
+    // ZA-21: never continuous background capture.
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = options?.lang ?? "pt-BR";
@@ -86,13 +114,21 @@ export const listenOnce = (options?: {
       fn();
     };
 
+    const stopRecognition = () => {
+      try {
+        if (typeof recognition.abort === "function") {
+          recognition.abort();
+        } else {
+          recognition.stop();
+        }
+      } catch {
+        // ignore stop races
+      }
+    };
+
     const onAbort = () => {
       finish(() => {
-        try {
-          recognition.stop();
-        } catch {
-          // ignore
-        }
+        stopRecognition();
         reject(new DOMException("Aborted", "AbortError"));
       });
     };
@@ -120,7 +156,12 @@ export const listenOnce = (options?: {
       const transcript = parts.join(" ").trim();
       finish(() => {
         if (transcript.length === 0) {
-          reject(new Error("eve-web-speech: empty transcript"));
+          reject(
+            new EveWebSpeechError({
+              message: "eve-web-speech: empty transcript",
+              reason: "recognition-error",
+            })
+          );
           return;
         }
         resolve(transcript);
@@ -129,13 +170,24 @@ export const listenOnce = (options?: {
 
     recognition.onerror = (event) => {
       finish(() => {
-        reject(new Error(`eve-web-speech: recognition error ${event.error}`));
+        const reason = unavailableReasonFromRecognitionError(event.error);
+        reject(
+          new EveWebSpeechError({
+            message: `eve-web-speech: recognition error ${event.error}`,
+            reason,
+          })
+        );
       });
     };
 
     recognition.onend = () => {
       finish(() => {
-        reject(new Error("eve-web-speech: recognition ended without result"));
+        reject(
+          new EveWebSpeechError({
+            message: "eve-web-speech: recognition ended without result",
+            reason: "recognition-error",
+          })
+        );
       });
     };
 
@@ -143,10 +195,10 @@ export const listenOnce = (options?: {
   });
 };
 
-/** Speak settled Eve reply text (rejects if synthesis missing). */
+/** Speak settled Eve reply text; honors AbortSignal via speechSynthesis.cancel. */
 export const speakText = (
   text: string,
-  options?: { readonly lang?: string }
+  options?: { readonly lang?: string; readonly signal?: AbortSignal }
 ): Promise<void> => {
   try {
     assertVoiceSpeechReady();
@@ -162,18 +214,55 @@ export const speakText = (
   const synthesis = globalThis.speechSynthesis;
   if (synthesis === undefined) {
     return Promise.reject(
-      new Error("eve-web-speech: speechSynthesis unavailable")
+      new EveWebSpeechError({
+        message: "eve-web-speech: speechSynthesis unavailable",
+        reason: "synthesis-missing",
+      })
     );
   }
 
   return new Promise((resolve, reject) => {
+    if (options?.signal?.aborted === true) {
+      reject(new DOMException("Aborted", "AbortError"));
+      return;
+    }
+
     const utterance = new SpeechSynthesisUtterance(trimmed);
     utterance.lang = options?.lang ?? "pt-BR";
+    let settled = false;
+    const finish = (fn: () => void) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      fn();
+    };
+
+    const onAbort = () => {
+      finish(() => {
+        cancelSpeechOutput();
+        reject(new DOMException("Aborted", "AbortError"));
+      });
+    };
+
+    if (options?.signal !== undefined) {
+      options.signal.addEventListener("abort", onAbort, { once: true });
+    }
+
     utterance.onend = () => {
-      resolve();
+      finish(() => {
+        resolve();
+      });
     };
     utterance.onerror = () => {
-      reject(new Error("eve-web-speech: speechSynthesis error"));
+      finish(() => {
+        reject(
+          new EveWebSpeechError({
+            message: "eve-web-speech: speechSynthesis error",
+            reason: "synthesis-missing",
+          })
+        );
+      });
     };
     synthesis.speak(utterance);
   });
