@@ -60,6 +60,10 @@ describe("ZA-13 restore activation port", () => {
           activation.requirePromotion(started.preparationId, {
             catalogCoverage: "BoundedComplete",
             controllerSuppression: { state: "Clear" },
+            erasureRace: {
+              kind: "erasure-admitted-before-drain",
+              suppression: { state: "Clear" },
+            },
             principalRights: "active",
             writersSettled: true,
           })

@@ -294,7 +294,12 @@ describe("ZA-11 independent erasure controller (local narrow)", () => {
               schemaVersion: "worlds.v1",
             })
           );
-          expect(yield* admitWorldContent(created.worldRef)).toBe("0");
+          expect(
+            yield* admitWorldContent(
+              created.worldRef,
+              context.presence.principalId
+            )
+          ).toBe("0");
 
           const preClosingDump = yield* dumpDatabase(
             handles.appAdminUrl,
@@ -313,7 +318,10 @@ describe("ZA-11 independent erasure controller (local narrow)", () => {
             restoreAfterErasure: false,
           });
           expect(
-            yield* admitWorldContent(created.worldRef).pipe(Effect.flip)
+            yield* admitWorldContent(
+              created.worldRef,
+              context.presence.principalId
+            ).pipe(Effect.flip)
           ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
 
           const register = yield* ErasureAttemptRegister;
@@ -327,7 +335,10 @@ describe("ZA-11 independent erasure controller (local narrow)", () => {
             "Confirmed"
           );
           expect(
-            yield* admitWorldContent(created.worldRef).pipe(Effect.flip)
+            yield* admitWorldContent(
+              created.worldRef,
+              context.presence.principalId
+            ).pipe(Effect.flip)
           ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
         })
       )
@@ -382,7 +393,10 @@ describe("ZA-11 independent erasure controller (local narrow)", () => {
           expect(stale.state).toBe("Unknown");
           expect(blocksWorldContentAdmission(stale)).toBeTruthy();
           expect(
-            yield* admitWorldContent(created.worldRef).pipe(Effect.flip)
+            yield* admitWorldContent(
+              created.worldRef,
+              context.presence.principalId
+            ).pipe(Effect.flip)
           ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
 
           const installed = yield* AuthorityInstallation;
@@ -446,7 +460,10 @@ describe("ZA-11 independent erasure controller (local narrow)", () => {
           expect(worldObs.state).toBe("Registered");
           expect(blocksWorldContentAdmission(worldObs)).toBeTruthy();
           expect(
-            yield* admitWorldContent(created.worldRef).pipe(Effect.flip)
+            yield* admitWorldContent(
+              created.worldRef,
+              context.presence.principalId
+            ).pipe(Effect.flip)
           ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
         })
       )

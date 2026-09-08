@@ -21,6 +21,7 @@ export {
   linearizeErasureVersusActivation,
   phaseAllowsContentServing,
   phaseAllowsCredentialPromotion,
+  raceBlocksRestorePromotion,
 } from "../../ports/erasure/restore-activation-laws.js";
 export type {
   ErasureActivationOrder,
@@ -66,11 +67,18 @@ export const requireRestoreAlignedContent = Effect.fn(
   return yield* Effect.void;
 });
 
-/** Credential/session promotion from restored backups — fail closed. */
+/**
+ * Credential/session gate for restored backups — fail closed while quarantined.
+ * Ordinary (NotRestored) installs are unchanged: session validation proceeds.
+ */
 export const requireRestoreCredentialPromotion = Effect.fn(
   "erasure.requireRestoreCredentialPromotion"
 )(function* requireRestoreCredentialPromotion() {
   const activation = yield* ErasureRestoreActivation;
+  const observation = yield* activation.observe;
+  if (observation.phase === "NotRestored") {
+    return yield* Effect.void;
+  }
   return yield* activation.requireCredentialPromotion.pipe(
     Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
   );

@@ -301,7 +301,12 @@ describe("ZA-13 restore activation after erasure", () => {
                 schemaVersion: "worlds.v1",
               })
             );
-            expect(yield* admitWorldContent(created.worldRef)).toBe("0");
+            expect(
+              yield* admitWorldContent(
+                created.worldRef,
+                owner.presence.principalId
+              )
+            ).toBe("0");
 
             const preDump = yield* dumpDatabase(
               handles.appAdminUrl,
@@ -336,7 +341,10 @@ describe("ZA-13 restore activation after erasure", () => {
 
             // Erased scope stays unavailable after restore (controller Confirmed).
             expect(
-              yield* admitWorldContent(created.worldRef).pipe(Effect.flip)
+              yield* admitWorldContent(
+                created.worldRef,
+                owner.presence.principalId
+              ).pipe(Effect.flip)
             ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
 
             // Revoked principal cannot access surviving content under current rights.
@@ -366,6 +374,10 @@ describe("ZA-13 restore activation after erasure", () => {
                 activation.requirePromotion(started.preparationId, {
                   catalogCoverage: "BoundedComplete",
                   controllerSuppression: { state: "Clear" },
+                  erasureRace: {
+                    kind: "erasure-admitted-before-drain",
+                    suppression: { state: "Clear" },
+                  },
                   principalRights: "active",
                   writersSettled: true,
                 })
@@ -437,7 +449,10 @@ describe("ZA-13 restore activation after erasure", () => {
           expect(rights).toBe("unknown");
 
           expect(
-            yield* admitWorldContent(created.worldRef).pipe(Effect.flip)
+            yield* admitWorldContent(
+              created.worldRef,
+              context.presence.principalId
+            ).pipe(Effect.flip)
           ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
           expect(
             yield* Effect.exit(activation.requireContentServing)
@@ -460,6 +475,10 @@ describe("ZA-13 restore activation after erasure", () => {
               activation.requirePromotion(started.preparationId, {
                 catalogCoverage: "Unknown",
                 controllerSuppression: stale,
+                erasureRace: {
+                  kind: "controller-unknown-or-stale",
+                  suppression: stale,
+                },
                 principalRights: rights,
                 writersSettled: false,
               })
@@ -533,12 +552,27 @@ describe("ZA-13 restore activation after erasure", () => {
           });
 
           expect(
-            yield* admitWorldContent(created.worldRef).pipe(Effect.flip)
+            yield* admitWorldContent(
+              created.worldRef,
+              context.presence.principalId
+            ).pipe(Effect.flip)
           ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
           expect((yield* activation.observe).phase).toBe("Preparing");
           expect(
             yield* Effect.exit(activation.requireContentServing)
           ).toMatchObject({ _tag: "Failure" });
+          expect(
+            yield* Effect.exit(
+              activation.requirePromotion(started.preparationId, {
+                catalogCoverage: "BoundedComplete",
+                controllerSuppression: { state: "Registered" },
+                erasureRace: { kind: "old-writer-resume-after-seal" },
+                principalRights: "active",
+                writersSettled: true,
+              })
+            )
+          ).toMatchObject({ _tag: "Failure" });
+          expect((yield* activation.observe).phase).toBe("PromotionBlocked");
         })
       )
   );

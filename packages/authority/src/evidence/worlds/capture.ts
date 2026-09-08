@@ -93,7 +93,10 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
         yield* sql`SELECT world_id FROM authority.worlds
           WHERE world_id = ${world.worldId} AND realm = ${world.realm} FOR SHARE`;
         yield* requireImportPolicy(context, world);
-        const epoch = yield* admitWorldContent(world);
+        const epoch = yield* admitWorldContent(
+          world,
+          context.presence.principalId
+        );
         const [row] = yield* sql`
         INSERT INTO jobs.captures
           (world_id, realm, capture_id, principal_id, state, object_location,
@@ -247,7 +250,10 @@ export const stageCapture = Effect.fn("authority.evidence.stageCapture")(
     yield* serializable(
       Effect.gen(function* confirmUpload() {
         yield* requireImportPolicy(context, reservation.worldRef);
-        const epoch = yield* admitWorldContent(reservation.worldRef);
+        const epoch = yield* admitWorldContent(
+          reservation.worldRef,
+          context.presence.principalId
+        );
         if (epoch !== reservation.fence) {
           // Delayed old-epoch work cannot publish after the World barrier advanced.
           return yield* new Expired({ code: "EXPIRED" });

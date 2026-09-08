@@ -7,18 +7,21 @@ import type { Effect as EffectType } from "effect";
 
 import type { ErasureWorldSuppressionObservation } from "./attempt-register.js";
 import type { ControlledCopyCoverageStatus } from "./copy-catalog.js";
-import type {
-  RestoreAdmissionPhase,
-  RestoreActivationQualification,
-  RestoredPrincipalRights,
-} from "./restore-activation-laws.js";
 import {
   allowsContentServingReadiness,
   currentRestoreActivationQualification,
   decideRestorePromotion,
   gatesAdmitRestorePromotion,
+  linearizeErasureVersusActivation,
   phaseAllowsContentServing,
   phaseAllowsCredentialPromotion,
+  raceBlocksRestorePromotion,
+} from "./restore-activation-laws.js";
+import type {
+  ErasureActivationRace,
+  RestoreAdmissionPhase,
+  RestoreActivationQualification,
+  RestoredPrincipalRights,
 } from "./restore-activation-laws.js";
 
 /**
@@ -44,6 +47,8 @@ export type RestoreActivationObservation =
 export interface RestorePromotionCut {
   readonly catalogCoverage: ControlledCopyCoverageStatus;
   readonly controllerSuppression: ErasureWorldSuppressionObservation;
+  /** Caller-supplied durable race posture — linearized before promotion. */
+  readonly erasureRace: ErasureActivationRace;
   readonly principalRights: RestoredPrincipalRights;
   readonly writersSettled: boolean;
 }
@@ -57,7 +62,10 @@ export class ErasureRestoreActivation extends Context.Service<
     /** Honest gate surface — never reports Qualified without human/ops proof. */
     readonly qualification: EffectType.Effect<RestoreActivationQualification>;
     /** Observe current restore admission state for this process/install. */
-    readonly observe: EffectType.Effect<RestoreActivationObservation>;
+    readonly observe: EffectType.Effect<
+      RestoreActivationObservation,
+      Unavailable
+    >;
     /**
      * Start a restored install closed with a fresh deployment/writer identity.
      * Does not revive backup credentials or sessions.
@@ -225,6 +233,15 @@ export const memoryRestoreActivationLayer = (options?: {
           if (state.current.preparationId !== preparationId) {
             return yield* failUnavailable();
           }
+          const raceOrder = linearizeErasureVersusActivation(cut.erasureRace);
+          if (raceBlocksRestorePromotion(raceOrder)) {
+            const blocked: RestoreActivationState = {
+              ...state.current,
+              phase: "PromotionBlocked",
+            };
+            state.current = blocked;
+            return yield* failUnavailable();
+          }
           const decision = decideRestorePromotion({
             catalogCoverage: cut.catalogCoverage,
             controllerSuppression: cut.controllerSuppression,
@@ -263,6 +280,7 @@ export {
   linearizeErasureVersusActivation,
   phaseAllowsContentServing,
   phaseAllowsCredentialPromotion,
+  raceBlocksRestorePromotion,
 } from "./restore-activation-laws.js";
 export type {
   ErasureActivationOrder,

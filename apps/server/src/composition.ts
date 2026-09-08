@@ -13,7 +13,7 @@ import {
   localErasureAttemptRegisterLayer,
 } from "@zoen/authority/ports/erasure/local-pg";
 import { ErasureObjectWriteSettlement } from "@zoen/authority/ports/erasure/object-write";
-import { ErasureRestoreActivation } from "@zoen/authority/ports/erasure/restore-activation";
+import { postgresRestoreActivationLayer } from "@zoen/authority/ports/erasure/restore-activation-pg";
 import {
   currentProductEveAdmissionInput,
   isProductEveAdmitted,
@@ -172,6 +172,13 @@ export const makeApplication = (config: ApplicationConfig) =>
       const erasureCopyCatalog = localErasureCopyCatalogLayer.pipe(
         Layer.provide(authorityPg)
       );
+      // ZA-13: durable restore activation on the erasure-attempt store. Empty table
+      // → NotRestored (ordinary installs). Quarantine/promotion stay fail-closed
+      // while H-01/G-OPS/G-STORAGE-FENCE remain Blocked/Unknown; never advertise
+      // restoreAfterErasure:true.
+      const restoreActivation = postgresRestoreActivationLayer.pipe(
+        Layer.provide(erasureAttemptPg)
+      );
       // ZA-17: key alone must not admit stubMemory or live Zen.
       const eveSurface = yield* makeProductEveSurface(
         config.openCodeZen !== undefined
@@ -180,7 +187,10 @@ export const makeApplication = (config: ApplicationConfig) =>
         Layer.effectDiscard(checkAuthorityRole).pipe(
           Layer.provideMerge(authorityPg)
         ),
-        makeIdentityLayer(config.identity).pipe(Layer.provideMerge(disclosure)),
+        makeIdentityLayer(config.identity).pipe(
+          Layer.provideMerge(disclosure),
+          Layer.provide(restoreActivation)
+        ),
         s3EvidenceLayer(config.storage),
         erasureStorageLayer(config.storage),
         Layer.succeed(AuthorityInstallation, installation),
@@ -191,9 +201,7 @@ export const makeApplication = (config: ApplicationConfig) =>
         erasureCopyCatalog,
         // Honest G-STORAGE-FENCE: Blocked — no fictitious vendor containment.
         ErasureObjectWriteSettlement.unqualifiedLayer,
-        // ZA-13: restore activation fail-closed (H-01/G-OPS/G-STORAGE-FENCE unqualified;
-        // restoreAfterErasure stays false; Object Lock restoreAfterErasure Unknown).
-        ErasureRestoreActivation.unqualifiedLayer,
+        restoreActivation,
         eveSurface
       );
       const executor = SemanticExecutor.layerWithoutEve.pipe(

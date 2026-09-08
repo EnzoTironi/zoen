@@ -29,10 +29,10 @@ const ProgressAdmission = Schema.Struct({
  */
 export const admitWorldContent = Effect.fn(
   "authority.access.admitWorldContent"
-)(function* admitWorldContent(world: WorldRef) {
+)(function* admitWorldContent(world: WorldRef, principalId: string) {
   yield* requireControllerAlignedContent(world);
   // ZA-13: restored installs stay quarantined until promotion; rights independent of login.
-  yield* requireRestoreAlignedContent(world, null);
+  yield* requireRestoreAlignedContent(world, principalId);
 
   const sql = yield* SqlClient.SqlClient;
   const rows = yield* sql`

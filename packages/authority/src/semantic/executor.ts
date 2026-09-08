@@ -39,6 +39,7 @@ import { inspectWorldErasure } from "../knowledge/erasure/handlers/inspect.js";
 import { purgeWorldContent } from "../knowledge/erasure/handlers/purge.js";
 import { requestWorldErasure } from "../knowledge/erasure/handlers/request.js";
 import { parseErasureBytes } from "../knowledge/erasure/request.js";
+import { requireRestoreCredentialPromotion } from "../knowledge/erasure/restore-activation.js";
 import {
   inspectIdentityRecovery,
   inspectSubjectIdentity,
@@ -213,6 +214,8 @@ export class SemanticExecutor extends Context.Service<
         ) {
           const request = yield* parseRequest(family, bytes);
           const verified = yield* presence.verify(credential);
+          // ZA-13: restored backup sessions stay closed until credential promotion.
+          yield* requireRestoreCredentialPromotion();
           const now = yield* DateTime.now;
           const deadline = yield* Schema.decodeEffect(Instant)(
             DateTime.formatIso(
@@ -333,6 +336,7 @@ export class SemanticExecutor extends Context.Service<
         ) {
           const verified = prepared.context.presence;
           const currentPresence = yield* presence.verify(credential);
+          yield* requireRestoreCredentialPromotion();
           if (
             currentPresence.principalId !== verified.principalId ||
             currentPresence.sessionId !== verified.sessionId ||

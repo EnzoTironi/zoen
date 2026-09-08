@@ -32,6 +32,19 @@ export const probeRestoredContentServingReadiness = Effect.fn(
   const activation = yield* ErasureRestoreActivation;
   const observation = yield* activation.observe;
   const qualification = yield* activation.qualification;
+  const frozen = currentRestoreActivationQualification();
+  // Defensive: composition must not invent gate clearance or restoreAfterErasure.
+  if (
+    frozen.h01 !== "Blocked" ||
+    frozen.gOps !== "Unknown" ||
+    frozen.gStorageFence !== "Blocked" ||
+    qualification.h01 !== frozen.h01 ||
+    qualification.gOps !== frozen.gOps ||
+    qualification.gStorageFence !== frozen.gStorageFence ||
+    qualification.objectLockRestoreAfterErasure !== "Unknown"
+  ) {
+    return yield* new Unavailable({ code: "UNAVAILABLE" });
+  }
   const allowed = allowsContentServingReadiness({
     controllerFresh: input?.controllerFresh ?? true,
     phase: observation.phase,
@@ -43,13 +56,6 @@ export const probeRestoredContentServingReadiness = Effect.fn(
   }
   if (observation.phase !== "NotRestored") {
     yield* activation.requireContentServing;
-  }
-  // Keep freeze F04 visible: Object Lock restoreAfterErasure stays Unknown.
-  if (
-    currentRestoreActivationQualification().objectLockRestoreAfterErasure !==
-    "Unknown"
-  ) {
-    return yield* new Unavailable({ code: "UNAVAILABLE" });
   }
   return yield* Effect.void;
 });

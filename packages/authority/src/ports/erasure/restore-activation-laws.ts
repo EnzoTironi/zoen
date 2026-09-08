@@ -141,6 +141,29 @@ export const linearizeErasureVersusActivation = (
   }
 };
 
+/** True when race linearization forbids promoting this activation cut. */
+export const raceBlocksRestorePromotion = (
+  order: ErasureActivationOrder
+): boolean => {
+  switch (order.order) {
+    case "block-promotion":
+    case "reject-old-writer": {
+      return true;
+    }
+    case "include-erasure-in-cut": {
+      return !order.contentAdmitted;
+    }
+    case "defer-erasure-to-new-epoch": {
+      // Erasure is not part of this cut; promotion may continue on other checks.
+      return false;
+    }
+    default: {
+      const _exhaustive: never = order;
+      return _exhaustive;
+    }
+  }
+};
+
 export interface PromotionPreconditions {
   readonly catalogCoverage: ControlledCopyCoverageStatus;
   readonly controllerSuppression: ErasureWorldSuppressionObservation;

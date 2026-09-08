@@ -1,4 +1,6 @@
+import { requireRestoreCredentialPromotion } from "@zoen/authority/knowledge/erasure/restore-activation";
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
+import { ErasureRestoreActivation } from "@zoen/authority/ports/erasure/restore-activation";
 import { PrincipalDirectory } from "@zoen/authority/ports/sharing/directory";
 import {
   Presence,
@@ -79,6 +81,7 @@ export const makeIdentityLayer = (input: IdentityConfig) =>
         )
       );
       const fence = yield* DisclosureFence;
+      const restoreActivation = yield* ErasureRestoreActivation;
       const pool = yield* acquireIdentityPool(config.databaseUrl);
       yield* checkIdentityPool(pool);
       const auth = betterAuth(identityAuthOptions(config, pool));
@@ -125,6 +128,10 @@ export const makeIdentityLayer = (input: IdentityConfig) =>
         if (current === null) {
           return yield* new Unauthenticated({ code: "PRESENCE_REQUIRED" });
         }
+        // ZA-13: restored backup sessions stay unusable until credential promotion.
+        yield* requireRestoreCredentialPromotion().pipe(
+          Effect.provideService(ErasureRestoreActivation, restoreActivation)
+        );
         const presence = yield* toPresence(current);
         const now = yield* DateTime.now;
         if (presence.expiresAt <= DateTime.formatIso(now)) {
