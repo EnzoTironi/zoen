@@ -41,7 +41,7 @@ export const verifyRelease = Effect.gen(function* verifyExecutableRelease() {
     if (
       seen.has(entry.path) ||
       parts.some((part) => part === ".." || part === "." || part === "") ||
-      !/^(?:packages\/(?:contracts|authority)|apps\/(?:server|cli|web))\/(?:dist\/|package\.json$)/u.test(
+      !/^(?:packages\/(?:contracts|ontology)|apps\/(?:server|cli|web))\/(?:dist\/|package\.json$)/u.test(
         entry.path
       ) ||
       entry.path.includes("\\")
