@@ -93,6 +93,7 @@ export const groundedBasisFromFrame = (
   inspected: FrameInspectedSuccess
 ): EffectType.Effect<EveGroundedBasis, InvalidInput> => {
   const { frame } = inspected;
+  const truncated = frame.claims.length > EveToolLimits.maxVisibleFacts;
   const facts: EveGroundedFact[] = frame.claims
     .slice(0, EveToolLimits.maxVisibleFacts)
     .map(({ claimRef, evidenceRef, predicate, subjectKey }: VisibleClaim) => ({
@@ -109,11 +110,10 @@ export const groundedBasisFromFrame = (
       references.push(fact.evidenceRef);
     }
   }
-  const uncertainty = coverageToUncertainty(
-    frame.coverage,
-    frame.contested,
-    facts.length
-  );
+  // Truncation must not imply complete coverage of the authorized frame.
+  const uncertainty = truncated
+    ? "Partial"
+    : coverageToUncertainty(frame.coverage, frame.contested, facts.length);
   return Schema.decodeEffect(EveGroundedBasisSchema)({
     contested: frame.contested,
     facts,
@@ -166,7 +166,7 @@ export interface SemanticAgreement {
   readonly uncertaintyAgree: boolean;
 }
 
-const sameStringSet = (a: Set<string>, b: Set<string>): boolean => {
+const sameStringSet = <T>(a: Set<T>, b: Set<T>): boolean => {
   if (a.size !== b.size) {
     return false;
   }
@@ -178,25 +178,34 @@ const sameStringSet = (a: Set<string>, b: Set<string>): boolean => {
   return true;
 };
 
-/** Compare Eve tool basis vs direct Inspect frame — prose/layout may differ. */
+/**
+ * Compare Eve tool basis vs the same ordered, bounded projection used by
+ * `groundedBasisFromFrame` (EveToolLimits.maxVisibleFacts). Full frames may
+ * exceed that bound; agreement is against the defined Eve projection, not the
+ * raw untruncated claim set.
+ */
 export const semanticAgreement = (
   basis: EveGroundedBasis,
   inspected: FrameInspectedSuccess
 ): SemanticAgreement => {
   const { frame } = inspected;
-  const basisClaimRefs = new Set(basis.facts.map((f) => f.claimRef as string));
+  const truncated = frame.claims.length > EveToolLimits.maxVisibleFacts;
+  const projectedClaims = frame.claims.slice(0, EveToolLimits.maxVisibleFacts);
+  const basisClaimRefs = new Set(basis.facts.map((f) => f.claimRef));
   const frameClaimRefs = new Set(
-    frame.claims.map(({ claimRef }: VisibleClaim) => claimRef as string)
+    projectedClaims.map(({ claimRef }: VisibleClaim) => claimRef)
   );
-  const basisEvidence = new Set(basis.references.map((r) => r as string));
+  const basisEvidence = new Set(basis.references);
   const frameEvidence = new Set(
-    frame.claims.map(({ evidenceRef }: VisibleClaim) => evidenceRef as string)
+    projectedClaims.map(({ evidenceRef }: VisibleClaim) => evidenceRef)
   );
-  const expectedUncertainty = coverageToUncertainty(
-    frame.coverage,
-    frame.contested,
-    frame.claims.length
-  );
+  const expectedUncertainty = truncated
+    ? "Partial"
+    : coverageToUncertainty(
+        frame.coverage,
+        frame.contested,
+        projectedClaims.length
+      );
   return {
     contestedAgree: basis.contested === frame.contested,
     factRefsAgree: sameStringSet(basisClaimRefs, frameClaimRefs),

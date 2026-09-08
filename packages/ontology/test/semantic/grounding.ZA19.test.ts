@@ -1,14 +1,19 @@
 import { describe, expect, it } from "@effect/vitest";
-import { EveGroundedBasis } from "@zoen/contracts/eve/tools";
+import { EveGroundedBasis, EveToolLimits } from "@zoen/contracts/eve/tools";
+import { FrameInspected } from "@zoen/contracts/worlds/operations";
 import {
   ClaimRef,
   EvidenceRef,
+  FrameRef,
+  SourceRef,
   SubjectKey,
   WorldId,
 } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 
 import {
+  basesAgreeSemantically,
+  groundedBasisFromFrame,
   parseEveDomainToolCall,
   rejectDangerousToolPayload,
   settleUncertaintyForGroundedTurn,
@@ -54,6 +59,57 @@ const contestedBasis = Schema.decodeSync(EveGroundedBasis)({
   uncertainty: "Partial",
   worldRef,
 });
+
+const oversizedInspected = (() => {
+  const claims = Array.from(
+    { length: EveToolLimits.maxVisibleFacts + 1 },
+    (_, index) => {
+      const id = `00000000-0000-4000-8000-${String(900_000 + index).padStart(12, "0")}`;
+      return {
+        claimRef: Schema.decodeSync(ClaimRef)(id),
+        evidenceRef: Schema.decodeSync(EvidenceRef)(id),
+        predicate: "obligation.amount" as const,
+        recordId: `rec-${String(index)}`,
+        recordIndex: index,
+        source: {
+          externalId: `src-${String(index)}`,
+          label: `src-${String(index)}`,
+          namespace: "za19-truncation",
+          revision: "1",
+        },
+        sourceRef: Schema.decodeSync(SourceRef)(id),
+        subjectKey,
+        validTime: {
+          _tag: "DateInterval" as const,
+          from: "2026-09-01",
+          to: "2026-10-01",
+        },
+        value: {
+          _tag: "Known" as const,
+          amount: "1.00",
+          currency: "BRL" as const,
+        },
+        verification: "unverified" as const,
+      };
+    }
+  );
+  return Schema.decodeSync(FrameInspected)({
+    _tag: "FrameInspected",
+    frame: {
+      claims,
+      contested: false,
+      coverage: { _tag: "Partial" },
+      frameRef: Schema.decodeSync(FrameRef)(
+        "00000000-0000-4000-8000-000000000799"
+      ),
+      scopedCorrections: [],
+      selection: { _tag: "unresolved" },
+      subjectKey,
+      verification: "unverified",
+      worldRef,
+    },
+  });
+})();
 
 describe("ZA-19 semantic grounding", () => {
   it.effect(
@@ -123,5 +179,16 @@ describe("ZA-19 semantic grounding", () => {
         sql: "Failure",
       });
     })
+  );
+
+  it.effect(
+    "bounded projection agrees when Inspect frame exceeds maxVisibleFacts",
+    () =>
+      Effect.gen(function* truncated() {
+        const basis = yield* groundedBasisFromFrame(oversizedInspected);
+        expect(basis.facts).toHaveLength(EveToolLimits.maxVisibleFacts);
+        expect(basis.uncertainty).toBe("Partial");
+        expect(basesAgreeSemantically(basis, oversizedInspected)).toBeTruthy();
+      })
   );
 });

@@ -1,6 +1,10 @@
 import type { EveDomainToolCall } from "@zoen/contracts/eve/tools";
 import { EveToolLimits } from "@zoen/contracts/eve/tools";
-import { InvalidInput, Unavailable } from "@zoen/contracts/worlds/errors";
+import {
+  InvalidInput,
+  NotFoundOrDenied,
+  Unavailable,
+} from "@zoen/contracts/worlds/errors";
 import { FrameInspected, Inspect } from "@zoen/contracts/worlds/operations";
 import type { SubjectKey, WorldRef } from "@zoen/contracts/worlds/values";
 import { inspect } from "@zoen/ontology/knowledge/inspect";
@@ -19,16 +23,22 @@ import type { Effect as EffectType } from "effect";
  * composed from the trusted root. No recursive conversation→conversation tools.
  */
 
-type DomainToolFailure = InvalidInput | Unavailable;
+type DomainToolFailure = InvalidInput | NotFoundOrDenied | Unavailable;
 
 const invalid = () => new InvalidInput({ code: "INVALID_INPUT" });
 
+/** Preserve non-disclosing denial; only infra/decode map to Unavailable. */
 const mapInspectError = (error: {
   readonly _tag: string;
-}): DomainToolFailure =>
-  error._tag === "InvalidInput"
-    ? new InvalidInput({ code: "INVALID_INPUT" })
-    : new Unavailable({ code: "UNAVAILABLE" });
+}): DomainToolFailure => {
+  if (error._tag === "InvalidInput") {
+    return new InvalidInput({ code: "INVALID_INPUT" });
+  }
+  if (error._tag === "NotFoundOrDenied") {
+    return new NotFoundOrDenied({ code: "NOT_FOUND_OR_DENIED" });
+  }
+  return new Unavailable({ code: "UNAVAILABLE" });
+};
 
 /**
  * Shared Inspect path used by Eve tools. Requirements (SqlClient, etc.) come

@@ -141,12 +141,71 @@ const settleVisible = (
  * authorized citations. ModelPort may be blocked (G-PROVIDER); tools still
  * work for evidence agreement proofs.
  */
+const cancelOwnedTurn = (input: RunEveTurnInput, worldRef: WorldRef | null) =>
+  Effect.gen(function* cancel() {
+    const journal = yield* EveJournal;
+    yield* journal
+      .cancelTurn({
+        conversationId: input.conversationId,
+        ownerPrincipalId: input.ownerPrincipalId,
+        purpose: input.purpose,
+        turnId: input.turnId,
+        worldRef,
+      })
+      .pipe(Effect.ignore);
+  });
+
+/** Cancel the accepted attempt, then rethrow the original typed failure. */
+const finalizeFailedAccepted = <A, E, R>(
+  input: RunEveTurnInput,
+  worldRef: WorldRef | null,
+  effect: EffectType.Effect<A, E, R>
+): EffectType.Effect<A, E, R | EveJournal> =>
+  Effect.gen(function* finalize() {
+    const exit = yield* Effect.exit(effect);
+    if (exit._tag === "Failure") {
+      yield* cancelOwnedTurn(input, worldRef);
+      return yield* Effect.failCause(exit.cause);
+    }
+    return exit.value;
+  });
+
+/** Schema-only tool admission before accept — avoids stranded Accepted turns. */
+const prevalidateGroundingInputs = (
+  input: RunEveTurnInput
+): EffectType.Effect<void, InvalidInput> => {
+  const subjectCheck =
+    input.groundSubjectKey === undefined
+      ? Effect.void
+      : Schema.decodeEffect(SubjectKey)(input.groundSubjectKey).pipe(
+          Effect.asVoid,
+          Effect.mapError(
+            () => new InvalidInputError({ code: "INVALID_INPUT" })
+          )
+        );
+  const toolCalls = input.toolCalls ?? [];
+  const reserved = input.groundSubjectKey === undefined ? 0 : 1;
+  const limitCheck =
+    reserved + toolCalls.length > EveToolLimits.maxToolCallsPerTurn
+      ? Effect.fail(new InvalidInputError({ code: "INVALID_INPUT" }))
+      : Effect.void;
+  return subjectCheck.pipe(
+    Effect.andThen(limitCheck),
+    Effect.andThen(
+      Effect.forEach(toolCalls, (raw) => admitDomainToolCall(raw), {
+        discard: true,
+      })
+    )
+  );
+};
+
 export const runGroundedEveTurn = (input: RunEveTurnInput) =>
   Effect.gen(function* groundedTurn() {
     const journal = yield* EveJournal;
     const model = yield* EveOpenCodeZen;
     const worldRef = input.worldRef ?? null;
     yield* assertProfileAdmission(input);
+    yield* prevalidateGroundingInputs(input);
 
     const accepted = yield* journal.acceptTurn({
       attemptId: input.attemptId,
@@ -163,37 +222,17 @@ export const runGroundedEveTurn = (input: RunEveTurnInput) =>
     });
 
     if (signalAborted(input.signal)) {
-      yield* journal
-        .cancelTurn({
-          conversationId: input.conversationId,
-          ownerPrincipalId: input.ownerPrincipalId,
-          purpose: input.purpose,
-          turnId: input.turnId,
-          worldRef,
-        })
-        .pipe(Effect.ignore);
+      yield* cancelOwnedTurn(input, worldRef);
       return yield* new Unavailable({ code: "UNAVAILABLE" });
     }
 
     let basis: EveGroundedBasis | null = null;
     if (worldRef !== null) {
-      const collected = yield* collectGroundedBasis(input, worldRef).pipe(
-        Effect.catchTag("Unavailable", (error) =>
-          Effect.gen(function* onToolAbort() {
-            yield* journal
-              .cancelTurn({
-                conversationId: input.conversationId,
-                ownerPrincipalId: input.ownerPrincipalId,
-                purpose: input.purpose,
-                turnId: input.turnId,
-                worldRef,
-              })
-              .pipe(Effect.ignore);
-            return yield* error;
-          })
-        )
+      basis = yield* finalizeFailedAccepted(
+        input,
+        worldRef,
+        collectGroundedBasis(input, worldRef)
       );
-      basis = collected;
     }
 
     const citationsAuthorized = basis !== null;
@@ -207,16 +246,20 @@ export const runGroundedEveTurn = (input: RunEveTurnInput) =>
         basis === null
           ? "[stub-local] offline proof — not a live model reply"
           : `[stub-local] contested=${String(basis.contested)} facts=${String(basis.facts.length)} uncertainty=${basis.uncertainty}`;
-      const message = yield* settleVisible(
+      const message = yield* finalizeFailedAccepted(
         input,
         worldRef,
-        evidenceLinks,
-        settleUncertaintyForGroundedTurn({
-          basis,
-          citationsAuthorized,
-          generatedText: visibleText,
-        }),
-        visibleText
+        settleVisible(
+          input,
+          worldRef,
+          evidenceLinks,
+          settleUncertaintyForGroundedTurn({
+            basis,
+            citationsAuthorized,
+            generatedText: visibleText,
+          }),
+          visibleText
+        )
       );
       return {
         message,
@@ -244,44 +287,30 @@ export const runGroundedEveTurn = (input: RunEveTurnInput) =>
         : { systemText: groundedSystem }),
     };
 
-    const completion = yield* model.completeChat(chatInput).pipe(
-      Effect.catch((error) =>
-        Effect.gen(function* onModelFail() {
-          yield* journal
-            .cancelTurn({
-              conversationId: input.conversationId,
-              ownerPrincipalId: input.ownerPrincipalId,
-              purpose: input.purpose,
-              turnId: input.turnId,
-              worldRef,
-            })
-            .pipe(Effect.ignore);
-          return yield* error;
-        })
-      )
+    const completion = yield* finalizeFailedAccepted(
+      input,
+      worldRef,
+      model.completeChat(chatInput)
     );
 
     if (signalAborted(input.signal)) {
-      yield* journal
-        .cancelTurn({
-          conversationId: input.conversationId,
-          ownerPrincipalId: input.ownerPrincipalId,
-          purpose: input.purpose,
-          turnId: input.turnId,
-          worldRef,
-        })
-        .pipe(Effect.ignore);
+      yield* cancelOwnedTurn(input, worldRef);
       return yield* new Unavailable({ code: "UNAVAILABLE" });
     }
 
-    const snapshot = yield* journal.recover({
-      conversationId: input.conversationId,
-      ownerPrincipalId: input.ownerPrincipalId,
-      purpose: input.purpose,
+    const snapshot = yield* finalizeFailedAccepted(
+      input,
       worldRef,
-    });
+      journal.recover({
+        conversationId: input.conversationId,
+        ownerPrincipalId: input.ownerPrincipalId,
+        purpose: input.purpose,
+        worldRef,
+      })
+    );
     const current = snapshot.turns.find((t) => t.turnId === input.turnId);
     if (current === undefined) {
+      yield* cancelOwnedTurn(input, worldRef);
       return yield* new NotFoundOrDeniedError({ code: "NOT_FOUND_OR_DENIED" });
     }
     if (current.phase === "Cancelled") {
@@ -301,12 +330,16 @@ export const runGroundedEveTurn = (input: RunEveTurnInput) =>
             generatedText: completion.visibleText,
           });
 
-    const message = yield* settleVisible(
+    const message = yield* finalizeFailedAccepted(
       input,
       worldRef,
-      evidenceLinks,
-      uncertainty,
-      completion.visibleText
+      settleVisible(
+        input,
+        worldRef,
+        evidenceLinks,
+        uncertainty,
+        completion.visibleText
+      )
     );
 
     return {
