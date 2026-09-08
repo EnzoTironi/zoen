@@ -1,14 +1,14 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
+import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
+import { DisclosureFence } from "@zoen/ontology/ports/disclosure/fence";
 import {
   membershipDisclosureKey,
   sessionDisclosureKey,
   worldDisclosureKey,
-} from "@zoen/authority/ports/disclosure/keys";
-import { VerifiedPresence } from "@zoen/authority/ports/worlds/context";
-import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
+} from "@zoen/ontology/ports/disclosure/keys";
+import { VerifiedPresence } from "@zoen/ontology/ports/worlds/context";
 import {
   DateTime,
   Deferred,

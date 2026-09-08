@@ -9,14 +9,14 @@ import {
   createAccount,
   postAuth,
 } from "../../../../apps/server/test/identity/worlds/http.js";
-import { SemanticExecutor } from "../../../../packages/authority/src/semantic/executor.js";
-import { canonicalJson } from "../../../../packages/authority/src/values/canonical.js";
 import {
   CorrectionApplied,
   CorrectionProposed,
   FrameInspected,
   WorldCreated,
 } from "../../../../packages/contracts/src/worlds/operations.js";
+import { SemanticExecutor } from "../../../../packages/ontology/src/semantic/executor.js";
+import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.js";
 import { configuration } from "../commit/fixture.js";
 
 const bytes = (value: unknown) =>

@@ -5,10 +5,10 @@ import type * as StorageModule from "../../../apps/server/src/adapters/object-st
 import type * as DisclosureModule from "../../../apps/server/src/adapters/postgres/disclosure/fence.ts";
 import type * as PostgresModule from "../../../apps/server/src/adapters/postgres/worlds/postgres.ts";
 import type * as IdentityModule from "../../../apps/server/src/identity/worlds/identity.ts";
-import type * as InstallationModule from "../../../packages/authority/src/commit/configuration.ts";
-import type * as ErasureRegisterModule from "../../../packages/authority/src/ports/erasure/attempt-register.ts";
-import type * as PolicyModule from "../../../packages/authority/src/ports/worlds/context.ts";
-import type * as ExecutorModule from "../../../packages/authority/src/semantic/executor.ts";
+import type * as InstallationModule from "../../../packages/ontology/src/commit/configuration.ts";
+import type * as ErasureRegisterModule from "../../../packages/ontology/src/ports/erasure/attempt-register.ts";
+import type * as PolicyModule from "../../../packages/ontology/src/ports/worlds/context.ts";
+import type * as ExecutorModule from "../../../packages/ontology/src/semantic/executor.ts";
 import { makeProcessConfiguration } from "./process-configuration.ts";
 
 class BuildRequired extends Schema.TaggedError<BuildRequired>()(
@@ -29,7 +29,7 @@ const program = Effect.scoped(
         try: (): Promise<typeof InstallationModule> =>
           import(
             new URL(
-              "../../../packages/authority/dist/commit/configuration.js",
+              "../../../packages/ontology/dist/commit/configuration.js",
               import.meta.url
             ).href
           ),
@@ -42,7 +42,7 @@ const program = Effect.scoped(
       try: (): Promise<typeof PolicyModule> =>
         import(
           new URL(
-            "../../../packages/authority/dist/ports/worlds/context.js",
+            "../../../packages/ontology/dist/ports/worlds/context.js",
             import.meta.url
           ).href
         ),
@@ -55,7 +55,7 @@ const program = Effect.scoped(
       try: (): Promise<typeof ExecutorModule> =>
         import(
           new URL(
-            "../../../packages/authority/dist/semantic/executor.js",
+            "../../../packages/ontology/dist/semantic/executor.js",
             import.meta.url
           ).href
         ),
@@ -68,7 +68,7 @@ const program = Effect.scoped(
       try: (): Promise<typeof ErasureRegisterModule> =>
         import(
           new URL(
-            "../../../packages/authority/dist/ports/erasure/attempt-register.js",
+            "../../../packages/ontology/dist/ports/erasure/attempt-register.js",
             import.meta.url
           ).href
         ),

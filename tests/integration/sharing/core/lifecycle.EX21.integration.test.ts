@@ -5,17 +5,17 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
-import { inspectWorldAccess } from "../../../../packages/authority/src/access/sharing/inspect.js";
-import {
-  grantWorldReadAccess,
-  revokeWorldReadAccess,
-} from "../../../../packages/authority/src/access/sharing/mutation.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import {
   GrantWorldReadAccess,
   InspectWorldAccess,
   RevokeWorldReadAccess,
 } from "../../../../packages/contracts/src/sharing/operations.js";
+import { inspectWorldAccess } from "../../../../packages/ontology/src/access/sharing/inspect.js";
+import {
+  grantWorldReadAccess,
+  revokeWorldReadAccess,
+} from "../../../../packages/ontology/src/access/sharing/mutation.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
 import { configuration } from "../../worlds/commit/fixture.js";
 import {
   genesisRequest,

@@ -1,18 +1,18 @@
 import { randomUUID } from "node:crypto";
 
+import { Expired, Unavailable } from "@zoen/contracts/worlds/errors";
+import type { Instant } from "@zoen/contracts/worlds/values";
 import {
   proveProcessExited,
   requireSupervisorContainment,
-} from "@zoen/authority/ports/disclosure/containment";
-import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
-import type { WriterContainment } from "@zoen/authority/ports/disclosure/fence";
+} from "@zoen/ontology/ports/disclosure/containment";
+import { DisclosureFence } from "@zoen/ontology/ports/disclosure/fence";
+import type { WriterContainment } from "@zoen/ontology/ports/disclosure/fence";
 import {
   membershipDisclosureKey,
   sessionDisclosureKey,
   worldDisclosureKey,
-} from "@zoen/authority/ports/disclosure/keys";
-import { Expired, Unavailable } from "@zoen/contracts/worlds/errors";
-import type { Instant } from "@zoen/contracts/worlds/values";
+} from "@zoen/ontology/ports/disclosure/keys";
 import { Clock, Effect, Layer, Redacted } from "effect";
 import { Pool } from "pg";
 

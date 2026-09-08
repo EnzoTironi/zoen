@@ -6,8 +6,8 @@ import {
   currentHostedErasableQualification,
   evaluateHostedErasableAdmission,
   refuseProtectedResource,
-} from "../../packages/authority/src/hosted/erasable/admission.ts";
-import type { HostedErasableCandidate } from "../../packages/authority/src/hosted/erasable/admission.ts";
+} from "../../packages/ontology/src/hosted/erasable/admission.ts";
+import type { HostedErasableCandidate } from "../../packages/ontology/src/hosted/erasable/admission.ts";
 
 export const LEGACY_FLY_APP = "zoen" as const;
 export const RETAINED_HOSTED_APP = "zoen-rebuild" as const;

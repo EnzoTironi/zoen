@@ -1,12 +1,12 @@
 import { describe, expect, it } from "@effect/vitest";
-import { EveJournal } from "@zoen/authority/ports/eve/journal";
-import { EveOpenCodeZen } from "@zoen/authority/ports/eve/opencode-zen";
 import {
   ConversationId,
   IngressId,
   RelationshipId,
   TurnId,
 } from "@zoen/contracts/eve/values";
+import { EveJournal } from "@zoen/ontology/ports/eve/journal";
+import { EveOpenCodeZen } from "@zoen/ontology/ports/eve/opencode-zen";
 import { Effect, Schema } from "effect";
 
 import { makeProductEveSurface } from "../../../src/composition.ts";

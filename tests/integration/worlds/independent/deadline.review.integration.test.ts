@@ -3,8 +3,8 @@ import { DateTime, Deferred, Effect, Fiber, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { VerifiedRequestContext } from "../../../../packages/authority/src/ports/worlds/context.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import { VerifiedRequestContext } from "../../../../packages/ontology/src/ports/worlds/context.js";
 import { configuration, makeInput } from "../commit/fixture.js";
 
 describe("independent EX05 deadline review", () => {

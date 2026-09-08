@@ -5,24 +5,24 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import {
-  copyBelongsToWorld,
-  isExplainedDisposition,
-  isRestoreEligible,
-} from "../../../../packages/authority/src/knowledge/erasure/copy-catalog.js";
-import { worldDisclosureKey } from "../../../../packages/authority/src/ports/disclosure/keys.js";
-import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
-import {
-  applyControlledCopyCatalogSchema,
-  localErasureCopyCatalogLayer,
-} from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.js";
-import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 import {
   Digest,
   WorldId,
 } from "../../../../packages/contracts/src/worlds/values.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import {
+  copyBelongsToWorld,
+  isExplainedDisposition,
+  isRestoreEligible,
+} from "../../../../packages/ontology/src/knowledge/erasure/copy-catalog.js";
+import { worldDisclosureKey } from "../../../../packages/ontology/src/ports/disclosure/keys.js";
+import { ErasureAttemptRegister } from "../../../../packages/ontology/src/ports/erasure/attempt-register.js";
+import {
+  applyControlledCopyCatalogSchema,
+  localErasureCopyCatalogLayer,
+} from "../../../../packages/ontology/src/ports/erasure/copy-catalog-pg.js";
+import { ErasureCopyCatalog } from "../../../../packages/ontology/src/ports/erasure/copy-catalog.js";
 import { erasableConfiguration, makeContext } from "./fixture.js";
 
 const digestOf = (material: string) =>

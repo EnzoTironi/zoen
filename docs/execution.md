@@ -10,7 +10,7 @@ Pessoa autentica pelo fluxo real, cria um World privado, importa duas fontes aut
 
 ## Fronteiras de escrita
 
-Exatamente cinco workspaces: `apps/server`, `apps/web`, `apps/cli`, `packages/contracts`, `packages/authority`.
+Exatamente cinco workspaces: `apps/server`, `apps/web`, `apps/cli`, `packages/contracts`, `packages/ontology`.
 
 - `worker-1`: contratos públicos e portas privadas mínimas, commit/access, evidência/knowledge e correção.
 - `worker-2`: componentes web puros e conexão web, adapter PostgreSQL e identidade real.
@@ -19,7 +19,7 @@ Exatamente cinco workspaces: `apps/server`, `apps/web`, `apps/cli`, `packages/co
 
 Workers usam GPT-6-Astra, esforço low. Cada pacote possui uma allowlist exclusiva no JSON. Globs são limites para trabalho real, não uma ordem de criar árvores vazias. O mesmo owner pode reutilizar um diretório em pacotes sucessivos; nenhum par de workers compartilha escrita. Alteração em contrato consumido exige coordenação e revisão, não modificação lateral pelo consumidor.
 
-Contratos privados de storage/presença ficam privadas em `packages/authority/src/ports/worlds`; `packages/contracts` publica Schema/HttpApi e resultados transportáveis. Identity e adapters ficam privados em `apps/server`. Nenhum cliente recebe credencial de SQL/S3 ou um import capaz de furar a fronteira.
+Contratos privados de storage/presença ficam privadas em `packages/ontology/src/ports/worlds`; `packages/contracts` publica Schema/HttpApi e resultados transportáveis. Identity e adapters ficam privados em `apps/server`. Nenhum cliente recebe credencial de SQL/S3 ou um import capaz de furar a fronteira.
 
 Worker-2 escreve **SQL candidato sem numbering** em `apps/server/sql/proposals/worlds`. Pode aplicá-lo em namespace descartável para testar o adapter real; apenas root o publica como migração numerada em EX10. Esta distinção evita bloquear o teste SQL antes da composição e preserva dono único do histórico de migrações.
 

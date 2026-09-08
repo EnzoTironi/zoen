@@ -1,4 +1,4 @@
-import type { StorageFailure } from "@zoen/authority/ports/worlds/storage";
+import type { StorageFailure } from "@zoen/ontology/ports/worlds/storage";
 import { Context } from "effect";
 import type { Effect } from "effect";
 

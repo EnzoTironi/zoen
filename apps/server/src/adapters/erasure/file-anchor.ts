@@ -1,7 +1,7 @@
 import { randomBytes } from "node:crypto";
 
-import { ErasureExternalAnchor } from "@zoen/authority/ports/erasure/anchor";
 import { Unavailable } from "@zoen/contracts/worlds/errors";
+import { ErasureExternalAnchor } from "@zoen/ontology/ports/erasure/anchor";
 import { Effect, FileSystem, Layer, Path, Schedule, Schema } from "effect";
 
 const unavailable = () => new Unavailable({ code: "UNAVAILABLE" });

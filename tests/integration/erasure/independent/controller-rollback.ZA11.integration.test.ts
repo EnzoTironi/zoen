@@ -7,23 +7,6 @@ import { fileURLToPath } from "node:url";
 import { NodeServices } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
 import { describe, expect, it } from "@effect/vitest";
-import { admitWorldContent } from "@zoen/authority/access/erasure/content";
-import { AuthorityInstallation } from "@zoen/authority/commit/configuration";
-import { createPersonalWorld } from "@zoen/authority/commit/genesis";
-import { requestWorldErasure } from "@zoen/authority/knowledge/erasure/handlers/request";
-import {
-  ErasureAttemptRegister,
-  blocksWorldContentAdmission,
-} from "@zoen/authority/ports/erasure/attempt-register";
-import {
-  anchoredLocalErasureAttemptRegisterLayer,
-  applyErasureAttemptSchema,
-} from "@zoen/authority/ports/erasure/local-pg";
-import {
-  isFullIndependentControllerAdmitted,
-  localNarrowControllerQualification,
-  unqualifiedControllerQualification,
-} from "@zoen/authority/ports/erasure/qualification";
 import {
   RequestWorldErasure,
   WorldErasureRequested,
@@ -31,6 +14,23 @@ import {
 import { CreatePersonalWorld } from "@zoen/contracts/worlds/operations";
 import { OperationId } from "@zoen/contracts/worlds/values";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
+import { admitWorldContent } from "@zoen/ontology/access/erasure/content";
+import { AuthorityInstallation } from "@zoen/ontology/commit/configuration";
+import { createPersonalWorld } from "@zoen/ontology/commit/genesis";
+import { requestWorldErasure } from "@zoen/ontology/knowledge/erasure/handlers/request";
+import {
+  ErasureAttemptRegister,
+  blocksWorldContentAdmission,
+} from "@zoen/ontology/ports/erasure/attempt-register";
+import {
+  anchoredLocalErasureAttemptRegisterLayer,
+  applyErasureAttemptSchema,
+} from "@zoen/ontology/ports/erasure/local-pg";
+import {
+  isFullIndependentControllerAdmitted,
+  localNarrowControllerQualification,
+  unqualifiedControllerQualification,
+} from "@zoen/ontology/ports/erasure/qualification";
 import { Config, Effect, Layer, Redacted, Schema, Stream } from "effect";
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";

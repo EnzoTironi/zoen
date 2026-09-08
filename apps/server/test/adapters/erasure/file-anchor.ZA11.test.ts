@@ -1,6 +1,6 @@
 import { NodeServices } from "@effect/platform-node";
 import { describe, expect, it } from "@effect/vitest";
-import { ErasureExternalAnchor } from "@zoen/authority/ports/erasure/anchor";
+import { ErasureExternalAnchor } from "@zoen/ontology/ports/erasure/anchor";
 import { Effect, FileSystem } from "effect";
 
 import { fileErasureExternalAnchorLayer } from "../../../src/adapters/erasure/file-anchor.ts";

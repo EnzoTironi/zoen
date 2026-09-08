@@ -1,5 +1,5 @@
-import { StorageFailure } from "@zoen/authority/ports/worlds/storage";
 import { WorldLimits, exact } from "@zoen/contracts/worlds/values";
+import { StorageFailure } from "@zoen/ontology/ports/worlds/storage";
 import { Effect, Schema } from "effect";
 
 const Timeout = Schema.Int.check(

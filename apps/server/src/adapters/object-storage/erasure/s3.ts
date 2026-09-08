@@ -7,13 +7,6 @@ import {
   S3Client,
   S3ServiceException,
 } from "@aws-sdk/client-s3";
-import { ErasureObjectInventory } from "@zoen/authority/ports/erasure/inventory";
-import type {
-  ErasureMultipartManifest,
-  ErasureMultipartUpload,
-} from "@zoen/authority/ports/erasure/inventory";
-import { ErasurePurgeStore } from "@zoen/authority/ports/erasure/purge";
-import type { ErasureVersionTarget } from "@zoen/authority/ports/erasure/purge";
 import type {
   ErasureVersionEntry,
   ErasureVersionManifest,
@@ -22,6 +15,13 @@ import type {
 import { ErasureLimits } from "@zoen/contracts/erasure/values";
 import { Unavailable } from "@zoen/contracts/worlds/errors";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
+import { ErasureObjectInventory } from "@zoen/ontology/ports/erasure/inventory";
+import type {
+  ErasureMultipartManifest,
+  ErasureMultipartUpload,
+} from "@zoen/ontology/ports/erasure/inventory";
+import { ErasurePurgeStore } from "@zoen/ontology/ports/erasure/purge";
+import type { ErasureVersionTarget } from "@zoen/ontology/ports/erasure/purge";
 import { Clock, Context, Effect, Layer, Redacted } from "effect";
 
 import { decodeConfig } from "../worlds/config.js";

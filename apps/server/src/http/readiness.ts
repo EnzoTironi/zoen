@@ -1,6 +1,6 @@
-import { probeRestoredContentServingReadiness } from "@zoen/authority/access/erasure/restore";
-import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
-import { ErasureRestoreActivation } from "@zoen/authority/ports/erasure/restore-activation";
+import { probeRestoredContentServingReadiness } from "@zoen/ontology/access/erasure/restore";
+import { DisclosureFence } from "@zoen/ontology/ports/disclosure/fence";
+import { ErasureRestoreActivation } from "@zoen/ontology/ports/erasure/restore-activation";
 import { Effect, Layer } from "effect";
 import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";

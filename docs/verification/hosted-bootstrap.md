@@ -23,7 +23,7 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 ## EX36 schemas
 
 - `packages/contracts/src/hosted/policy/values.ts` — `d04-hosted-retained-v1`
-- `packages/authority/src/ports/hosted/policy.ts` + união em `ports/worlds/context.ts`
+- `packages/ontology/src/ports/hosted/policy.ts` + união em `ports/worlds/context.ts`
 - Unidade: `*.EX36.test.ts` sob contracts/authority `hosted/policy`
 - Composition default permanece local retained; sem `fly deploy`
 
@@ -36,8 +36,8 @@ Data: 2026-09-06 (PT). Tip de partida: `bb608c4`.
 ## EX38 admission flags
 
 - Contracts: `packages/contracts/src/hosted/admission/values.ts` — `d04HostedRetainedAdmissionFlags`
-- Authority: `packages/authority/src/hosted/admission/flags.ts` — readiness + `requireAdmittedCapability` / channel fail-closed
-- Unidade: `packages/authority/test/hosted/admission/flags.EX38.test.ts`
+- Authority: `packages/ontology/src/hosted/admission/flags.ts` — readiness + `requireAdmittedCapability` / channel fail-closed
+- Unidade: `packages/ontology/test/hosted/admission/flags.EX38.test.ts`
 - Núcleo web/cli/file ready; canais/providers disabled/Blocked; provider ausente não passa readiness de canal; sem Fly deploy
 
 ## EX39 compose/verify (local only)

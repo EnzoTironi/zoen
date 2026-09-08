@@ -1,6 +1,6 @@
 import { expect, it } from "@effect/vitest";
-import { EvidenceObjectStore } from "@zoen/authority/ports/worlds/storage";
-import { digestBytes } from "@zoen/authority/values/canonical";
+import { EvidenceObjectStore } from "@zoen/ontology/ports/worlds/storage";
+import { digestBytes } from "@zoen/ontology/values/canonical";
 import { Effect, Result, Stream } from "effect";
 
 import { layer } from "../../../../src/adapters/object-storage/worlds/s3.ts";

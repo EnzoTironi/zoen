@@ -1,5 +1,5 @@
-import { StorageFailure } from "@zoen/authority/ports/worlds/storage";
 import { WorldLimits } from "@zoen/contracts/worlds/values";
+import { StorageFailure } from "@zoen/ontology/ports/worlds/storage";
 import { Effect, Stream } from "effect";
 
 /** A single bounded allocation; each chunk is copied before upstream can reuse it. */

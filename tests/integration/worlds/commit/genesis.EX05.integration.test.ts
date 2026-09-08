@@ -3,7 +3,7 @@ import { Effect, Layer } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
 import { configuration, makeInput } from "./fixture.js";
 
 it.live(

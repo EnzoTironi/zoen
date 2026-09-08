@@ -9,7 +9,7 @@ def main():
     root = Path(__file__).resolve().parent.parent
     folders = [
         "packages/contracts/dist",
-        "packages/authority/dist",
+        "packages/ontology/dist",
         "apps/server/dist",
         "apps/cli/dist",
         "apps/web/dist",
@@ -24,7 +24,7 @@ def main():
                 "path": path.relative_to(root).as_posix(),
                 "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             })
-    for package in ["packages/contracts", "packages/authority", "apps/server", "apps/cli", "apps/web"]:
+    for package in ["packages/contracts", "packages/ontology", "apps/server", "apps/cli", "apps/web"]:
         path = root / package / "package.json"
         files.append({"path": path.relative_to(root).as_posix(), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
     manifest = {

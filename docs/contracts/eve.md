@@ -24,7 +24,7 @@ Freeze F01–F09 + schemas wire `eve.v1` em `packages/contracts/src/eve/**` (per
 
 ## EX41 (journal)
 
-Porta `EveJournal` em `packages/authority/src/ports/eve/**`: accept → cancel/settle → recover; `voice-blocked` / unqualified real-model fail-closed `Blocked`; `web-speech` admitido.
+Porta `EveJournal` em `packages/ontology/src/ports/eve/**`: accept → cancel/settle → recover; `voice-blocked` / unqualified real-model fail-closed `Blocked`; `web-speech` admitido.
 
 ## EX42 (OpenCode Zen client)
 

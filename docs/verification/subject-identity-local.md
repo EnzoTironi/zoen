@@ -60,7 +60,7 @@ Oráculo de limites da Question de recuperação (unidade):
 
 ```bash
 pnpm exec vitest run --project unit \
-  packages/authority/test/knowledge/subject-identity/recovery-question-limits.EX27.test.ts
+  packages/ontology/test/knowledge/subject-identity/recovery-question-limits.EX27.test.ts
 ```
 
 ## Fora deste checkpoint

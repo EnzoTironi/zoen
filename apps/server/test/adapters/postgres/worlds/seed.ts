@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
-import { LegacyDomainCut as DomainCut } from "@zoen/authority/ports/worlds/basis";
-import { StoredOperationResult } from "@zoen/authority/ports/worlds/persistence";
+import { LegacyDomainCut as DomainCut } from "@zoen/ontology/ports/worlds/basis";
+import { StoredOperationResult } from "@zoen/ontology/ports/worlds/persistence";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

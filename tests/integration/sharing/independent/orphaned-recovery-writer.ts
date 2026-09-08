@@ -26,9 +26,9 @@ import {
 import { makeDisclosureFenceLayer } from "../../../../apps/server/src/adapters/postgres/disclosure/fence.ts";
 import { makePrivateJsonEmitter } from "../../../../apps/server/src/http/disclosure.ts";
 import { ResponseSecurityHeaders } from "../../../../apps/server/src/http/security.ts";
-import type * as FenceModule from "../../../../packages/authority/src/ports/disclosure/fence.ts";
-import type * as ContextModule from "../../../../packages/authority/src/ports/worlds/context.ts";
 import type * as ValuesModule from "../../../../packages/contracts/src/worlds/values.ts";
+import type * as FenceModule from "../../../../packages/ontology/src/ports/disclosure/fence.ts";
+import type * as ContextModule from "../../../../packages/ontology/src/ports/worlds/context.ts";
 
 const ConfigFile = Schema.Struct({
   authorityUrl: Schema.String,
@@ -56,7 +56,7 @@ NodeRuntime.runMain(
       (): Promise<typeof FenceModule> =>
         import(
           new URL(
-            "../../../../packages/authority/dist/ports/disclosure/fence.js",
+            "../../../../packages/ontology/dist/ports/disclosure/fence.js",
             import.meta.url
           ).href
         )
@@ -65,7 +65,7 @@ NodeRuntime.runMain(
       (): Promise<typeof ContextModule> =>
         import(
           new URL(
-            "../../../../packages/authority/dist/ports/worlds/context.js",
+            "../../../../packages/ontology/dist/ports/worlds/context.js",
             import.meta.url
           ).href
         )

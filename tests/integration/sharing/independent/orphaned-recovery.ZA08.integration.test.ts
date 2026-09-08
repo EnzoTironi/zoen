@@ -15,9 +15,9 @@ import { fileURLToPath } from "node:url";
 
 import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
-import { VerifiedPresence } from "@zoen/authority/ports/worlds/context";
 import { Instant } from "@zoen/contracts/worlds/values";
+import { DisclosureFence } from "@zoen/ontology/ports/disclosure/fence";
+import { VerifiedPresence } from "@zoen/ontology/ports/worlds/context";
 import {
   DateTime,
   Effect,

@@ -1,13 +1,13 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { AuthorityInstallation } from "@zoen/authority/commit/configuration";
-import { createPersonalWorld } from "@zoen/authority/commit/genesis";
+import { AuthorityInstallation } from "@zoen/ontology/commit/configuration";
+import { createPersonalWorld } from "@zoen/ontology/commit/genesis";
 import {
   reserveCapture,
   stageCapture,
-} from "@zoen/authority/evidence/worlds/capture";
-import { EvidenceObjectStore } from "@zoen/authority/ports/worlds/storage";
+} from "@zoen/ontology/evidence/worlds/capture";
+import { EvidenceObjectStore } from "@zoen/ontology/ports/worlds/storage";
 import { Effect, Layer, Schedule } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

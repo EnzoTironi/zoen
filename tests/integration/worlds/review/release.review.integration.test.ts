@@ -9,7 +9,7 @@ import type { loadConfiguration as ConfigurationEffect } from "../../../../apps/
 import {
   canonicalJson,
   digestBytes,
-} from "../../../../packages/authority/src/values/canonical.js";
+} from "../../../../packages/ontology/src/values/canonical.js";
 
 it.live(
   "independent EX10 rejects executable bytes that no longer match the installed build manifest",
@@ -73,7 +73,7 @@ it.live(
           Effect.provideService(ConfigProvider.ConfigProvider, provider)
         );
         expect(yield* load.pipe(Effect.as("loaded"))).toBe("loaded");
-        const target = `${root}packages/authority/dist/knowledge/worlds/selection.js`;
+        const target = `${root}packages/ontology/dist/knowledge/worlds/selection.js`;
         const original = yield* fs.readFileString(target);
         yield* Effect.acquireRelease(
           fs.writeFileString(

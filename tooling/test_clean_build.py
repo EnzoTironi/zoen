@@ -10,7 +10,7 @@ import unittest
 
 WORKSPACES = (
     "packages/contracts",
-    "packages/authority",
+    "packages/ontology",
     "apps/server",
     "apps/cli",
     "apps/web",

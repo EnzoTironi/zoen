@@ -6,11 +6,11 @@ import { DateTime, Effect, Layer, Redacted, Schema } from "effect";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/worlds/database.js";
 import { applyIdentityBasisMigrations } from "../../../../ops/migrations/run.js";
+import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 import {
   Presence,
   VerifiedRequestContext,
-} from "../../../../packages/authority/src/ports/worlds/context.js";
-import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
+} from "../../../../packages/ontology/src/ports/worlds/context.js";
 
 type Database = Parameters<Parameters<typeof withWorldsDatabase>[0]>[0];
 export const withSharingDatabase = <A, E, R>(

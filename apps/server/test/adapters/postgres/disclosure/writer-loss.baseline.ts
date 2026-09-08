@@ -2,10 +2,10 @@ import { randomUUID } from "node:crypto";
 
 import { NodeHttpServer, NodeHttpServerRequest } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
-import { sessionDisclosureKey } from "@zoen/authority/ports/disclosure/keys";
-import { VerifiedPresence } from "@zoen/authority/ports/worlds/context";
 import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
+import { DisclosureFence } from "@zoen/ontology/ports/disclosure/fence";
+import { sessionDisclosureKey } from "@zoen/ontology/ports/disclosure/keys";
+import { VerifiedPresence } from "@zoen/ontology/ports/worlds/context";
 import { DateTime, Deferred, Effect, Exit, Fiber, Layer, Schema } from "effect";
 import {
   HttpClient,

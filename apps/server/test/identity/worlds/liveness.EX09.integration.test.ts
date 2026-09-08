@@ -1,6 +1,6 @@
 import { PgClient } from "@effect/sql-pg";
 import { expect, it } from "@effect/vitest";
-import { Presence } from "@zoen/authority/ports/worlds/context";
+import { Presence } from "@zoen/ontology/ports/worlds/context";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

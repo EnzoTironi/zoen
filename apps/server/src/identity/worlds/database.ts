@@ -1,9 +1,9 @@
 import { PgClient } from "@effect/sql-pg";
+import { Unavailable } from "@zoen/contracts/worlds/errors";
 import type {
   PrincipalId,
   SessionId,
-} from "@zoen/authority/ports/worlds/context";
-import { Unavailable } from "@zoen/contracts/worlds/errors";
+} from "@zoen/ontology/ports/worlds/context";
 import { Effect, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import { Pool } from "pg";

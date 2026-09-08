@@ -9,7 +9,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { NodeRuntime, NodeServices } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
-import { evaluateHostedErasableBootstrap } from "@zoen/authority/hosted/erasable/admission";
+import { evaluateHostedErasableBootstrap } from "@zoen/ontology/hosted/erasable/admission";
 import {
   Config,
   Effect,

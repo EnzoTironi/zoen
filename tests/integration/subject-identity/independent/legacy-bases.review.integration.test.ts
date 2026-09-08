@@ -3,13 +3,13 @@ import { randomBytes, randomUUID } from "node:crypto";
 
 import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { SemanticExecutor } from "@zoen/authority/semantic/executor";
-import { canonicalJson } from "@zoen/authority/values/canonical";
 import {
   EvidenceImported,
   FrameInspected,
   WorldCreated,
 } from "@zoen/contracts/worlds/operations";
+import { SemanticExecutor } from "@zoen/ontology/semantic/executor";
+import { canonicalJson } from "@zoen/ontology/values/canonical";
 import { Effect, Layer, Schema } from "effect";
 import type { Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";

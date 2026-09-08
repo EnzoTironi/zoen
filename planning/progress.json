@@ -154,11 +154,11 @@
       "path": "tests/integration/worlds/commit/**",
       "owner": "worker-1",
       "integration_owner": "root",
-      "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em suíte transversal, sem import de servidor nas fontes authority."
+      "reason": "Provar commit EX05 com adapter PostgreSQL EX06 real em suíte transversal, sem import de servidor nas fontes ontology."
     },
     {
       "task": "EX08",
-      "path": "packages/authority/src/semantic/executor.ts",
+      "path": "packages/ontology/src/semantic/executor.ts",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Registrar operações reais e prazo comum no dispatcher existente."
@@ -172,7 +172,7 @@
     },
     {
       "task": "EX08",
-      "path": "packages/authority/src/commit/**",
+      "path": "packages/ontology/src/commit/**",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Refinar changedDomains e validação de prazo mantendo a primitiva única."
@@ -249,7 +249,7 @@
     },
     {
       "task": "EX22-durable",
-      "path": "packages/authority/src/ports/disclosure/fence.ts",
+      "path": "packages/ontology/src/ports/disclosure/fence.ts",
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "Aplicar somente DisclosurePermit/retorno shared congelados por root junto ao adapter compilável; não ampliar o port."
@@ -284,14 +284,14 @@
     },
     {
       "task": "EX27",
-      "path": "packages/authority/src/knowledge/subject-identity/handlers/**",
+      "path": "packages/ontology/src/knowledge/subject-identity/handlers/**",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Handlers de identidade no commit semântico."
     },
     {
       "task": "EX27",
-      "path": "packages/authority/src/knowledge/subject-identity/persistence/**",
+      "path": "packages/ontology/src/knowledge/subject-identity/persistence/**",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "SQL privado e projeção de decisões de identidade."
@@ -319,14 +319,14 @@
     },
     {
       "task": "EX31",
-      "path": "packages/authority/src/ports/erasure/**",
+      "path": "packages/ontology/src/ports/erasure/**",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Porta de registro de tentativa; adapter controlador real ainda bloqueado."
     },
     {
       "task": "EX32",
-      "path": "packages/authority/src/knowledge/erasure/**",
+      "path": "packages/ontology/src/knowledge/erasure/**",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Closing local semântico; sem purge até gates do freeze."
@@ -719,12 +719,12 @@
       "packages": ["EX36"],
       "state": "d04_hosted_retained_policy_schemas_landed",
       "profile": "d04-hosted-retained-v1 (candidate; new Worlds only; composition defaults local retained)",
-      "evidence": "packages/contracts/src/hosted/policy/**; packages/authority/src/ports/hosted/**; packages/authority/src/ports/worlds/context.ts",
+      "evidence": "packages/contracts/src/hosted/policy/**; packages/ontology/src/ports/hosted/**; packages/ontology/src/ports/worlds/context.ts",
       "scope": "EX36 schemas/policy union + unit proofs. erasure:false restoreAfterErasure:false admitted-non-sensitive while-pinned live. No rebind of d01/d03 Worlds; no fly deploy. EX37 restore disposable next. Does NOT conclude D04 or full D03.",
       "fly_deployed": false,
       "unit_tests": [
         "packages/contracts/test/hosted/policy/values.EX36.test.ts",
-        "packages/authority/test/ports/hosted/policy.EX36.test.ts"
+        "packages/ontology/test/ports/hosted/policy.EX36.test.ts"
       ]
     },
     {
@@ -810,7 +810,7 @@
       "profile": "eve-local-stub-v1 / in-memory EveJournal stubMemoryLayer",
       "evidence": "docs/verification/eve-local.md",
       "scope": "EX41 EveJournal port + stubMemoryLayer unit proofs: accept/settle/cancel/recover order without live model; real-model and voice fail-closed Blocked; authorityCredentialPresent false. Does NOT conclude D05.",
-      "unit_tests": ["packages/authority/test/ports/eve/journal.EX41.test.ts"],
+      "unit_tests": ["packages/ontology/test/ports/eve/journal.EX41.test.ts"],
       "not_full_d05": true,
       "live_model": false,
       "voice": false
@@ -849,7 +849,7 @@
       "evidence": "docs/verification/eve-opencode-zen.md",
       "scope": "EX42 OpenCode Zen OpenAI-compatible client + schema profile; free-tier headers; key env/Fly only. Does NOT conclude D05.",
       "unit_tests": [
-        "packages/authority/test/ports/eve/opencode-zen.EX42.test.ts",
+        "packages/ontology/test/ports/eve/opencode-zen.EX42.test.ts",
         "packages/contracts/test/eve/operations.EX40.test.ts"
       ],
       "not_full_d05": true,
@@ -865,8 +865,8 @@
       "evidence": "docs/verification/eve-opencode-zen.md",
       "scope": "EX43 runEveTurn accept→model→settle; cancel abort; journal INV-01; ZN-0063 artifact. Does NOT conclude D05.",
       "unit_tests": [
-        "packages/authority/test/ports/eve/turn.EX43.test.ts",
-        "packages/authority/test/ports/eve/journal.EX41.test.ts"
+        "packages/ontology/test/ports/eve/turn.EX43.test.ts",
+        "packages/ontology/test/ports/eve/journal.EX41.test.ts"
       ],
       "not_full_d05": true,
       "live_model": true,
@@ -919,7 +919,7 @@
       "evidence": "docs/verification/eve-web-speech.md",
       "scope": "EX44 Web Speech STT/TTS + runEveVoiceTurn transcript→Zen settle→speakText; ZN-0063 voice artifact. Does NOT conclude D05.",
       "unit_tests": [
-        "packages/authority/test/ports/eve/voice.EX44.test.ts",
+        "packages/ontology/test/ports/eve/voice.EX44.test.ts",
         "apps/web/test/features/eve/web-speech.EX44.test.ts",
         "packages/contracts/test/eve/operations.EX40.test.ts"
       ],
@@ -965,7 +965,7 @@
       "evidence": "docs/verification/eve-http-surface.md",
       "scope": "EX44 HTTP/CLI Eve surface on live OpenCode Zen path; fail-closed Blocked without key; stub not product default. Does NOT conclude D05 or legacy cutover. Structural execution.json statuses remain planned/not_run.",
       "unit_tests": [
-        "packages/authority/test/ports/eve/handlers.EX44.test.ts",
+        "packages/ontology/test/ports/eve/handlers.EX44.test.ts",
         "apps/web/test/integration/eve/requests.EX44.test.ts",
         "packages/contracts/test/eve/operations.EX40.test.ts"
       ],

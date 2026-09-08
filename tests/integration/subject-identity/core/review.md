@@ -13,7 +13,7 @@
 ## Remaining
 
 - ID-08 SIGKILL + ResolveIdentity concurrency counterproofs live under `../independent/writers-*.review.integration.test.ts` (adversarial process/race; not happy-path re-run).
-- Recovery Question byte/entry/depth oracle: `packages/authority/test/knowledge/subject-identity/recovery-question-limits.EX27.test.ts` (claim-invariant undo Question + prospective split QuotaExceeded + schema refuse).
+- Recovery Question byte/entry/depth oracle: `packages/ontology/test/knowledge/subject-identity/recovery-question-limits.EX27.test.ts` (claim-invariant undo Question + prospective split QuotaExceeded + schema refuse).
 - Remaining broader oracles: import-over-quota recovery journey, historical replay conflict — not yet exhaustive.
 - Worker-3 independent review of split writers is in `../independent/split-writers.review.integration.test.ts` (adversarial; not a happy-path re-run).
 - Root integrator: migration `008_subject_identity_events.sql` wired into `applyIdentityBasisMigrations` and test DB fixture; executor family `executeSubjectIdentity` registered.

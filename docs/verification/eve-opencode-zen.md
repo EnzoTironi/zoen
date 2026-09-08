@@ -8,8 +8,8 @@ Data: 2026-09-07 (PT). Tip de partida: `90ad08e`. Tip verificado: `48c7c21` (`48
 | --- | --- |
 | Freeze F06/F07 (OpenCode Zen free quando key presente) | Landed — `docs/contracts/eve-freeze.md` |
 | Schemas `eve-opencode-zen-v1` / `opencode-zen` | Landed — `packages/contracts/src/eve/**` |
-| Client OpenAI-compatible + headers free-tier | Landed — `packages/authority/src/ports/eve/opencode-zen.ts` |
-| Turn path accept → model → settle / cancel-abort | Landed — `packages/authority/src/ports/eve/turn.ts` |
+| Client OpenAI-compatible + headers free-tier | Landed — `packages/ontology/src/ports/eve/opencode-zen.ts` |
+| Turn path accept → model → settle / cancel-abort | Landed — `packages/ontology/src/ports/eve/turn.ts` |
 | Journal recoverability + INV-01 (sem API key) | Landed — unit + live smoke |
 | Voz | Ver `docs/verification/eve-web-speech.md` (EX44 / Web Speech) |
 | D05 integral / processo Eve separado / streaming prod | **Não** alegado |
@@ -45,7 +45,7 @@ Unit (no key; fetch mocked):
 ```bash
 pnpm exec vitest run --project unit \
   packages/contracts/test/eve \
-  packages/authority/test/ports/eve
+  packages/ontology/test/ports/eve
 ```
 
 Live smoke (optional; skips in CI when env absent):
@@ -53,7 +53,7 @@ Live smoke (optional; skips in CI when env absent):
 ```bash
 set -a; source .local/opencode.env; set +a
 pnpm exec vitest run --project integration \
-  packages/authority/test/ports/eve/opencode-zen.EX43.integration.test.ts
+  packages/ontology/test/ports/eve/opencode-zen.EX43.integration.test.ts
 ```
 
 Plan structural check:
@@ -81,7 +81,7 @@ Commands:
 ```bash
 set -a; source .local/opencode.env; set +a
 pnpm exec vitest run --project integration \
-  packages/authority/test/ports/eve/opencode-zen.EX43.integration.test.ts
+  packages/ontology/test/ports/eve/opencode-zen.EX43.integration.test.ts
 ```
 
 Observed (no key printed):
@@ -93,7 +93,7 @@ Observed (no key printed):
 | Visible text | `eve-ok` (length 6) |
 | Contains `eve-ok` | true |
 | Key present in response body | false |
-| Unit suite | 29/29 pass (`packages/contracts/test/eve` + `packages/authority/test/ports/eve`) |
+| Unit suite | 29/29 pass (`packages/contracts/test/eve` + `packages/ontology/test/ports/eve`) |
 | `verify_plan.py` | passed |
 
 Headers used on the live call match the free-tier table above (`User-Agent: opencode/1.17.20 zoen-eve`, `x-opencode-client: cli`, session/request ids).

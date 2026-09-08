@@ -12,7 +12,7 @@ import {
   responseCookie,
   withWorldsHttp,
 } from "../../../../apps/server/test/composition/worlds/fixture.js";
-import { canonicalJson } from "../../../../packages/authority/src/values/canonical.js";
+import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.js";
 
 it.live(
   "independent EX10 audience and byte validation happen before authenticated semantic mutation",

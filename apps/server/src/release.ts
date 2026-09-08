@@ -1,8 +1,8 @@
 import { fileURLToPath } from "node:url";
 
-import { digestBytes } from "@zoen/authority/values/canonical";
-import { parseJsonBytes } from "@zoen/authority/values/json";
 import { Digest, exact } from "@zoen/contracts/worlds/values";
+import { digestBytes } from "@zoen/ontology/values/canonical";
+import { parseJsonBytes } from "@zoen/ontology/values/json";
 import { Effect, FileSystem, Schema } from "effect";
 
 const ReleaseManifest = Schema.Struct({

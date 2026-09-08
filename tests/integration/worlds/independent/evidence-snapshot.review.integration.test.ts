@@ -6,15 +6,15 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { readCut } from "../../../../packages/authority/src/commit/guards.js";
-import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.js";
-import { inspect } from "../../../../packages/authority/src/knowledge/worlds/inspect.js";
-import { canonicalJson } from "../../../../packages/authority/src/values/canonical.js";
 import {
   ImportEvidence,
   Inspect,
 } from "../../../../packages/contracts/src/worlds/operations.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import { readCut } from "../../../../packages/ontology/src/commit/guards.js";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.js";
+import { inspect } from "../../../../packages/ontology/src/knowledge/worlds/inspect.js";
+import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.js";
 import { configuration, makeInput } from "../commit/fixture.js";
 
 it.live(

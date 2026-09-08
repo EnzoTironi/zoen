@@ -5,7 +5,7 @@ import { SqlClient } from "effect/unstable/sql";
 import { hostedAdmissionLayer } from "../../../../apps/server/src/composition.js";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { resolveLocalWorldPolicy } from "../../../../ops/local/world-policy.ts";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
 import {
   HostedAdmissionFlags,
   assertOnlyCoreSurfacesAdmitted,
@@ -14,8 +14,8 @@ import {
   reportsFalseHealthy,
   requireAdmittedCapability,
   requireChannelReadiness,
-} from "../../../../packages/authority/src/hosted/admission/flags.js";
-import { HostedRetainedDataPolicySchema } from "../../../../packages/authority/src/ports/worlds/context.js";
+} from "../../../../packages/ontology/src/hosted/admission/flags.js";
+import { HostedRetainedDataPolicySchema } from "../../../../packages/ontology/src/ports/worlds/context.js";
 import {
   hostedConfiguration,
   hostedRetainedPolicy,

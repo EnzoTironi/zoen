@@ -1,6 +1,6 @@
 -- Controlled copy / backup disposition catalog (ZA-12).
 -- Bounded profile inventory; Unknown coverage fail-closes Full Erased / restore.
--- Keep in sync with packages/authority/src/ports/erasure/copy-catalog-pg.ts candidate DDL.
+-- Keep in sync with packages/ontology/src/ports/erasure/copy-catalog-pg.ts candidate DDL.
 
 CREATE TABLE IF NOT EXISTS authority.controlled_copy_coverage (
   profile_id text COLLATE "C" NOT NULL PRIMARY KEY

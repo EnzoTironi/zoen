@@ -1,35 +1,35 @@
+import { ApplicationApi } from "@zoen/contracts/worlds/api";
 import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
-} from "@zoen/authority/commit/configuration";
+} from "@zoen/ontology/commit/configuration";
 import {
   HostedAdmissionFlags,
   hostedRetainedAdmissionFlags,
-} from "@zoen/authority/hosted/admission/flags";
+} from "@zoen/ontology/hosted/admission/flags";
 import {
   HostedErasableAdmission,
   HostedErasableObservedIdentity,
-} from "@zoen/authority/hosted/erasable/admission";
-import { localErasureCopyCatalogLayer } from "@zoen/authority/ports/erasure/copy-catalog-pg";
+} from "@zoen/ontology/hosted/erasable/admission";
+import { localErasureCopyCatalogLayer } from "@zoen/ontology/ports/erasure/copy-catalog-pg";
 import {
   anchoredLocalErasureAttemptRegisterLayer,
   applyErasureAttemptSchema,
   localErasureAttemptRegisterLayer,
-} from "@zoen/authority/ports/erasure/local-pg";
-import { ErasureObjectWriteSettlement } from "@zoen/authority/ports/erasure/object-write";
-import { ErasureRestoreActivation } from "@zoen/authority/ports/erasure/restore-activation";
+} from "@zoen/ontology/ports/erasure/local-pg";
+import { ErasureObjectWriteSettlement } from "@zoen/ontology/ports/erasure/object-write";
+import { ErasureRestoreActivation } from "@zoen/ontology/ports/erasure/restore-activation";
 import {
   currentProductEveAdmissionInput,
   isProductEveAdmitted,
-} from "@zoen/authority/ports/eve/admission";
-import { EveJournal } from "@zoen/authority/ports/eve/journal";
-import { EveOpenCodeZen } from "@zoen/authority/ports/eve/opencode-zen";
+} from "@zoen/ontology/ports/eve/admission";
+import { EveJournal } from "@zoen/ontology/ports/eve/journal";
+import { EveOpenCodeZen } from "@zoen/ontology/ports/eve/opencode-zen";
 import {
   DataPolicy,
   DataPolicySchema,
-} from "@zoen/authority/ports/worlds/context";
-import { SemanticExecutor } from "@zoen/authority/semantic/executor";
-import { ApplicationApi } from "@zoen/contracts/worlds/api";
+} from "@zoen/ontology/ports/worlds/context";
+import { SemanticExecutor } from "@zoen/ontology/semantic/executor";
 import { Effect, Layer, Redacted, Schema } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 

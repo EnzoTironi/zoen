@@ -1,4 +1,3 @@
-import { parseJsonBytes } from "@zoen/authority/values/json";
 import { Expired, InvalidInput } from "@zoen/contracts/worlds/errors";
 import type {
   NotFoundOrDenied,
@@ -6,6 +5,7 @@ import type {
   Unavailable,
 } from "@zoen/contracts/worlds/errors";
 import { WorldLimits } from "@zoen/contracts/worlds/values";
+import { parseJsonBytes } from "@zoen/ontology/values/json";
 import { Effect, Layer } from "effect";
 import {
   HttpRouter,

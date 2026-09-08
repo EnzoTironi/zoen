@@ -6,9 +6,9 @@ import { makeWorldsPostgresLayer } from "../../../../apps/server/src/adapters/po
 import type { WorldsTestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { applyErasureMigrations } from "../../../../ops/migrations/run.ts";
-import { localErasureCopyCatalogLayer } from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.ts";
-import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.ts";
-import { localErasureAttemptRegisterLayer } from "../../../../packages/authority/src/ports/erasure/local-pg.ts";
+import { localErasureCopyCatalogLayer } from "../../../../packages/ontology/src/ports/erasure/copy-catalog-pg.ts";
+import { ErasureCopyCatalog } from "../../../../packages/ontology/src/ports/erasure/copy-catalog.ts";
+import { localErasureAttemptRegisterLayer } from "../../../../packages/ontology/src/ports/erasure/local-pg.ts";
 import { erasableConfiguration } from "../core/fixture.ts";
 
 /** Numbered migrations, real roles, real register and real disclosure connections. */

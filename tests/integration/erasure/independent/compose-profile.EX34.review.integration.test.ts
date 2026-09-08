@@ -8,16 +8,16 @@ import { SqlClient } from "effect/unstable/sql";
 import { makeWorldsPostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import { applyErasureMigrations } from "../../../../ops/migrations/run.ts";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { inspectWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/inspect.js";
-import { requestWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/request.js";
-import { localErasureAttemptRegisterLayer } from "../../../../packages/authority/src/ports/erasure/local-pg.js";
 import {
   InspectWorldErasure,
   RequestWorldErasure,
   WorldErasureRequested,
 } from "../../../../packages/contracts/src/erasure/operations.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import { inspectWorldErasure } from "../../../../packages/ontology/src/knowledge/erasure/handlers/inspect.js";
+import { requestWorldErasure } from "../../../../packages/ontology/src/knowledge/erasure/handlers/request.js";
+import { localErasureAttemptRegisterLayer } from "../../../../packages/ontology/src/ports/erasure/local-pg.js";
 import {
   erasableConfiguration,
   makeContext,

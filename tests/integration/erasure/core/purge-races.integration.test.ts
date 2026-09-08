@@ -1,15 +1,15 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { createPersonalWorld } from "@zoen/authority/commit/genesis";
-import { reserveCapture } from "@zoen/authority/evidence/worlds/capture";
-import { purgeWorldContent } from "@zoen/authority/knowledge/erasure/handlers/purge";
-import { requestWorldErasure } from "@zoen/authority/knowledge/erasure/handlers/request";
 import {
   PurgeWorldContent,
   RequestWorldErasure,
 } from "@zoen/contracts/erasure/operations";
 import { CreatePersonalWorld } from "@zoen/contracts/worlds/operations";
+import { createPersonalWorld } from "@zoen/ontology/commit/genesis";
+import { reserveCapture } from "@zoen/ontology/evidence/worlds/capture";
+import { purgeWorldContent } from "@zoen/ontology/knowledge/erasure/handlers/purge";
+import { requestWorldErasure } from "@zoen/ontology/knowledge/erasure/handlers/request";
 import { Deferred, Effect, Fiber, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

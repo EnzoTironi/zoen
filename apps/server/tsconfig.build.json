@@ -12,7 +12,7 @@
   },
   "references": [
     { "path": "../../packages/contracts/tsconfig.build.json" },
-    { "path": "../../packages/authority/tsconfig.build.json" }
+    { "path": "../../packages/ontology/tsconfig.build.json" }
   ],
   "include": ["src/**/*.ts"]
 }
