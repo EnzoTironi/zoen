@@ -1,9 +1,13 @@
 """Build and exercise the real application image against the local Compose services.
 
-ZA-05 exact all-in-one process/DB/object-store identity seam lives in
-tests/integration/hosted/identity/probe_all_in_one_identity.py and is run by
-`pnpm test:container:identity` (disposable volume; distinct from this
-application.Dockerfile path / ops/local/provision.ts).
+This is the **application** profile (`ops/containers/application.Dockerfile`).
+It is not the Fly deploy profile and never admits production.
+
+Fly all-in-one exact-image admission (ZA-07) builds `all-in-one.Dockerfile` once,
+runs the ZA-05/ZA-06 hosted seams against that image, and gates Deploy on the
+immutable registry digest — see `tests/integration/hosted/exact_image/` and
+`.github/workflows/{verify,deploy-fly}.yml`. Keep this app-only proof where useful;
+do not treat a green application container as all-in-one evidence.
 """
 
 import json

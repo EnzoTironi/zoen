@@ -17,7 +17,8 @@ Interface de scripts a criar no bootstrap e completar conforme as primeiras suit
 | `pnpm test:integration` | PostgreSQL/S3 reais, migrations, credenciais equivalentes às de produção |
 | `pnpm test:acceptance` | Playwright e CLI contra servidor real da revisão integrada |
 | `pnpm build` | Aplicações realmente importadas e executáveis |
-| `pnpm test:container` | Construir/subir imagem e provar a jornada mínima configurada |
+| `pnpm test:container` | Construir/subir a imagem **application** e provar a jornada mínima (perfil distinto do Fly all-in-one) |
+| Exact-image CI (`exact-image` job) | Construir **uma vez** `all-in-one.Dockerfile`, rodar seams ZA-05/ZA-06 nessa imagem, emitir `admission.json` + digest GHCR no push de `main` |
 
 Scripts ainda sem suite não podem retornar verde por imprimir uma mensagem ou usar `--passWithNoTests`. Durante o bootstrap, a CI declara claramente quais provas existem. A entrega D01 só termina quando seu conjunto completo acima existe e passa. Os comandos de cada pacote em `execution.json` são alvos de implementação, não alegações de disponibilidade atual.
 
@@ -30,8 +31,9 @@ Ultracite inclui configuração real de Oxlint e Oxfmt. Ativar análise de tipos
 3. **Integração:** PostgreSQL e S3 Docker isolados por execução; migração do zero e upgrade, constraints e roles, concorrência, idempotência, read set/range guard, staging/publicação e recuperação. Criar/remover somente dados e volumes efêmeros dessa execução. Sem reset de base do usuário.
 4. **Jornada:** login real, World, dois arquivos, divergência explicada, evidência, correção/undo e equivalência CLI. Duas identidades verificam isolamento; logout/revogação bloqueiam replay. O backend não é mockado.
 5. **Artefato:** builds reais e smoke da imagem. Guardar commit integrado, lock, perfil, comandos, resultados e logs sanitizados nos artefatos usuais da CI. Scan de segredos/dependências/imagem integra o fluxo de publicação.
+6. **Exact-image (ZA-07):** o job `exact-image` é obrigatório no agregador `required`. Qualifica o perfil **all-in-one** (o mesmo de `ops/fly/fly.toml`), não o container application. Deploy só promove o digest admitido daquele commit; `/ready` sozinho não certifica o artefato. Evidência cancelada/stale ou relatório ausente não admite.
 
-Uma agregação obrigatória da CI verifica todos os jobs exigidos e reprova cancelamento, falha ou `skipped` indevido. Não depende de extrair exatamente um ticket do título do PR. Branch protection será configurada quando o fluxo novo for publicado; criar YAML local não configura proteção remota.
+Uma agregação obrigatória da CI verifica todos os jobs exigidos (incluindo `exact-image`) e reprova cancelamento, falha ou `skipped` indevido para admissão do artefato. Não depende de extrair exatamente um ticket do título do PR. Branch protection será configurada quando o fluxo novo for publicado; criar YAML local não configura proteção remota.
 
 Integração, navegador, migração, caos e admissão rodam novamente no commit combinado a integrar, sem reutilizar resultado cacheado de outro estado ou perfil. Cache de download de dependências é aceitável; não é cache da prova. Uma falha antiga permanece registrada junto da correção, sem alterar o resultado esperado para acomodar o código.
 
