@@ -249,14 +249,14 @@ export const releaseAlignSteps = (
   return steps;
 };
 
-export type PlanReleaseAlignOptions = {
+export interface PlanReleaseAlignOptions {
   /**
    * Pre-launch tip continuous-deploy admission (AGENTS.md Evolution). When
    * true, a different image releaseDigest plans a controlled upgrade instead
    * of RESET_REQUIRED. Default false — ZA-06 fail-closed.
    */
   readonly admitHostedReleaseUpgrade?: boolean;
-};
+}
 
 /**
  * Decide whether a volume with `.bootstrap-complete` may continue on this

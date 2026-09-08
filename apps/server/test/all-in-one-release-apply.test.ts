@@ -132,9 +132,15 @@ describe("applyHostedReleaseAlign workflow", () => {
           to: newDigest,
         });
         const rewritten = yield* fs.readFileString(installationPath);
-        const parsed = JSON.parse(rewritten) as {
-          installation: { releaseDigest: string };
-        };
+        const parsed = yield* Schema.decodeEffect(
+          Schema.fromJsonString(
+            Schema.Struct({
+              installation: Schema.Struct({
+                releaseDigest: Schema.String,
+              }),
+            })
+          )
+        )(rewritten);
         expect(parsed.installation.releaseDigest).toBe(newDigest);
       })
     ).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, NodePath.layer)))

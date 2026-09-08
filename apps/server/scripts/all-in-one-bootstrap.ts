@@ -159,7 +159,9 @@ const alignExistingHostedRelease = (input: {
   readonly runtimeEnvPath: string;
 }) =>
   applyHostedReleaseAlign({
-    admitHostedReleaseUpgrade: input.admitHostedReleaseUpgrade,
+    ...(input.admitHostedReleaseUpgrade === true
+      ? { admitHostedReleaseUpgrade: true }
+      : {}),
     encodeInstallation: (value) =>
       input.encodeInstallation(value).pipe(Effect.orDie),
     fs: input.fs,
