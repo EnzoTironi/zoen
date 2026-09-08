@@ -52,8 +52,37 @@ const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
       schedule: Schedule.spaced("20 millis"),
       until: (done) => done,
     }),
-    Effect.timeout("8 seconds")
+    Effect.timeout("8 seconds"),
+    Effect.catchTag("TimeoutError", () =>
+      Effect.die(
+        new Error("Timed out after 8 seconds waiting for harness condition")
+      )
+    )
   );
+/** Retry read+decode until the file is present and valid (ready JSON / submitted). */
+const waitForReadableFile = <A, E, R>(
+  read: Effect.Effect<A, E, R>,
+  label: string
+) =>
+  Effect.gen(function* waitReadable() {
+    yield* read.pipe(
+      Effect.as(true),
+      Effect.orElseSucceed(() => false),
+      Effect.repeat({
+        schedule: Schedule.spaced("20 millis"),
+        until: (done) => done,
+      }),
+      Effect.timeout("8 seconds"),
+      Effect.catchTag("TimeoutError", () =>
+        Effect.die(
+          new Error(
+            `Timed out after 8 seconds waiting for readable harness file: ${label}`
+          )
+        )
+      )
+    );
+    return yield* read;
+  });
 const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
@@ -168,18 +197,20 @@ for (const intention of ["same", "distinct"] as const) {
                       })
                       .pipe(Effect.orDie)
                   );
-                  yield* waitUntil(fs.exists(`${file}.ready`));
-                  const ready = yield* fs.readFileString(`${file}.ready`).pipe(
-                    Effect.flatMap(
-                      Schema.decodeEffect(
-                        Schema.fromJsonString(
-                          Schema.Struct({
-                            origin: Schema.String,
-                            pid: Schema.Int,
-                          })
+                  const ready = yield* waitForReadableFile(
+                    fs.readFileString(`${file}.ready`).pipe(
+                      Effect.flatMap(
+                        Schema.decodeEffect(
+                          Schema.fromJsonString(
+                            Schema.Struct({
+                              origin: Schema.String,
+                              pid: Schema.Int,
+                            })
+                          )
                         )
                       )
-                    )
+                    ),
+                    `${file}.ready`
                   );
                   return { ...ready, child, prefix };
                 });

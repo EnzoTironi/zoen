@@ -65,8 +65,37 @@ const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
       schedule: Schedule.spaced("20 millis"),
       until: (done) => done,
     }),
-    Effect.timeout("8 seconds")
+    Effect.timeout("8 seconds"),
+    Effect.catchTag("TimeoutError", () =>
+      Effect.die(
+        new Error("Timed out after 8 seconds waiting for harness condition")
+      )
+    )
   );
+/** Retry read+decode until the file is present and valid (ready JSON / submitted). */
+const waitForReadableFile = <A, E, R>(
+  read: Effect.Effect<A, E, R>,
+  label: string
+) =>
+  Effect.gen(function* waitReadable() {
+    yield* read.pipe(
+      Effect.as(true),
+      Effect.orElseSucceed(() => false),
+      Effect.repeat({
+        schedule: Schedule.spaced("20 millis"),
+        until: (done) => done,
+      }),
+      Effect.timeout("8 seconds"),
+      Effect.catchTag("TimeoutError", () =>
+        Effect.die(
+          new Error(
+            `Timed out after 8 seconds waiting for readable harness file: ${label}`
+          )
+        )
+      )
+    );
+    return yield* read;
+  });
 const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
@@ -210,22 +239,18 @@ for (const mode of ["open", "inspect", "retained"] as const) {
                         origin: Schema.String,
                         pid: Schema.Int,
                       });
-                      const readReady = fs
-                        .readFileString(`${file}.ready`)
-                        .pipe(
-                          Effect.flatMap(
-                            Schema.decodeEffect(
-                              Schema.fromJsonString(ReadySchema)
+                      const ready = yield* waitForReadableFile(
+                        fs
+                          .readFileString(`${file}.ready`)
+                          .pipe(
+                            Effect.flatMap(
+                              Schema.decodeEffect(
+                                Schema.fromJsonString(ReadySchema)
+                              )
                             )
-                          )
-                        );
-                      yield* waitUntil(
-                        readReady.pipe(
-                          Effect.as(true),
-                          Effect.orElseSucceed(() => false)
-                        )
+                          ),
+                        `${file}.ready`
                       );
-                      const ready = yield* readReady;
                       return { ...ready, child, prefix };
                     });
                     const controller = yield* spawn("controller");
@@ -610,11 +635,11 @@ for (const mode of ["open", "inspect", "retained"] as const) {
                       expect(Number(response.headers["content-length"])).toBe(
                         new TextEncoder().encode(response.raw).byteLength
                       );
-                      expect(
-                        (yield* fs.readFileString(`${reader.prefix}.submitted`))
-                          .trim()
-                          .split("\n")
-                      ).toHaveLength(1);
+                      const submitted = yield* waitForReadableFile(
+                        fs.readFileString(`${reader.prefix}.submitted`),
+                        `${reader.prefix}.submitted`
+                      );
+                      expect(submitted.trim().split("\n")).toHaveLength(1);
                       // The unchanged assertion deliberately catches ACK suppression after the owner's interruption.
                       yield* waitUntil(
                         pending.pipe(Effect.map((rows) => rows[0]?.count === 0))
