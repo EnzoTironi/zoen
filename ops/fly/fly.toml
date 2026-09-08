@@ -17,6 +17,9 @@ primary_region = "gru"
 kill_signal = "SIGTERM"
 kill_timeout = "45s"
 
+# CD (Deploy Fly) promotes the Verify-admitted GHCR digest via --image; it does
+# not rebuild from this Dockerfile. Local break-glass `fly deploy` still uses it
+# and is outside the exact-image admission path.
 [build]
 dockerfile = "../containers/all-in-one.Dockerfile"
 

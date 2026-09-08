@@ -8,6 +8,7 @@ on:
 permissions:
   contents: read
   actions: read
+  packages: read
 
 concurrency:
   group: deploy-fly-zoen-rebuild
@@ -17,31 +18,54 @@ jobs:
   deploy:
     runs-on: ubuntu-24.04
     steps:
+      - name: Refuse non-main refs
+        run: |
+          set -euo pipefail
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "Refusing deploy from ${{ github.ref }}; only refs/heads/main is admitted."
+            exit 1
+          fi
+
       - name: Wait for Verify success on this commit
         id: verify_gate
-        if: github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           SHA="${{ github.sha }}"
-          echo "Waiting for Verify (verify.yml) on ${SHA}"
+          EVENT="${{ github.event_name }}"
+          echo "Waiting for Verify (verify.yml) on ${SHA} (event=${EVENT})"
           for _ in $(seq 1 120); do
-            row="$(gh run list --repo "${{ github.repository }}" --workflow verify.yml --commit "${SHA}" --limit 1 --json status,conclusion)"
-            status="$(echo "${row}" | jq -r '.[0].status // empty')"
-            conclusion="$(echo "${row}" | jq -r '.[0].conclusion // empty')"
-            echo "status=${status:-none} conclusion=${conclusion:-none}"
+            rows="$(gh run list --repo "${{ github.repository }}" --workflow verify.yml --commit "${SHA}" --limit 5 --json databaseId,status,conclusion,createdAt,event)"
+            # Prefer the newest run for this commit; do not pick a stale success over a newer failure.
+            newest="$(echo "${rows}" | jq -c 'sort_by(.createdAt) | reverse | .[0] // empty')"
+            if [ -z "${newest}" ] || [ "${newest}" = "null" ]; then
+              echo "status=none conclusion=none"
+              sleep 30
+              continue
+            fi
+            status="$(echo "${newest}" | jq -r '.status // empty')"
+            conclusion="$(echo "${newest}" | jq -r '.conclusion // empty')"
+            run_id="$(echo "${newest}" | jq -r '.databaseId // empty')"
+            echo "run_id=${run_id} status=${status:-none} conclusion=${conclusion:-none}"
             if [ "${status}" = "completed" ]; then
+              echo "verify_run_id=${run_id}" >> "$GITHUB_OUTPUT"
+              echo "verify_conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
               if [ "${conclusion}" = "success" ]; then
                 echo "deploy=true" >> "$GITHUB_OUTPUT"
                 exit 0
               fi
               # Rapid main pushes cancel Verify via concurrency; this SHA is
               # superseded — skip deploy without failing. Newer tip Deploy matters.
+              # Manual dispatch must not treat cancelled/skipped as admission.
               if [ "${conclusion}" = "cancelled" ] || [ "${conclusion}" = "skipped" ]; then
-                echo "Verify ${conclusion} for ${SHA} (superseded); skipping deploy without failure."
-                echo "deploy=false" >> "$GITHUB_OUTPUT"
-                exit 0
+                if [ "${EVENT}" = "push" ]; then
+                  echo "Verify ${conclusion} for ${SHA} (superseded); skipping deploy without failure."
+                  echo "deploy=false" >> "$GITHUB_OUTPUT"
+                  exit 0
+                fi
+                echo "Verify ${conclusion} for ${SHA}; refusing manual deploy."
+                exit 1
               fi
               echo "Verify failed for ${SHA} (conclusion=${conclusion}); refusing deploy."
               exit 1
@@ -52,26 +76,89 @@ jobs:
           exit 1
 
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        if: github.event_name != 'push' || steps.verify_gate.outputs.deploy == 'true'
+        if: steps.verify_gate.outputs.deploy == 'true'
+
+      - name: Download exact-image admission for this Verify run
+        if: steps.verify_gate.outputs.deploy == 'true'
+        id: admission
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          SHA="${{ github.sha }}"
+          RUN_ID="${{ steps.verify_gate.outputs.verify_run_id }}"
+          mkdir -p .local/exact-image-admission-download
+          gh run download "${RUN_ID}" \
+            --repo "${{ github.repository }}" \
+            --name exact-image-admission \
+            --dir .local/exact-image-admission-download
+          # Artifact may unpack flat or nested; locate admission.json under the download dir only.
+          ADMISSION="$(find .local/exact-image-admission-download -type f -name admission.json | head -n 1)"
+          if [ -z "${ADMISSION}" ]; then
+            echo "admission.json missing from Verify artifact for run ${RUN_ID}"
+            exit 1
+          fi
+          echo "admission_path=${ADMISSION}" >> "$GITHUB_OUTPUT"
+          # Bind commit/run identity; refuse substituted digest by never accepting inputs.
+          REF="$(python3 tests/integration/hosted/exact_image/deploy_gate.py \
+            --admission "${ADMISSION}" \
+            --commit "${SHA}" \
+            --event-name "${{ github.event_name }}" \
+            --verify-conclusion "${{ steps.verify_gate.outputs.verify_conclusion }}" \
+            --verify-run-id "${RUN_ID}" \
+            --print reference)"
+          IMAGE_ID="$(python3 tests/integration/hosted/exact_image/deploy_gate.py \
+            --admission "${ADMISSION}" \
+            --commit "${SHA}" \
+            --event-name "${{ github.event_name }}" \
+            --verify-conclusion success \
+            --verify-run-id "${RUN_ID}" \
+            --print image_id)"
+          echo "image_ref=${REF}" >> "$GITHUB_OUTPUT"
+          echo "image_id=${IMAGE_ID}" >> "$GITHUB_OUTPUT"
+          echo "Admitted exact image ${REF} (id=${IMAGE_ID})"
 
       - name: Setup flyctl
-        if: github.event_name != 'push' || steps.verify_gate.outputs.deploy == 'true'
+        if: steps.verify_gate.outputs.deploy == 'true'
         uses: superfly/flyctl-actions/setup-flyctl@ed8efb33836e8b2096c7fd3ba1c8afe303ebbff1
         with:
           version: "0.4.99"
 
-      - name: Deploy zoen-rebuild
-        if: github.event_name != 'push' || steps.verify_gate.outputs.deploy == 'true'
+      - name: Promote admitted image to Fly and deploy
+        if: steps.verify_gate.outputs.deploy == 'true'
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-        run: flyctl deploy -a zoen-rebuild --config ops/fly/fly.toml
-
-      - name: Health check (fail closed)
-        if: github.event_name != 'push' || steps.verify_gate.outputs.deploy == 'true'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_REF: ${{ steps.admission.outputs.image_ref }}
+          IMAGE_ID: ${{ steps.admission.outputs.image_id }}
         run: |
           set -euo pipefail
-          # Verify also runs on main; this post-deploy probe fails closed if the
-          # new release is not ready (Fly http_service checks alone are not enough).
+          SHA="${{ github.sha }}"
+          echo "${GITHUB_TOKEN}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker pull "${IMAGE_REF}"
+          PULLED_ID="$(docker image inspect --format '{{.Id}}' "${IMAGE_REF}")"
+          if [ "${PULLED_ID}" != "${IMAGE_ID}" ]; then
+            echo "Pulled image id ${PULLED_ID} != admitted ${IMAGE_ID}; refusing deploy."
+            exit 1
+          fi
+          flyctl auth docker
+          FLY_TAG="registry.fly.io/zoen-rebuild:sha-${SHA}"
+          docker tag "${IMAGE_REF}" "${FLY_TAG}"
+          docker push "${FLY_TAG}"
+          FLY_DIGESTS="$(docker image inspect --format '{{json .RepoDigests}}' "${FLY_TAG}")"
+          FLY_REF="$(echo "${FLY_DIGESTS}" | jq -r '.[] | select(startswith("registry.fly.io/zoen-rebuild@"))' | head -n 1)"
+          if [ -z "${FLY_REF}" ]; then
+            echo "Missing Fly registry digest after push"
+            exit 1
+          fi
+          # Deploy the pushed exact bytes by digest — no uncontrolled rebuild from Dockerfile.
+          flyctl deploy -a zoen-rebuild --config ops/fly/fly.toml --image "${FLY_REF}"
+
+      - name: Health check (fail closed; not admission)
+        if: steps.verify_gate.outputs.deploy == 'true'
+        run: |
+          set -euo pipefail
+          # /ready alone cannot certify the artifact; admission already bound the digest.
           for _ in $(seq 1 36); do
             if curl -fsS https://zoen-rebuild.fly.dev/ready; then
               echo

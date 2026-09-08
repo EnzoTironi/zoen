@@ -33,6 +33,8 @@ jobs:
           node packages/authority/dist/semantic/executor.js
       - run: python3 tooling/verify_plan.py
       - run: python3 -m unittest discover -s tooling -p 'test_*.py'
+      - name: Exact-image admission policy fixtures (ZA-07)
+        run: python3 -m unittest discover -s tests/integration/hosted/exact_image -p 'test_*.py'
 
   unit:
     runs-on: ubuntu-24.04
@@ -75,9 +77,8 @@ jobs:
         run: echo "ZOEN_TEST_LEGACY_ROOT=${GITHUB_WORKSPACE}/.local/identity-baseline-ci/source" >> "$GITHUB_ENV"
       - run: pnpm test:integration
       - run: pnpm exec playwright install --with-deps chromium
+      # App-only profile (application.Dockerfile). Not the Fly all-in-one admit path.
       - run: pnpm test:container
-      - run: pnpm test:container:identity
-      - run: pnpm test:container:lifecycle
       - if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
@@ -86,17 +87,6 @@ jobs:
             test-results
             .local/*-proof/build.log
             .local/*-proof/container.log
-            .local/*-identity/build.log
-            .local/*-identity/container.log
-            .local/*-identity/fail-closed.log
-            .local/*-identity/entrypoint-fail-closed.log
-            .local/*-identity/result.json
-            .local/*-lifecycle/build.log
-            .local/*-lifecycle/container.log
-            .local/*-lifecycle/reset-required.log
-            .local/*-lifecycle/bootstrap-error.txt
-            .local/*-lifecycle/crash-after-installation.log
-            .local/*-lifecycle/result.json
           include-hidden-files: true
           if-no-files-found: ignore
       - if: always() && steps.services-config.outcome == 'success'
@@ -121,18 +111,65 @@ jobs:
           path: test-results
           if-no-files-found: ignore
 
+  # Exact Fly profile: build all-in-one once, run ZA-05/ZA-06 seams on that image,
+  # emit admission.json. On main push, publish immutable GHCR digest for Deploy.
+  exact-image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Qualify exact all-in-one artifact (ZA-07)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZOEN_EXACT_IMAGE_PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '1' || '0' }}
+        run: python3 tests/integration/hosted/exact_image/qualify.py
+      - name: Upload exact-image admission evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: exact-image-admission
+          path: |
+            .local/exact-image-admission/admission.json
+            .local/exact-image-admission/identity-result.json
+            .local/exact-image-admission/lifecycle-result.json
+          include-hidden-files: true
+          if-no-files-found: error
+      - if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: exact-image-failure
+          path: |
+            .local/exact-*-admission/build.log
+            .local/*-identity/build.log
+            .local/*-identity/container.log
+            .local/*-identity/fail-closed.log
+            .local/*-identity/entrypoint-fail-closed.log
+            .local/*-identity/result.json
+            .local/*-lifecycle/build.log
+            .local/*-lifecycle/container.log
+            .local/*-lifecycle/reset-required.log
+            .local/*-lifecycle/bootstrap-error.txt
+            .local/*-lifecycle/crash-after-installation.log
+            .local/*-lifecycle/result.json
+          include-hidden-files: true
+          if-no-files-found: ignore
+
   required:
     if: always()
-    needs: [quality, unit, integration, components]
+    needs: [quality, unit, integration, components, exact-image]
     runs-on: ubuntu-24.04
     env:
       QUALITY: ${{ needs.quality.result }}
       UNIT: ${{ needs.unit.result }}
       INTEGRATION: ${{ needs.integration.result }}
       COMPONENTS: ${{ needs.components.result }}
+      EXACT_IMAGE: ${{ needs.exact-image.result }}
     steps:
       - run: |
           test "$QUALITY" = success
           test "$UNIT" = success
           test "$INTEGRATION" = success
           test "$COMPONENTS" = success
+          test "$EXACT_IMAGE" = success
