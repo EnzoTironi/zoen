@@ -14,14 +14,14 @@ Em 2026-09-06 (PT), o **congelamento mínimo** de erasure está em [`docs/contra
 | Migrações numeradas | `009_erasure_attempt_register.sql` + `010_world_erasure_closing.sql` + grants |
 | Closing local (EX32) | Landed — Active→Closing com receipt+outbox; sucesso só após Confirmada |
 | Web/CLI (EX33) | Landed — `/api/erasure/execute`, CLI `--confirm-entire-world`, painel owner-only |
-| Compose/verify (EX34) | Landed — perfil `d03-local-erasable-v1` só em **Worlds novos**; retained default |
+| Compose/verify (EX34) | Landed — perfil `worlds-local-erasable-v1` só em **Worlds novos**; retained default |
 | Purge / Erased (local controlled copies) | **Landed EX45** — Closing→Erased via `PurgeWorldContent` (SQL + World object prefix; EX44 ports). AttestationScope=`local-controlled-copies`. |
 | Full D03 Erased (controller/backups/fence/hosted) | **Bloqueado** |
 | Object Lock / retention (RustFS local) | **Qualificado** — `docs/verification/erasure-storage-qualification.md` |
 | Object Lock / retention (Fly all-in-one RustFS) | **Qualificado** — `docs/verification/erasure-fly-object-lock.md` |
 | restoreAfterErasure | **false** / fechado |
 
-Worlds `worlds-local-retained-v1` continuam **sem** erasure. Perfil candidato `d03-local-erasable-v1` só via provisionamento explícito de instalação **nova** (`ZOEN_LOCAL_WORLD_POLICY=d03-local-erasable-v1`). Sem rebind/migração de Worlds retidos (F02).
+Worlds `worlds-local-retained-v1` continuam **sem** erasure. Perfil candidato `worlds-local-erasable-v1` só via provisionamento explícito de instalação **nova** (`ZOEN_LOCAL_WORLD_POLICY=worlds-local-erasable-v1`). Sem rebind/migração de Worlds retidos (F02).
 
 ## Provisionamento local (EX34)
 
@@ -29,10 +29,10 @@ Worlds `worlds-local-retained-v1` continuam **sem** erasure. Perfil candidato `d
 # Default — retained (sem erasure)
 ZOEN_LOCAL_PROFILE=application pnpm provision:local
 
-# Novo install erasable (Worlds novos sob d03-local-erasable-v1)
+# Novo install erasable (Worlds novos sob worlds-local-erasable-v1)
 ZOEN_LOCAL_PROFILE=erasable-v1 \
   ZOEN_LOCAL_PUBLIC_URL=http://127.0.0.1:4321 \
-  ZOEN_LOCAL_WORLD_POLICY=d03-local-erasable-v1 \
+  ZOEN_LOCAL_WORLD_POLICY=worlds-local-erasable-v1 \
   pnpm provision:local
 ```
 

@@ -150,12 +150,15 @@ const maybeCrashAfter = (stage: string) =>
   });
 
 const alignExistingHostedRelease = (input: {
+  readonly encodeInstallation: typeof encodeJson;
   readonly fs: FileSystem.FileSystem;
   readonly installationPath: string;
   readonly releaseFile: string;
   readonly runtimeEnvPath: string;
 }) =>
   applyHostedReleaseAlign({
+    encodeInstallation: (value) =>
+      input.encodeInstallation(value).pipe(Effect.orDie),
     fs: input.fs,
     installationPath: input.installationPath,
     reconcileWorlds: (step) =>
@@ -324,6 +327,7 @@ const bootstrapSameReleaseRestart = (input: {
     // RESET_REQUIRED (no silent rewrite). Leave a seam for ZA-08 admitted
     // same-release schema migrate on existing volumes AFTER this check.
     yield* alignExistingHostedRelease({
+      encodeInstallation: encodeJson,
       fs,
       installationPath,
       releaseFile,
@@ -392,7 +396,7 @@ const program = Effect.gen(function* bootstrapAllInOne() {
     Config.withDefault(`${root}apps/server/dist/release.json`)
   );
   const worldPolicyId = yield* Config.string("ZOEN_WORLD_POLICY").pipe(
-    Config.withDefault("d04-hosted-retained-v1")
+    Config.withDefault("worlds-hosted-retained-v1")
   );
   const policy = resolveLocalWorldPolicy(worldPolicyId);
   if (policy === null) {

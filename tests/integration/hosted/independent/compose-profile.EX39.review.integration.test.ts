@@ -9,7 +9,7 @@ import { createPersonalWorld } from "../../../../packages/authority/src/commit/g
 import {
   HostedAdmissionFlags,
   assertOnlyCoreSurfacesAdmitted,
-  d04HostedRetainedAdmissionFlags,
+  hostedRetainedAdmissionFlags,
   readinessFor,
   reportsFalseHealthy,
   requireAdmittedCapability,
@@ -44,15 +44,15 @@ it.live(
             SELECT data_policy_id FROM authority.worlds
             WHERE world_id = ${created.worldRef.worldId}
           `
-        ).toStrictEqual([{ data_policy_id: "d04-hosted-retained-v1" }]);
+        ).toStrictEqual([{ data_policy_id: "worlds-hosted-retained-v1" }]);
         expect(hostedRetainedPolicy.erasure).toBeFalsy();
         expect(hostedRetainedPolicy.restoreAfterErasure).toBeFalsy();
         expect(
           Schema.is(HostedRetainedDataPolicySchema)(hostedRetainedPolicy)
         ).toBeTruthy();
         expect(
-          resolveLocalWorldPolicy("d04-hosted-retained-v1")?.profileId
-        ).toBe("d04-hosted-retained-v1");
+          resolveLocalWorldPolicy("worlds-hosted-retained-v1")?.profileId
+        ).toBe("worlds-hosted-retained-v1");
       }).pipe(
         Effect.provide(Layer.mergeAll(hostedConfiguration, database.authority))
       )
@@ -94,7 +94,7 @@ it.live(
     withWorldsDatabase((database) =>
       Effect.gen(function* admissionCompose() {
         const flags = yield* HostedAdmissionFlags;
-        expect(flags).toStrictEqual(d04HostedRetainedAdmissionFlags);
+        expect(flags).toStrictEqual(hostedRetainedAdmissionFlags);
         expect(assertOnlyCoreSurfacesAdmitted(flags)).toBeTruthy();
         for (const surface of ["web", "cli", "file"] as const) {
           const readiness = readinessFor(flags, surface);

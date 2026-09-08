@@ -55,10 +55,16 @@ export const legacyWire = {
   csvFormat: "d01.csv.v1",
   envelope: { purpose: "personal-records", schemaVersion: "d01.v1" },
   executePath: "/api/d01/execute",
+  /** Frozen pre-identity executable still serves delivery-labeled sharing. */
+  sharingEnvelope: {
+    purpose: "personal-records",
+    schemaVersion: "d03.sharing.v1",
+  },
+  sharingPath: "/api/d03/sharing",
 } as const;
 
 /**
- * Map a legacy request body to current worlds wire for post-transition
+ * Map a legacy request body to current worlds/sharing wire for post-transition
  * SemanticExecutor decode/replay. Does not dual-read in product code.
  */
 export const asCurrentWire = (request: object): Record<string, unknown> => {
@@ -68,6 +74,18 @@ export const asCurrentWire = (request: object): Record<string, unknown> => {
     .replaceAll(
       '\\"schemaVersion\\":\\"d01.v1\\"',
       '\\"schemaVersion\\":\\"worlds.v1\\"'
+    )
+    .replaceAll(
+      '\\"schemaVersion\\":\\"d03.sharing.v1\\"',
+      '\\"schemaVersion\\":\\"sharing.v1\\"'
+    )
+    .replaceAll(
+      '"schemaVersion":"d03.sharing.v1"',
+      '"schemaVersion":"sharing.v1"'
+    )
+    .replaceAll(
+      '"schemaVersion": "d03.sharing.v1"',
+      '"schemaVersion": "sharing.v1"'
     )
     .replaceAll('"format":"d01.csv.v1"', '"format":"worlds.csv.v1"')
     .replaceAll('"format": "d01.csv.v1"', '"format": "worlds.csv.v1"')

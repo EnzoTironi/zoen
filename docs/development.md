@@ -87,4 +87,23 @@ Isolated Docker named volumes used by `pnpm test:container:identity` / `pnpm tes
 
 Do **not** treat hosted data as disposable because local volumes are. An incompatible hosted volume stays not-ready until an **explicitly authorized** operator action replaces that named volume or an separately admitted ordinary migration lands. This ticket does not implement live hosted reset, automatic rollback, or silent digest replacement.
 
-Open PR #92 (migrate schema on existing same-release volumes) is the admitted migrate seam; it must not run after a digest mismatch.
+Merged PR #92 (migrate schema on existing same-release volumes) is the admitted migrate seam; it must not run after a digest mismatch.
+
+## Pre-launch wire and development baseline (ZA-03)
+
+Active wire and install identifiers use descriptive contract versions (not delivery numbers). Coordinated one-to-one mapping:
+
+| Old (delivery) | New (descriptive) |
+| --- | --- |
+| `POST /api/d03/sharing` | `POST /api/sharing/execute` |
+| `d03.sharing.v1` | `sharing.v1` |
+| `d03-local-erasable-v1` | `worlds-local-erasable-v1` |
+| `d04-hosted-retained-v1` | `worlds-hosted-retained-v1` |
+| SQL baseline `001_d01_authority` / `002_d01_identity` | `001_authority` / `002_identity` |
+| Object inventory dual-read `d01/` + `worlds/` | Canonical `worlds/` only |
+
+Already descriptive and unchanged: `worlds-local-retained-v1`. Frozen legacy EX25 harness still admits `d01-local-retained-v1` against the pre-identity executable only; migration `011` continues to rewrite that stored id on current installs. Migration `013` one-shot rewrites `d03-local-erasable-v1` / `d04-hosted-retained-v1` World rows to the descriptive ids; hosted bootstrap/align atomically rewrites the same known literals in `installation.json` and fails closed on unknown policy ids.
+
+**No shims / dual-read / dual-write.** Old routes and schema literals are rejected at product decode; known pre-launch delivery policy ids are rewritten once on migrate/bootstrap, not dual-read forever.
+
+**Local reset:** disposable profile installs that applied the previous migrator ids or policy literals must be recreated (`pnpm staging:reset` for owned staging inventory, or an equivalent explicit disposable wipe). Do not edit already-applied migration bytes in place and keep using the same DB. Hosted / unlisted / foreign profiles remain refused by reset and provision tooling (ZA-04 ownership inventory); persistent hosted volumes rely on the one-shot policy rewrite above instead of wipe.

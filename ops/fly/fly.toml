@@ -29,7 +29,7 @@ ZOEN_S3_REGION = "us-east-1"
 ZOEN_S3_BUCKET = "zoen"
 ZOEN_INSTALLATION_FILE = "/data/zoen/installation.json"
 ZOEN_RUNTIME_ENV_FILE = "/data/zoen/runtime.env"
-ZOEN_WORLD_POLICY = "d04-hosted-retained-v1"
+ZOEN_WORLD_POLICY = "worlds-hosted-retained-v1"
 ZOEN_BOOTSTRAP_ADMIN_URL = "postgresql://zoen_infra@127.0.0.1:5432/postgres"
 # DB role URLs are minted on first boot onto the volume (not secrets).
 # Set ZOEN_AUTH_SECRET via `fly secrets set` (never commit).

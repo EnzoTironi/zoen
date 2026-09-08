@@ -50,7 +50,7 @@ const erasablePolicy = {
   erasure: true,
   legalHold: false,
   licensedExpiry: false,
-  profileId: "d03-local-erasable-v1",
+  profileId: "worlds-local-erasable-v1",
   restoreAfterErasure: false,
   retention: "while-pinned",
 } as const;

@@ -118,12 +118,12 @@ it.live(
           operation: "GrantWorldReadAccess",
           operationId: randomUUID(),
           purpose: "personal-records",
-          schemaVersion: "d03.sharing.v1",
+          schemaVersion: "sharing.v1",
           worldRef,
         });
         let grant = yield* http(
           origin,
-          "/api/d03/sharing",
+          "/api/sharing/execute",
           grantPayload,
           ownerCookie
         );
@@ -134,7 +134,7 @@ it.live(
         ) {
           grant = yield* http(
             origin,
-            "/api/d03/sharing",
+            "/api/sharing/execute",
             grantPayload,
             ownerCookie
           );
@@ -244,7 +244,7 @@ it.live(
             input: {
               confirmEntireWorld: true,
               expectedErasureRevision: null,
-              policyVersion: "d03-local-erasable-v1",
+              policyVersion: "worlds-local-erasable-v1",
             },
             operation: "RequestWorldErasure",
             operationId: randomUUID(),

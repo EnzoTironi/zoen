@@ -10,7 +10,7 @@ import {
 } from "../src/all-in-one-release-apply.ts";
 
 const encodeJson = Schema.encodeEffect(Schema.fromJsonString(Schema.Unknown));
-const samplePolicy = { profileId: "d04-hosted-retained-v1" };
+const samplePolicy = { profileId: "worlds-hosted-retained-v1" };
 
 const withTempRoot = <A, E>(
   body: (paths: {
@@ -60,6 +60,7 @@ describe("applyHostedReleaseAlign workflow", () => {
 
         const reconciled: ReleaseAlignStep[] = [];
         const error = yield* applyHostedReleaseAlign({
+          encodeInstallation: (value) => encodeJson(value).pipe(Effect.orDie),
           fs,
           installationPath,
           reconcileWorlds: (step) =>
@@ -107,6 +108,7 @@ describe("applyHostedReleaseAlign workflow", () => {
 
         const reconciled: string[] = [];
         const result = yield* applyHostedReleaseAlign({
+          encodeInstallation: (value) => encodeJson(value).pipe(Effect.orDie),
           fs,
           installationPath,
           reconcileWorlds: (step) =>
@@ -126,5 +128,73 @@ describe("applyHostedReleaseAlign workflow", () => {
         );
       })
     ).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, NodePath.layer)))
+  );
+
+  it.effect(
+    "rewrites legacy hosted policy when release digest already matches",
+    () =>
+      withTempRoot(({ installationPath, releaseFile, runtimeEnvPath }) =>
+        Effect.gen(function* assertPolicyRewrite() {
+          const fs = yield* FileSystem.FileSystem;
+          const bytes = new TextEncoder().encode('{"format":"same"}\n');
+          const digest = digestReleaseBytes(bytes);
+          const installed = {
+            installation: {
+              cellEpoch: "1",
+              cellId: "11111111-1111-4111-8111-111111111111",
+              generationId: "22222222-2222-4222-8222-222222222222",
+              releaseDigest: digest,
+            },
+            policy: {
+              dataScope: "admitted-non-sensitive",
+              enabledRealm: "live",
+              erasure: false,
+              legalHold: false,
+              licensedExpiry: false,
+              profileId: "d04-hosted-retained-v1",
+              restoreAfterErasure: false,
+              retention: "while-pinned",
+            },
+          };
+          yield* fs.writeFileString(
+            installationPath,
+            yield* encodeJson(installed),
+            { mode: 0o600 }
+          );
+          yield* fs.writeFileString(
+            runtimeEnvPath,
+            'ZOEN_AUTHORITY_DATABASE_URL="postgresql://auth@127.0.0.1/zoen"\n',
+            { mode: 0o600 }
+          );
+          yield* fs.writeFile(releaseFile, bytes);
+
+          const result = yield* applyHostedReleaseAlign({
+            encodeInstallation: (value) => encodeJson(value).pipe(Effect.orDie),
+            fs,
+            installationPath,
+            reconcileWorlds: () => Effect.void,
+            releaseFile,
+            runtimeEnvPath,
+          });
+          expect(result.event).toBe("all-in-one.bootstrap.release-aligned");
+          const rewrittenText = yield* fs.readFileString(installationPath);
+          const rewritten = yield* Schema.decodeEffect(
+            Schema.fromJsonString(
+              Schema.Struct({
+                installation: Schema.Struct({
+                  releaseDigest: Schema.String,
+                }),
+                policy: Schema.Struct({
+                  profileId: Schema.String,
+                }),
+              })
+            )
+          )(rewrittenText);
+          expect(rewritten.policy.profileId).toBe("worlds-hosted-retained-v1");
+          expect(rewritten.installation.releaseDigest).toBe(digest);
+        })
+      ).pipe(
+        Effect.provide(Layer.mergeAll(NodeFileSystem.layer, NodePath.layer))
+      )
   );
 });

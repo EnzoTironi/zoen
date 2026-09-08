@@ -60,7 +60,7 @@ it.live(
             operation: "GrantWorldReadAccess",
             operationId: randomUUID(),
             purpose: "personal-records",
-            schemaVersion: "d03.sharing.v1",
+            schemaVersion: "sharing.v1",
             worldRef,
           });
           yield* grantWorldReadAccess(context, grant);

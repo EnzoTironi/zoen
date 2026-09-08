@@ -6,8 +6,8 @@
 
 export type LocalWorldPolicyId =
   | "worlds-local-retained-v1"
-  | "d03-local-erasable-v1"
-  | "d04-hosted-retained-v1";
+  | "worlds-local-erasable-v1"
+  | "worlds-hosted-retained-v1";
 
 export interface LocalWorldPolicy {
   readonly dataScope: "admitted-non-sensitive";
@@ -37,7 +37,7 @@ const ERASABLE: LocalWorldPolicy = {
   erasure: true,
   legalHold: false,
   licensedExpiry: false,
-  profileId: "d03-local-erasable-v1",
+  profileId: "worlds-local-erasable-v1",
   restoreAfterErasure: false,
   retention: "while-pinned",
 };
@@ -49,29 +49,29 @@ const HOSTED_RETAINED: LocalWorldPolicy = {
   erasure: false,
   legalHold: false,
   licensedExpiry: false,
-  profileId: "d04-hosted-retained-v1",
+  profileId: "worlds-hosted-retained-v1",
   restoreAfterErasure: false,
   retention: "while-pinned",
 };
 
 const BY_ID: Record<LocalWorldPolicyId, LocalWorldPolicy> = {
-  "d03-local-erasable-v1": ERASABLE,
-  "d04-hosted-retained-v1": HOSTED_RETAINED,
+  "worlds-hosted-retained-v1": HOSTED_RETAINED,
+  "worlds-local-erasable-v1": ERASABLE,
   "worlds-local-retained-v1": RETAINED,
 };
 
 export const LOCAL_WORLD_POLICY_IDS: readonly LocalWorldPolicyId[] = [
   "worlds-local-retained-v1",
-  "d03-local-erasable-v1",
-  "d04-hosted-retained-v1",
+  "worlds-local-erasable-v1",
+  "worlds-hosted-retained-v1",
 ];
 
 export const isLocalWorldPolicyId = (
   value: string
 ): value is LocalWorldPolicyId =>
   value === "worlds-local-retained-v1" ||
-  value === "d03-local-erasable-v1" ||
-  value === "d04-hosted-retained-v1";
+  value === "worlds-local-erasable-v1" ||
+  value === "worlds-hosted-retained-v1";
 
 /** Resolve install policy; null when the id is not an admitted local profile. */
 export const resolveLocalWorldPolicy = (

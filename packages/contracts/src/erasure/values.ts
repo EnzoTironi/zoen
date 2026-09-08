@@ -3,7 +3,9 @@ import { Schema } from "effect";
 import { exact } from "../worlds/values.js";
 
 /** Candidate profile for NEW Worlds only; retained Worlds stay worlds-local-retained-v1. */
-export const ErasurePolicyProfileId = Schema.Literal("d03-local-erasable-v1");
+export const ErasurePolicyProfileId = Schema.Literal(
+  "worlds-local-erasable-v1"
+);
 export type ErasurePolicyProfileId = typeof ErasurePolicyProfileId.Type;
 
 export const ErasureSchemaVersion = Schema.Literal("erasure.v1");
@@ -49,17 +51,16 @@ export const ErasureObjectVersionId = Schema.String.check(
 export type ErasureObjectVersionId = typeof ErasureObjectVersionId.Type;
 
 /**
- * Aggregate ListObjectVersions inventory bound: two prefixes (canonical worlds/
- * + residual legacy) × 10_000 pages × 100 keys. Must stay aligned with the S3
- * adapter page/prefix caps so completePurgeOutcomes can accept every inventory
- * the adapter may return.
+ * Aggregate ListObjectVersions inventory bound: one canonical worlds/ prefix ×
+ * 10_000 pages × 100 keys. Must stay aligned with the S3 adapter page/prefix
+ * caps so completePurgeOutcomes can accept every inventory the adapter may return.
  */
 export const ErasureLimits = {
   inventoryPageSize: 100,
   inventoryPagesPerPrefix: 10_000,
-  inventoryPrefixes: 2,
-  /** Combined two-prefix manifest: prefixes × pages × page size. */
-  versionEntries: 2 * 10_000 * 100,
+  inventoryPrefixes: 1,
+  /** Combined single-prefix manifest: prefixes × pages × page size. */
+  versionEntries: 1 * 10_000 * 100,
 } as const;
 
 /** One ListObjectVersions entry under a World prefix. */

@@ -225,7 +225,7 @@ describe("EX40 eve schemas", () => {
             conversationId,
             ingressId,
             messageId,
-            profileId: "d04-hosted-retained-v1",
+            profileId: "worlds-hosted-retained-v1",
             providerAdmission: "stub-local",
             relationshipId,
             turnId,

@@ -41,7 +41,7 @@ export const CorrectionApiGroup = HttpApiGroup.make("corrections").add(
 );
 export const WorldApi = HttpApi.make("zoen-worlds").add(WorldApiGroup);
 export const SharingApiGroup = HttpApiGroup.make("sharing").add(
-  HttpApiEndpoint.post("execute", "/api/d03/sharing", {
+  HttpApiEndpoint.post("execute", "/api/sharing/execute", {
     error: SemanticError.members,
     payload: SharingRequest,
     success: SharingSuccess,

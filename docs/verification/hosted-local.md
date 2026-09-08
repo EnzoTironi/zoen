@@ -7,7 +7,7 @@ Em 2026-09-06 (PT), tip verificado: `7e91940` (`7e9194024a551f2ba99faf00d726b4bb
 | Item | Estado |
 | --- | --- |
 | Freeze H01–H08 | Landed (EX35) |
-| Schemas `d04-hosted-retained-v1` | Landed (EX36); união `DataPolicySchema` |
+| Schemas `worlds-hosted-retained-v1` | Landed (EX36); união `DataPolicySchema` |
 | Restore disposable escopo retained | Landed (EX37); compose PG/S3 local |
 | Admission flags (H06 / ZN-0288) | Landed (EX38); web/cli/file ready; canais/providers disabled/Blocked |
 | Compose/provision local (EX39) | Landed — perfil hosted só em **Worlds novos** via `ZOEN_LOCAL_WORLD_POLICY`; retained default |
@@ -15,7 +15,7 @@ Em 2026-09-06 (PT), tip verificado: `7e91940` (`7e9194024a551f2ba99faf00d726b4bb
 | D04 ativado / cutover `zoen` | **Não** |
 | D03 purge / restore-após-erasure | **Bloqueado** |
 
-Default de composition/provision permanece `worlds-local-retained-v1`. Perfil candidato `d04-hosted-retained-v1` só via provisionamento explícito de instalação **nova**. Sem rebind/migração de Worlds `d01-*` / `d03-*` (H01).
+Default de composition/provision permanece `worlds-local-retained-v1`. Perfil candidato `worlds-hosted-retained-v1` só via provisionamento explícito de instalação **nova**. Sem rebind/migração de Worlds `d01-*` / `d03-*` (H01). Hosted volumes that still persist the pre-ZA-03 delivery id get a one-shot rewrite on bootstrap/align (`d04-hosted-retained-v1` → `worlds-hosted-retained-v1`); unknown policy ids fail closed.
 
 ## Provisionamento local (EX39)
 
@@ -23,20 +23,20 @@ Default de composition/provision permanece `worlds-local-retained-v1`. Perfil ca
 # Default — local retained (sem hosted)
 ZOEN_LOCAL_PROFILE=application pnpm provision:local
 
-# Novo install hosted-retained (Worlds novos sob d04-hosted-retained-v1)
+# Novo install hosted-retained (Worlds novos sob worlds-hosted-retained-v1)
 # Stand-in local; NÃO é deploy Fly.
 ZOEN_LOCAL_PROFILE=hosted-retained-v1 \
   ZOEN_LOCAL_PUBLIC_URL=http://127.0.0.1:4322 \
-  ZOEN_LOCAL_WORLD_POLICY=d04-hosted-retained-v1 \
+  ZOEN_LOCAL_WORLD_POLICY=worlds-hosted-retained-v1 \
   pnpm provision:local
 ```
 
-`resolveLocalWorldPolicy` (`ops/local/world-policy.ts`) admite retained / erasable / hosted-retained. Composition (`hostedAdmissionLayerFor`) injeta `HostedAdmissionFlags` **somente** quando a policy do install é `d04-hosted-retained-v1`.
+`resolveLocalWorldPolicy` (`ops/local/world-policy.ts`) admite retained / erasable / hosted-retained. Composition (`hostedAdmissionLayerFor`) injeta `HostedAdmissionFlags` **somente** quando a policy do install é `worlds-hosted-retained-v1`.
 
 ## EX39 — o que o compose/verify garante
 
 - Provision/local policy helper + composition admission layer.
-- Oráculos independentes: novo World hosted carimba `d04-hosted-retained-v1`; retained default distinto; core surfaces ready; WhatsApp/providers Blocked; stubs Fly presentes e proíbem gasto.
+- Oráculos independentes: novo World hosted carimba `worlds-hosted-retained-v1`; retained default distinto; core surfaces ready; WhatsApp/providers Blocked; stubs Fly presentes e proíbem gasto.
 - Evidência separa **bootstrap local verificado** (EX35–EX39) de **D04 ativado / piloto sensível / cutover** (ainda não).
 
 ## Suite

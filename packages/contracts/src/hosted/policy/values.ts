@@ -4,10 +4,10 @@ import { exact } from "../../worlds/values.js";
 
 /**
  * Candidate hosted retained profile for NEW Worlds only (freeze H01).
- * Existing worlds-local-retained-v1 / d03-local-erasable-v1 Worlds are never rebound.
+ * Existing worlds-local-retained-v1 / worlds-local-erasable-v1 Worlds are never rebound.
  */
 export const HostedRetainedPolicyProfileId = Schema.Literal(
-  "d04-hosted-retained-v1"
+  "worlds-hosted-retained-v1"
 );
 export type HostedRetainedPolicyProfileId =
   typeof HostedRetainedPolicyProfileId.Type;

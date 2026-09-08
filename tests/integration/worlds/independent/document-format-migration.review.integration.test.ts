@@ -28,7 +28,7 @@ import {
 } from "../../../../apps/server/test/adapters/postgres/worlds/seed.ts";
 import {
   applyApplicationMigrations,
-  applyD01Migrations,
+  applyWorldsBaselineMigrations,
 } from "../../../../ops/migrations/run.ts";
 
 // Real SQL fixture history; no claim of normal authentication or semantic admission.
@@ -220,7 +220,7 @@ it.live(
               )
             ).toStrictEqual([]);
             expect(
-              yield* applyD01Migrations(database.names).pipe(
+              yield* applyWorldsBaselineMigrations(database.names).pipe(
                 Effect.provide(migrations)
               )
             ).toStrictEqual([]);
@@ -241,7 +241,7 @@ it.live(
         ),
       undefined,
       (database) =>
-        applyD01Migrations(database.names).pipe(
+        applyWorldsBaselineMigrations(database.names).pipe(
           Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
         )
     )

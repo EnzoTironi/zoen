@@ -7,7 +7,7 @@ import {
 } from "../policy/values.js";
 
 /**
- * Worlds core surfaces admitted on d04-hosted-retained-v1 (freeze H06).
+ * Worlds core surfaces admitted on worlds-hosted-retained-v1 (freeze H06).
  * Acceptance emphasizes web/file; CLI remains the third Worlds surface.
  */
 export const HostedAdmittedSurfaceId = Schema.Literals(["web", "cli", "file"]);
@@ -142,8 +142,8 @@ export const HostedRetainedAdmissionFlags = Schema.Struct({
 export type HostedRetainedAdmissionFlags =
   typeof HostedRetainedAdmissionFlags.Type;
 
-/** Frozen default flags for d04-hosted-retained-v1 Worlds. */
-export const d04HostedRetainedAdmissionFlags: HostedRetainedAdmissionFlags = {
+/** Frozen default flags for worlds-hosted-retained-v1 Worlds. */
+export const hostedRetainedAdmissionFlags: HostedRetainedAdmissionFlags = {
   capabilities: [
     ...ADMITTED_SURFACES.map((capabilityId): HostedCapabilityAdmission => ({
       capabilityId,
@@ -156,7 +156,7 @@ export const d04HostedRetainedAdmissionFlags: HostedRetainedAdmissionFlags = {
       state: "disabled",
     })),
   ],
-  profileId: "d04-hosted-retained-v1",
+  profileId: "worlds-hosted-retained-v1",
   schemaVersion: "hosted.v1",
 };
 

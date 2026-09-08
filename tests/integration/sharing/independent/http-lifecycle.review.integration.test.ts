@@ -57,10 +57,10 @@ const waitUntil = <E, R>(probe: Effect.Effect<boolean, E, R>) =>
 const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
-  schemaVersion: "d03.sharing.v1",
+  schemaVersion: "sharing.v1",
 };
 const path = "/api/worlds/execute";
-const sharingPath = "/api/d03/sharing";
+const sharingPath = "/api/sharing/execute";
 const post = Effect.fn("review.publicHttp")(function* post(
   origin: string,
   target: string,

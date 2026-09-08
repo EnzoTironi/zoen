@@ -15,7 +15,7 @@ Fonte tip de partida: `bb608c4` (Closing/register local EX30–EX34 verificado e
 | App Fly legado `zoen` | Existe em `gru`; imagem/legado distinto; health check critical; secrets de produto antigo (Restate/WhatsApp/MinIO loopback). **Não é destino de cutover.** |
 | Persistência hosted | All-in-one VM+volume (PG+RustFS); MPG/Tigris **rejeitados** (não recriar). |
 | Secrets do rebuild | Não provisionados (autoridade/identity/S3/Better Auth do monólito modular). |
-| Perfis Worlds | `worlds-local-retained-v1` e candidato `d03-local-erasable-v1` (local); candidato hosted `d04-hosted-retained-v1` (EX36 schemas; sem ativação/deploy). |
+| Perfis Worlds | `worlds-local-retained-v1` e candidato `worlds-local-erasable-v1` (local); candidato hosted `worlds-hosted-retained-v1` (EX36 schemas; sem ativação/deploy). |
 
 ### Atualização operacional (2026-09-07 PT)
 
@@ -25,7 +25,7 @@ App Fly **`zoen-rebuild` está live** all-in-one (PG+RustFS+app no volume, `min_
 
 | ID | Decisão | Efeito |
 | --- | --- | --- |
-| H01 | Perfil **novo** só na criação de Worlds novos: `d04-hosted-retained-v1`. | Sem rebind/migração implícita de Worlds `d01-*` / `d03-*`. |
+| H01 | Perfil **novo** só na criação de Worlds novos: `worlds-hosted-retained-v1`. | Sem rebind/migração implícita de Worlds `d01-*` / `d03-*`. |
 | H02 | Escopo habilitado = retenção `while-pinned`, `erasure:false`, `restoreAfterErasure:false`, `dataScope: admitted-non-sensitive`, realm `live`. | Piloto hospedado **não** sensível; não promete apagamento nem reopen pós-erasure. |
 | H03 | Restore real só do **escopo habilitado** (backup lógico/disposable do perfil retained hospedado). | Sem alegar supressão pós-erasure (ZN-0116) até D03 purge+fencing qualificados. |
 | H04 | Sem cutover implícito: app/host novos ≠ substituir `zoen` legado nem DNS `zoen.tironi.xyz` sem decisão explícita. | Stubs usam app candidato `zoen-rebuild` (criar só em EX posterior com custo consciente). |

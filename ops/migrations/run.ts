@@ -12,41 +12,41 @@ import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds
 import { grantIdentityRole } from "../../apps/server/src/identity/worlds/grants.ts";
 
 /** Called only by the migration owner, never by the server's runtime pool. */
-export const applyD01Migrations = Effect.fn("migrations.applyD01")(
-  function* applyD01Migrations(roles: WorldsDatabaseRoles) {
-    const fs = yield* FileSystem.FileSystem;
-    const sql = yield* SqlClient.SqlClient;
-    const authority = yield* fs.readFileString(
-      fileURLToPath(new URL("001_d01_authority.sql", import.meta.url))
-    );
-    const identity = yield* fs.readFileString(
-      fileURLToPath(new URL("002_d01_identity.sql", import.meta.url))
-    );
-    const corrections = yield* fs.readFileString(
-      fileURLToPath(new URL("003_scoped_corrections.sql", import.meta.url))
-    );
-    const applied = yield* PgMigrator.run({
-      loader: PgMigrator.fromRecord({
-        "1_d01_authority": sql.unsafe(authority).pipe(Effect.asVoid),
-        "2_d01_identity": sql.unsafe(identity).pipe(Effect.asVoid),
-        "3_scoped_corrections": sql.unsafe(corrections).pipe(Effect.asVoid),
-      }),
-    });
-    yield* sql.withTransaction(
-      Effect.gen(function* grantApplicationRoles() {
-        yield* grantWorldsRoles(roles);
-        yield* grantIdentityRole(roles.identity);
-      })
-    );
-    return applied;
-  }
-);
+export const applyWorldsBaselineMigrations = Effect.fn(
+  "migrations.applyWorldsBaseline"
+)(function* applyWorldsBaselineMigrations(roles: WorldsDatabaseRoles) {
+  const fs = yield* FileSystem.FileSystem;
+  const sql = yield* SqlClient.SqlClient;
+  const authority = yield* fs.readFileString(
+    fileURLToPath(new URL("001_authority.sql", import.meta.url))
+  );
+  const identity = yield* fs.readFileString(
+    fileURLToPath(new URL("002_identity.sql", import.meta.url))
+  );
+  const corrections = yield* fs.readFileString(
+    fileURLToPath(new URL("003_scoped_corrections.sql", import.meta.url))
+  );
+  const applied = yield* PgMigrator.run({
+    loader: PgMigrator.fromRecord({
+      "1_authority": sql.unsafe(authority).pipe(Effect.asVoid),
+      "2_identity": sql.unsafe(identity).pipe(Effect.asVoid),
+      "3_scoped_corrections": sql.unsafe(corrections).pipe(Effect.asVoid),
+    }),
+  });
+  yield* sql.withTransaction(
+    Effect.gen(function* grantApplicationRoles() {
+      yield* grantWorldsRoles(roles);
+      yield* grantIdentityRole(roles.identity);
+    })
+  );
+  return applied;
+});
 
-/** The published D01 baseline stays reproducible; the current application extends it explicitly. */
+/** The published Worlds baseline stays reproducible; the current application extends it explicitly. */
 export const applyApplicationMigrations = Effect.fn(
   "migrations.applyApplication"
 )(function* applyApplicationMigrations(roles: WorldsDatabaseRoles) {
-  const base = yield* applyD01Migrations(roles);
+  const base = yield* applyWorldsBaselineMigrations(roles);
   const fs = yield* FileSystem.FileSystem;
   const sql = yield* SqlClient.SqlClient;
   const format = yield* fs.readFileString(
@@ -150,6 +150,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         new URL("012_orphaned_disclosure_recovery.sql", import.meta.url)
       )
     );
+    const policyIds = yield* fs.readFileString(
+      fileURLToPath(new URL("013_za03_policy_profile_ids.sql", import.meta.url))
+    );
     const extension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
@@ -157,6 +160,7 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         "12_orphaned_disclosure_recovery": sql
           .unsafe(recovery)
           .pipe(Effect.asVoid),
+        "13_za03_policy_profile_ids": sql.unsafe(policyIds).pipe(Effect.asVoid),
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),
     });

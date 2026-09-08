@@ -64,7 +64,7 @@ export const ErasableDataPolicySchema = Schema.Struct({
   erasure: Schema.Literal(true),
   legalHold: Schema.Literal(false),
   licensedExpiry: Schema.Literal(false),
-  profileId: Schema.Literal("d03-local-erasable-v1"),
+  profileId: Schema.Literal("worlds-local-erasable-v1"),
   restoreAfterErasure: Schema.Literal(false),
   retention: Schema.Literal("while-pinned"),
 }).annotate(exact);

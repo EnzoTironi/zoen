@@ -61,7 +61,7 @@ it.live(
               erasure: false,
               legalHold: false,
               licensedExpiry: false,
-              profileId: "d04-hosted-retained-v1",
+              profileId: "worlds-hosted-retained-v1",
               restoreAfterErasure: false,
               retention: "while-pinned",
             },

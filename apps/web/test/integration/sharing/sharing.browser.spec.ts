@@ -17,7 +17,7 @@ const waitForOperation = (
   page.waitForResponse((response) => {
     if (
       !response.url().includes("/api/worlds/") &&
-      !response.url().endsWith("/api/d03/sharing")
+      !response.url().endsWith("/api/sharing/execute")
     ) {
       return false;
     }
@@ -139,7 +139,7 @@ test("EX23 owner confirms the whole World; viewer reads own history and clears p
       page.getByRole("region", { name: "Confirmar alteração de acesso" })
     ).toContainText("atuais e futuras");
     // Abort one outgoing transport attempt; no service response is supplied or fabricated.
-    await page.route("**/api/d03/sharing", async (route) => {
+    await page.route("**/api/sharing/execute", async (route) => {
       const request = Schema.decodeUnknownOption(SemanticRequest)(
         route.request().postDataJSON()
       );
@@ -149,7 +149,7 @@ test("EX23 owner confirms the whole World; viewer reads own history and clears p
         : route.continue());
     });
     const failedGrant = page.waitForRequest((request) => {
-      if (!request.url().endsWith("/api/d03/sharing")) {
+      if (!request.url().endsWith("/api/sharing/execute")) {
         return false;
       }
       const parsed = Schema.decodeUnknownOption(SemanticRequest)(
@@ -167,7 +167,7 @@ test("EX23 owner confirms the whole World; viewer reads own history and clears p
     await expect(
       page.getByRole("button", { exact: true, name: "Tentar novamente" })
     ).toBeVisible();
-    await page.unroute("**/api/d03/sharing");
+    await page.unroute("**/api/sharing/execute");
     const granted = waitForOperation(page, "GrantWorldReadAccess");
     await page
       .getByRole("button", { exact: true, name: "Tentar novamente" })

@@ -9,7 +9,7 @@ Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verifi
 | ID | Decisão | Efeito |
 | --- | --- | --- |
 | F01 / ER-R01 | Registrar a **existência da tentativa** em unidade fora do rollback da aplicação **antes** do commit local irreversível de Closing. | Sem registro externo confirmado (Registrada), nenhuma decisão local de erasure. Registro pendente **não** é supressão, consentimento, grant nem autorização de purge. |
-| F02 | Perfil **novo** somente na criação de Worlds novos; `worlds-local-retained-v1` intacto (`erasure:false`, `restoreAfterErasure:false`). | Sem rebind/migração implícita de Worlds antigos. Identificador congelado do perfil candidato: `d03-local-erasable-v1`. |
+| F02 | Perfil **novo** somente na criação de Worlds novos; `worlds-local-retained-v1` intacto (`erasure:false`, `restoreAfterErasure:false`). | Sem rebind/migração implícita de Worlds antigos. Identificador congelado do perfil candidato: `worlds-local-erasable-v1`. |
 | F03 | Escopo = **World inteiro** (Frames, Questions, correções, grants de conteúdo, imports, objetos admitidos/staged e versões órfãs do namespace). | Não apaga conta, outros Worlds, nem bytes já liberados ao transporte / cópias de terceiros. |
 | F04 | `restoreAfterErasure` permanece **false** / restore após erasure **bloqueado** até controlador, âncora anti-rollback, catálogo de cópias e fencing estarem qualificados. | Nenhum ticket pode oferecer reopen de conteúdo apagado. |
 | F05 | Commit local de Closing (receipt imutável + outbox) é o ponto irreversível da **decisão autorizada**; HTTP de sucesso só após observar Confirmada no registro. | Replay não promove Closing→Erased; progresso fica em inspeção administrativa. |
@@ -25,7 +25,7 @@ Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verifi
 | RustFS local: versioning + ListObjectVersions + multipart abort | **Cleared (local compose)** — ver `docs/verification/erasure-storage-qualification.md` + feasibility anterior |
 | RustFS local: Object Lock / retention / legal hold enforce | **Cleared (local compose)** — CreateBucket ObjectLock + Put/Get retention/hold; delete sem bypass → 403 |
 | Porta inventário + purge S3 (não reusa `EvidenceObjectStore.remove`) | **Cleared (código+integração EX44)** — holds → `Blocked`; sem Bypass no caminho de produto |
-| Bucket Object Lock em installs **novos** `d03-local-erasable-v1` | **Cleared (provision)** — `ObjectLockEnabledForBucket` só quando `policy.erasure`; retained intacto |
+| Bucket Object Lock em installs **novos** `worlds-local-erasable-v1` | **Cleared (provision)** — `ObjectLockEnabledForBucket` só quando `policy.erasure`; retained intacto |
 | Serviço controlador real / âncora anti-rollback (Fly all-in-one) | **Blocked** — volume único PG+RustFS; register local EX31 ≠ controlador qualificado |
 | Catálogo completo de backups/cópias | **Blocked** |
 | ER-R02 — barreira World + contenção de uploads | **Blocked** |

@@ -22,7 +22,7 @@ it.effect(
     Effect.gen(function* inspectExact() {
       const own = yield* inspectAccessRequest(world, null);
       expect(own.input).toStrictEqual({ principalRef: null });
-      expect(own.schemaVersion).toBe("d03.sharing.v1");
+      expect(own.schemaVersion).toBe("sharing.v1");
       expect("operationId" in own).toBeFalsy();
       expect(
         yield* inspectAccessRequest(world, "person@example.test").pipe(

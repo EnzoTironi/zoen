@@ -13,7 +13,7 @@ const baseURL = Effect.runSync(Config.string("ZOEN_TEST_SHARING_WEB_URL"));
 const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
-  schemaVersion: "d03.sharing.v1",
+  schemaVersion: "sharing.v1",
 };
 const gate = () => {
   const deferred = Deferred.makeUnsafe<null>();
@@ -68,7 +68,7 @@ const operation = (page: Page, name: string) =>
   page.waitForResponse((response) => {
     if (
       !response.url().includes("/api/worlds/") &&
-      !response.url().endsWith("/api/d03/sharing")
+      !response.url().endsWith("/api/sharing/execute")
     ) {
       return false;
     }
@@ -135,7 +135,7 @@ test("independent EX23 denial during another read clears data immediately and ig
       operationId: randomUUID(),
       worldRef,
     });
-    await send(page.request, "/api/d03/sharing", {
+    await send(page.request, "/api/sharing/execute", {
       ...sharing,
       input: { expectedRevision: null, principalRef },
       operation: "GrantWorldReadAccess",
@@ -174,7 +174,7 @@ test("independent EX23 denial during another read clears data immediately and ig
     const evidenceDelivered = gate();
     const events: string[] = [];
     let heldAccess = false;
-    await reader.route("**/api/d03/sharing", async (route) => {
+    await reader.route("**/api/sharing/execute", async (route) => {
       const request = Schema.decodeUnknownSync(SemanticRequest)(
         route.request().postDataJSON()
       );
@@ -224,7 +224,7 @@ test("independent EX23 denial during another read clears data immediately and ig
       })
       .click();
     await evidenceCaptured.promise;
-    await send(page.request, "/api/d03/sharing", {
+    await send(page.request, "/api/sharing/execute", {
       ...sharing,
       input: { expectedRevision: "0", principalRef },
       operation: "RevokeWorldReadAccess",
@@ -319,7 +319,7 @@ test("independent EX23 Stale requires a new confirmation and a replayed grant re
     await page
       .getByRole("button", { name: "Revisar concessão de leitura" })
       .click();
-    await send(page.request, "/api/d03/sharing", {
+    await send(page.request, "/api/sharing/execute", {
       ...sharing,
       input: { expectedRevision: null, principalRef },
       operation: "GrantWorldReadAccess",
@@ -365,7 +365,7 @@ test("independent EX23 Stale requires a new confirmation and a replayed grant re
     const receiptCaptured = gate();
     let confirmedRequest: SemanticRequest | null = null;
     let originalReceipt: unknown = null;
-    await page.route("**/api/d03/sharing", async (route) => {
+    await page.route("**/api/sharing/execute", async (route) => {
       const request = Schema.decodeUnknownSync(SemanticRequest)(
         route.request().postDataJSON()
       );
@@ -397,7 +397,7 @@ test("independent EX23 Stale requires a new confirmation and a replayed grant re
       expectedRevision: "0",
       principalRef,
     });
-    await send(page.request, "/api/d03/sharing", {
+    await send(page.request, "/api/sharing/execute", {
       ...sharing,
       input: { expectedRevision: "0", principalRef },
       operation: "RevokeWorldReadAccess",
@@ -405,9 +405,13 @@ test("independent EX23 Stale requires a new confirmation and a replayed grant re
       worldRef,
     });
     // The same real request replays after revoke; the result remains the original historical receipt.
-    const replay = await send(page.request, "/api/d03/sharing", reconfirmed);
+    const replay = await send(
+      page.request,
+      "/api/sharing/execute",
+      reconfirmed
+    );
     expect(replay).toStrictEqual(originalReceipt);
-    const current = await send(page.request, "/api/d03/sharing", {
+    const current = await send(page.request, "/api/sharing/execute", {
       ...sharing,
       input: { principalRef },
       operation: "InspectWorldAccess",
@@ -418,7 +422,7 @@ test("independent EX23 Stale requires a new confirmation and a replayed grant re
       membership: { revision: "1", state: "revoked" },
     });
     const inspectedCurrent = page.waitForResponse((response) => {
-      if (!response.url().endsWith("/api/d03/sharing")) {
+      if (!response.url().endsWith("/api/sharing/execute")) {
         return false;
       }
       const request = Schema.decodeUnknownSync(SemanticRequest)(
@@ -505,7 +509,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
       operationId: randomUUID(),
       worldRef,
     });
-    await send(page.request, "/api/d03/sharing", {
+    await send(page.request, "/api/sharing/execute", {
       ...sharing,
       input: { expectedRevision: null, principalRef },
       operation: "GrantWorldReadAccess",
@@ -573,7 +577,7 @@ test("independent EX23 denial of a prior retained Frame clears a newer Frame in 
     await expect(
       reader.getByText(`Leitura ${newest.frame.frameRef}`, { exact: true })
     ).toBeVisible();
-    await send(page.request, "/api/d03/sharing", {
+    await send(page.request, "/api/sharing/execute", {
       ...sharing,
       input: { expectedRevision: "0", principalRef },
       operation: "RevokeWorldReadAccess",

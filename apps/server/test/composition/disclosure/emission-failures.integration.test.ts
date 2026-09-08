@@ -27,7 +27,7 @@ const bytes = (value: unknown) =>
 const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
-  schemaVersion: "d03.sharing.v1",
+  schemaVersion: "sharing.v1",
 };
 
 it.live.each(["throw-after-end", "ack-delete-denied"] as const)(

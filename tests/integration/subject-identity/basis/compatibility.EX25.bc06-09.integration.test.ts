@@ -42,12 +42,12 @@ const requireRow = <A>(row: A | undefined, message: string) => {
   return row;
 };
 
-const { envelope, executePath } = legacyWire;
-const sharing = {
-  purpose: "personal-records",
-  schemaVersion: "d03.sharing.v1",
-};
-const sharingPath = "/api/d03/sharing";
+const {
+  envelope,
+  executePath,
+  sharingEnvelope: sharing,
+  sharingPath,
+} = legacyWire;
 const validTime = {
   _tag: "DateInterval" as const,
   from: "2026-09-01",

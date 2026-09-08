@@ -9,7 +9,7 @@ Integrador (`ops/fly/**`). App **`zoen-rebuild`**: **uma VM** com Postgres + Rus
 | Imagem | `ops/containers/all-in-one.Dockerfile` |
 | Entrypoint | `ops/containers/all-in-one-entrypoint.sh` (sobe PG + RustFS, provisiona, sobe server `:4310`) |
 | Volume | `zoen_data` → `/data` (PG + object bytes + `installation.json`) |
-| Perfil Worlds novos | `d04-hosted-retained-v1` |
+| Perfil Worlds novos | `worlds-hosted-retained-v1` |
 | Hostname cutover | `ops/fly/CUTOVER.md` — **replace** de `zoen.tironi.xyz` → este app (sem dual-write) |
 
 ## Release digest on redeploy

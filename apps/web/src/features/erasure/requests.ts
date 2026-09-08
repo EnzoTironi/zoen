@@ -43,7 +43,7 @@ export const confirmWorldErasureRequest = Effect.fn("web.confirmWorldErasure")(
       input: {
         confirmEntireWorld: true,
         expectedErasureRevision,
-        policyVersion: "d03-local-erasable-v1",
+        policyVersion: "worlds-local-erasable-v1",
       },
       operation: "RequestWorldErasure",
       operationId: yield* newOperationId,

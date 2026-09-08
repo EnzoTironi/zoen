@@ -49,6 +49,6 @@ it.effect(
       expect(readme.includes("Managed Postgres")).toBeTruthy();
       expect(dockerfile).toContain("postgres:18.6-trixie");
       expect(dockerfile).toContain("rustfs/rustfs");
-      expect(dockerfile).toContain("d04-hosted-retained-v1");
+      expect(dockerfile).toContain("worlds-hosted-retained-v1");
     }).pipe(Effect.provide(NodeServices.layer))
 );

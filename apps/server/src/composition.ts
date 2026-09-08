@@ -4,7 +4,7 @@ import {
 } from "@zoen/authority/commit/configuration";
 import {
   HostedAdmissionFlags,
-  d04HostedRetainedAdmissionFlags,
+  hostedRetainedAdmissionFlags,
 } from "@zoen/authority/hosted/admission/flags";
 import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
 import {
@@ -62,10 +62,10 @@ export interface ApplicationConfig {
   readonly storage: S3EvidenceConfig;
 }
 
-/** Frozen admission flags layer for d04-hosted-retained-v1 installs (EX39). */
+/** Frozen admission flags layer for worlds-hosted-retained-v1 installs (EX39). */
 export const hostedAdmissionLayer = Layer.succeed(
   HostedAdmissionFlags,
-  d04HostedRetainedAdmissionFlags
+  hostedRetainedAdmissionFlags
 );
 
 /**
@@ -75,7 +75,7 @@ export const hostedAdmissionLayer = Layer.succeed(
 export const hostedAdmissionLayerFor = (
   policy: DataPolicySchema
 ): Layer.Layer<HostedAdmissionFlags> | Layer.Layer<never> =>
-  policy.profileId === "d04-hosted-retained-v1"
+  policy.profileId === "worlds-hosted-retained-v1"
     ? hostedAdmissionLayer
     : Layer.empty;
 

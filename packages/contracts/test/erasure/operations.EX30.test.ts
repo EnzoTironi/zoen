@@ -24,7 +24,7 @@ describe("EX30 erasure schemas", () => {
       input: {
         confirmEntireWorld: true,
         expectedErasureRevision: null,
-        policyVersion: "d03-local-erasable-v1",
+        policyVersion: "worlds-local-erasable-v1",
       },
       operation: "RequestWorldErasure",
       operationId,
@@ -56,7 +56,7 @@ describe("EX30 erasure schemas", () => {
       _tag: "WorldErasureRequested",
       attemptExternalState: "Registered",
       phase: "Closing",
-      policyVersion: "d03-local-erasable-v1",
+      policyVersion: "worlds-local-erasable-v1",
       receiptRef: "00000000-0000-4000-8000-000000000003",
       restoreAfterErasure: false,
       revision: "1",
@@ -67,8 +67,10 @@ describe("EX30 erasure schemas", () => {
 
   it("freezes candidate profile id for new Worlds only", () => {
     expect(
-      Schema.decodeUnknownSync(ErasurePolicyProfileId)("d03-local-erasable-v1")
-    ).toBe("d03-local-erasable-v1");
+      Schema.decodeUnknownSync(ErasurePolicyProfileId)(
+        "worlds-local-erasable-v1"
+      )
+    ).toBe("worlds-local-erasable-v1");
     expect(() =>
       Schema.decodeUnknownSync(ErasurePolicyProfileId)(
         "worlds-local-retained-v1"

@@ -30,10 +30,10 @@ const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
 const worldsBasis = { purpose: "personal-records", schemaVersion: "worlds.v1" };
 const sharing = {
   purpose: "personal-records",
-  schemaVersion: "d03.sharing.v1",
+  schemaVersion: "sharing.v1",
 };
 const worldsExecutePath = "/api/worlds/execute";
-const sharingPath = "/api/d03/sharing";
+const sharingPath = "/api/sharing/execute";
 const correctionPath = "/api/corrections/execute";
 const denied = { _tag: "NotFoundOrDenied", code: "NOT_FOUND_OR_DENIED" };
 const validTime = {

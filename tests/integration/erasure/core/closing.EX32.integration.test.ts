@@ -109,7 +109,7 @@ it.live(
           input: {
             confirmEntireWorld: true,
             expectedErasureRevision: null,
-            policyVersion: "d03-local-erasable-v1",
+            policyVersion: "worlds-local-erasable-v1",
           },
           operation: "RequestWorldErasure",
           operationId,
@@ -187,7 +187,7 @@ it.live("EX32 retained profile blocks Closing", () =>
         input: {
           confirmEntireWorld: true,
           expectedErasureRevision: null,
-          policyVersion: "d03-local-erasable-v1",
+          policyVersion: "worlds-local-erasable-v1",
         },
         operation: "RequestWorldErasure",
         operationId: randomUUID(),
@@ -242,7 +242,7 @@ it.live(
           input: {
             confirmEntireWorld: true,
             expectedErasureRevision: null,
-            policyVersion: "d03-local-erasable-v1",
+            policyVersion: "worlds-local-erasable-v1",
           },
           operation: "RequestWorldErasure",
           operationId: randomUUID(),
@@ -287,7 +287,7 @@ it.live("EX32 idempotent replay, payload Conflict, viewer denied", () =>
         input: {
           confirmEntireWorld: true,
           expectedErasureRevision: null,
-          policyVersion: "d03-local-erasable-v1",
+          policyVersion: "worlds-local-erasable-v1",
         },
       });
       const first = yield* requestWorldErasure(owner, firstReq);
@@ -301,7 +301,7 @@ it.live("EX32 idempotent replay, payload Conflict, viewer denied", () =>
         input: {
           confirmEntireWorld: true,
           expectedErasureRevision: "99",
-          policyVersion: "d03-local-erasable-v1",
+          policyVersion: "worlds-local-erasable-v1",
         },
       });
       const conflict = yield* requestWorldErasure(owner, other).pipe(

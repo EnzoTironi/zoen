@@ -13,7 +13,7 @@ As leis aplicáveis estão em [invariants.md](../invariants.md), especialmente I
 | Código vigente | O que ele garante e o risco ao ampliar |
 | --- | --- |
 | [access/world.ts](../../packages/authority/src/access/world.ts), `AccessRow` e `authorizeWorld` | Aceitam exclusivamente `role = owner`. A função verifica presença, realm, membership ativa, emergency deny e perfil, mas não distingue a capacidade de leitura da de mutação. Aceitar `viewer` no schema, sozinho, permitiria usar handlers de escrita. |
-| [001_d01_authority.sql](../../ops/migrations/001_d01_authority.sql), `memberships` | A chave é `(world_id, realm, principal_id)`; há estado, revisão e constraint de role owner. Genesis cria uma membership owner. A constraint atual não limita o número de owners por World. Não editar a migração aplicada. |
+| [001_authority.sql](../../ops/migrations/001_authority.sql), `memberships` | A chave é `(world_id, realm, principal_id)`; há estado, revisão e constraint de role owner. Genesis cria uma membership owner. A constraint atual não limita o número de owners por World. Não editar a migração aplicada. |
 | [commit/mutation.ts](../../packages/authority/src/commit/mutation.ts) e [receipt.ts](../../packages/authority/src/commit/receipt.ts) | SERIALIZABLE, locks ordenados, identidade de operação por principal/World, reautorização, estado/receipt/outbox no mesmo commit. Resultados e intenção ainda não aceitam operações de compartilhamento. |
 | [inspect.ts](../../packages/authority/src/knowledge/worlds/inspect.ts) | Lê claims do World, grava Frame/pins e faz recheck após o snapshot. Frame histórico exige o mesmo principal, propósito e sujeito. Leitura semântica pode gravar metadados internos; não classificar permissões por verbos SQL. |
 | [corrections/projection.ts](../../packages/authority/src/knowledge/corrections/projection.ts), [frame.ts](../../packages/authority/src/knowledge/corrections/frame.ts) e [case.ts](../../packages/authority/src/knowledge/corrections/case.ts) | Correções, Frames e Questions continuam privados por principal. O DTO aceita apenas `authoredBy: current-principal`; não admite apresentar a correção do owner como autoria do leitor. |
@@ -53,7 +53,7 @@ Esse adapter e sua porta estreita ainda não existem: precisam ser implementados
 
 ## Operações públicas mínimas
 
-Nomes e shapes abaixo são o contrato congelado a implementar, ainda não APIs disponíveis. Reusar `WorldRef`, `OperationId`, `Revision` decimal textual, erros fechados e parsing de bytes estrito. Proposta de família: `schemaVersion: d03.sharing.v1`, mesmo propósito `personal-records`, transporte HTTP `POST /api/d03/sharing` e grupo tipado no mesmo `HttpApi`. Acrescentar a família ao mesmo `SemanticExecutor`; nenhuma rota executa SQL ou regras de membership diretamente.
+Nomes e shapes abaixo são o contrato congelado a implementar, ainda não APIs disponíveis. Reusar `WorldRef`, `OperationId`, `Revision` decimal textual, erros fechados e parsing de bytes estrito. Proposta de família: `schemaVersion: sharing.v1`, mesmo propósito `personal-records`, transporte HTTP `POST /api/sharing/execute` e grupo tipado no mesmo `HttpApi`. Acrescentar a família ao mesmo `SemanticExecutor`; nenhuma rota executa SQL ou regras de membership diretamente.
 
 Todas as respostas abaixo incluem `worldRef`. `Membership` contém somente `{ principalRef, role: owner | viewer, state: active | revoked, revision }`. Nenhuma resposta pública inclui cut global, security revision, principal de terceiros não solicitado ou dados do storage.
 

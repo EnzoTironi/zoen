@@ -20,7 +20,7 @@ type Reporter = <E, R>(
 
 const envelope = {
   purpose: "personal-records",
-  schemaVersion: "d03.sharing.v1",
+  schemaVersion: "sharing.v1",
 } as const;
 const principalRef = Flag.string("principal-ref").pipe(
   Flag.withSchema(PrincipalRef),

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "@effect/vitest";
 
 import {
+  alignHostedInstallationPolicy,
   alignInstallationRelease,
   digestReleaseBytes,
   parseHostedInstallationFile,
@@ -17,7 +18,7 @@ const sampleInstallation = {
     generationId: "22222222-2222-4222-8222-222222222222",
     releaseDigest: "a".repeat(64),
   },
-  policy: { profileId: "d04-hosted-retained-v1" },
+  policy: { profileId: "worlds-hosted-retained-v1" },
 };
 
 const authorityEnv =
@@ -52,7 +53,7 @@ describe("all-in-one release align", () => {
           generationId: "22222222-2222-4222-8222-222222222222",
           releaseDigest: nextDigest,
         },
-        policy: { profileId: "d04-hosted-retained-v1" },
+        policy: { profileId: "worlds-hosted-retained-v1" },
       },
     });
   });
@@ -117,6 +118,7 @@ describe("all-in-one release align", () => {
       generationId: "22222222-2222-4222-8222-222222222222",
       kind: "ready",
       releaseDigest: digest,
+      rewriteInstallation: null,
     });
     if (plan.kind !== "ready") {
       return;
@@ -190,6 +192,121 @@ describe("all-in-one release align", () => {
     ).toStrictEqual({ code: "RUNTIME_ENV_MISSING_AUTHORITY", kind: "error" });
   });
 
+  it("rewrites known ZA-03 legacy hosted policy profileId", () => {
+    const legacy = {
+      dataScope: "admitted-non-sensitive",
+      enabledRealm: "live",
+      erasure: false,
+      legalHold: false,
+      licensedExpiry: false,
+      profileId: "d04-hosted-retained-v1",
+      restoreAfterErasure: false,
+      retention: "while-pinned",
+    };
+    expect(alignHostedInstallationPolicy(legacy)).toStrictEqual({
+      from: "d04-hosted-retained-v1",
+      kind: "rewritten",
+      policy: { ...legacy, profileId: "worlds-hosted-retained-v1" },
+      to: "worlds-hosted-retained-v1",
+    });
+  });
+
+  it("rewrites known ZA-03 legacy erasable policy profileId", () => {
+    const legacy = {
+      dataScope: "admitted-non-sensitive",
+      enabledRealm: "live",
+      erasure: true,
+      legalHold: false,
+      licensedExpiry: false,
+      profileId: "d03-local-erasable-v1",
+      restoreAfterErasure: false,
+      retention: "while-pinned",
+    };
+    expect(alignHostedInstallationPolicy(legacy)).toStrictEqual({
+      from: "d03-local-erasable-v1",
+      kind: "rewritten",
+      policy: { ...legacy, profileId: "worlds-local-erasable-v1" },
+      to: "worlds-local-erasable-v1",
+    });
+  });
+
+  it("leaves current policy profileIds unchanged", () => {
+    const current = {
+      profileId: "worlds-hosted-retained-v1",
+    };
+    expect(alignHostedInstallationPolicy(current)).toStrictEqual({
+      kind: "unchanged",
+      policy: current,
+    });
+  });
+
+  it("fails closed on unknown installation policy profileId", () => {
+    expect(
+      alignHostedInstallationPolicy({ profileId: "d99-unknown-v1" })
+    ).toStrictEqual({
+      code: "UNSUPPORTED_INSTALLATION_POLICY",
+      kind: "error",
+    });
+  });
+
+  it("plans rewrite when only legacy policy id needs migration", () => {
+    const digest = digestReleaseBytes(new TextEncoder().encode("same\n"));
+    const installed = {
+      installation: {
+        cellEpoch: "1",
+        cellId: "11111111-1111-4111-8111-111111111111",
+        generationId: "22222222-2222-4222-8222-222222222222",
+        releaseDigest: digest,
+      },
+      policy: {
+        dataScope: "admitted-non-sensitive",
+        enabledRealm: "live",
+        erasure: false,
+        legalHold: false,
+        licensedExpiry: false,
+        profileId: "d04-hosted-retained-v1",
+        restoreAfterErasure: false,
+        retention: "while-pinned",
+      },
+    };
+    const plan = planReleaseAlign(
+      `${JSON.stringify(installed)}\n`,
+      new TextEncoder().encode("same\n"),
+      authorityEnv
+    );
+    expect(plan.kind).toBe("ready");
+    if (plan.kind !== "ready") {
+      return;
+    }
+    expect(plan.rewriteInstallation).not.toBeNull();
+    expect(plan.rewriteInstallation?.next.policy).toMatchObject({
+      profileId: "worlds-hosted-retained-v1",
+    });
+    expect(plan.rewriteInstallation?.next.installation.releaseDigest).toBe(
+      digest
+    );
+    expect(releaseAlignSteps(plan).map((step) => step.step)).toStrictEqual([
+      "reconcile-worlds",
+      "rewrite-installation",
+    ]);
+  });
+
+  it("plans UNSUPPORTED_INSTALLATION_POLICY for unknown profileId", () => {
+    expect(
+      planReleaseAlign(
+        `${JSON.stringify({
+          ...sampleInstallation,
+          policy: { profileId: "d99-unknown-v1" },
+        })}\n`,
+        new TextEncoder().encode("x"),
+        authorityEnv
+      )
+    ).toStrictEqual({
+      code: "UNSUPPORTED_INSTALLATION_POLICY",
+      kind: "error",
+    });
+  });
+
   it("same-digest restart reconciles worlds only", () => {
     const bytes = new TextEncoder().encode('{"format":"one"}\n');
     const digest = digestReleaseBytes(bytes);
@@ -209,6 +326,7 @@ describe("all-in-one release align", () => {
     if (plan.kind !== "ready") {
       return;
     }
+    expect(plan.rewriteInstallation).toBeNull();
     expect(releaseAlignSteps(plan).map((step) => step.step)).toStrictEqual([
       "reconcile-worlds",
     ]);

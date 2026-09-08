@@ -41,7 +41,7 @@ const requireDefined = <A>(value: A | undefined, detail: string): A => {
 };
 
 const MarkerSchema = Schema.Struct({
-  profileId: Schema.Literal("d04-hosted-retained-v1"),
+  profileId: Schema.Literal("worlds-hosted-retained-v1"),
   restoreAfterErasure: Schema.Literal(false),
   worldId: Schema.String,
 });
@@ -87,7 +87,7 @@ it.live(
         `;
         expect(before).toStrictEqual([
           {
-            data_policy_id: "d04-hosted-retained-v1",
+            data_policy_id: "worlds-hosted-retained-v1",
             world_id: created.worldRef.worldId,
           },
         ]);
@@ -123,7 +123,7 @@ it.live(
             }).pipe(Effect.provide(targetAuthority));
             expect(rows).toStrictEqual([
               {
-                data_policy_id: "d04-hosted-retained-v1",
+                data_policy_id: "worlds-hosted-retained-v1",
                 realm: "live",
                 world_id: created.worldRef.worldId,
               },
@@ -138,7 +138,7 @@ it.live(
                 Layer.mergeAll(hostedConfiguration, targetAuthority)
               )
             );
-            expect(access.data_policy_id).toBe("d04-hosted-retained-v1");
+            expect(access.data_policy_id).toBe("worlds-hosted-retained-v1");
             expect(access.role).toBe("owner");
 
             const blocked = yield* authorizeWorld(
@@ -201,7 +201,7 @@ it.live(
           ORDER BY data_policy_id
         `;
         expect(policies).toStrictEqual([
-          { count: 1, data_policy_id: "d04-hosted-retained-v1" },
+          { count: 1, data_policy_id: "worlds-hosted-retained-v1" },
           { count: 1, data_policy_id: "worlds-local-retained-v1" },
         ]);
 
@@ -217,7 +217,7 @@ it.live(
         `)[0],
           "hosted World row missing before scoped restore"
         );
-        expect(world.data_policy_id).toBe("d04-hosted-retained-v1");
+        expect(world.data_policy_id).toBe("worlds-hosted-retained-v1");
 
         const membership = requireDefined(
           (yield* sql`
@@ -281,7 +281,7 @@ it.live(
             `;
             expect(restored).toStrictEqual([
               {
-                data_policy_id: "d04-hosted-retained-v1",
+                data_policy_id: "worlds-hosted-retained-v1",
                 world_id: hostedWorld.worldRef.worldId,
               },
             ]);
@@ -302,7 +302,7 @@ it.live(
                 Layer.mergeAll(hostedConfiguration, target.authority)
               )
             );
-            expect(access.data_policy_id).toBe("d04-hosted-retained-v1");
+            expect(access.data_policy_id).toBe("worlds-hosted-retained-v1");
           }).pipe(Effect.provide(target.migration))
         );
       }).pipe(Effect.provide(source.authority))
@@ -319,7 +319,7 @@ it.live(
         const bodyJson = yield* Schema.encodeEffect(
           Schema.fromJsonString(MarkerSchema)
         )({
-          profileId: "d04-hosted-retained-v1",
+          profileId: "worlds-hosted-retained-v1",
           restoreAfterErasure: false,
           worldId,
         }).pipe(

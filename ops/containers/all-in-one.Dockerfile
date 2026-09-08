@@ -80,7 +80,7 @@ ENV PGDATA=/data/postgres \
     ZOEN_S3_BUCKET=zoen \
     ZOEN_INSTALLATION_FILE=/data/zoen/installation.json \
     ZOEN_RUNTIME_ENV_FILE=/data/zoen/runtime.env \
-    ZOEN_WORLD_POLICY=d04-hosted-retained-v1
+    ZOEN_WORLD_POLICY=worlds-hosted-retained-v1
 
 VOLUME ["/data"]
 EXPOSE 4310

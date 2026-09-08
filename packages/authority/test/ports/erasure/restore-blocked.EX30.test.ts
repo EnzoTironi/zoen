@@ -28,7 +28,7 @@ const blockedIdentity = {
 const blockedIntention = {
   confirmEntireWorld: true as const,
   expectedErasureRevision: null,
-  policyVersion: "d03-local-erasable-v1",
+  policyVersion: "worlds-local-erasable-v1",
 };
 
 describe("EX30/EX31 erasure gates still blocked", () => {

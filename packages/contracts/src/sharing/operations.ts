@@ -22,7 +22,7 @@ export const Membership = Schema.Struct({
 export type Membership = typeof Membership.Type;
 const envelope = {
   purpose: Purpose,
-  schemaVersion: Schema.Literal("d03.sharing.v1"),
+  schemaVersion: Schema.Literal("sharing.v1"),
   worldRef: WorldRef,
 };
 export const InspectWorldAccess = Schema.Struct({

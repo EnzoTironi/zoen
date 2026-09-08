@@ -15,7 +15,7 @@ const grant = {
   operation: "GrantWorldReadAccess",
   operationId: "22222222-2222-4222-8222-222222222222",
   purpose: "personal-records",
-  schemaVersion: "d03.sharing.v1",
+  schemaVersion: "sharing.v1",
   worldRef: { realm: "live", worldId: "33333333-3333-4333-8333-333333333333" },
 };
 describe("SH schemas", () => {
