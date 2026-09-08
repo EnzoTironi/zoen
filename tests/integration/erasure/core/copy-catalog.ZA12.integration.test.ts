@@ -16,6 +16,7 @@ import {
   applyControlledCopyCatalogSchema,
   localErasureCopyCatalogLayer,
 } from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.js";
+import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 import {
@@ -52,7 +53,12 @@ const withCatalogRuntime = <A, E, R>(run: Effect.Effect<A, E, R>) =>
       );
       return yield* run.pipe(
         Effect.provide(
-          Layer.mergeAll(erasableConfiguration, database.authority, catalog)
+          Layer.mergeAll(
+            erasableConfiguration,
+            ErasureAttemptRegister.unqualifiedLayer,
+            database.authority,
+            catalog
+          )
         )
       );
     })
