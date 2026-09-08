@@ -45,6 +45,10 @@ import {
   blockedModelPortLayer,
   liveModelPortLayer,
 } from "./eve/model-port.ts";
+import {
+  hasNonBlankOpenCodeApiKey,
+  isProductTextProfileGateOpen,
+} from "./eve/text-profile.ts";
 import { groundedEveTurnServiceLayer } from "./eve/turn-service.ts";
 import { makeCorrectionHttpGroup } from "./http/corrections.ts";
 import { makeErasureHttpGroup } from "./http/erasure.ts";
@@ -116,6 +120,7 @@ export const makeProductEveSurface = (
   options?: {
     readonly eveJournalDatabaseUrl?: Redacted.Redacted;
     readonly evidenceGroundingQualified?: boolean;
+    readonly fetchImpl?: typeof globalThis.fetch;
     readonly openCodeZen?: ApplicationConfig["openCodeZen"];
     readonly textProfileAccepted?: boolean;
   }
@@ -124,8 +129,17 @@ export const makeProductEveSurface = (
   const evidenceGroundingQualified =
     options?.evidenceGroundingQualified === true;
   // Tip fail-closed: only explicit true opts into the ZA-20 profile gate.
-  const textProfileAccepted = options?.textProfileAccepted === true;
-  const admission = currentProductEveAdmissionInput(openCodeKeyPresent, {
+  // Never default to isTextProfileAccepted(acceptedGroundedTextProfile()).
+  const textProfileAccepted = isProductTextProfileGateOpen(
+    options?.textProfileAccepted
+  );
+  // Blank/whitespace keys cannot satisfy G-PROVIDER even if an object is present.
+  const zen = options?.openCodeZen;
+  const zenKeyUsable =
+    zen !== undefined && hasNonBlankOpenCodeApiKey(zen.apiKey);
+  const admissionKeyPresent =
+    zen === undefined ? openCodeKeyPresent : zenKeyUsable;
+  const admission = currentProductEveAdmissionInput(admissionKeyPresent, {
     durableJournalQualified,
     evidenceGroundingQualified,
     textProfileAccepted,
@@ -136,8 +150,7 @@ export const makeProductEveSurface = (
       : eveJournalLayerForUrl(options.eveJournalDatabaseUrl);
   if (isProductEveAdmitted(admission)) {
     // All safety gates true — require live G-PROVIDER settings (never fabricate).
-    const zen = options?.openCodeZen;
-    if (zen === undefined) {
+    if (zen === undefined || !zenKeyUsable) {
       return Effect.die(
         "ZA-20: product Eve admitted without G-PROVIDER OpenCode settings"
       );
@@ -145,12 +158,15 @@ export const makeProductEveSurface = (
     return Effect.succeed(
       Layer.mergeAll(
         journalLayer,
-        liveModelPortLayer({
-          apiKey: zen.apiKey,
-          baseUrl: zen.baseUrl,
-          model: zen.model,
-          userAgent: DEFAULT_OPENCODE_USER_AGENT,
-        }),
+        liveModelPortLayer(
+          {
+            apiKey: zen.apiKey,
+            baseUrl: zen.baseUrl,
+            model: zen.model,
+            userAgent: DEFAULT_OPENCODE_USER_AGENT,
+          },
+          options?.fetchImpl
+        ),
         groundedEveTurnServiceLayer
       )
     );

@@ -17,10 +17,6 @@ import {
 } from "@zoen/ontology/ports/eve/admission";
 import { EveJournal } from "@zoen/ontology/ports/eve/journal";
 import { EveOpenCodeZen } from "@zoen/ontology/ports/eve/opencode-zen";
-import {
-  acceptedGroundedTextProfile,
-  isTextProfileAccepted,
-} from "@zoen/ontology/ports/eve/text-profile";
 import { runEveTurn } from "@zoen/ontology/ports/eve/turn";
 import { PrincipalId } from "@zoen/ontology/ports/worlds/context";
 import { Effect, Layer, Redacted, Schema } from "effect";
@@ -28,6 +24,10 @@ import { Effect, Layer, Redacted, Schema } from "effect";
 import { applyErasureMigrations } from "../../../../../ops/migrations/run.ts";
 import { makeDurableEveJournalLayer } from "../../../src/adapters/postgres/eve/journal.ts";
 import { makeProductEveSurface } from "../../../src/composition.ts";
+import {
+  acceptedGroundedTextProfile,
+  isTextProfileAccepted,
+} from "../../../src/eve/text-profile.ts";
 import { grantTestEveJournalRole } from "../../adapters/postgres/eve/database.ts";
 import { withWorldsDatabase } from "../../adapters/postgres/worlds/database.ts";
 
@@ -313,9 +313,11 @@ it.live(
         Effect.gen(function* liveInstall() {
           yield* installEveJournal(database);
           const conversationId = decode.conversation(randomUUID());
+          const visibleText = "ZA-20 composition liveLayer via injected fetch.";
           const surface = yield* makeProductEveSurface(true, {
             eveJournalDatabaseUrl: database.urls.eveJournal,
             evidenceGroundingQualified: true,
+            fetchImpl: mockProviderFetch(visibleText),
             openCodeZen: {
               apiKey: Redacted.make("za20-integration-mock-key"),
               baseUrl: "https://example.test/zen/v1",
@@ -325,18 +327,11 @@ it.live(
           });
           yield* Effect.gen(function* assertLive() {
             const zen = yield* EveOpenCodeZen;
-            const exit = yield* Effect.exit(
-              zen.completeChat({
-                conversationId,
-                userText: "ping",
-              })
-            );
-            expect(exit._tag).toBe("Failure");
-            if (exit._tag === "Failure") {
-              expect(
-                String(exit.cause).includes("PROFILE_BLOCKED")
-              ).toBeFalsy();
-            }
+            const result = yield* zen.completeChat({
+              conversationId,
+              userText: "ping",
+            });
+            expect(result.visibleText).toBe(visibleText);
           }).pipe(Effect.provide(surface));
         }),
       undefined,

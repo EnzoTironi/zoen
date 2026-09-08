@@ -2,7 +2,7 @@ import { exact } from "@zoen/contracts/worlds/values";
 import { AuthorityInstallationSchema } from "@zoen/ontology/commit/configuration";
 import { DataPolicySchema } from "@zoen/ontology/ports/worlds/context";
 import { parseJsonBytes } from "@zoen/ontology/values/json";
-import { Config, Effect, FileSystem, Option, Schema } from "effect";
+import { Config, Effect, FileSystem, Option, Redacted, Schema } from "effect";
 
 import type { ApplicationConfig } from "./composition.ts";
 import { verifyRelease } from "./release.ts";
@@ -123,7 +123,11 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
     Config.withDefault("big-pickle"),
     Config.option
   );
-  const applicationWithOpenCode = Option.isSome(openCodeApiKey)
+  // Match port-level env reader: trim and reject blank keys (no live blank bearer).
+  const openCodeKeyNonBlank =
+    Option.isSome(openCodeApiKey) &&
+    Redacted.value(openCodeApiKey.value).trim().length > 0;
+  const applicationWithOpenCode = openCodeKeyNonBlank
     ? {
         ...application,
         openCodeZen: {
