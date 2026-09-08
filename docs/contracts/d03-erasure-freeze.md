@@ -1,6 +1,6 @@
 # D03 erasure — congelamento mínimo executável (EX30+)
 
-Status: **decisões mínimas congeladas por root em 2026-09-06 (PT)** a partir de `docs/contracts/d03-erasure.md` (revisão ER-R01–05 em `d03-erasure.review.md`). Incremento **2026-09-07 (PT)**: RustFS local qualificado para versioning + Object Lock/retention/legal hold; portas `ErasureObjectInventory` / `ErasurePurgeStore` (EX44) com holds fail-closed. Incremento EX45 (2026-09-07 PT): Closing→Erased local para **cópias controladas** (SQL + prefixo de objeto) via `PurgeWorldContent`, attestationScope=`local-controlled-copies`. Isto **não** admite perfil em Worlds existentes, **não** qualifica controlador independente no Fly all-in-one nem catálogo de backups, **não** prova ER-R02/fence, e **não** libera restore após erasure.
+Status: **decisões mínimas congeladas por root em 2026-09-06 (PT)** a partir de `docs/contracts/d03-erasure.md` (revisão ER-R01–05 em `d03-erasure.review.md`). Incremento **2026-09-07 (PT)**: RustFS local qualificado para versioning + Object Lock/retention/legal hold; portas `ErasureObjectInventory` / `ErasurePurgeStore` (EX44) com holds fail-closed. Incremento EX45 (2026-09-07 PT): Closing→Erased local para **cópias controladas** (SQL + prefixo de objeto) via `PurgeWorldContent`, attestationScope=`local-controlled-copies`. Incremento ZA-12 (2026-09-08 PT): catálogo de cópias controladas (SQL dump/object/volume/temp/log) com disposições e cobertura por perfil; Unknown (incl. G-OPS hospedado sem verificação read-only) **bloqueia** Full Erased/restore. Isto **não** admite perfil em Worlds existentes, **não** qualifica controlador independente no Fly all-in-one, **não** prova contenção de uploads externos (ZA-10), e **não** libera `restoreAfterErasure`.
 
 Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verificado; o incremento subject-identity-v2 (EX24–EX29) está `verified_for_profile` no mesmo tip sem concluir D02 integral.
 
@@ -27,13 +27,14 @@ Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verifi
 | Porta inventário + purge S3 (não reusa `EvidenceObjectStore.remove`) | **Cleared (código+integração EX44)** — holds → `Blocked`; sem Bypass no caminho de produto |
 | Bucket Object Lock em installs **novos** `worlds-local-erasable-v1` | **Cleared (provision)** — `ObjectLockEnabledForBucket` só quando `policy.erasure`; retained intacto |
 | Serviço controlador real / âncora anti-rollback (Fly all-in-one) | **Blocked** — volume único PG+RustFS; register local EX31 ≠ controlador qualificado |
-| Catálogo completo de backups/cópias | **Blocked** |
+| Catálogo de backups/cópias (perfil local selecionado) | **Cleared ZA-12** — bounded cut + disposições; não eterno |
+| Catálogo hospedado / G-OPS | **Unknown → fail-closed** — sem verificação read-only de operador; bloqueia Full Erased/restore |
 | ER-R02 — barreira World (SQL/disclosure local) | **Cleared ZA-09** — `jobs.disclosure_world_closing` + admitted epoch on content paths; membership enumeration is not a substitute |
 | ER-R02 — contenção de uploads externos (late PUT) | **Admission/settlement implemented (ZA-10); G-STORAGE-FENCE Blocked** — Object Lock/probe ≠ writer fence; Unknown/cancel fail-closed |
 | ER-R03 — restore online / ativação por head | **Blocked** (F04; `restoreAfterErasure:false`) |
 | Destruição física / prazo regulatório | **Blocked** |
 | Qualificação de pins locais superados por erasure | **Blocked** |
-| Purge SQL + transição Closing→Erased (local controlled copies) | **Cleared EX45** — full D03 Erased still blocked (controller/backups/ER-R02/Fly) |
+| Purge SQL + transição Closing→Erased (local controlled copies) | **Cleared EX45** — full D03 Erased still blocked (controller/G-OPS Unknown/ZA-10/Fly) |
 | Re-prova Object Lock na VM Fly live | **Blocked** até probe no app `zoen-rebuild` |
 
 ## Pacotes EX do primeiro incremento

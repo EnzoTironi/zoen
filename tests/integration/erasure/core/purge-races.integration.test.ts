@@ -15,7 +15,10 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { layer as erasureStorage } from "../../../../apps/server/src/adapters/object-storage/erasure/s3.ts";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { withErasureRuntime } from "../support/runtime.ts";
+import {
+  admitEmptyCopyCatalog,
+  withErasureRuntime,
+} from "../support/runtime.ts";
 import { makeContext } from "./fixture.ts";
 
 const createScenario = Effect.gen(function* createScenario() {
@@ -68,6 +71,7 @@ it.live(
         Effect.gen(function* concurrentPurge() {
           const { context, closing } = yield* createScenario;
           const closed = yield* requestWorldErasure(context, closing);
+          yield* admitEmptyCopyCatalog();
           const requests = [
             yield* purgeRequest(closing, closed.revision),
             yield* purgeRequest(closing, closed.revision),
@@ -147,6 +151,7 @@ it.live("durable removed captures do not block purge terminality", () =>
       WHERE capture_id = ${capture.captureId}`
         ).pipe(Effect.provide(database.migration));
         const closed = yield* requestWorldErasure(context, closing);
+        yield* admitEmptyCopyCatalog();
         const request = yield* purgeRequest(closing, closed.revision);
         const purged = yield* purgeWorldContent(context, request);
         expect(purged).toMatchObject({ phase: "Erased" });

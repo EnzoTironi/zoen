@@ -180,6 +180,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
     const objectWrite = yield* fs.readFileString(
       fileURLToPath(new URL("015_object_write_settlement.sql", import.meta.url))
     );
+    const copyCatalog = yield* fs.readFileString(
+      fileURLToPath(new URL("016_controlled_copy_catalog.sql", import.meta.url))
+    );
     const extension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
@@ -193,6 +196,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
           .pipe(Effect.asVoid),
         "15_object_write_settlement": sql
           .unsafe(objectWrite)
+          .pipe(Effect.asVoid),
+        "16_controlled_copy_catalog": sql
+          .unsafe(copyCatalog)
           .pipe(Effect.asVoid),
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),

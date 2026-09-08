@@ -11,6 +11,7 @@ import {
   AuthorityInstallationSchema,
 } from "@zoen/authority/commit/configuration";
 import { ErasureAttemptRegister } from "@zoen/authority/ports/erasure/attempt-register";
+import { ErasureCopyCatalog } from "@zoen/authority/ports/erasure/copy-catalog";
 import {
   DataPolicy,
   DataPolicySchema,
@@ -453,6 +454,7 @@ export const withLegacyBasisHarness = <A, E, R>(
                   Layer.succeed(AuthorityInstallation, installation),
                   Layer.succeed(DataPolicy, policy),
                   ErasureAttemptRegister.unqualifiedLayer,
+                  ErasureCopyCatalog.unqualifiedLayer,
                   database.authority,
                   identity,
                   s3EvidenceLayer(storage)

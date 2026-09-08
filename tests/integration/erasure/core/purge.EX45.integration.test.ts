@@ -11,6 +11,10 @@ import { inspectWorldErasure } from "../../../../packages/authority/src/knowledg
 import { purgeWorldContent } from "../../../../packages/authority/src/knowledge/erasure/handlers/purge.js";
 import { requestWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/request.js";
 import { applyWorldErasureSchema } from "../../../../packages/authority/src/knowledge/erasure/schema.js";
+import {
+  applyControlledCopyCatalogSchema,
+  localErasureCopyCatalogLayer,
+} from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.js";
 import { ErasureObjectInventory } from "../../../../packages/authority/src/ports/erasure/inventory.js";
 import {
   applyErasureAttemptSchema,
@@ -24,6 +28,7 @@ import {
 } from "../../../../packages/contracts/src/erasure/operations.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 import {
+  admitEmptyCopyCatalog,
   erasableConfiguration,
   makeContext,
   retainedConfiguration,
@@ -67,7 +72,8 @@ const grantErasureSchemas = Effect.fn("EX45.grantErasure")(
          authority.receipts, authority.operations, authority.bootstrap_operations,
          authority.memberships, authority.identity_decisions TO "${authorityRole}";
        GRANT SELECT, INSERT, UPDATE, DELETE ON jobs.captures, jobs.outbox TO "${authorityRole}";
-       GRANT SELECT, INSERT, UPDATE ON jobs.object_write_attempts TO "${authorityRole}"`
+       GRANT SELECT, INSERT, UPDATE ON jobs.object_write_attempts TO "${authorityRole}";
+       GRANT SELECT, INSERT, UPDATE ON authority.controlled_copy_coverage, authority.controlled_copy_entries TO "${authorityRole}"`
     );
   }
 );
@@ -106,6 +112,7 @@ const withErasureRuntime = <A, E, R, ROut, EOut>(
         yield* sql.withTransaction(sql.unsafe(objectWrite));
         yield* applyErasureAttemptSchema();
         yield* applyWorldErasureSchema();
+        yield* applyControlledCopyCatalogSchema();
         yield* grantErasureSchemas(database.names.authority);
       }).pipe(Effect.provide(database.migration));
 
@@ -123,6 +130,9 @@ const withErasureRuntime = <A, E, R, ROut, EOut>(
             configuration,
             database.authority,
             register,
+            localErasureCopyCatalogLayer.pipe(
+              Layer.provide(database.authority)
+            ),
             emptyObjectLayers
           )
         )
@@ -202,6 +212,7 @@ it.live(
         `;
         expect(beforeFrames).toStrictEqual([{ count: 1 }]);
 
+        yield* admitEmptyCopyCatalog();
         const purgeOperationId = randomUUID();
         const purgeRequest = yield* Schema.decodeEffect(PurgeWorldContent)({
           input: {
@@ -317,6 +328,7 @@ it.live("EX45 does not purge another World", () =>
           worldRef: target.worldRef,
         })
       );
+      yield* admitEmptyCopyCatalog();
       yield* purgeWorldContent(
         context,
         yield* Schema.decodeEffect(PurgeWorldContent)({
