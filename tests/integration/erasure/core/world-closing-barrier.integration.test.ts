@@ -228,9 +228,9 @@ it.live(
           ])}`}, 0)
           ON CONFLICT (subject_key) DO UPDATE
             SET revision = jobs.disclosure_subjects.revision + 1`;
-        expect(
-          yield* admitWorldContent(world).pipe(Effect.flip)
-        ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
+        expect(yield* admitWorldContent(world).pipe(Effect.flip)).toMatchObject(
+          { code: "NOT_FOUND_OR_DENIED" }
+        );
         expect(
           yield* sql`SELECT count(*)::int AS n FROM jobs.disclosure_world_closing
             WHERE world_key = ${worldDisclosureKey(world)}`
