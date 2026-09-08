@@ -47,7 +47,8 @@ Local qualification remains [`erasure-storage-qualification.md`](./erasure-stora
 | Fly Object Lock API re-probe | **Cleared** (this document) |
 | Fly all-in-one independent controller / anti-rollback | **Blocked** — app PG + RustFS share one volume |
 | Backup / copy catalog | **Blocked** |
-| World fence + in-flight PUT/multipart (ER-R02) | **Blocked** |
+| World fence (SQL/disclosure, ZA-09) | **Cleared on tip** |
+| Late object-writer containment / G-STORAGE-FENCE (ZA-10) | **Boundary landed; fence Blocked** — Object Lock ≠ writer fence |
 | Hosted Closing→Erased on live install | **Blocked** — retained policy + gates above |
 | `restoreAfterErasure` | **false** / closed (F04) |
 

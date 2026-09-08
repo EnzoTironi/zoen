@@ -56,7 +56,8 @@ bucket-deleted
 | --- | --- |
 | Fly all-in-one independent controller / anti-rollback anchor | **Blocked** — app PG + RustFS share one Fly volume; local disposable register (EX31) ≠ qualified controller |
 | Backup / copy catalog | **Blocked** |
-| World fence + in-flight PUT/multipart containment (ER-R02) | **Blocked** |
+| World fence (SQL/disclosure) | **Cleared ZA-09** |
+| In-flight PUT/multipart admission/settlement (ZA-10) | **Boundary landed; G-STORAGE-FENCE Blocked** — see [`erasure-object-writer-containment.md`](./erasure-object-writer-containment.md) |
 | SQL content purge + Closing→Erased attestation | **Local EX45 landed** (`local-controlled-copies` only); full D03 still blocked |
 | `restoreAfterErasure` | **false** / closed (F04) |
 | Fly Object Lock API re-probe | **Cleared** — [`erasure-fly-object-lock.md`](./erasure-fly-object-lock.md) |

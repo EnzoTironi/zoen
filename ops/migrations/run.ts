@@ -96,11 +96,12 @@ export const applyDisclosureMigrations = Effect.fn(
       "6_durable_disclosure": sql.unsafe(disclosure).pipe(Effect.asVoid),
     }),
   });
-  // Apply progress / orphaned-recovery / world-closing DDL without migrator ids
-  // 10/12/14 here: Effect migrator skips any id <= latest, so recording them
-  // before 7/8 would skip identity events. Erasure migrator records 10/12/14
-  // after 7–11. Capture admission (ZA-09) needs progress DDL+grants on retained
-  // installs too (F02: schema without enabling erasure).
+  // Apply progress / orphaned-recovery / world-closing / object-write DDL without
+  // migrator ids 10/12/14/15 here: Effect migrator skips any id <= latest, so
+  // recording them before 7/8 would skip identity events. Erasure migrator
+  // records 10/12/14/15 after 7–11. Capture admission (ZA-09/ZA-10) needs
+  // progress + object_write_attempts DDL+grants on retained installs too
+  // (F02: schema without enabling erasure).
   const progress = yield* fs.readFileString(
     fileURLToPath(new URL("010_world_erasure_closing.sql", import.meta.url))
   );
@@ -115,8 +116,12 @@ export const applyDisclosureMigrations = Effect.fn(
     fileURLToPath(new URL("014_world_closing_barrier.sql", import.meta.url))
   );
   yield* sql.withTransaction(sql.unsafe(worldClosing));
+  const objectWrite = yield* fs.readFileString(
+    fileURLToPath(new URL("015_object_write_settlement.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(objectWrite));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
-  // Progress admit grants for capture barrier on retained paths (F02).
+  // Progress + object-write admit grants for capture on retained paths (F02).
   yield* sql.withTransaction(grantContentBarrierAdmit(roles.authority));
   return [...base, ...durable];
 });
@@ -172,6 +177,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
     const worldClosing = yield* fs.readFileString(
       fileURLToPath(new URL("014_world_closing_barrier.sql", import.meta.url))
     );
+    const objectWrite = yield* fs.readFileString(
+      fileURLToPath(new URL("015_object_write_settlement.sql", import.meta.url))
+    );
     const extension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
@@ -182,6 +190,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         "13_za03_policy_profile_ids": sql.unsafe(policyIds).pipe(Effect.asVoid),
         "14_world_closing_barrier": sql
           .unsafe(worldClosing)
+          .pipe(Effect.asVoid),
+        "15_object_write_settlement": sql
+          .unsafe(objectWrite)
           .pipe(Effect.asVoid),
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),
