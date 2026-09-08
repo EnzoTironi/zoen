@@ -1,4 +1,3 @@
-/* oxlint-disable eslint/sort-keys -- ZA-18 owner/CAS field insertions */
 import { describe, expect, it } from "@effect/vitest";
 import {
   AcceptConversationTurn,
