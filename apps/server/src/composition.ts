@@ -187,10 +187,7 @@ export const makeApplication = (config: ApplicationConfig) =>
         Layer.effectDiscard(checkAuthorityRole).pipe(
           Layer.provideMerge(authorityPg)
         ),
-        makeIdentityLayer(config.identity).pipe(
-          Layer.provideMerge(disclosure),
-          Layer.provide(restoreActivation)
-        ),
+        makeIdentityLayer(config.identity).pipe(Layer.provideMerge(disclosure)),
         s3EvidenceLayer(config.storage),
         erasureStorageLayer(config.storage),
         Layer.succeed(AuthorityInstallation, installation),
