@@ -13,7 +13,7 @@ import { Head } from "../ports/worlds/basis.js";
 import { DataPolicy } from "../ports/worlds/context.js";
 import type { VerifiedRequestContext } from "../ports/worlds/context.js";
 import { validateContext } from "./context.js";
-import { requireActiveWorldContent } from "./erasure/content.js";
+import { admitWorldContent } from "./erasure/content.js";
 
 const AccessRow = Schema.Struct({
   cell_epoch: Revision,
@@ -99,7 +99,7 @@ export const authorizeWorld = Effect.fn("authority.access.authorizeWorld")(
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
     }
     if (policy.erasure && capability !== "erasure") {
-      yield* requireActiveWorldContent(world);
+      yield* admitWorldContent(world);
     }
     return access;
   }

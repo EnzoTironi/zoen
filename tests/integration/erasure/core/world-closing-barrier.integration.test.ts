@@ -1,10 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import {
-  admitWorldContent,
-  requireActiveWorldContent,
-} from "@zoen/authority/access/erasure/content";
+import { admitWorldContent } from "@zoen/authority/access/erasure/content";
 import { grantWorldReadAccess } from "@zoen/authority/access/sharing/mutation";
 import { createPersonalWorld } from "@zoen/authority/commit/genesis";
 import { reserveCapture } from "@zoen/authority/evidence/worlds/capture";
@@ -232,7 +229,7 @@ it.live(
           ON CONFLICT (subject_key) DO UPDATE
             SET revision = jobs.disclosure_subjects.revision + 1`;
         expect(
-          yield* requireActiveWorldContent(world).pipe(Effect.flip)
+          yield* admitWorldContent(world).pipe(Effect.flip)
         ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
         expect(
           yield* sql`SELECT count(*)::int AS n FROM jobs.disclosure_world_closing

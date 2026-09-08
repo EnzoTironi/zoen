@@ -43,11 +43,3 @@ export const admitWorldContent = Effect.fn(
   }
   return progress.erasure_revision;
 });
-
-/** An absent progress row is the initial Active epoch, never a missing-schema fallback. */
-export const requireActiveWorldContent = Effect.fn(
-  "authority.access.requireActiveWorldContent"
-)(function* requireActiveWorldContent(world: WorldRef) {
-  yield* admitWorldContent(world);
-  return yield* Effect.void;
-});
