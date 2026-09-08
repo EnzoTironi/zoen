@@ -40,7 +40,11 @@ import { makeDisclosureFenceLayer } from "./adapters/postgres/disclosure/fence.t
 import { checkAuthorityRole } from "./adapters/postgres/worlds/authority-role.ts";
 import { makeWorldsPostgresLayer } from "./adapters/postgres/worlds/postgres.ts";
 import { eveJournalLayerForUrl } from "./eve/journal-layer.ts";
-import { blockedModelPortLayer } from "./eve/model-port.ts";
+import {
+  DEFAULT_OPENCODE_USER_AGENT,
+  blockedModelPortLayer,
+  liveModelPortLayer,
+} from "./eve/model-port.ts";
 import { groundedEveTurnServiceLayer } from "./eve/turn-service.ts";
 import { makeCorrectionHttpGroup } from "./http/corrections.ts";
 import { makeErasureHttpGroup } from "./http/erasure.ts";
@@ -100,42 +104,65 @@ export const hostedAdmissionLayerFor = (
     : Layer.empty;
 
 /**
- * Product Eve surface (ZA-17/ZA-18/ZA-19).
+ * Product Eve surface (ZA-17 → ZA-20).
  * OpenCode key alone never admits live Zen. Durable journal installs only when
  * a restricted journal DB URL is configured (G-RESOURCES). Grounded TurnService
- * + ModelPort wire here; G-PROVIDER missing keeps ModelPort blocked. Product Eve
- * stays fail-closed until ZA-20 text-profile acceptance — do not set activated.
+ * + ModelPort wire here (ZA-19). ZA-20 records the narrow grounded text profile
+ * in the acceptance harness; tip keeps textProfileAccepted false without
+ * G-PROVIDER live proof — do not set activated from this PR alone.
  */
 export const makeProductEveSurface = (
   openCodeKeyPresent: boolean,
   options?: {
     readonly eveJournalDatabaseUrl?: Redacted.Redacted;
     readonly evidenceGroundingQualified?: boolean;
+    readonly openCodeZen?: ApplicationConfig["openCodeZen"];
+    readonly textProfileAccepted?: boolean;
   }
 ) => {
   const durableJournalQualified = options?.eveJournalDatabaseUrl !== undefined;
   const evidenceGroundingQualified =
     options?.evidenceGroundingQualified === true;
+  // Tip fail-closed: only explicit true opts into the ZA-20 profile gate.
+  const textProfileAccepted = options?.textProfileAccepted === true;
   const admission = currentProductEveAdmissionInput(openCodeKeyPresent, {
     durableJournalQualified,
     evidenceGroundingQualified,
+    textProfileAccepted,
   });
-  if (isProductEveAdmitted(admission)) {
-    // Tripwire: all gates true without live provider + profile proof is unsafe.
-    return Effect.die(
-      "ZA-17/19: product Eve admitted without G-PROVIDER/profile layers"
-    );
-  }
   const journalLayer =
     options?.eveJournalDatabaseUrl === undefined
       ? EveJournal.blockedProvidersLayer
       : eveJournalLayerForUrl(options.eveJournalDatabaseUrl);
-  // G-PROVIDER: never install live ModelPort from this PR (capability disabled).
-  const modelLayer = blockedModelPortLayer;
-  // Grounded TurnService is always composed after ZA-19; admission flag records proof.
+  if (isProductEveAdmitted(admission)) {
+    // All safety gates true — require live G-PROVIDER settings (never fabricate).
+    const zen = options?.openCodeZen;
+    if (zen === undefined) {
+      return Effect.die(
+        "ZA-20: product Eve admitted without G-PROVIDER OpenCode settings"
+      );
+    }
+    return Effect.succeed(
+      Layer.mergeAll(
+        journalLayer,
+        liveModelPortLayer({
+          apiKey: zen.apiKey,
+          baseUrl: zen.baseUrl,
+          model: zen.model,
+          userAgent: DEFAULT_OPENCODE_USER_AGENT,
+        }),
+        groundedEveTurnServiceLayer
+      )
+    );
+  }
+  // Until journal + grounding + key + profile all clear, stay fail-closed.
   void evidenceGroundingQualified;
   return Effect.succeed(
-    Layer.mergeAll(journalLayer, modelLayer, groundedEveTurnServiceLayer)
+    Layer.mergeAll(
+      journalLayer,
+      blockedModelPortLayer,
+      groundedEveTurnServiceLayer
+    )
   );
 };
 
@@ -205,13 +232,18 @@ export const makeApplication = (config: ApplicationConfig) =>
       // postgresRestoreActivationLayer is available for restore seams/tests;
       // promotion stays fail-closed — never advertise restoreAfterErasure:true.
       const restoreActivation = ErasureRestoreActivation.unqualifiedLayer;
-      // ZA-17/18: key alone must not admit stubMemory or live Zen.
-      // Journal URL wires durable actor-bound journal; Zen stays blocked.
-      // ZA-19: grounded TurnService/ModelPort composed; G-PROVIDER still blocked.
+      // ZA-17→20: key alone must not admit stubMemory or live Zen.
+      // Journal URL wires durable actor-bound journal; ZA-19 grounds TurnService.
+      // Tip keeps textProfileAccepted false without G-PROVIDER live proof (ZA-20
+      // harness/tests may opt in explicitly). Pass openCodeZen for admitted path.
       const eveSurface = yield* makeProductEveSurface(
         config.openCodeZen !== undefined,
         {
           evidenceGroundingQualified: true,
+          textProfileAccepted: false,
+          ...(config.openCodeZen === undefined
+            ? {}
+            : { openCodeZen: config.openCodeZen }),
           ...(config.eveJournalDatabaseUrl === undefined
             ? {}
             : { eveJournalDatabaseUrl: config.eveJournalDatabaseUrl }),

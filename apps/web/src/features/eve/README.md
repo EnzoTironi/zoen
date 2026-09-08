@@ -1,6 +1,6 @@
 # Eve (optional conversation)
 
-Product Eve text/voice stays **fail-closed** until durable journal, evidence grounding, and narrow profile acceptance qualify (ZA-17 → ZA-20). A host OpenCode key alone does **not** admit the surface; Worlds UI remains usable while Eve routes return explicit `Blocked` / unavailable.
+Product Eve text/voice stays **fail-closed** until durable journal, evidence grounding, and narrow profile acceptance all qualify (ZA-17 → ZA-20). ZA-20 records acceptance for `eve-opencode-zen-v1` / `opencode-zen`; a host OpenCode key alone still does **not** admit the surface until journal (ZA-18) + grounding (ZA-19 / #107) + G-PROVIDER are present. Worlds UI remains usable while Eve routes return explicit `Blocked` / unavailable.
 
 ## Voice (`eve-web-speech-v1`)
 
