@@ -90,7 +90,7 @@ export const makeEveCommands = <E, R>(
         )
     ).pipe(
       Command.withDescription(
-        "Owner: run one Eve turn on the OpenCode Zen candidate path (accept → model → settle). Fail-closed Blocked until durable journal/grounding/key qualify (ZA-17); key alone does not admit. Voice remains blocked. Reuse --ingress-id on Unavailable retry."
+        "Owner: run one Eve turn on the OpenCode Zen candidate path (accept → grounded tools → model → settle). Fail-closed Blocked until G-PROVIDER + ZA-20 (ZA-17/19); key alone does not admit. Voice remains blocked. Reuse --ingress-id on Unavailable retry."
       ),
       Command.withExamples([
         {

@@ -19,6 +19,7 @@ import {
 import { acceptConversationTurn } from "../../../src/ports/eve/handlers.js";
 import { EveJournal } from "../../../src/ports/eve/journal.js";
 import { EveOpenCodeZen } from "../../../src/ports/eve/opencode-zen.js";
+import { EveTurnService } from "../../../src/ports/eve/turn-service.js";
 import type { VerifiedRequestContext } from "../../../src/ports/worlds/context.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
@@ -154,7 +155,8 @@ describe("ZA-17 Eve admission safety", () => {
               baseUrl: "https://example.test/zen/v1",
               model: "big-pickle",
               userAgent: "opencode/1.17.20 zoen-eve",
-            })
+            }),
+            EveTurnService.legacyWithoutGroundingLayer
           )
         )
       )
@@ -172,7 +174,8 @@ describe("ZA-17 Eve admission safety", () => {
         Effect.provide(
           Layer.mergeAll(
             EveJournal.blockedProvidersLayer,
-            EveOpenCodeZen.blockedLayer
+            EveOpenCodeZen.blockedLayer,
+            EveTurnService.legacyWithoutGroundingLayer
           )
         )
       )

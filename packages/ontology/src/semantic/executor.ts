@@ -67,6 +67,7 @@ import {
 import { EveJournal } from "../ports/eve/journal.js";
 import { EveOpenCodeZen } from "../ports/eve/opencode-zen.js";
 import { parseEveBytes } from "../ports/eve/request.js";
+import { EveTurnService } from "../ports/eve/turn-service.js";
 import { Presence } from "../ports/worlds/context.js";
 import { canonicalJson } from "../values/canonical.js";
 import { parseEnvelopeBytes } from "../values/json.js";
@@ -497,6 +498,7 @@ export class SemanticExecutor extends Context.Service<
   static readonly layer = SemanticExecutor.layerWithoutEve.pipe(
     Layer.provide(EveJournal.stubMemoryLayer),
     Layer.provide(EveOpenCodeZen.blockedLayer),
+    Layer.provide(EveTurnService.legacyWithoutGroundingLayer),
     Layer.provide(ErasureAttemptRegister.unqualifiedLayer),
     Layer.provide(ErasureRestoreActivation.unqualifiedLayer),
     Layer.provide(ErasureObjectInventory.unqualifiedLayer),

@@ -25,6 +25,7 @@ import type { Effect as EffectType } from "effect";
 
 // oxlint-disable-next-line typescript/consistent-type-imports -- Schema value for typeof PrincipalId.Type
 import { PrincipalId } from "../worlds/context.js";
+import type { VerifiedRequestContext } from "../worlds/context.js";
 import { uncertaintyFromEvidenceBasis } from "./admission.js";
 import { EveJournal } from "./journal.js";
 import { EveOpenCodeZen } from "./opencode-zen.js";
@@ -33,6 +34,8 @@ export interface RunEveTurnInput {
   readonly attemptId: AttemptId;
   readonly conversationId: ConversationId;
   readonly evidenceLinks?: readonly EveEvidenceLink[];
+  /** Optional subject for ZA-19 Inspect grounding (same path as UI). */
+  readonly groundSubjectKey?: string;
   readonly ingressId: IngressId;
   readonly messageId: MessageId;
   readonly ownerPrincipalId: typeof PrincipalId.Type;
@@ -42,8 +45,12 @@ export interface RunEveTurnInput {
   readonly relationshipId: RelationshipId;
   readonly signal?: AbortSignal;
   readonly systemText?: string;
+  /** Untrusted model tool JSON — admitted only via exact schema (ZA-19-02). */
+  readonly toolCalls?: readonly unknown[];
   readonly turnId: TurnId;
   readonly userText: string;
+  /** Verified Accept context — enables Inspect grounding (ZA-19). */
+  readonly verifiedContext?: VerifiedRequestContext;
   readonly worldRef?: WorldRef | null;
 }
 
