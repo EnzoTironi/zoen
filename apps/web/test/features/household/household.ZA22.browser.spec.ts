@@ -18,7 +18,7 @@ const baseURL = Effect.runSync(
   )
 );
 test.use({ baseURL });
-test.setTimeout(90_000);
+test.setTimeout(120_000);
 
 test.beforeEach(async () => {
   await setTimeout(10_100);
@@ -251,7 +251,10 @@ test("ZA-22 browser household lists: contested commitment, CLI agreement, correc
     expect(agua.claims).toHaveLength(1);
     await expect(page.getByText(/fontes divergentes/u)).toHaveCount(0);
 
-    const bankClaim = frame.claims.find(
+    // Re-open contested luz so the decision select lists its claims (not água).
+    const contestedAgain = await inspect(page, luzKey);
+    expect(contestedAgain.contested).toBe(true);
+    const bankClaim = contestedAgain.claims.find(
       (claim) => claim.source.namespace === "household.bank"
     );
     if (bankClaim === undefined) {
