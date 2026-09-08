@@ -2,10 +2,14 @@ import { Schema } from "effect";
 
 import { exact } from "../worlds/values.js";
 
-/** Candidate profile for NEW Worlds only; retained Worlds stay worlds-local-retained-v1. */
-export const ErasurePolicyProfileId = Schema.Literal(
-  "worlds-local-erasable-v1"
-);
+/**
+ * Erasable profiles for NEW Worlds only; retained Worlds stay worlds-local-retained-v1 /
+ * worlds-hosted-retained-v1. Hosted erasable (ZA-14) is separately gated by H-01/H-02.
+ */
+export const ErasurePolicyProfileId = Schema.Literals([
+  "worlds-local-erasable-v1",
+  "worlds-hosted-erasable-v1",
+]);
 export type ErasurePolicyProfileId = typeof ErasurePolicyProfileId.Type;
 
 export const ErasureSchemaVersion = Schema.Literal("erasure.v1");

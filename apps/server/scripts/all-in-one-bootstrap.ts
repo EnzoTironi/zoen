@@ -24,6 +24,11 @@ import { SqlClient } from "effect/unstable/sql";
 import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
 import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
 import {
+  currentHostedErasableQualification,
+  evaluateHostedErasableAdmission,
+  refuseProtectedResource,
+} from "../../../packages/authority/src/hosted/erasable/admission.ts";
+import {
   beginHostedReleaseUpgrade,
   completeHostedReleaseUpgrade,
   digestReleaseBytes,
@@ -523,6 +528,53 @@ const program = Effect.gen(function* bootstrapAllInOne() {
   const policy = resolveLocalWorldPolicy(worldPolicyId);
   if (policy === null) {
     return yield* new BootstrapError({ code: "INVALID_WORLD_POLICY" });
+  }
+  // ZA-14: hosted erasable bootstrap stays fail-closed without H-02.
+  // Refuse legacy app zoen, retained profiles, and retained bucket-name reuse.
+  if (policy.profileId === "worlds-hosted-erasable-v1") {
+    const appName = yield* Config.string("ZOEN_FLY_APP").pipe(
+      Config.withDefault("zoen-rebuild")
+    );
+    const volumeName = yield* Config.string("ZOEN_FLY_VOLUME").pipe(
+      Config.withDefault("zoen_data")
+    );
+    const candidate = {
+      appName,
+      bucketName: bucket,
+      imageDigest: "bootstrap-unbound",
+      installId: "bootstrap-unbound",
+      policyProfileId: policy.profileId,
+      volumeName,
+    };
+    const protectedDecision = refuseProtectedResource(candidate);
+    if (protectedDecision !== null) {
+      return yield* new BootstrapError({
+        code: `HOSTED_ERASABLE_REFUSED_${protectedDecision.reason}`,
+      });
+    }
+    const decision = evaluateHostedErasableAdmission({
+      candidate,
+      catalogCoverage: "Unknown",
+      controllerAvailable: false,
+      heldObject: false,
+      purpose: "closing",
+      qualification: currentHostedErasableQualification(),
+    });
+    switch (decision.admitted) {
+      case true: {
+        break;
+      }
+      case false: {
+        return yield* new BootstrapError({
+          code: `HOSTED_ERASABLE_BLOCKED_${decision.reason}`,
+        });
+      }
+      default: {
+        return yield* new BootstrapError({
+          code: "HOSTED_ERASABLE_BLOCKED_gates-incomplete",
+        });
+      }
+    }
   }
 
   const stateDir = installationPath.includes("/")

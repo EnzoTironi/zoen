@@ -18,6 +18,7 @@ import { ErasureCopyCatalog } from "../../../ports/erasure/copy-catalog.js";
 import { ErasureObjectInventory } from "../../../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../../../ports/erasure/purge.js";
 import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
+import { requireHostedErasablePurgeAdmission } from "../hosted-erasable-gate.js";
 import { requireErasablePolicy } from "../policy.js";
 import {
   lockPurgingProgress,
@@ -92,6 +93,9 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
     }
 
     const erasablePolicy = yield* requireErasablePolicy(current.policy_version);
+    yield* requireHostedErasablePurgeAdmission({
+      policy: erasablePolicy,
+    });
 
     const observed = yield* register.inspect({
       deploymentEpoch: deploymentEpochOf(installation),

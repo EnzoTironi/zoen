@@ -6,15 +6,23 @@ import {
   DataPolicy,
   DataPolicySchema,
   ErasableDataPolicySchema,
+  HostedErasableDataPolicySchema,
 } from "../../ports/worlds/context.js";
+import type { DataPolicySchema as DataPolicyValue } from "../../ports/worlds/context.js";
 
-/** Closing requires the candidate erasable profile; retained Worlds stay blocked. */
+/**
+ * Closing requires an erasable profile (local or hosted). Retained Worlds stay
+ * blocked. Hosted erasable additionally requires HostedErasableAdmission before
+ * destructive work (see hosted-erasable-gate.ts).
+ */
 export const requireErasablePolicy = Effect.fn("erasure.requireErasablePolicy")(
   function* requireErasablePolicy(policyVersion: string) {
     const policy = yield* Schema.decodeEffect(DataPolicySchema)(
       yield* DataPolicy
     ).pipe(Effect.mapError(() => new Blocked({ code: "PROFILE_BLOCKED" })));
-    if (!Schema.is(ErasableDataPolicySchema)(policy) || !policy.erasure) {
+    const isLocalErasable = Schema.is(ErasableDataPolicySchema)(policy);
+    const isHostedErasable = Schema.is(HostedErasableDataPolicySchema)(policy);
+    if ((!isLocalErasable && !isHostedErasable) || !policy.erasure) {
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
     }
     if (policy.restoreAfterErasure) {
@@ -29,3 +37,6 @@ export const requireErasablePolicy = Effect.fn("erasure.requireErasablePolicy")(
     return policy;
   }
 );
+
+export const isHostedErasablePolicy = (policy: DataPolicyValue): boolean =>
+  Schema.is(HostedErasableDataPolicySchema)(policy);

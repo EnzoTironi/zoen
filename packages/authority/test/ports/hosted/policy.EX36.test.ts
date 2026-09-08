@@ -1,7 +1,10 @@
 import { describe, expect, it } from "@effect/vitest";
 import { Result, Schema } from "effect";
 
-import { HostedRetainedDataPolicySchema } from "../../../src/ports/hosted/policy.js";
+import {
+  HostedErasableDataPolicySchema,
+  HostedRetainedDataPolicySchema,
+} from "../../../src/ports/hosted/policy.js";
 import {
   DataPolicySchema,
   ErasableDataPolicySchema,
@@ -102,5 +105,36 @@ describe("EX36 DataPolicy union includes hosted retained", () => {
         })
       )
     ).toBeTruthy();
+  });
+});
+
+const hostedErasable = {
+  dataScope: "admitted-non-sensitive" as const,
+  enabledRealm: "live" as const,
+  erasure: true as const,
+  legalHold: false as const,
+  licensedExpiry: false as const,
+  profileId: "worlds-hosted-erasable-v1" as const,
+  restoreAfterErasure: false as const,
+  retention: "while-pinned" as const,
+};
+
+describe("ZA-14 DataPolicy union includes hosted erasable", () => {
+  it("decodes hosted erasable via port schema and DataPolicySchema", () => {
+    const viaPort = Schema.decodeSync(HostedErasableDataPolicySchema)(
+      hostedErasable
+    );
+    const viaUnion = Schema.decodeSync(DataPolicySchema)(hostedErasable);
+    expect(viaPort).toStrictEqual(hostedErasable);
+    expect(viaUnion).toStrictEqual(hostedErasable);
+    expect(viaUnion.erasure).toBeTruthy();
+    expect(viaUnion.restoreAfterErasure).toBeFalsy();
+  });
+
+  it("keeps hosted erasable distinct from retained and local erasable", () => {
+    const viaUnion = Schema.decodeSync(DataPolicySchema)(hostedErasable);
+    expect(Schema.is(HostedErasableDataPolicySchema)(viaUnion)).toBeTruthy();
+    expect(Schema.is(HostedRetainedDataPolicySchema)(viaUnion)).toBeFalsy();
+    expect(Schema.is(ErasableDataPolicySchema)(viaUnion)).toBeFalsy();
   });
 });

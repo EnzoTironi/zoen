@@ -81,6 +81,10 @@ Paste the token value into `gh secret set` when prompted (or pipe it). Without `
 
 Manual run: Actions → **Deploy Fly** → **Run workflow** (skips the Verify wait; still health-checks after deploy).
 
+## Hosted erasable admission (ZA-14)
+
+Candidate profile `worlds-hosted-erasable-v1` is **code-complete and fail-closed**. H-01 / H-02 / G-OPS / G-STORAGE-FENCE remain Blocked/Unknown — Full hosted Erased is **not** activated by merging ZA-14. Helpers: `ops/fly/erasable-target.ts` (read-only refuse/admit; no destroy). Default bootstrap stays `worlds-hosted-retained-v1`. Selecting erasable without an authorized H-02 target fails closed. Never convert legacy app `zoen` or retained bucket `zoen` by name.
+
 ## Object Lock re-probe (D03 storage)
 
 Live Fly RustFS Object Lock qualification (loopback): [`docs/verification/erasure-fly-object-lock.md`](../../docs/verification/erasure-fly-object-lock.md). Evidence under `ops/fly/evidence/object-lock-reprobe-*`. Does **not** claim hosted Erased.
