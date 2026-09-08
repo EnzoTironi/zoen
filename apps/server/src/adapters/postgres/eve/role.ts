@@ -39,6 +39,16 @@ export const checkEveJournalRuntimeRole = Effect.gen(
         OR has_schema_privilege(oid, 'public', 'CREATE')
         OR has_schema_privilege(oid, 'authority', 'USAGE')
         OR has_schema_privilege(oid, 'identity', 'USAGE')
+        OR has_schema_privilege(oid, 'jobs', 'USAGE')
+        OR EXISTS (
+          SELECT FROM information_schema.role_table_grants g
+          WHERE g.grantee = pg_roles.rolname
+            AND g.table_schema <> 'eve'
+            AND g.privilege_type IN (
+              'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE',
+              'REFERENCES', 'TRIGGER'
+            )
+        )
       )
     ) AS allowed
   `.pipe(

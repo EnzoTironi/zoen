@@ -36,7 +36,7 @@ import type {
   SettleMessageInput,
 } from "@zoen/ontology/ports/eve/journal";
 import { PrincipalId } from "@zoen/ontology/ports/worlds/context";
-import { Effect, Layer, Schema } from "effect";
+import { Effect, Layer, Predicate, Schema } from "effect";
 import type { Redacted as RedactedType } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
@@ -131,6 +131,21 @@ const decodeLinks = (value: unknown): EveEvidenceLink[] => [
 
 const mapSql = <A, E>(effect: Effect.Effect<A, E>) =>
   effect.pipe(Effect.mapError(() => unavailable()));
+
+const isJournalDomainFailure = (
+  error: unknown
+): error is Blocked | Conflict | NotFoundOrDenied | Unavailable =>
+  Predicate.isTagged(error, "Blocked") ||
+  Predicate.isTagged(error, "Conflict") ||
+  Predicate.isTagged(error, "NotFoundOrDenied") ||
+  Predicate.isTagged(error, "Unavailable");
+
+const toJournalFailure = (error: unknown) =>
+  isJournalDomainFailure(error) ? error : unavailable();
+
+/** Map infra failures to Unavailable; keep typed journal domain errors. */
+const mapTransactionError = <A, E, R>(effect: Effect.Effect<A, E, R>) =>
+  effect.pipe(Effect.mapError(toJournalFailure));
 
 /**
  * Durable actor-bound journal. Compare-and-swap turn lease/epoch fences a
@@ -298,8 +313,8 @@ export const makeDurableEveJournal = Effect.gen(function* durableJournal() {
         });
         const world = worldColumns(input.worldRef);
 
-        return yield* sql
-          .withTransaction(
+        return yield* mapTransactionError(
+          sql.withTransaction(
             Effect.gen(function* tx() {
               const existing = yield* mapSql(
                 sql`
@@ -325,6 +340,8 @@ export const makeDurableEveJournal = Effect.gen(function* durableJournal() {
                   conversation.owner_principal_id !== input.ownerPrincipalId ||
                   conversation.purpose !== input.purpose ||
                   conversation.relationship_id !== input.relationshipId ||
+                  conversation.profile_id !== input.profileId ||
+                  conversation.provider_admission !== input.providerAdmission ||
                   !worldOk
                 ) {
                   return yield* notFound;
@@ -436,13 +453,13 @@ export const makeDurableEveJournal = Effect.gen(function* durableJournal() {
               } satisfies EveTurn;
             })
           )
-          .pipe(Effect.mapError(() => unavailable()));
+        );
       }),
 
     cancelTurn: (input: CancelTurnInput) =>
       Effect.gen(function* cancel() {
-        return yield* sql
-          .withTransaction(
+        return yield* mapTransactionError(
+          sql.withTransaction(
             Effect.gen(function* tx() {
               yield* loadOwnedConversation(input);
               const rows = yield* mapSql(
@@ -500,7 +517,7 @@ export const makeDurableEveJournal = Effect.gen(function* durableJournal() {
               } satisfies EveTurn;
             })
           )
-          .pipe(Effect.mapError(() => unavailable()));
+        );
       }),
 
     recover: (input: RecoverJournalInput) =>
@@ -511,8 +528,8 @@ export const makeDurableEveJournal = Effect.gen(function* durableJournal() {
 
     settleMessage: (input: SettleMessageInput) =>
       Effect.gen(function* settle() {
-        return yield* sql
-          .withTransaction(
+        return yield* mapTransactionError(
+          sql.withTransaction(
             Effect.gen(function* tx() {
               const conversation = yield* loadOwnedConversation({
                 conversationId: input.conversationId,
@@ -618,7 +635,7 @@ export const makeDurableEveJournal = Effect.gen(function* durableJournal() {
               } satisfies EveVisibleMessage;
             })
           )
-          .pipe(Effect.mapError(() => unavailable()));
+        );
       }),
   });
 });

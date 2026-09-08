@@ -267,7 +267,9 @@ export class EveJournal extends Context.Service<
                 existing.ownerPrincipalId !== input.ownerPrincipalId ||
                 existing.purpose !== input.purpose ||
                 !worldMatches(existing.conversation.worldRef, input.worldRef) ||
-                existing.conversation.relationshipId !== input.relationshipId
+                existing.conversation.relationshipId !== input.relationshipId ||
+                existing.conversation.profileId !== input.profileId ||
+                existing.providerAdmission !== input.providerAdmission
               ) {
                 outcome = { _tag: "notFound" };
               } else {

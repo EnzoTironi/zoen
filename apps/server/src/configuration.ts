@@ -137,5 +137,16 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
         },
       }
     : application;
-  return { application: applicationWithOpenCode, listenHost, listenPort };
+  // ZA-18: optional restricted journal identity. Absent → blocked journal surface.
+  // Does not admit product Eve / Zen by itself (ZA-19/ZA-20 still required).
+  const eveJournalDatabaseUrl = yield* Config.redacted(
+    "ZOEN_EVE_JOURNAL_DATABASE_URL"
+  ).pipe(Config.option);
+  const applicationWithJournal = Option.isSome(eveJournalDatabaseUrl)
+    ? {
+        ...applicationWithOpenCode,
+        eveJournalDatabaseUrl: eveJournalDatabaseUrl.value,
+      }
+    : applicationWithOpenCode;
+  return { application: applicationWithJournal, listenHost, listenPort };
 });

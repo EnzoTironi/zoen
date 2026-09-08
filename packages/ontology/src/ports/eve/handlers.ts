@@ -73,44 +73,67 @@ export const acceptConversationTurn = (
       purpose,
     } = context;
 
-    const existing = yield* journal
-      .recover({
+    // Fence intent via acceptTurn before any settled replay or provider work.
+    const attemptId = newAttemptId();
+    const accepted = yield* journal.acceptTurn({
+      attemptId,
+      conversationId: request.input.conversationId,
+      ingressId: request.input.ingressId,
+      ownerPrincipalId,
+      profileId: request.input.profileId,
+      providerAdmission: request.input.providerAdmission,
+      purpose,
+      relationshipId: request.input.relationshipId,
+      turnId: request.input.turnId,
+      userText: request.input.userText,
+      worldRef: request.worldRef,
+    });
+    if (accepted.phase === "Cancelled") {
+      return yield* new Conflict({ code: "CONFLICT" });
+    }
+    if (accepted.phase === "Settled") {
+      const existing = yield* journal.recover({
         conversationId: request.input.conversationId,
         ownerPrincipalId,
         purpose,
         worldRef: request.worldRef,
-      })
-      .pipe(Effect.catchTag("NotFoundOrDenied", () => Effect.succeed(null)));
-    if (existing !== null) {
-      const prior = existing.turns.find(
-        (turn) => turn.ingressId === request.input.ingressId
+      });
+      const message = existing.messages.find(
+        (row) => row.turnId === accepted.turnId
       );
-      if (prior !== undefined) {
-        if (prior.phase === "Settled") {
-          const message = existing.messages.find(
-            (row) => row.turnId === prior.turnId
-          );
-          if (message === undefined) {
-            return yield* new Conflict({ code: "CONFLICT" });
-          }
-          return {
-            _tag: "ConversationMessageSettled" as const,
-            conversationId: request.input.conversationId,
-            messageId: message.messageId,
-            phase: "Settled" as const,
-            turnId: prior.turnId,
-            uncertainty: message.uncertainty,
-            visibleText: message.visibleText,
-          };
-        }
-        if (prior.phase === "Cancelled") {
-          return yield* new Conflict({ code: "CONFLICT" });
-        }
+      if (message === undefined) {
+        return yield* new Conflict({ code: "CONFLICT" });
       }
+      return {
+        _tag: "ConversationMessageSettled" as const,
+        conversationId: request.input.conversationId,
+        messageId: message.messageId,
+        phase: "Settled" as const,
+        turnId: accepted.turnId,
+        uncertainty: message.uncertainty,
+        visibleText: message.visibleText,
+      };
+    }
+
+    // Accepted: only the lease owner may invoke the provider (ZA-18 CAS).
+    const snapshot = yield* journal.recover({
+      conversationId: request.input.conversationId,
+      ownerPrincipalId,
+      purpose,
+      worldRef: request.worldRef,
+    });
+    const lease = snapshot.unresolvedAttempts.find(
+      (row) =>
+        row.turnId === accepted.turnId &&
+        row.state === "unresolved" &&
+        row.attemptId === attemptId
+    );
+    if (lease === undefined) {
+      return yield* new Conflict({ code: "CONFLICT" });
     }
 
     const result = yield* runEveTurn({
-      attemptId: newAttemptId(),
+      attemptId,
       conversationId: request.input.conversationId,
       ingressId: request.input.ingressId,
       messageId: request.input.messageId,
