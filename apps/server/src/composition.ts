@@ -6,6 +6,10 @@ import {
   HostedAdmissionFlags,
   hostedRetainedAdmissionFlags,
 } from "@zoen/authority/hosted/admission/flags";
+import {
+  HostedErasableAdmission,
+  HostedErasableObservedIdentity,
+} from "@zoen/authority/hosted/erasable/admission";
 import { localErasureCopyCatalogLayer } from "@zoen/authority/ports/erasure/copy-catalog-pg";
 import {
   anchoredLocalErasureAttemptRegisterLayer,
@@ -190,6 +194,9 @@ export const makeApplication = (config: ApplicationConfig) =>
         Layer.succeed(AuthorityInstallation, installation),
         Layer.succeed(DataPolicy, policy),
         hostedAdmissionLayerFor(policy),
+        // ZA-14: fail-closed hosted erasable admission (no H-02 target → Closing refused).
+        HostedErasableAdmission.unqualifiedLayer,
+        HostedErasableObservedIdentity.unboundLayer,
         ensureSeparateControllerSchema,
         erasureRegister,
         erasureCopyCatalog,

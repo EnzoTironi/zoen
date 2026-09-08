@@ -7,13 +7,15 @@ import {
 } from "./world-policy.ts";
 
 describe("ops/local world-policy (EX39)", () => {
-  it("defaults retained and admits erasable + hosted retained only", () => {
+  it("defaults retained and admits erasable + hosted retained/erasable only", () => {
     expect(LOCAL_WORLD_POLICY_IDS).toStrictEqual([
       "worlds-local-retained-v1",
       "worlds-local-erasable-v1",
       "worlds-hosted-retained-v1",
+      "worlds-hosted-erasable-v1",
     ]);
     expect(isLocalWorldPolicyId("worlds-hosted-retained-v1")).toBeTruthy();
+    expect(isLocalWorldPolicyId("worlds-hosted-erasable-v1")).toBeTruthy();
     expect(isLocalWorldPolicyId("d99-unknown")).toBeFalsy();
   });
 
@@ -23,6 +25,17 @@ describe("ops/local world-policy (EX39)", () => {
       dataScope: "admitted-non-sensitive",
       erasure: false,
       profileId: "worlds-hosted-retained-v1",
+      restoreAfterErasure: false,
+      retention: "while-pinned",
+    });
+  });
+
+  it("hosted erasable admits erasure with restoreAfterErasure closed", () => {
+    const policy = resolveLocalWorldPolicy("worlds-hosted-erasable-v1");
+    expect(policy).toMatchObject({
+      dataScope: "admitted-non-sensitive",
+      erasure: true,
+      profileId: "worlds-hosted-erasable-v1",
       restoreAfterErasure: false,
       retention: "while-pinned",
     });

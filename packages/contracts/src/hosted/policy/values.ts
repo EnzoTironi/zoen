@@ -31,3 +31,30 @@ export const HostedRetainedDataPolicy = Schema.Struct({
   retention: Schema.Literal("while-pinned"),
 }).annotate(exact);
 export type HostedRetainedDataPolicy = typeof HostedRetainedDataPolicy.Type;
+
+/**
+ * Candidate hosted erasable profile for NEW Worlds only (ZA-14 / H-02).
+ * Never rebound onto retained installs, legacy app zoen, or worlds-hosted-retained-v1.
+ */
+export const HostedErasablePolicyProfileId = Schema.Literal(
+  "worlds-hosted-erasable-v1"
+);
+export type HostedErasablePolicyProfileId =
+  typeof HostedErasablePolicyProfileId.Type;
+
+/**
+ * Hosted erasable policy: erasure true for authorized NEW targets only.
+ * restoreAfterErasure stays false until controller + catalog + fence qualify.
+ * Full hosted Erased product activation is gated separately (H-01/H-02/G-OPS/G-STORAGE-FENCE).
+ */
+export const HostedErasableDataPolicy = Schema.Struct({
+  dataScope: Schema.Literal("admitted-non-sensitive"),
+  enabledRealm: Schema.Literal("live"),
+  erasure: Schema.Literal(true),
+  legalHold: Schema.Literal(false),
+  licensedExpiry: Schema.Literal(false),
+  profileId: HostedErasablePolicyProfileId,
+  restoreAfterErasure: Schema.Literal(false),
+  retention: Schema.Literal("while-pinned"),
+}).annotate(exact);
+export type HostedErasableDataPolicy = typeof HostedErasableDataPolicy.Type;

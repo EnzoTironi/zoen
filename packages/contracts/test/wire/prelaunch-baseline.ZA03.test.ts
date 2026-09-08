@@ -38,6 +38,9 @@ describe("ZA-03 prelaunch wire and baseline", () => {
       Schema.is(ErasurePolicyProfileId)("worlds-local-erasable-v1")
     ).toBeTruthy();
     expect(
+      Schema.is(ErasurePolicyProfileId)("worlds-hosted-erasable-v1")
+    ).toBeTruthy();
+    expect(
       Schema.is(ErasurePolicyProfileId)("d03-local-erasable-v1")
     ).toBeFalsy();
     expect(

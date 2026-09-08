@@ -21,7 +21,11 @@ import {
   linearizeErasureVersusActivation,
 } from "../../../ports/erasure/restore-activation.js";
 import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
-import { requireErasablePolicy } from "../policy.js";
+import {
+  candidateFromObservedRuntime,
+  requireHostedErasableAdmissionForPolicy,
+} from "../hosted-erasable-gate.js";
+import { isHostedErasablePolicy, requireErasablePolicy } from "../policy.js";
 
 const ProgressRow = Schema.Struct({
   closing_operation_id: Schema.NullOr(Schema.String.check(Schema.isUUID())),
@@ -67,7 +71,22 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
     if (!request.input.confirmEntireWorld) {
       return yield* new Conflict({ code: "CONFLICT" });
     }
-    yield* requireErasablePolicy(request.input.policyVersion);
+    const erasablePolicy = yield* requireErasablePolicy(
+      request.input.policyVersion
+    );
+    if (isHostedErasablePolicy(erasablePolicy)) {
+      const candidate = yield* candidateFromObservedRuntime(
+        erasablePolicy.profileId
+      );
+      yield* requireHostedErasableAdmissionForPolicy({
+        candidate,
+        catalogCoverage: "Unknown",
+        controllerAvailable: true,
+        heldObject: false,
+        policy: erasablePolicy,
+        purpose: "closing",
+      });
+    }
     yield* authorizeWorld(context, request.worldRef, "erasure");
     const installation = yield* AuthorityInstallation;
     const register = yield* ErasureAttemptRegister;

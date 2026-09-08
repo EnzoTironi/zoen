@@ -6,7 +6,10 @@ import { Instant, Purpose, Realm, exact } from "@zoen/contracts/worlds/values";
 import type { Effect, Redacted } from "effect";
 import { Context, Schema } from "effect";
 
-import { HostedRetainedDataPolicySchema } from "../hosted/policy.js";
+import {
+  HostedErasableDataPolicySchema,
+  HostedRetainedDataPolicySchema,
+} from "../hosted/policy.js";
 
 export const PrincipalId = Schema.String.check(Schema.isUUID()).pipe(
   Schema.brand("zoen/PrincipalId")
@@ -70,17 +73,21 @@ export const ErasableDataPolicySchema = Schema.Struct({
 }).annotate(exact);
 export type ErasableDataPolicySchema = typeof ErasableDataPolicySchema.Type;
 
-export { HostedRetainedDataPolicySchema } from "../hosted/policy.js";
+export {
+  HostedErasableDataPolicySchema,
+  HostedRetainedDataPolicySchema,
+} from "../hosted/policy.js";
 
 /**
  * Union of admitted World data policies. Composition / provision still default
  * to RetainedDataPolicySchema (worlds-local-retained-v1) unless explicitly configured.
- * Hosted retained is NEW Worlds only (H01); no implicit rebind of d01/d03 Worlds.
+ * Hosted retained/erasable are NEW Worlds only (H01/H-02); no implicit rebind.
  */
 export const DataPolicySchema = Schema.Union([
   RetainedDataPolicySchema,
   ErasableDataPolicySchema,
   HostedRetainedDataPolicySchema,
+  HostedErasableDataPolicySchema,
 ]);
 export type DataPolicySchema = typeof DataPolicySchema.Type;
 export class DataPolicy extends Context.Service<DataPolicy, DataPolicySchema>()(

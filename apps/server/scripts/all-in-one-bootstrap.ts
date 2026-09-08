@@ -9,6 +9,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { NodeRuntime, NodeServices } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
+import { evaluateHostedErasableBootstrap } from "@zoen/authority/hosted/erasable/admission";
 import {
   Config,
   Effect,
@@ -523,6 +524,46 @@ const program = Effect.gen(function* bootstrapAllInOne() {
   const policy = resolveLocalWorldPolicy(worldPolicyId);
   if (policy === null) {
     return yield* new BootstrapError({ code: "INVALID_WORLD_POLICY" });
+  }
+  // ZA-14: hosted erasable bootstrap stays fail-closed without H-02.
+  // Refuse legacy app zoen, retained profiles, and retained bucket-name reuse.
+  if (policy.profileId === "worlds-hosted-erasable-v1") {
+    const appName = yield* Config.string("ZOEN_FLY_APP").pipe(
+      Config.withDefault("zoen-rebuild")
+    );
+    const volumeName = yield* Config.string("ZOEN_FLY_VOLUME").pipe(
+      Config.withDefault("zoen_data")
+    );
+    const candidate = {
+      appName,
+      bucketName: bucket,
+      imageDigest: "bootstrap-unbound",
+      installId: "bootstrap-unbound",
+      policyProfileId: policy.profileId,
+      volumeName,
+    };
+    const decision = evaluateHostedErasableBootstrap(candidate);
+    switch (decision.admitted) {
+      case true: {
+        break;
+      }
+      case false: {
+        const protectedRefusal =
+          decision.reason === "legacy-app-zoen" ||
+          decision.reason === "retained-bucket-name-reuse" ||
+          decision.reason === "retained-install-profile";
+        return yield* new BootstrapError({
+          code: protectedRefusal
+            ? `HOSTED_ERASABLE_REFUSED_${decision.reason}`
+            : `HOSTED_ERASABLE_BLOCKED_${decision.reason}`,
+        });
+      }
+      default: {
+        return yield* new BootstrapError({
+          code: "HOSTED_ERASABLE_BLOCKED_gates-incomplete",
+        });
+      }
+    }
   }
 
   const stateDir = installationPath.includes("/")
