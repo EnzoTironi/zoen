@@ -21,6 +21,7 @@ import {
   validateContext,
   withinRequestDeadline,
 } from "../../access/context.js";
+import { admitWorldContent } from "../../access/erasure/content.js";
 import { serializable } from "../../commit/transaction.js";
 import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
 import { CaptureState } from "../../ports/worlds/persistence.js";
@@ -80,17 +81,19 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
     const sql = yield* SqlClient.SqlClient;
     return yield* serializable(
       Effect.gen(function* reserveUpload() {
+        // Lock order: World head, then World content barrier/epoch, then capture insert.
         // Closing FOR UPDATE + identity-writes the World row; FOR SHARE + SSI
         // abort any reservation whose snapshot predates that Closing cut.
         yield* sql`SELECT world_id FROM authority.worlds
           WHERE world_id = ${world.worldId} AND realm = ${world.realm} FOR SHARE`;
         yield* requireImportPolicy(context, world);
+        const epoch = yield* admitWorldContent(world);
         const [row] = yield* sql`
         INSERT INTO jobs.captures
           (world_id, realm, capture_id, principal_id, state, object_location,
            expected_digest, byte_length, expires_at, fence, document_format)
         VALUES (${world.worldId}, ${world.realm}, ${captureId}, ${context.presence.principalId},
-          'reserved', NULL, ${digest}, ${bytes.byteLength}, clock_timestamp() + ${WorldLimits.stagingSeconds} * interval '1 second', 0, ${documentFormat})
+          'reserved', NULL, ${digest}, ${bytes.byteLength}, clock_timestamp() + ${WorldLimits.stagingSeconds} * interval '1 second', ${epoch}, ${documentFormat})
         RETURNING to_char(expires_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"') AS expires_at
       `;
         const deadline = yield* Schema.decodeUnknownEffect(
@@ -104,7 +107,7 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
           expectedBytes: bytes.byteLength,
           expectedDigest: digest,
           expiresAt: deadline.expires_at,
-          fence: "0",
+          fence: epoch,
           worldRef: world,
         }).pipe(
           Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
@@ -209,6 +212,11 @@ export const stageCapture = Effect.fn("authority.evidence.stageCapture")(
     yield* serializable(
       Effect.gen(function* confirmUpload() {
         yield* requireImportPolicy(context, reservation.worldRef);
+        const epoch = yield* admitWorldContent(reservation.worldRef);
+        if (epoch !== reservation.fence) {
+          // Delayed old-epoch work cannot publish after the World barrier advanced.
+          return yield* new Expired({ code: "EXPIRED" });
+        }
         const capture = yield* lockCapture(context, reservation);
         if (capture.state !== "reserved") {
           return yield* new Unavailable({ code: "UNAVAILABLE" });

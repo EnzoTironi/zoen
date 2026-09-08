@@ -26,6 +26,15 @@ export const registerPending = (
 ) =>
   connection.transaction(
     Effect.gen(function* insertPending() {
+      const worldClosed = yield* connection
+        .statement(
+          "SELECT EXISTS (SELECT FROM jobs.disclosure_world_closing WHERE world_key = $1) AS found",
+          [worldKey]
+        )
+        .pipe(Effect.flatMap(found));
+      if (worldClosed) {
+        return yield* new Unavailable({ code: "UNAVAILABLE" });
+      }
       const closing = yield* connection
         .statement(
           "SELECT EXISTS (SELECT FROM jobs.disclosure_session_closing WHERE session_key = $1) AS found",

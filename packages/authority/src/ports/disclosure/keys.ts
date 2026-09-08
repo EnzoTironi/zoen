@@ -21,8 +21,9 @@ export const membershipDisclosureKey = (
   ])}`;
 
 /**
- * World-scoped coordination for Closing vs emitters.
- * Emitters take shared first; Closing takes exclusive — bounded regardless of membership cardinality.
+ * World-scoped coordination for Closing vs emitters and the durable World
+ * closing barrier (`jobs.disclosure_world_closing`). Emitters take shared
+ * first; Closing takes exclusive — bounded regardless of membership cardinality.
  */
 export const worldDisclosureKey = (world: WorldRef): string =>
   `zoen:disclosure:world:v1:${JSON.stringify([world.realm, world.worldId])}`;

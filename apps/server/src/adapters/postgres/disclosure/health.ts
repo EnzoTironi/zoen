@@ -17,6 +17,7 @@ export const checkDisclosurePool = (pool: Pool) =>
         ('jobs.disclosure_subjects', 'SELECT'), ('jobs.disclosure_subjects', 'INSERT'),
         ('jobs.disclosure_pending', 'SELECT'), ('jobs.disclosure_pending', 'INSERT'), ('jobs.disclosure_pending', 'DELETE'),
         ('jobs.disclosure_session_closing', 'SELECT'), ('jobs.disclosure_session_closing', 'INSERT'),
+        ('jobs.disclosure_world_closing', 'SELECT'), ('jobs.disclosure_world_closing', 'INSERT'),
         ('jobs.disclosure_writer_epochs', 'SELECT'), ('jobs.disclosure_writer_epochs', 'INSERT'), ('jobs.disclosure_writer_epochs', 'UPDATE'),
         ('jobs.disclosure_recovery', 'SELECT'), ('jobs.disclosure_recovery', 'INSERT')
       ) AS required(relation, privilege)

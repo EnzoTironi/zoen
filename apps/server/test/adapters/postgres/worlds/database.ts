@@ -167,6 +167,17 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
             )
           ).pipe(Effect.provide(NodeFileSystem.layer));
           yield* sql.withTransaction(sql.unsafe(disclosureRecovery));
+          const worldClosing = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/014_world_closing_barrier.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(worldClosing));
           const identityBasis = yield* FileSystem.FileSystem.use((fs) =>
             fs.readFileString(
               fileURLToPath(

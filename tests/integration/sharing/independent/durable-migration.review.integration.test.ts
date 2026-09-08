@@ -36,7 +36,7 @@ const oldSnapshot = Effect.gen(function* oldSnapshot() {
 
 const coordinationSnapshot = SqlClient.SqlClient.use(
   (sql) =>
-    sql`SELECT 'subjects' AS kind, to_jsonb(s) AS row FROM jobs.disclosure_subjects s UNION ALL SELECT 'pending', to_jsonb(p) FROM jobs.disclosure_pending p UNION ALL SELECT 'closing', to_jsonb(c) FROM jobs.disclosure_session_closing c ORDER BY kind, row`
+    sql`SELECT 'subjects' AS kind, to_jsonb(s) AS row FROM jobs.disclosure_subjects s UNION ALL SELECT 'pending', to_jsonb(p) FROM jobs.disclosure_pending p UNION ALL SELECT 'closing', to_jsonb(c) FROM jobs.disclosure_session_closing c UNION ALL SELECT 'world_closing', to_jsonb(w) FROM jobs.disclosure_world_closing w ORDER BY kind, row`
 );
 const permissionDenied = {
   _tag: "SqlError",
@@ -94,11 +94,18 @@ it.live(
             expect(
               yield* authority`SELECT session_key FROM jobs.disclosure_session_closing`
             ).toStrictEqual([{ session_key: "session-review" }]);
+            yield* authority`INSERT INTO jobs.disclosure_subjects (subject_key, revision) VALUES ('world-review', 0) ON CONFLICT (subject_key) DO NOTHING`;
+            yield* authority`INSERT INTO jobs.disclosure_world_closing (world_key) VALUES ('world-review') ON CONFLICT (world_key) DO NOTHING`;
+            expect(
+              yield* authority`SELECT world_key FROM jobs.disclosure_world_closing`
+            ).toStrictEqual([{ world_key: "world-review" }]);
             for (const statement of [
               "DELETE FROM jobs.disclosure_subjects",
               "UPDATE jobs.disclosure_subjects SET subject_key = subject_key",
               "DELETE FROM jobs.disclosure_session_closing",
               "UPDATE jobs.disclosure_session_closing SET created_at = created_at",
+              "DELETE FROM jobs.disclosure_world_closing",
+              "UPDATE jobs.disclosure_world_closing SET created_at = created_at",
               "UPDATE jobs.disclosure_pending SET membership_key = membership_key",
               "UPDATE jobs.disclosure_pending SET session_key = session_key",
               "UPDATE jobs.disclosure_pending SET permit_id = permit_id",
@@ -117,6 +124,7 @@ it.live(
                 "disclosure_subjects",
                 "disclosure_pending",
                 "disclosure_session_closing",
+                "disclosure_world_closing",
               ]) {
                 for (const operation of [
                   "SELECT * FROM",
@@ -135,7 +143,8 @@ it.live(
             }).pipe(Effect.provide(role));
           }
           const recorded = yield* coordinationSnapshot;
-          expect(recorded).toHaveLength(4);
+          // 3 subjects (session/membership/world) + pending + session closing + world closing
+          expect(recorded).toHaveLength(6);
           const metadata =
             yield* sql`SELECT * FROM public.effect_sql_migrations ORDER BY migration_id`;
           expect(
@@ -157,9 +166,12 @@ it.live(
           ).toStrictEqual([]);
           expect(
             yield* sql`SELECT count(*)::int AS n FROM jobs.disclosure_subjects`
-          ).toStrictEqual([{ n: 2 }]);
+          ).toStrictEqual([{ n: 3 }]);
           expect(
             yield* sql`SELECT count(*)::int AS n FROM jobs.disclosure_session_closing`
+          ).toStrictEqual([{ n: 1 }]);
+          expect(
+            yield* sql`SELECT count(*)::int AS n FROM jobs.disclosure_world_closing`
           ).toStrictEqual([{ n: 1 }]);
         }).pipe(Effect.provide(database.migration)),
       undefined,

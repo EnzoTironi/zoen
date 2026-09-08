@@ -28,7 +28,8 @@ Fonte tip: `cae72de`. Sharing D03.1 (EX20–EX23) permanece o predecessor verifi
 | Bucket Object Lock em installs **novos** `worlds-local-erasable-v1` | **Cleared (provision)** — `ObjectLockEnabledForBucket` só quando `policy.erasure`; retained intacto |
 | Serviço controlador real / âncora anti-rollback (Fly all-in-one) | **Blocked** — volume único PG+RustFS; register local EX31 ≠ controlador qualificado |
 | Catálogo completo de backups/cópias | **Blocked** |
-| ER-R02 — barreira World + contenção de uploads | **Blocked** |
+| ER-R02 — barreira World (SQL/disclosure local) | **Cleared ZA-09** — `jobs.disclosure_world_closing` + admitted epoch on content paths; membership enumeration is not a substitute |
+| ER-R02 — contenção de uploads externos (late PUT) | **Blocked** — ZA-10; Object Lock/probe ≠ writer fence |
 | ER-R03 — restore online / ativação por head | **Blocked** (F04; `restoreAfterErasure:false`) |
 | Destruição física / prazo regulatório | **Blocked** |
 | Qualificação de pins locais superados por erasure | **Blocked** |

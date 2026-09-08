@@ -14,7 +14,8 @@ import { PrincipalId } from "../../ports/worlds/context.js";
  * One world-level exclusive advisory lock coordinates against emitters; subject
  * bumps and pending checks are set-based so membership cardinality cannot blow
  * the request deadline. A durable unacknowledged emission cannot be cleared by
- * timeout or process death.
+ * timeout or process death. On success, inserts the World closing barrier so
+ * later emitters fail closed without relying on membership enumeration alone.
  */
 export const fenceWorldDisclosures = Effect.fn(
   "authority.erasure.fenceWorldDisclosures"
@@ -69,5 +70,10 @@ export const fenceWorldDisclosures = Effect.fn(
       return yield* new Unavailable({ code: "UNAVAILABLE" });
     }
   }
+  // World barrier: durable Closing cut consulted by every emitter registration.
+  yield* sql`
+    INSERT INTO jobs.disclosure_world_closing (world_key) VALUES (${worldKey})
+    ON CONFLICT (world_key) DO NOTHING
+  `;
   return yield* Effect.void;
 });
