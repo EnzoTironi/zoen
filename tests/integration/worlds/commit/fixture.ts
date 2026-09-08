@@ -7,6 +7,7 @@ import {
   AuthorityInstallationSchema,
 } from "../../../../packages/authority/src/commit/configuration.js";
 import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
+import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
 import { ErasureObjectInventory } from "../../../../packages/authority/src/ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../../../../packages/authority/src/ports/erasure/purge.js";
 import {
@@ -41,6 +42,7 @@ export const configuration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
   Layer.succeed(DataPolicy, policy),
   ErasureAttemptRegister.unqualifiedLayer,
+  ErasureCopyCatalog.unqualifiedLayer,
   ErasureObjectInventory.unqualifiedLayer,
   ErasurePurgeStore.unqualifiedLayer
 );

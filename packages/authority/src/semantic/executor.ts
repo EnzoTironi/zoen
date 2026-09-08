@@ -52,6 +52,7 @@ import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.
 import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
 import { inspect } from "../knowledge/worlds/inspect.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
+import { ErasureCopyCatalog } from "../ports/erasure/copy-catalog.js";
 import { ErasureObjectInventory } from "../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../ports/erasure/purge.js";
 import {
@@ -482,13 +483,16 @@ export class SemanticExecutor extends Context.Service<
   );
 
   /**
-   * Default test/local surface: in-memory journal + fail-closed Zen + unqualified
-   * erasure inventory/purge (composition overrides with real Object Lock ports).
+   * Default test/local surface: in-memory journal + fail-closed Zen +
+   * unqualified erasure inventory/purge/copy-catalog (composition overrides
+   * with real Object Lock / profile adapters). Copy catalog stays fail-closed
+   * so Unknown/Incomplete never admit Full Erased.
    */
   static readonly layer = SemanticExecutor.layerWithoutEve.pipe(
     Layer.provide(EveJournal.stubMemoryLayer),
     Layer.provide(EveOpenCodeZen.blockedLayer),
     Layer.provide(ErasureObjectInventory.unqualifiedLayer),
-    Layer.provide(ErasurePurgeStore.unqualifiedLayer)
+    Layer.provide(ErasurePurgeStore.unqualifiedLayer),
+    Layer.provide(ErasureCopyCatalog.unqualifiedLayer)
   );
 }

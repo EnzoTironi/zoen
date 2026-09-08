@@ -45,6 +45,9 @@ describe("ZA-12 copy catalog laws", () => {
     expect(admitsFullErasureOrRestore("Incomplete")).toBeFalsy();
     expect(blocksAdmission("Unknown", "restore")).toBeTruthy();
     expect(blocksAdmission("Unknown", "full-erased")).toBeTruthy();
+  });
+
+  it("fail-closes Full Erased on Unaccounted/Unknown disposition", () => {
     expect(blocksAdmissionByDisposition("Unaccounted")).toBeTruthy();
     expect(blocksAdmissionByDisposition("Unknown")).toBeTruthy();
     expect(blocksAdmissionByDisposition("AccountedActive")).toBeFalsy();
