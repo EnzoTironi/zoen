@@ -207,7 +207,7 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
             fs.readFileString(
               fileURLToPath(
                 new URL(
-                  "../../../../../../ops/migrations/016_erasure_controller_head.sql",
+                  "../../../../../../ops/migrations/017_erasure_controller_head.sql",
                   import.meta.url
                 )
               )
