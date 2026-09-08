@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "worlds.v1",
+  "source": {
+    "namespace": "bakery.orders",
+    "externalId": "pedidos-clientes-2026-09-20",
+    "label": "Lista de pedidos dos clientes — 20/09",
+    "revision": "1"
+  },
+  "records": [
+    {
+      "externalId": "bolo-casamento-2026-09-20",
+      "predicate": "obligation.amount",
+      "subjectKey": "pedido-bolo-casamento-2026-09-20",
+      "validTime": {
+        "_tag": "DateInterval",
+        "from": "2026-09-20",
+        "to": "2026-09-21"
+      },
+      "value": {
+        "_tag": "Known",
+        "amount": "450.00",
+        "currency": "BRL"
+      }
+    },
+    {
+      "externalId": "kit-festa-2026-09-20",
+      "predicate": "obligation.amount",
+      "subjectKey": "pedido-kit-festa-2026-09-20",
+      "validTime": {
+        "_tag": "DateInterval",
+        "from": "2026-09-20",
+        "to": "2026-09-21"
+      },
+      "value": {
+        "_tag": "Known",
+        "amount": "180.00",
+        "currency": "BRL"
+      }
+    }
+  ]
+}
