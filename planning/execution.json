@@ -550,9 +550,10 @@
       ],
       "owns": [
         "packages/ontology/src/evidence/**",
-        "packages/ontology/src/knowledge/**",
+        "packages/ontology/src/knowledge/claims.ts",
+        "packages/ontology/src/knowledge/selection.ts",
         "packages/ontology/test/evidence/**",
-        "packages/ontology/test/knowledge/**"
+        "packages/ontology/test/knowledge/selection.EX08.test.ts"
       ],
       "status": "planned",
       "reviewer": "worker-3",
