@@ -14,6 +14,68 @@ export interface HostedInstallationFile {
   readonly policy: unknown;
 }
 
+/** Admitted install policy profile ids after ZA-03 (no dual-read). */
+const CURRENT_POLICY_PROFILE_IDS = new Set([
+  "worlds-local-retained-v1",
+  "worlds-local-erasable-v1",
+  "worlds-hosted-retained-v1",
+]);
+
+/**
+ * One-shot pre-launch delivery→descriptive rewrite for known persisted
+ * installation.json policy literals. Unknown ids fail closed — no shim.
+ */
+const LEGACY_POLICY_PROFILE_IDS: Readonly<Record<string, string>> = {
+  "d03-local-erasable-v1": "worlds-local-erasable-v1",
+  "d04-hosted-retained-v1": "worlds-hosted-retained-v1",
+};
+
+export type HostedPolicyAlignResult =
+  | { readonly kind: "unchanged"; readonly policy: unknown }
+  | {
+      readonly from: string;
+      readonly kind: "rewritten";
+      readonly policy: unknown;
+      readonly to: string;
+    }
+  | {
+      readonly code: "UNSUPPORTED_INSTALLATION_POLICY";
+      readonly kind: "error";
+    };
+
+/**
+ * Rewrite known ZA-03 legacy profileId literals on installation.json policy.
+ * Current ids pass through; unknown ids fail closed (no product dual-read).
+ */
+export const alignHostedInstallationPolicy = (
+  policy: unknown
+): HostedPolicyAlignResult => {
+  if (
+    typeof policy !== "object" ||
+    policy === null ||
+    !("profileId" in policy)
+  ) {
+    return { code: "UNSUPPORTED_INSTALLATION_POLICY", kind: "error" };
+  }
+  const profileId: unknown = Reflect.get(policy, "profileId");
+  if (typeof profileId !== "string") {
+    return { code: "UNSUPPORTED_INSTALLATION_POLICY", kind: "error" };
+  }
+  if (CURRENT_POLICY_PROFILE_IDS.has(profileId)) {
+    return { kind: "unchanged", policy };
+  }
+  const nextId = LEGACY_POLICY_PROFILE_IDS[profileId];
+  if (nextId === undefined) {
+    return { code: "UNSUPPORTED_INSTALLATION_POLICY", kind: "error" };
+  }
+  return {
+    from: profileId,
+    kind: "rewritten",
+    policy: { ...policy, profileId: nextId },
+    to: nextId,
+  };
+};
+
 /**
  * Pure projection of an installation onto a target release digest.
  * ZA-06: automatic bootstrap must NOT apply this on mismatch — use
@@ -116,48 +178,74 @@ export type ReleaseAlignPlan =
       readonly generationId: string;
       readonly kind: "ready";
       readonly releaseDigest: string;
+      /**
+       * Same-release policy rewrite only (ZA-03 legacy profile ids). Digest
+       * mismatch never populates this — that path is RESET_REQUIRED (ZA-06).
+       */
+      readonly rewriteInstallation: {
+        readonly next: HostedInstallationFile;
+        readonly previousDigest: string;
+      } | null;
     }
   | {
       readonly code:
         | "INVALID_INSTALLATION_FILE"
         | "RUNTIME_ENV_MISSING_AUTHORITY"
         | "RUNTIME_ENV_MALFORMED"
-        | "RESET_REQUIRED";
+        | "RESET_REQUIRED"
+        | "UNSUPPORTED_INSTALLATION_POLICY";
       readonly kind: "error";
       /** Present when code is RESET_REQUIRED — installed vs image digests. */
       readonly installedDigest?: string;
       readonly releaseDigest?: string;
     };
 
-export interface ReleaseAlignStep {
-  readonly authorityUrl: string;
-  readonly cellId: string;
-  readonly generationId: string;
-  readonly releaseDigest: string;
-  readonly step: "reconcile-worlds";
-}
+export type ReleaseAlignStep =
+  | {
+      readonly authorityUrl: string;
+      readonly cellId: string;
+      readonly generationId: string;
+      readonly releaseDigest: string;
+      readonly step: "reconcile-worlds";
+    }
+  | {
+      readonly next: HostedInstallationFile;
+      readonly previousDigest: string;
+      readonly step: "rewrite-installation";
+    };
 
 /**
- * Same-release restart only: reconcile worlds to the pinned installation
- * digest. Digest mismatch is never a rewrite step (ZA-06 fail-closed).
+ * Ordered side effects for a ready plan. Worlds reconcile always runs first.
+ * Optional installation rewrite is policy-only on the same release digest
+ * (ZA-03); digest mismatch never reaches ready (ZA-06).
  */
 export const releaseAlignSteps = (
   plan: Extract<ReleaseAlignPlan, { readonly kind: "ready" }>
-): readonly ReleaseAlignStep[] => [
-  {
-    authorityUrl: plan.authorityUrl,
-    cellId: plan.cellId,
-    generationId: plan.generationId,
-    releaseDigest: plan.releaseDigest,
-    step: "reconcile-worlds",
-  },
-];
+): readonly ReleaseAlignStep[] => {
+  const steps: ReleaseAlignStep[] = [
+    {
+      authorityUrl: plan.authorityUrl,
+      cellId: plan.cellId,
+      generationId: plan.generationId,
+      releaseDigest: plan.releaseDigest,
+      step: "reconcile-worlds",
+    },
+  ];
+  if (plan.rewriteInstallation !== null) {
+    steps.push({
+      next: plan.rewriteInstallation.next,
+      previousDigest: plan.rewriteInstallation.previousDigest,
+      step: "rewrite-installation",
+    });
+  }
+  return steps;
+};
 
 /**
  * Decide whether a volume with `.bootstrap-complete` may continue on this
- * image. Same digest → ready (reconcile worlds). Different digest →
- * RESET_REQUIRED (explicit named local reset or admitted migration; never
- * silent digest replacement).
+ * image. Different digest → RESET_REQUIRED (ZA-06; never silent digest
+ * replacement). Same digest → ready, optionally rewriting known ZA-03 legacy
+ * policy profile ids in installation.json.
  */
 export const planReleaseAlign = (
   installationText: string,
@@ -174,6 +262,14 @@ export const planReleaseAlign = (
   if (hosted === null) {
     return { code: "INVALID_INSTALLATION_FILE", kind: "error" };
   }
+  const policyAlign = alignHostedInstallationPolicy(hosted.policy);
+  if (policyAlign.kind === "error") {
+    return { code: policyAlign.code, kind: "error" };
+  }
+  const withPolicy: HostedInstallationFile =
+    policyAlign.kind === "rewritten"
+      ? { installation: hosted.installation, policy: policyAlign.policy }
+      : hosted;
   const runtimeEnv = parseQuotedEnvFile(runtimeEnvText);
   if (runtimeEnv === null) {
     return { code: "RUNTIME_ENV_MALFORMED", kind: "error" };
@@ -202,5 +298,12 @@ export const planReleaseAlign = (
     generationId,
     kind: "ready",
     releaseDigest,
+    rewriteInstallation:
+      policyAlign.kind === "rewritten"
+        ? {
+            next: withPolicy,
+            previousDigest: installedDigest,
+          }
+        : null,
   };
 };

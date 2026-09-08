@@ -150,6 +150,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         new URL("012_orphaned_disclosure_recovery.sql", import.meta.url)
       )
     );
+    const policyIds = yield* fs.readFileString(
+      fileURLToPath(new URL("013_za03_policy_profile_ids.sql", import.meta.url))
+    );
     const extension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
@@ -157,6 +160,7 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         "12_orphaned_disclosure_recovery": sql
           .unsafe(recovery)
           .pipe(Effect.asVoid),
+        "13_za03_policy_profile_ids": sql.unsafe(policyIds).pipe(Effect.asVoid),
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),
     });

@@ -102,8 +102,8 @@ Active wire and install identifiers use descriptive contract versions (not deliv
 | SQL baseline `001_d01_authority` / `002_d01_identity` | `001_authority` / `002_identity` |
 | Object inventory dual-read `d01/` + `worlds/` | Canonical `worlds/` only |
 
-Already descriptive and unchanged: `worlds-local-retained-v1`. Frozen legacy EX25 harness still admits `d01-local-retained-v1` against the pre-identity executable only; migration `011` continues to rewrite that stored id on current installs.
+Already descriptive and unchanged: `worlds-local-retained-v1`. Frozen legacy EX25 harness still admits `d01-local-retained-v1` against the pre-identity executable only; migration `011` continues to rewrite that stored id on current installs. Migration `013` one-shot rewrites `d03-local-erasable-v1` / `d04-hosted-retained-v1` World rows to the descriptive ids; hosted bootstrap/align atomically rewrites the same known literals in `installation.json` and fails closed on unknown policy ids.
 
-**No shims / dual-read / dual-write.** Old routes and schema literals are rejected.
+**No shims / dual-read / dual-write.** Old routes and schema literals are rejected at product decode; known pre-launch delivery policy ids are rewritten once on migrate/bootstrap, not dual-read forever.
 
-**Local reset:** disposable profile installs that applied the previous migrator ids or policy literals must be recreated (`pnpm staging:reset` for owned staging inventory, or an equivalent explicit disposable wipe). Do not edit already-applied migration bytes in place and keep using the same DB. Hosted / unlisted / foreign profiles remain refused by reset and provision tooling (ZA-04 ownership inventory).
+**Local reset:** disposable profile installs that applied the previous migrator ids or policy literals must be recreated (`pnpm staging:reset` for owned staging inventory, or an equivalent explicit disposable wipe). Do not edit already-applied migration bytes in place and keep using the same DB. Hosted / unlisted / foreign profiles remain refused by reset and provision tooling (ZA-04 ownership inventory); persistent hosted volumes rely on the one-shot policy rewrite above instead of wipe.

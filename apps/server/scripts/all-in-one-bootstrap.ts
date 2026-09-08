@@ -150,12 +150,15 @@ const maybeCrashAfter = (stage: string) =>
   });
 
 const alignExistingHostedRelease = (input: {
+  readonly encodeInstallation: typeof encodeJson;
   readonly fs: FileSystem.FileSystem;
   readonly installationPath: string;
   readonly releaseFile: string;
   readonly runtimeEnvPath: string;
 }) =>
   applyHostedReleaseAlign({
+    encodeInstallation: (value) =>
+      input.encodeInstallation(value).pipe(Effect.orDie),
     fs: input.fs,
     installationPath: input.installationPath,
     reconcileWorlds: (step) =>
@@ -324,6 +327,7 @@ const bootstrapSameReleaseRestart = (input: {
     // RESET_REQUIRED (no silent rewrite). Leave a seam for ZA-08 admitted
     // same-release schema migrate on existing volumes AFTER this check.
     yield* alignExistingHostedRelease({
+      encodeInstallation: encodeJson,
       fs,
       installationPath,
       releaseFile,
