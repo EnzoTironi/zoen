@@ -16,15 +16,21 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from admission import (  # noqa: E402
     AdmissionError,
     refuse_unusable_verify_conclusion,
+    select_qualifying_verify_run,
     validate_admission,
 )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--admission", type=Path, required=True)
-    parser.add_argument("--commit", required=True, help="Full git SHA being deployed")
-    parser.add_argument("--event-name", required=True, choices=("push", "workflow_dispatch"))
+    parser.add_argument(
+        "--select-verify-run",
+        action="store_true",
+        help="Read gh run list JSON from stdin; print newest qualifying main-push run JSON (or empty)",
+    )
+    parser.add_argument("--admission", type=Path, default=None)
+    parser.add_argument("--commit", default=None, help="Full git SHA being deployed")
+    parser.add_argument("--event-name", default=None, choices=("push", "workflow_dispatch"))
     parser.add_argument("--verify-conclusion", default=None)
     parser.add_argument("--verify-run-id", type=int, default=None)
     parser.add_argument(
@@ -34,6 +40,19 @@ def main() -> int:
         choices=("reference", "image_id", "digest", "intent"),
     )
     args = parser.parse_args()
+
+    if args.select_verify_run:
+        rows = json.load(sys.stdin)
+        if not isinstance(rows, list):
+            raise AdmissionError("verify run list must be a JSON array")
+        selected = select_qualifying_verify_run(rows)
+        if selected is None:
+            return 0
+        print(json.dumps(selected, separators=(",", ":")))
+        return 0
+
+    if args.admission is None or args.commit is None or args.event_name is None:
+        raise AdmissionError("--admission, --commit, and --event-name are required unless --select-verify-run")
 
     intent = refuse_unusable_verify_conclusion(args.verify_conclusion, event_name=args.event_name)
     if intent == "no-deploy":

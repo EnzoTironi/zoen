@@ -157,6 +157,7 @@ def main() -> int:
         "profile": PROFILE_ALL_IN_ONE,
         "commit": commit,
         "ref": os.environ.get("GITHUB_REF"),
+        "event": os.environ.get("GITHUB_EVENT_NAME"),
         "workflow": "verify.yml",
         "run_id": int(os.environ["GITHUB_RUN_ID"]) if os.environ.get("GITHUB_RUN_ID") else None,
         "run_attempt": int(os.environ["GITHUB_RUN_ATTEMPT"]) if os.environ.get("GITHUB_RUN_ATTEMPT") else None,

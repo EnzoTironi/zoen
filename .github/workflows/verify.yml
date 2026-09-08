@@ -124,6 +124,7 @@ jobs:
       - name: Qualify exact all-in-one artifact (ZA-07)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Only main-push Verify publishes a registry digest; Deploy binds to that run only.
           ZOEN_EXACT_IMAGE_PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '1' || '0' }}
         run: python3 tests/integration/hosted/exact_image/qualify.py
       - name: Upload exact-image admission evidence

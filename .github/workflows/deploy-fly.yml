@@ -26,6 +26,9 @@ jobs:
             exit 1
           fi
 
+      # Checkout before verify_gate so deploy_gate.py can select the qualifying main-push run.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
       - name: Wait for Verify success on this commit
         id: verify_gate
         env:
@@ -36,18 +39,18 @@ jobs:
           EVENT="${{ github.event_name }}"
           echo "Waiting for Verify (verify.yml) on ${SHA} (event=${EVENT})"
           for _ in $(seq 1 120); do
-            rows="$(gh run list --repo "${{ github.repository }}" --workflow verify.yml --commit "${SHA}" --limit 5 --json databaseId,status,conclusion,createdAt,event)"
-            # Prefer the newest run for this commit; do not pick a stale success over a newer failure.
-            newest="$(echo "${rows}" | jq -c 'sort_by(.createdAt) | reverse | .[0] // empty')"
+            rows="$(gh run list --repo "${{ github.repository }}" --workflow verify.yml --commit "${SHA}" --limit 20 --json databaseId,status,conclusion,createdAt,event,headBranch)"
+            # Only main-push Verify runs publish the registry digest; ignore newer PR/non-main runs.
+            newest="$(printf '%s' "${rows}" | python3 tests/integration/hosted/exact_image/deploy_gate.py --select-verify-run)"
             if [ -z "${newest}" ] || [ "${newest}" = "null" ]; then
-              echo "status=none conclusion=none"
+              echo "status=none conclusion=none (no qualifying main-push Verify run yet)"
               sleep 30
               continue
             fi
             status="$(echo "${newest}" | jq -r '.status // empty')"
             conclusion="$(echo "${newest}" | jq -r '.conclusion // empty')"
             run_id="$(echo "${newest}" | jq -r '.databaseId // empty')"
-            echo "run_id=${run_id} status=${status:-none} conclusion=${conclusion:-none}"
+            echo "run_id=${run_id} status=${status:-none} conclusion=${conclusion:-none} (qualifying main-push)"
             if [ "${status}" = "completed" ]; then
               echo "verify_run_id=${run_id}" >> "$GITHUB_OUTPUT"
               echo "verify_conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
@@ -74,9 +77,6 @@ jobs:
           done
           echo "Timed out waiting for Verify on ${SHA}"
           exit 1
-
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        if: steps.verify_gate.outputs.deploy == 'true'
 
       - name: Download exact-image admission for this Verify run
         if: steps.verify_gate.outputs.deploy == 'true'

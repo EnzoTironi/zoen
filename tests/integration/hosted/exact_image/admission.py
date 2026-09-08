@@ -7,7 +7,7 @@ app-only container proof is a different profile and never substitutes.
 
 from __future__ import annotations
 
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 SCHEMA = "zoen.exact-image-admission/v1"
 PROFILE_ALL_IN_ONE = "all-in-one"
@@ -92,6 +92,12 @@ def validate_admission(
     digest = image.get("digest")
     reference = image.get("reference")
     if require_registry_digest:
+        # Digests are only published on main push (see verify.yml ZOEN_EXACT_IMAGE_PUSH).
+        ref = doc.get("ref")
+        _require(ref == "refs/heads/main", "admission.ref must be refs/heads/main when a registry digest is required")
+        event = doc.get("event")
+        if event is not None:
+            _require(event == "push", "admission.event must be push when a registry digest is required")
         digest_s = _nonempty_str(digest, "admission.image.digest")
         _require(digest_s.startswith("sha256:"), "admission.image.digest must be sha256:…")
         reference_s = _nonempty_str(reference, "admission.image.reference")
@@ -115,6 +121,37 @@ def validate_admission(
         "repository": image.get("repository"),
         "profile": PROFILE_ALL_IN_ONE,
     }
+
+
+def select_qualifying_verify_run(
+    rows: Sequence[Mapping[str, Any]],
+) -> dict[str, Any] | None:
+    """Pick the newest main-push Verify run for deploy admission.
+
+    Only a push to `main` enables registry digest publication. Pull-request and
+    non-main pushes for the same SHA must not win merely by being newer.
+    Returns None when no qualifying candidate exists (fail closed / keep waiting).
+    """
+    qualifying: list[Mapping[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        if row.get("event") != "push":
+            continue
+        # Require explicit main; missing headBranch is not guessed (fail closed).
+        if row.get("headBranch") != "main":
+            continue
+        qualifying.append(row)
+
+    if not qualifying:
+        return None
+
+    def sort_key(row: Mapping[str, Any]) -> str:
+        created = row.get("createdAt")
+        return created if isinstance(created, str) else ""
+
+    newest = sorted(qualifying, key=sort_key, reverse=True)[0]
+    return dict(newest)
 
 
 def refuse_substituted_digest(
