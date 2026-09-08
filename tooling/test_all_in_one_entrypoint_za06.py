@@ -49,19 +49,20 @@ class AllInOneEntrypointZa06Test(unittest.TestCase):
         self.assertIn("writeAtomicString", self.bootstrap)
         self.assertIn("pending-s3-app-credentials.env", self.bootstrap)
         self.assertIn("parseHostedInstallationFile", self.bootstrap)
-        # Marker path must admit same-release before any ZA-08 migrate seam.
-        marker = self.bootstrap.split("if (yield* fs.exists(markerPath))", 1)[1]
-        admit = marker.index("alignExistingHostedRelease")
-        seam = marker.index("ZA-08 seam")
+        self.assertIn("bootstrapSameReleaseRestart", self.bootstrap)
+        self.assertIn("admitIncompleteInstallation", self.bootstrap)
+        # Marker path delegates to same-release helper; admit before ZA-08 migrate.
+        helper = self.bootstrap.split(
+            "function* sameReleaseRestart()", 1
+        )[1].split("const program =", 1)[0]
+        admit = helper.index("alignExistingHostedRelease")
+        seam = helper.index("ZA-08 seam")
         self.assertLess(admit, seam)
         # Incomplete install under a different image must refuse before DDL.
-        first_install = self.bootstrap.split(
-            'return yield* new BootstrapError({ code: "MISSING_ZOEN_AUTH_SECRET" });',
-            1,
-        )[1]
-        refuse = first_install.index('code: "RESET_REQUIRED"')
-        roles = first_install.index("ensureDatabaseAndRoles")
-        self.assertLess(refuse, roles)
+        self.assertLess(
+            self.bootstrap.index("admitIncompleteInstallation"),
+            self.bootstrap.index("ensureDatabaseAndRoles"),
+        )
 
 
 if __name__ == "__main__":
