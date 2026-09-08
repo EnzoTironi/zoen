@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "worlds.v1",
+  "source": {
+    "namespace": "clinic.fees",
+    "externalId": "tabela-honorarios-2026-09-22",
+    "label": "Tabela de honorários — 22/09",
+    "revision": "1"
+  },
+  "records": [
+    {
+      "externalId": "consulta-ortodontia-2026-09-22",
+      "predicate": "obligation.amount",
+      "subjectKey": "compromisso-consulta-ortodontia-2026-09-22",
+      "validTime": {
+        "_tag": "DateInterval",
+        "from": "2026-09-22",
+        "to": "2026-09-23"
+      },
+      "value": {
+        "_tag": "Known",
+        "amount": "350.00",
+        "currency": "BRL"
+      }
+    },
+    {
+      "externalId": "limpeza-preventiva-2026-09-25",
+      "predicate": "obligation.amount",
+      "subjectKey": "compromisso-limpeza-preventiva-2026-09-25",
+      "validTime": {
+        "_tag": "DateInterval",
+        "from": "2026-09-25",
+        "to": "2026-09-26"
+      },
+      "value": {
+        "_tag": "Known",
+        "amount": "200.00",
+        "currency": "BRL"
+      }
+    }
+  ]
+}

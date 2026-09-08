@@ -19,3 +19,7 @@ The same verbs support the doméstico / household tracer bullet: import two ordi
 ## Bakery order journey (ZA-23)
 
 The same verbs support the confeitaria / bakery tracer bullet: import customer order vs shop production lists, `inspect` one order `subjectKey`, propose/confirm/undo a scoped correction, and share/revoke with an ordinary viewer. Example documents live in `docs/product/examples/bakery-order-list-*.json`. Product narrative: [docs/product/bakery-order-reconciliation.md](../../../../docs/product/bakery-order-reconciliation.md). Recipe grams/stock quantities are not admitted currencies — unsupported inputs fail closed. Do not invent bakery-specific authorization branches.
+
+## Clinic administrative journey (ZA-24)
+
+The same verbs support the clínica / clinic administrative tracer bullet: import agenda vs fee-schedule lists, `inspect` one appointment `subjectKey`, propose/confirm a scoped correction, `open` permitted evidence, and share/revoke with an ordinary viewer. Example documents live in `docs/product/examples/clinic-appointment-agenda.json` and `clinic-fee-schedule.json`. Product narrative: [docs/product/clinic-administrative-scope.md](../../../../docs/product/clinic-administrative-scope.md). Clinical predicates/fields are not in the admitted wire schema — unsupported inputs fail closed before retrieval; no clinical corpus is sent to models. Do not invent clinic-specific authorization branches or activate Eve.
