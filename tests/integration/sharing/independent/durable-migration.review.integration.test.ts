@@ -17,7 +17,7 @@ const oldSnapshot = Effect.gen(function* oldSnapshot() {
   const tables = yield* sql<{
     schema: string;
     name: string;
-  }>`SELECT n.nspname AS schema, c.relname AS name FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ('authority', 'identity', 'jobs') AND c.relkind = 'r' AND c.relname NOT LIKE 'disclosure_%' ORDER BY 1, 2`;
+  }>`SELECT n.nspname AS schema, c.relname AS name FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ('authority', 'identity', 'jobs') AND c.relkind = 'r' AND c.relname NOT LIKE 'disclosure_%' AND c.relname NOT LIKE 'world_erasure_%' ORDER BY 1, 2`;
   const rows: Record<string, unknown> = {};
   for (const table of tables) {
     rows[`${table.schema}.${table.name}`] =
@@ -26,9 +26,9 @@ const oldSnapshot = Effect.gen(function* oldSnapshot() {
   const migrations =
     yield* sql`SELECT * FROM public.effect_sql_migrations WHERE migration_id <= 5 ORDER BY migration_id`;
   const tableRights =
-    yield* sql`SELECT n.nspname, c.relname, c.relowner, c.relacl FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ('authority', 'identity', 'jobs') AND c.relkind = 'r' AND c.relname NOT LIKE 'disclosure_%' ORDER BY 1, 2`;
+    yield* sql`SELECT n.nspname, c.relname, c.relowner, c.relacl FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ('authority', 'identity', 'jobs') AND c.relkind = 'r' AND c.relname NOT LIKE 'disclosure_%' AND c.relname NOT LIKE 'world_erasure_%' ORDER BY 1, 2`;
   const columnRights =
-    yield* sql`SELECT n.nspname, c.relname, a.attname, a.attacl FROM pg_attribute a JOIN pg_class c ON c.oid = a.attrelid JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ('authority', 'identity', 'jobs') AND c.relkind = 'r' AND c.relname NOT LIKE 'disclosure_%' AND a.attnum > 0 AND NOT a.attisdropped ORDER BY 1, 2, 3`;
+    yield* sql`SELECT n.nspname, c.relname, a.attname, a.attacl FROM pg_attribute a JOIN pg_class c ON c.oid = a.attrelid JOIN pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname IN ('authority', 'identity', 'jobs') AND c.relkind = 'r' AND c.relname NOT LIKE 'disclosure_%' AND c.relname NOT LIKE 'world_erasure_%' AND a.attnum > 0 AND NOT a.attisdropped ORDER BY 1, 2, 3`;
   const schemaRights =
     yield* sql`SELECT nspname, nspowner, nspacl FROM pg_namespace WHERE nspname IN ('authority', 'identity', 'jobs', 'public') ORDER BY nspname`;
   return { columnRights, migrations, rows, schemaRights, tableRights };
