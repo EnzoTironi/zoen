@@ -1,4 +1,5 @@
 import type {
+  AttemptId,
   ConversationId,
   EveEvidenceLink,
   EveVisibleMessage,
@@ -14,9 +15,14 @@ import {
 } from "@zoen/contracts/eve/web-speech";
 import { Blocked, Unavailable } from "@zoen/contracts/worlds/errors";
 import type { Conflict, NotFoundOrDenied } from "@zoen/contracts/worlds/errors";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
+// oxlint-disable-next-line typescript/consistent-type-imports -- Schema value for typeof Purpose.Type
+import { Purpose } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 
+// oxlint-disable-next-line typescript/consistent-type-imports -- Schema value for typeof PrincipalId.Type
+import { PrincipalId } from "../worlds/context.js";
 import type { EveJournal } from "./journal.js";
 import type { EveOpenCodeZen } from "./opencode-zen.js";
 import { runEveTurn } from "./turn.js";
@@ -39,16 +45,20 @@ export {
 export type { EveSpeechHost } from "@zoen/contracts/eve/web-speech";
 
 export interface RunEveVoiceTurnInput {
+  readonly attemptId: AttemptId;
   readonly capabilities: EveWebSpeechCapabilities;
   readonly conversationId: ConversationId;
   readonly evidenceLinks?: readonly EveEvidenceLink[];
   readonly ingressId: IngressId;
   readonly messageId: MessageId;
+  readonly ownerPrincipalId: typeof PrincipalId.Type;
+  readonly purpose: typeof Purpose.Type;
   readonly relationshipId: RelationshipId;
   readonly signal?: AbortSignal;
   readonly systemText?: string;
   readonly transcript: string;
   readonly turnId: TurnId;
+  readonly worldRef?: WorldRef | null;
 }
 
 export interface RunEveVoiceTurnResult {
@@ -89,14 +99,18 @@ export const runEveVoiceTurn = (
     }
 
     const result = yield* runEveTurn({
+      attemptId: input.attemptId,
       conversationId: input.conversationId,
       ingressId: input.ingressId,
       messageId: input.messageId,
+      ownerPrincipalId: input.ownerPrincipalId,
       profileId: "eve-web-speech-v1",
       providerAdmission: "web-speech",
+      purpose: input.purpose,
       relationshipId: input.relationshipId,
       turnId: input.turnId,
       userText: trimmed,
+      worldRef: input.worldRef ?? null,
       ...(input.evidenceLinks === undefined
         ? {}
         : { evidenceLinks: input.evidenceLinks }),

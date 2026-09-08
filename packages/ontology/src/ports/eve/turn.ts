@@ -1,4 +1,5 @@
 import type {
+  AttemptId,
   ConversationId,
   EveEvidenceLink,
   EveProfileId,
@@ -17,20 +18,27 @@ import {
   Unavailable,
 } from "@zoen/contracts/worlds/errors";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
+// oxlint-disable-next-line typescript/consistent-type-imports -- Schema value for typeof Purpose.Type
+import { Purpose } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 import type { Effect as EffectType } from "effect";
 
+// oxlint-disable-next-line typescript/consistent-type-imports -- Schema value for typeof PrincipalId.Type
+import { PrincipalId } from "../worlds/context.js";
 import { uncertaintyFromEvidenceBasis } from "./admission.js";
 import { EveJournal } from "./journal.js";
 import { EveOpenCodeZen } from "./opencode-zen.js";
 
 export interface RunEveTurnInput {
+  readonly attemptId: AttemptId;
   readonly conversationId: ConversationId;
   readonly evidenceLinks?: readonly EveEvidenceLink[];
   readonly ingressId: IngressId;
   readonly messageId: MessageId;
+  readonly ownerPrincipalId: typeof PrincipalId.Type;
   readonly profileId: EveProfileId;
   readonly providerAdmission: EveProviderAdmission;
+  readonly purpose: typeof Purpose.Type;
   readonly relationshipId: RelationshipId;
   readonly signal?: AbortSignal;
   readonly systemText?: string;
@@ -62,6 +70,7 @@ export const runEveTurn = (
   Effect.gen(function* turn() {
     const journal = yield* EveJournal;
     const model = yield* EveOpenCodeZen;
+    const worldRef = input.worldRef ?? null;
 
     if (input.providerAdmission === "voice-blocked") {
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
@@ -89,14 +98,17 @@ export const runEveTurn = (
     }
 
     const accepted = yield* journal.acceptTurn({
+      attemptId: input.attemptId,
       conversationId: input.conversationId,
       ingressId: input.ingressId,
+      ownerPrincipalId: input.ownerPrincipalId,
       profileId: input.profileId,
       providerAdmission: input.providerAdmission,
+      purpose: input.purpose,
       relationshipId: input.relationshipId,
       turnId: input.turnId,
       userText: input.userText,
-      worldRef: input.worldRef ?? null,
+      worldRef,
     });
 
     const signalAborted = (): boolean =>
@@ -104,7 +116,10 @@ export const runEveTurn = (
     if (signalAborted()) {
       yield* journal.cancelTurn({
         conversationId: input.conversationId,
+        ownerPrincipalId: input.ownerPrincipalId,
+        purpose: input.purpose,
         turnId: input.turnId,
+        worldRef,
       });
       return yield* new Unavailable({ code: "UNAVAILABLE" });
     }
@@ -112,12 +127,16 @@ export const runEveTurn = (
     // Stub-local offline proofs settle a deterministic placeholder without network.
     if (input.providerAdmission === "stub-local") {
       const message = yield* journal.settleMessage({
+        attemptId: input.attemptId,
         conversationId: input.conversationId,
         evidenceLinks: [...(input.evidenceLinks ?? [])],
         messageId: input.messageId,
+        ownerPrincipalId: input.ownerPrincipalId,
+        purpose: input.purpose,
         turnId: input.turnId,
         uncertainty: "Partial",
         visibleText: "[stub-local] offline proof — not a live model reply",
+        worldRef,
       });
       return {
         message,
@@ -139,7 +158,10 @@ export const runEveTurn = (
           yield* journal
             .cancelTurn({
               conversationId: input.conversationId,
+              ownerPrincipalId: input.ownerPrincipalId,
+              purpose: input.purpose,
               turnId: input.turnId,
+              worldRef,
             })
             .pipe(Effect.ignore);
           return yield* error;
@@ -151,14 +173,22 @@ export const runEveTurn = (
       yield* journal
         .cancelTurn({
           conversationId: input.conversationId,
+          ownerPrincipalId: input.ownerPrincipalId,
+          purpose: input.purpose,
           turnId: input.turnId,
+          worldRef,
         })
         .pipe(Effect.ignore);
       return yield* new Unavailable({ code: "UNAVAILABLE" });
     }
 
     // Re-check journal phase — cancel may have won the race.
-    const snapshot = yield* journal.recover(input.conversationId);
+    const snapshot = yield* journal.recover({
+      conversationId: input.conversationId,
+      ownerPrincipalId: input.ownerPrincipalId,
+      purpose: input.purpose,
+      worldRef,
+    });
     const current = snapshot.turns.find((t) => t.turnId === input.turnId);
     if (current === undefined) {
       return yield* new NotFoundOrDenied({ code: "NOT_FOUND_OR_DENIED" });
@@ -172,9 +202,12 @@ export const runEveTurn = (
     // ZA-19 resolves + authorizes citations for this world/principal/claim,
     // settle Partial even when callers supply structurally valid links.
     const message = yield* journal.settleMessage({
+      attemptId: input.attemptId,
       conversationId: input.conversationId,
       evidenceLinks,
       messageId: input.messageId,
+      ownerPrincipalId: input.ownerPrincipalId,
+      purpose: input.purpose,
       turnId: input.turnId,
       uncertainty: uncertaintyFromEvidenceBasis({
         citationsAuthorized: false,
@@ -182,6 +215,7 @@ export const runEveTurn = (
         generatedText: completion.visibleText,
       }),
       visibleText: completion.visibleText,
+      worldRef,
     });
 
     return {

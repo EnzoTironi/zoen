@@ -1,5 +1,6 @@
 import { describe, expect, it } from "@effect/vitest";
 import {
+  AttemptId,
   ConversationId,
   IngressId,
   MessageId,
@@ -14,6 +15,7 @@ import {
   isAdmittedProvider,
   isLiveProviderBlocked,
 } from "../../../src/ports/eve/journal.js";
+import { PrincipalId } from "../../../src/ports/worlds/context.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
   "00000000-0000-4000-8000-000000000201"
@@ -35,6 +37,22 @@ const messageA = Schema.decodeSync(MessageId)(
 const evidenceRef = Schema.decodeSync(EvidenceRef)(
   "00000000-0000-4000-8000-000000000208"
 );
+const ownerPrincipalId = Schema.decodeSync(PrincipalId)(
+  "00000000-0000-4000-8000-000000000210"
+);
+const attemptA = Schema.decodeSync(AttemptId)(
+  "00000000-0000-4000-8000-000000000211"
+);
+const attemptB = Schema.decodeSync(AttemptId)(
+  "00000000-0000-4000-8000-000000000212"
+);
+const purpose = "personal-records" as const;
+
+const owner = {
+  ownerPrincipalId,
+  purpose,
+  worldRef: null,
+};
 
 describe("EX41 eve journal stub port", () => {
   it("marks real-model and voice-blocked as live-blocked; Zen/stub/web-speech admitted", () => {
@@ -66,6 +84,8 @@ describe("EX41 eve journal stub port", () => {
       const journal = yield* EveJournal;
       const real = yield* Effect.exit(
         journal.acceptTurn({
+          ...owner,
+          attemptId: attemptA,
           conversationId,
           ingressId: ingressA,
           profileId: "eve-local-stub-v1",
@@ -73,7 +93,6 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "hello",
-          worldRef: null,
         })
       );
       expect(real._tag).toBe("Failure");
@@ -85,6 +104,8 @@ describe("EX41 eve journal stub port", () => {
       const journal = yield* EveJournal;
       const voice = yield* Effect.exit(
         journal.acceptTurn({
+          ...owner,
+          attemptId: attemptB,
           conversationId,
           ingressId: ingressB,
           profileId: "eve-local-stub-v1",
@@ -92,7 +113,6 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnB,
           userText: "hello",
-          worldRef: null,
         })
       );
       expect(voice._tag).toBe("Failure");
@@ -105,6 +125,8 @@ describe("EX41 eve journal stub port", () => {
       Effect.gen(function* proof() {
         const journal = yield* EveJournal;
         const first = yield* journal.acceptTurn({
+          ...owner,
+          attemptId: attemptA,
           conversationId,
           ingressId: ingressA,
           profileId: "eve-local-stub-v1",
@@ -112,11 +134,12 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "fato 1",
-          worldRef: null,
         });
         expect(first.phase).toBe("Accepted");
 
         const replay = yield* journal.acceptTurn({
+          ...owner,
+          attemptId: attemptA,
           conversationId,
           ingressId: ingressA,
           profileId: "eve-local-stub-v1",
@@ -124,11 +147,12 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "fato 1",
-          worldRef: null,
         });
         expect(replay.turnId).toBe(turnA);
 
         const settled = yield* journal.settleMessage({
+          ...owner,
+          attemptId: attemptA,
           conversationId,
           evidenceLinks: [{ claimRef: null, evidenceRef }],
           messageId: messageA,
@@ -145,6 +169,8 @@ describe("EX41 eve journal stub port", () => {
     Effect.gen(function* proof() {
       const journal = yield* EveJournal;
       yield* journal.acceptTurn({
+        ...owner,
+        attemptId: attemptB,
         conversationId,
         ingressId: ingressB,
         profileId: "eve-local-stub-v1",
@@ -152,9 +178,9 @@ describe("EX41 eve journal stub port", () => {
         relationshipId,
         turnId: turnB,
         userText: "cancele",
-        worldRef: null,
       });
       const cancelled = yield* journal.cancelTurn({
+        ...owner,
         conversationId,
         turnId: turnB,
       });
@@ -162,6 +188,8 @@ describe("EX41 eve journal stub port", () => {
 
       const afterCancel = yield* Effect.exit(
         journal.settleMessage({
+          ...owner,
+          attemptId: attemptB,
           conversationId,
           evidenceLinks: [],
           messageId: messageA,
@@ -180,6 +208,8 @@ describe("EX41 eve journal stub port", () => {
       Effect.gen(function* proof() {
         const journal = yield* EveJournal;
         yield* journal.acceptTurn({
+          ...owner,
+          attemptId: attemptA,
           conversationId,
           ingressId: ingressA,
           profileId: "eve-local-stub-v1",
@@ -187,9 +217,10 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "fato 1",
-          worldRef: null,
         });
         yield* journal.settleMessage({
+          ...owner,
+          attemptId: attemptA,
           conversationId,
           evidenceLinks: [{ claimRef: null, evidenceRef }],
           messageId: messageA,
@@ -198,6 +229,8 @@ describe("EX41 eve journal stub port", () => {
           visibleText: "Resposta grounded no evidenceRef.",
         });
         yield* journal.acceptTurn({
+          ...owner,
+          attemptId: attemptB,
           conversationId,
           ingressId: ingressB,
           profileId: "eve-local-stub-v1",
@@ -205,11 +238,17 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnB,
           userText: "cancele",
-          worldRef: null,
         });
-        yield* journal.cancelTurn({ conversationId, turnId: turnB });
+        yield* journal.cancelTurn({
+          ...owner,
+          conversationId,
+          turnId: turnB,
+        });
 
-        const recovered = yield* journal.recover(conversationId);
+        const recovered = yield* journal.recover({
+          ...owner,
+          conversationId,
+        });
         expect(recovered.authorityCredentialPresent).toBeFalsy();
         expect(recovered.providerAdmission).toBe("stub-local");
         expect(recovered.turns.map((turn) => turn.phase)).toStrictEqual([
@@ -218,6 +257,7 @@ describe("EX41 eve journal stub port", () => {
         ]);
         expect(recovered.messages).toHaveLength(1);
         expect(recovered.messages[0]?.visibleText).toContain("grounded");
+        expect(recovered.unresolvedAttempts).toHaveLength(0);
       }).pipe(Effect.provide(EveJournal.stubMemoryLayer))
   );
 
@@ -226,6 +266,8 @@ describe("EX41 eve journal stub port", () => {
       const journal = yield* EveJournal;
       const exit = yield* Effect.exit(
         journal.acceptTurn({
+          ...owner,
+          attemptId: attemptA,
           conversationId,
           ingressId: ingressA,
           profileId: "eve-local-stub-v1",
@@ -233,7 +275,6 @@ describe("EX41 eve journal stub port", () => {
           relationshipId,
           turnId: turnA,
           userText: "nope",
-          worldRef: null,
         })
       );
       expect(exit._tag).toBe("Failure");
@@ -244,6 +285,8 @@ describe("EX41 eve journal stub port", () => {
     Effect.gen(function* zen() {
       const journal = yield* EveJournal;
       const accepted = yield* journal.acceptTurn({
+        ...owner,
+        attemptId: attemptA,
         conversationId,
         ingressId: ingressA,
         profileId: "eve-opencode-zen-v1",
@@ -251,16 +294,62 @@ describe("EX41 eve journal stub port", () => {
         relationshipId,
         turnId: turnA,
         userText: "live path accept",
-        worldRef: null,
       });
       expect(accepted.phase).toBe("Accepted");
-      const recovered = yield* journal.recover(conversationId);
+      const recovered = yield* journal.recover({
+        ...owner,
+        conversationId,
+      });
       expect(recovered.providerAdmission).toBe("opencode-zen");
       expect(recovered.conversation.profileId).toBe("eve-opencode-zen-v1");
       expect(recovered.authorityCredentialPresent).toBeFalsy();
+      expect(recovered.unresolvedAttempts).toHaveLength(1);
       const serialized = JSON.stringify(recovered);
       expect(serialized.includes("sk-")).toBeFalsy();
       expect(serialized.toLowerCase().includes("apikey")).toBeFalsy();
+    }).pipe(Effect.provide(EveJournal.stubMemoryLayer))
+  );
+
+  it.effect("changed ingress text conflicts; other owner cannot recover", () =>
+    Effect.gen(function* ownership() {
+      const journal = yield* EveJournal;
+      yield* journal.acceptTurn({
+        ...owner,
+        attemptId: attemptA,
+        conversationId,
+        ingressId: ingressA,
+        profileId: "eve-local-stub-v1",
+        providerAdmission: "stub-local",
+        relationshipId,
+        turnId: turnA,
+        userText: "original",
+      });
+      const conflicted = yield* Effect.exit(
+        journal.acceptTurn({
+          ...owner,
+          attemptId: attemptA,
+          conversationId,
+          ingressId: ingressA,
+          profileId: "eve-local-stub-v1",
+          providerAdmission: "stub-local",
+          relationshipId,
+          turnId: turnA,
+          userText: "changed text",
+        })
+      );
+      expect(conflicted._tag).toBe("Failure");
+      const other = Schema.decodeSync(PrincipalId)(
+        "00000000-0000-4000-8000-000000000299"
+      );
+      const denied = yield* Effect.exit(
+        journal.recover({
+          conversationId,
+          ownerPrincipalId: other,
+          purpose,
+          worldRef: null,
+        })
+      );
+      expect(denied._tag).toBe("Failure");
     }).pipe(Effect.provide(EveJournal.stubMemoryLayer))
   );
 });

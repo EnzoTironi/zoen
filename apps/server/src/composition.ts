@@ -40,6 +40,7 @@ import { layer as s3EvidenceLayer } from "./adapters/object-storage/worlds/s3.ts
 import { makeDisclosureFenceLayer } from "./adapters/postgres/disclosure/fence.ts";
 import { checkAuthorityRole } from "./adapters/postgres/worlds/authority-role.ts";
 import { makeWorldsPostgresLayer } from "./adapters/postgres/worlds/postgres.ts";
+import { eveJournalLayerForUrl } from "./eve/journal-layer.ts";
 import { makeCorrectionHttpGroup } from "./http/corrections.ts";
 import { makeErasureHttpGroup } from "./http/erasure.ts";
 import { makeEveHttpGroup } from "./http/eve.ts";
@@ -71,6 +72,11 @@ export interface ApplicationConfig {
     readonly baseUrl: string;
     readonly model: string;
   };
+  /**
+   * Restricted Eve journal DB identity (ZA-18). Distinct role/schema; never the
+   * authority migration owner. Absent → blocked journal, durableJournalQualified false.
+   */
+  readonly eveJournalDatabaseUrl?: Redacted.Redacted;
   readonly policy: DataPolicySchema;
   readonly storage: S3EvidenceConfig;
 }
@@ -93,24 +99,31 @@ export const hostedAdmissionLayerFor = (
     : Layer.empty;
 
 /**
- * Product Eve surface for the current tip (ZA-17).
- * OpenCode key presence alone never installs stubMemory or live Zen — only
- * blocked journal + blocked provider until ZA-18/19/20 qualify admission.
- * Exported so unit tests pin the same selection `makeApplication` uses.
+ * Product Eve surface (ZA-17/ZA-18).
+ * OpenCode key alone never admits live Zen. Durable journal installs only when
+ * a restricted journal DB URL is configured (G-RESOURCES). Product Eve stays
+ * fail-closed until ZA-19/ZA-20 also qualify — do not set activated from ZA-18 alone.
  */
-export const makeProductEveSurface = (openCodeKeyPresent: boolean) => {
-  const admission = currentProductEveAdmissionInput(openCodeKeyPresent);
+export const makeProductEveSurface = (
+  openCodeKeyPresent: boolean,
+  options?: { readonly eveJournalDatabaseUrl?: Redacted.Redacted }
+) => {
+  const durableJournalQualified = options?.eveJournalDatabaseUrl !== undefined;
+  const admission = currentProductEveAdmissionInput(openCodeKeyPresent, {
+    durableJournalQualified,
+  });
   if (isProductEveAdmitted(admission)) {
-    // Tripwire: flipping admission flags without durable/live layers is unsafe.
+    // Tripwire: all gates true without grounding/live layers is unsafe.
     return Effect.die(
-      "ZA-17: product Eve admitted without durable journal/grounding layers"
+      "ZA-17/18: product Eve admitted without grounding/profile layers"
     );
   }
+  const journalLayer =
+    options?.eveJournalDatabaseUrl === undefined
+      ? EveJournal.blockedProvidersLayer
+      : eveJournalLayerForUrl(options.eveJournalDatabaseUrl);
   return Effect.succeed(
-    Layer.mergeAll(
-      EveJournal.blockedProvidersLayer,
-      EveOpenCodeZen.blockedLayer
-    )
+    Layer.mergeAll(journalLayer, EveOpenCodeZen.blockedLayer)
   );
 };
 
@@ -180,9 +193,13 @@ export const makeApplication = (config: ApplicationConfig) =>
       // postgresRestoreActivationLayer is available for restore seams/tests;
       // promotion stays fail-closed — never advertise restoreAfterErasure:true.
       const restoreActivation = ErasureRestoreActivation.unqualifiedLayer;
-      // ZA-17: key alone must not admit stubMemory or live Zen.
+      // ZA-17/18: key alone must not admit stubMemory or live Zen.
+      // Journal URL wires durable actor-bound journal; Zen stays blocked.
       const eveSurface = yield* makeProductEveSurface(
-        config.openCodeZen !== undefined
+        config.openCodeZen !== undefined,
+        config.eveJournalDatabaseUrl === undefined
+          ? undefined
+          : { eveJournalDatabaseUrl: config.eveJournalDatabaseUrl }
       );
       const infrastructure = Layer.mergeAll(
         Layer.effectDiscard(checkAuthorityRole).pipe(

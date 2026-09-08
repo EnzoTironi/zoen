@@ -12,6 +12,7 @@ import {
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantWorldsRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
 import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
+import { grantEveJournalRole } from "../../apps/server/src/adapters/postgres/eve/grants.ts";
 import { grantIdentityRole } from "../../apps/server/src/identity/grants.ts";
 
 /** Called only by the migration owner, never by the server's runtime pool. */
@@ -227,12 +228,32 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),
     });
+    const eveJournal = yield* fs.readFileString(
+      fileURLToPath(
+        new URL("019_eve_owned_durable_journal.sql", import.meta.url)
+      )
+    );
+    const eveExtension = yield* PgMigrator.run({
+      loader: PgMigrator.fromRecord({
+        "19_eve_owned_durable_journal": sql
+          .unsafe(eveJournal)
+          .pipe(Effect.asVoid),
+      }),
+    });
     yield* sql.withTransaction(
       Effect.gen(function* grantErasureAndWorldBarrier() {
         yield* grantErasureRole(roles.authority);
         yield* grantDisclosureRole(roles.authority);
       })
     );
-    return [...base, ...extension];
+    return [...base, ...extension, ...eveExtension];
   }
 );
+
+/** ZA-18: grant the restricted journal role after schema 019 exists. */
+export const grantEveJournalMigrations = Effect.fn(
+  "migrations.grantEveJournal"
+)(function* grantEveJournalMigrations(journalRole: string) {
+  const sql = yield* SqlClient.SqlClient;
+  yield* sql.withTransaction(grantEveJournalRole(journalRole));
+});

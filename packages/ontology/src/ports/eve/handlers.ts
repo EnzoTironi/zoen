@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+
 import type {
   AcceptConversationTurn,
   CancelConversationTurn,
@@ -5,12 +7,13 @@ import type {
   RecoverConversationJournal,
   SettleConversationMessage,
 } from "@zoen/contracts/eve/operations";
+import { AttemptId } from "@zoen/contracts/eve/values";
 import { Blocked, Conflict, Unsupported } from "@zoen/contracts/worlds/errors";
 import type {
   NotFoundOrDenied,
   Unavailable,
 } from "@zoen/contracts/worlds/errors";
-import { Effect } from "effect";
+import { Effect, Schema } from "effect";
 import type { Effect as EffectType } from "effect";
 
 import type { VerifiedRequestContext } from "../worlds/context.js";
@@ -26,6 +29,8 @@ type EveHandlerFailure =
   | Unsupported;
 
 const productBlocked = () => new Blocked({ code: "PROFILE_BLOCKED" });
+
+const newAttemptId = () => Schema.decodeSync(AttemptId)(randomUUID());
 
 /** Product HTTP/CLI surface admits only OpenCode Zen free. Stub stays offline-unit only. */
 const assertProductAdmission = (
@@ -46,14 +51,11 @@ const assertProductAdmission = (
 
 /**
  * Product accept: accept → OpenCode Zen → settle (or idempotent recover of settled ingress).
- * Voice / stub-local / missing key stay fail-closed Blocked.
- *
- * Settled-ingress replay avoids unconditional re-call of the model for the same
- * ingressId. Durable intent / owner / race fencing is still absent (ZA-18); this
- * in-memory shortcut is not ownership or crash-recovery proof.
+ * Owner/purpose/world come from verified context + envelope — never request principal fields.
+ * Durable intent / CAS fencing lives in the journal adapter (ZA-18).
  */
 export const acceptConversationTurn = (
-  _context: VerifiedRequestContext,
+  context: VerifiedRequestContext,
   request: AcceptConversationTurn
 ): EffectType.Effect<
   EveConversationSuccess,
@@ -66,9 +68,18 @@ export const acceptConversationTurn = (
       request.input.providerAdmission
     );
     const journal = yield* EveJournal;
+    const {
+      presence: { principalId: ownerPrincipalId },
+      purpose,
+    } = context;
 
     const existing = yield* journal
-      .recover(request.input.conversationId)
+      .recover({
+        conversationId: request.input.conversationId,
+        ownerPrincipalId,
+        purpose,
+        worldRef: request.worldRef,
+      })
       .pipe(Effect.catchTag("NotFoundOrDenied", () => Effect.succeed(null)));
     if (existing !== null) {
       const prior = existing.turns.find(
@@ -99,11 +110,14 @@ export const acceptConversationTurn = (
     }
 
     const result = yield* runEveTurn({
+      attemptId: newAttemptId(),
       conversationId: request.input.conversationId,
       ingressId: request.input.ingressId,
       messageId: request.input.messageId,
+      ownerPrincipalId,
       profileId: request.input.profileId,
       providerAdmission: request.input.providerAdmission,
+      purpose,
       relationshipId: request.input.relationshipId,
       turnId: request.input.turnId,
       userText: request.input.userText,
@@ -122,14 +136,17 @@ export const acceptConversationTurn = (
   });
 
 export const cancelConversationTurn = (
-  _context: VerifiedRequestContext,
+  context: VerifiedRequestContext,
   request: CancelConversationTurn
 ): EffectType.Effect<EveConversationSuccess, EveHandlerFailure, EveJournal> =>
   Effect.gen(function* cancel() {
     const journal = yield* EveJournal;
     const turn = yield* journal.cancelTurn({
       conversationId: request.input.conversationId,
+      ownerPrincipalId: context.presence.principalId,
+      purpose: context.purpose,
       turnId: request.input.turnId,
+      worldRef: request.worldRef,
     });
     return {
       _tag: "ConversationTurnCancelled" as const,
@@ -140,12 +157,17 @@ export const cancelConversationTurn = (
   });
 
 export const recoverConversationJournal = (
-  _context: VerifiedRequestContext,
+  context: VerifiedRequestContext,
   request: RecoverConversationJournal
 ): EffectType.Effect<EveConversationSuccess, EveHandlerFailure, EveJournal> =>
   Effect.gen(function* recover() {
     const journal = yield* EveJournal;
-    const snapshot = yield* journal.recover(request.input.conversationId);
+    const snapshot = yield* journal.recover({
+      conversationId: request.input.conversationId,
+      ownerPrincipalId: context.presence.principalId,
+      purpose: context.purpose,
+      worldRef: request.worldRef,
+    });
     return {
       _tag: "ConversationJournalRecovered" as const,
       snapshot,

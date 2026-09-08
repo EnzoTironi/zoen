@@ -1,3 +1,4 @@
+/* oxlint-disable eslint/sort-keys -- ZA-18 owner/CAS field insertions */
 import { describe, expect, it } from "@effect/vitest";
 import {
   AcceptConversationTurn,
@@ -6,6 +7,7 @@ import {
   SettleConversationMessage,
 } from "@zoen/contracts/eve/operations";
 import {
+  AttemptId,
   ConversationId,
   IngressId,
   MessageId,
@@ -57,6 +59,14 @@ const context = {
   },
   purpose: "personal-records",
 } as VerifiedRequestContext;
+
+const {
+  presence: { principalId: ownerPrincipalId },
+  purpose,
+} = context;
+const attemptId = Schema.decodeSync(AttemptId)(
+  "00000000-0000-4000-8000-000000000512"
+);
 
 const settings = {
   apiKey: Redacted.make("unit-test-key-must-not-journal"),
@@ -188,18 +198,21 @@ describe("EX44 Eve HTTP handlers (product surface)", () => {
     Effect.gen(function* cancel() {
       const journal = yield* EveJournal;
       yield* journal.acceptTurn({
+        attemptId,
         conversationId,
         ingressId: Schema.decodeSync(IngressId)(
           "00000000-0000-4000-8000-000000000506"
         ),
+        ownerPrincipalId,
         profileId: "eve-opencode-zen-v1",
         providerAdmission: "opencode-zen",
+        purpose,
         relationshipId,
         turnId: Schema.decodeSync(TurnId)(
           "00000000-0000-4000-8000-000000000507"
         ),
         userText: "pending",
-        worldRef: null,
+        worldRef,
       });
       const cancelled = yield* cancelConversationTurn(
         context,
@@ -217,7 +230,12 @@ describe("EX44 Eve HTTP handlers (product surface)", () => {
         })
       );
       expect(cancelled._tag).toBe("ConversationTurnCancelled");
-      const snapshot = yield* journal.recover(conversationId);
+      const snapshot = yield* journal.recover({
+        conversationId,
+        ownerPrincipalId,
+        purpose,
+        worldRef,
+      });
       expect(snapshot.messages).toHaveLength(0);
     }).pipe(Effect.provide(EveJournal.stubMemoryLayer))
   );

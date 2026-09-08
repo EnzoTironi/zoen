@@ -1,5 +1,7 @@
+/* oxlint-disable eslint/sort-keys -- ZA-18 owner/CAS field insertions */
 import { describe, expect, it } from "@effect/vitest";
 import {
+  AttemptId,
   ConversationId,
   IngressId,
   RelationshipId,
@@ -7,6 +9,7 @@ import {
 } from "@zoen/contracts/eve/values";
 import { EveJournal } from "@zoen/ontology/ports/eve/journal";
 import { EveOpenCodeZen } from "@zoen/ontology/ports/eve/opencode-zen";
+import { PrincipalId } from "@zoen/ontology/ports/worlds/context";
 import { Effect, Schema } from "effect";
 
 import { makeProductEveSurface } from "../../../src/composition.ts";
@@ -23,6 +26,13 @@ const ingressId = Schema.decodeSync(IngressId)(
 const turnId = Schema.decodeSync(TurnId)(
   "00000000-0000-4000-8000-000000000804"
 );
+const ownerPrincipalId = Schema.decodeSync(PrincipalId)(
+  "00000000-0000-4000-8000-000000000805"
+);
+const attemptId = Schema.decodeSync(AttemptId)(
+  "00000000-0000-4000-8000-000000000806"
+);
+const purpose = "personal-records" as const;
 
 describe("ZA-17 product Eve composition admission", () => {
   it.effect(
@@ -37,6 +47,9 @@ describe("ZA-17 product Eve composition admission", () => {
           const journalExit = yield* Effect.exit(
             journal.acceptTurn({
               conversationId,
+              attemptId,
+              ownerPrincipalId,
+              purpose,
               ingressId,
               profileId: "eve-opencode-zen-v1",
               providerAdmission: "opencode-zen",
@@ -69,6 +82,9 @@ describe("ZA-17 product Eve composition admission", () => {
           const journalExit = yield* Effect.exit(
             journal.acceptTurn({
               conversationId,
+              attemptId,
+              ownerPrincipalId,
+              purpose,
               ingressId,
               profileId: "eve-opencode-zen-v1",
               providerAdmission: "opencode-zen",

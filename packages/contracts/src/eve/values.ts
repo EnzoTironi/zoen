@@ -158,6 +158,14 @@ export const EveVisibleMessage = Schema.Struct({
 }).annotate(exact);
 export type EveVisibleMessage = typeof EveVisibleMessage.Type;
 
+/** Explicit unresolved provider attempt after accept / crash (ZA-18). */
+export const EveProviderAttempt = Schema.Struct({
+  attemptId: AttemptId,
+  state: Schema.Literals(["unresolved", "settled", "cancelled"]),
+  turnId: TurnId,
+}).annotate(exact);
+export type EveProviderAttempt = typeof EveProviderAttempt.Type;
+
 /** Recoverable snapshot — operational journal, not domain authority. */
 export const EveJournalSnapshot = Schema.Struct({
   authorityCredentialPresent: EveAuthorityCredentialForbidden,
@@ -165,5 +173,6 @@ export const EveJournalSnapshot = Schema.Struct({
   messages: Schema.Array(EveVisibleMessage),
   providerAdmission: EveProviderAdmission,
   turns: Schema.Array(EveTurn),
+  unresolvedAttempts: Schema.Array(EveProviderAttempt),
 }).annotate(exact);
 export type EveJournalSnapshot = typeof EveJournalSnapshot.Type;
