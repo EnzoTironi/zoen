@@ -51,13 +51,17 @@ class AllInOneEntrypointZa06Test(unittest.TestCase):
         self.assertIn("parseHostedInstallationFile", self.bootstrap)
         self.assertIn("bootstrapSameReleaseRestart", self.bootstrap)
         self.assertIn("admitIncompleteInstallation", self.bootstrap)
-        # Marker path delegates to same-release helper; admit before ZA-08 migrate.
+        # Marker path: ZA-08 seam wraps runHostedReleaseRestartSeams
+        # (migrate-then-align on admitted tip upgrade; align-then-migrate otherwise).
         helper = self.bootstrap.split(
             "function* sameReleaseRestart()", 1
         )[1].split("const program =", 1)[0]
-        admit = helper.index("alignExistingHostedRelease")
+        self.assertIn("runHostedReleaseRestartSeams", helper)
         seam = helper.index("ZA-08 seam")
-        self.assertLess(admit, seam)
+        align = helper.index("alignExistingHostedRelease")
+        migrate = helper.index("migrateExistingVolumeSchema")
+        self.assertLess(seam, align)
+        self.assertLess(seam, migrate)
         # Incomplete install under a different image must refuse before DDL.
         self.assertLess(
             self.bootstrap.index("admitIncompleteInstallation"),
