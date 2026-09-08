@@ -1044,6 +1044,14 @@
       "evidence": "docs/contracts/eve-freeze.md",
       "scope": "ZA-17 honesty note only in progress: remove prose-length→Known; product composition no longer installs stubMemoryLayer/live Zen from key alone; Eve routes Blocked until ZA-18/19/20. Does NOT activate Eve or conclude D05. Does NOT claim activated because this PR merged.",
       "notes": "Prior verified_for_profile Eve checkpoints remain historical unit/smoke evidence — not current product admission."
+    },
+    {
+      "id": "za20-grounded-text-profile",
+      "state": "verified_for_profile",
+      "profile": "eve-opencode-zen-v1 / admission opencode-zen (narrow grounded text; ZA-20)",
+      "scope": "ZA-20 records textProfileAccepted for durable grounded text conversation; journal settle/replay + fail-closed missing-key proofs. Evidence grounding (ZA-19/#107 merged) is wired true; tip keeps textProfileAccepted false without G-PROVIDER live proof. Live G-PROVIDER still required for product Eve admission. Does NOT conclude D05, cloud voice, or multi-provider.",
+      "verified_for_profile": true,
+      "notes": "verified_for_profile ONLY for narrow text-profile acceptance. Product Eve stays unadmitted until ZA-19 grounding + key + journal. See docs/verification/eve-grounded-text.md."
     }
   ],
   "verified_deliveries": [],
@@ -1063,7 +1071,7 @@
     {
       "id": "eve-real-model-provider",
       "delivery": "D05",
-      "detail": "ZA-17 honesty: product Eve composition stays fail-closed (blockedProvidersLayer + blockedLayer) even when ZOEN_OPENCODE_API_KEY is present — key alone does not admit stubMemory or live Zen. Durable journal (ZA-18), evidence grounding (ZA-19), and narrow profile acceptance (ZA-20) remain required. Prior EX43/EX44 Zen smoke docs are not product admission. Worlds/web/CLI core remain usable.",
+      "detail": "ZA-17 honesty: product Eve stays fail-closed until durable journal (ZA-18), evidence grounding (ZA-19), narrow text profile (ZA-20 harness; tip textProfileAccepted false without G-PROVIDER), and G-PROVIDER (ZOEN_OPENCODE_API_KEY in env/Fly secrets). Key alone does not admit stubMemory or live Zen. Worlds/web/CLI core remain usable.",
       "since": "2026-09-07"
     },
     {

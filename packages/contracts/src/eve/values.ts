@@ -14,9 +14,11 @@ export const EveLocalStubProfileId = Schema.Literal("eve-local-stub-v1");
 export type EveLocalStubProfileId = typeof EveLocalStubProfileId.Type;
 
 /**
- * Candidate text profile for OpenCode Zen free (ZN-0063).
- * A host key alone does not admit this profile until durable journal + grounding
- * proofs land (ZA-17 → ZA-20). Live completions use the OpenAI-compatible Zen API.
+ * Durable grounded text profile for OpenCode Zen free (ZN-0063 / ZA-20).
+ * Narrow profile acceptance is recorded by ZA-20; a host key alone still does
+ * not admit product Eve until durable journal (ZA-18) + evidence grounding
+ * (ZA-19) + G-PROVIDER are also present. Live completions use the OpenAI-
+ * compatible Zen API. Full D05 / cloud voice / multi-provider remain outside.
  */
 export const EveOpenCodeZenProfileId = Schema.Literal("eve-opencode-zen-v1");
 export type EveOpenCodeZenProfileId = typeof EveOpenCodeZenProfileId.Type;
