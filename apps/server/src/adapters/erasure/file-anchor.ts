@@ -45,56 +45,46 @@ export const fileErasureExternalAnchorLayer = (
       const directory = pathApi.dirname(absolutePath);
       const lockPath = `${absolutePath}.lock`;
 
-      const ensureDirectory = fs
-        .makeDirectory(directory, { recursive: true })
-        .pipe(Effect.mapError(mapPlatform));
+      const ensureDirectory = fs.makeDirectory(directory, { recursive: true });
 
       const readSequence = Effect.gen(function* readAdmitted() {
-        const exists = yield* fs
-          .exists(absolutePath)
-          .pipe(Effect.mapError(mapPlatform));
+        const exists = yield* fs.exists(absolutePath);
         if (!exists) {
           return 0n;
         }
-        const raw = yield* fs
-          .readFileString(absolutePath)
-          .pipe(Effect.mapError(mapPlatform));
+        const raw = yield* fs.readFileString(absolutePath);
         const current = parseSequence(raw === "" ? "0" : raw);
         if (current === null) {
           return yield* unavailable();
         }
         return current;
-      });
+      }).pipe(Effect.mapError(mapPlatform));
 
       const writeSequence = (sequence: bigint) =>
         Effect.gen(function* durableReplace() {
           const temporary = `${absolutePath}.${randomBytes(8).toString("hex")}.tmp`;
-          yield* fs
-            .writeFileString(temporary, `${sequence.toString()}\n`, {
-              mode: 0o600,
-            })
-            .pipe(Effect.mapError(mapPlatform));
-          yield* fs
-            .rename(temporary, absolutePath)
-            .pipe(Effect.mapError(mapPlatform));
-        });
+          yield* fs.writeFileString(temporary, `${sequence.toString()}\n`, {
+            mode: 0o600,
+          });
+          yield* fs.rename(temporary, absolutePath);
+        }).pipe(Effect.mapError(mapPlatform));
 
       const acquireLock = fs
         .writeFileString(lockPath, "1\n", { flag: "wx", mode: 0o600 })
-        .pipe(Effect.mapError(mapPlatform));
+        .pipe(
+          Effect.retry({
+            schedule: Schedule.spaced("20 millis"),
+            times: 49,
+          }),
+          Effect.mapError(mapPlatform)
+        );
 
       const withExclusiveLock = <A>(
         body: Effect.Effect<A, Unavailable>
       ): Effect.Effect<A, Unavailable> =>
         Effect.gen(function* locked() {
-          yield* ensureDirectory;
-          yield* acquireLock.pipe(
-            Effect.retry({
-              schedule: Schedule.spaced("20 millis"),
-              times: 49,
-            }),
-            Effect.mapError(() => unavailable())
-          );
+          yield* ensureDirectory.pipe(Effect.mapError(mapPlatform));
+          yield* acquireLock;
           return yield* body.pipe(
             Effect.ensuring(
               fs.remove(lockPath, { force: true }).pipe(Effect.ignore)

@@ -191,6 +191,29 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
             )
           ).pipe(Effect.provide(NodeFileSystem.layer));
           yield* sql.withTransaction(sql.unsafe(objectWrite));
+          // ZA-11: observeWorld consults erasure_attempt even on retained capture paths.
+          const attemptRegister = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/009_erasure_attempt_register.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(attemptRegister));
+          const controllerHead = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/016_erasure_controller_head.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(controllerHead));
           // ZA-09 capture admission: retained DBs need progress DDL + admit grants (F02).
           const worldErasureProgress = yield* FileSystem.FileSystem.use((fs) =>
             fs.readFileString(
