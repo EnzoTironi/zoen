@@ -87,7 +87,7 @@ export const inspectionView = (
         ? "Parcial — somente fontes disponíveis neste contexto"
         : "Desconhecida",
     explanation: frame.contested
-      ? "As fontes divergem em um período comparável. Confira os registros e suas origens."
+      ? "As listas importadas divergem sobre o mesmo compromisso em um período comparável. Confira ambas as fontes e a interpretação atual."
       : "Estes registros refletem o conteúdo das fontes disponíveis nesta leitura.",
     interactionKey: `${interactionContext}:${frame.worldRef.realm}:${frame.worldRef.worldId}:${frame.frameRef}`,
     scope: frame.subjectKey,
