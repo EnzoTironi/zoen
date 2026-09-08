@@ -18,3 +18,16 @@ export const grantErasureRole = Effect.fn("grantErasureRole")(
     );
   }
 );
+
+/** Admit grants for ZA-09 capture barrier on retained installs (F02). */
+export const grantContentBarrierAdmit = Effect.fn("grantContentBarrierAdmit")(
+  function* grantContentBarrierAdmit(authorityRole: string) {
+    const sql = yield* SqlClient.SqlClient;
+    const role = authorityRole.replaceAll('"', "");
+    // FOR SHARE / progress reads; keep aligned with grantErasureRole table privileges.
+    yield* sql.unsafe(
+      `GRANT SELECT, INSERT, UPDATE ON authority.world_erasure_progress, authority.world_erasure_receipts TO "${role}"`
+    );
+  }
+);
+

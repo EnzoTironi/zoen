@@ -5,7 +5,10 @@ import { Effect, FileSystem } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { grantDisclosureRole } from "../../apps/server/sql/proposals/disclosure/grants.ts";
-import { grantErasureRole } from "../../apps/server/sql/proposals/erasure/grants.ts";
+import {
+  grantContentBarrierAdmit,
+  grantErasureRole,
+} from "../../apps/server/sql/proposals/erasure/grants.ts";
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantWorldsRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
 import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
@@ -93,9 +96,15 @@ export const applyDisclosureMigrations = Effect.fn(
       "6_durable_disclosure": sql.unsafe(disclosure).pipe(Effect.asVoid),
     }),
   });
-  // Apply orphaned-recovery / world-closing DDL without migrator ids 12/14 here:
-  // Effect migrator skips any id <= latest, so recording them before 7/8 would
-  // skip identity events. Erasure migrator records 12/14 after 7–11.
+  // Apply progress / orphaned-recovery / world-closing DDL without migrator ids
+  // 10/12/14 here: Effect migrator skips any id <= latest, so recording them
+  // before 7/8 would skip identity events. Erasure migrator records 10/12/14
+  // after 7–11. Capture admission (ZA-09) needs progress DDL+grants on retained
+  // installs too (F02: schema without enabling erasure).
+  const progress = yield* fs.readFileString(
+    fileURLToPath(new URL("010_world_erasure_closing.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(progress));
   const recovery = yield* fs.readFileString(
     fileURLToPath(
       new URL("012_orphaned_disclosure_recovery.sql", import.meta.url)
@@ -107,6 +116,8 @@ export const applyDisclosureMigrations = Effect.fn(
   );
   yield* sql.withTransaction(sql.unsafe(worldClosing));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
+  // Progress admit grants for capture barrier on retained paths (F02).
+  yield* sql.withTransaction(grantContentBarrierAdmit(roles.authority));
   return [...base, ...durable];
 });
 
