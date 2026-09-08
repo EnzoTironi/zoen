@@ -77,17 +77,20 @@ Local and Fly all-in-one images pin `installation.releaseDigest` to the first-bo
 | --- | --- | --- |
 | Ready (same digest) | Marker + installation + runtime.env consistent with the running image | Restart is safe; World/policy/receipt identities are preserved |
 | Incomplete | First install interrupted before `.bootstrap-complete` | Restart resumes; credentials are rewritten to match roles. No silent success with half-written state |
-| Reset-required | Image `release.json` digest ≠ volume installation | **Refuse** before serving. No automatic wipe, rebind, or digest rewrite |
+| Reset-required | Image `release.json` digest ≠ volume installation **and** tip upgrade not admitted | **Refuse** before serving. No automatic wipe, rebind, or silent digest rewrite |
+| Tip upgrade (admitted) | Digest mismatch **with** `ZOEN_ADMIT_HOSTED_RELEASE_UPGRADE=true` | Controlled upgrade: ZA-08 schema migrate **then** rewrite `installation.releaseDigest` + `authority.worlds.release_digest`. Cell/generation preserved. Not a volume wipe |
 
 ### Local / CI disposable reset
 
 Isolated Docker named volumes used by `pnpm test:container:identity` / `pnpm test:container:lifecycle` are disposable: remove the volume (`docker volume rm …`) and boot again. Staging profile reset remains `pnpm staging:reset` (owned inventory only).
 
-### Hosted (`zoen-rebuild`) gate — unchanged by this ticket
+### Hosted (`zoen-rebuild`) tip continuous deploy
 
-Do **not** treat hosted data as disposable because local volumes are. An incompatible hosted volume stays not-ready until an **explicitly authorized** operator action replaces that named volume or an separately admitted ordinary migration lands. This ticket does not implement live hosted reset, automatic rollback, or silent digest replacement.
+ZA-06 still refuses digest mismatch by default (no silent rewrite). Continuous tip deploy to `zoen-rebuild` sets `ZOEN_ADMIT_HOSTED_RELEASE_UPGRADE=true` in `ops/fly/fly.toml` under Pre-launch Evolution (`AGENTS.md`): that is the **explicit** admission for ordinary tip image rolls.
 
-Merged PR #92 (migrate schema on existing same-release volumes) is the admitted migrate seam; it must not run after a digest mismatch.
+Upgrade order is fixed: schema migrate (ZA-08 / #92) runs **before** digest rewrite. Same-release restarts still admit digest first, then migrate.
+
+Without that env (or after it is removed for production durability), operators must roll back to the last matching image or perform an explicitly authorized volume replace — do not edit digests by hand on a live volume.
 
 ## Pre-launch wire and development baseline (ZA-03)
 

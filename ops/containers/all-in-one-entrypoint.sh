@@ -2,7 +2,8 @@
 # Zoen all-in-one: Postgres + RustFS (S3) + server on one Fly machine / volume.
 # ZA-05: distinct bootstrap / DB / object-store / app identities on one profile.
 # ZA-06: deterministic install lifecycle — same-release restart; digest mismatch
-# refuses (RESET_REQUIRED); readiness env fixed; supervise PG/RustFS/app exits.
+# refuses (RESET_REQUIRED) unless ZOEN_ADMIT_HOSTED_RELEASE_UPGRADE admits tip
+# upgrade after migrate; readiness env fixed; supervise PG/RustFS/app exits.
 # module-resolution via /app/ops/node_modules -> apps/server/node_modules
 set -euo pipefail
 

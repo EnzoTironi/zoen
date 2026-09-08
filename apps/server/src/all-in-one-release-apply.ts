@@ -7,6 +7,7 @@ import {
 } from "./all-in-one-release-align.ts";
 import type {
   HostedInstallationFile,
+  PlanReleaseAlignOptions,
   ReleaseAlignStep,
 } from "./all-in-one-release-align.ts";
 
@@ -39,12 +40,13 @@ export type HostedReleaseAlignResult =
     };
 
 /**
- * Marker-present same-release restart: reconcile worlds to the pinned
- * installation digest; optionally rewrite known ZA-03 legacy policy ids in
- * installation.json. Digest mismatch fails closed with RESET_REQUIRED —
- * never silent digest replacement (ZA-06).
+ * Marker-present restart: reconcile worlds to the image release digest;
+ * optionally rewrite ZA-03 legacy policy ids and/or an explicitly admitted tip
+ * releaseDigest upgrade. Digest mismatch without admission fails closed with
+ * RESET_REQUIRED (ZA-06 — never silent).
  */
 export const applyHostedReleaseAlign = (input: {
+  readonly admitHostedReleaseUpgrade?: boolean;
   readonly encodeInstallation: (
     value: HostedInstallationFile
   ) => Effect.Effect<string>;
@@ -58,6 +60,7 @@ export const applyHostedReleaseAlign = (input: {
 }) =>
   Effect.gen(function* applyReleaseAlign() {
     const {
+      admitHostedReleaseUpgrade,
       encodeInstallation,
       fs,
       installationPath,
@@ -65,10 +68,15 @@ export const applyHostedReleaseAlign = (input: {
       releaseFile,
       runtimeEnvPath,
     } = input;
+    const planOptions: PlanReleaseAlignOptions | undefined =
+      admitHostedReleaseUpgrade === true
+        ? { admitHostedReleaseUpgrade: true }
+        : undefined;
     const plan = planReleaseAlign(
       yield* fs.readFileString(installationPath),
       yield* fs.readFile(releaseFile),
-      yield* fs.readFileString(runtimeEnvPath)
+      yield* fs.readFileString(runtimeEnvPath),
+      planOptions
     );
     if (plan.kind === "error") {
       return yield* new HostedReleaseAlignError({ code: plan.code });

@@ -31,6 +31,10 @@ ZOEN_INSTALLATION_FILE = "/data/zoen/installation.json"
 ZOEN_RUNTIME_ENV_FILE = "/data/zoen/runtime.env"
 ZOEN_WORLD_POLICY = "worlds-hosted-retained-v1"
 ZOEN_BOOTSTRAP_ADMIN_URL = "postgresql://zoen_infra@127.0.0.1:5432/postgres"
+# Pre-launch tip continuous deploy (AGENTS.md Evolution): admit releaseDigest
+# upgrade AFTER ZA-08 schema migrate. Not silent — explicit env admission.
+# Revisit / remove before first production deployment with durable user data.
+ZOEN_ADMIT_HOSTED_RELEASE_UPGRADE = "true"
 # DB role URLs are minted on first boot onto the volume (not secrets).
 # Set ZOEN_AUTH_SECRET via `fly secrets set` (never commit).
 

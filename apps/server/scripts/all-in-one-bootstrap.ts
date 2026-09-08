@@ -27,6 +27,7 @@ import {
   digestReleaseBytes,
   parseHostedInstallationFile,
   parseQuotedEnvFile,
+  planReleaseAlign,
 } from "../src/all-in-one-release-align.ts";
 import {
   applyHostedReleaseAlign,
@@ -150,6 +151,7 @@ const maybeCrashAfter = (stage: string) =>
   });
 
 const alignExistingHostedRelease = (input: {
+  readonly admitHostedReleaseUpgrade?: boolean;
   readonly encodeInstallation: typeof encodeJson;
   readonly fs: FileSystem.FileSystem;
   readonly installationPath: string;
@@ -157,6 +159,7 @@ const alignExistingHostedRelease = (input: {
   readonly runtimeEnvPath: string;
 }) =>
   applyHostedReleaseAlign({
+    admitHostedReleaseUpgrade: input.admitHostedReleaseUpgrade,
     encodeInstallation: (value) =>
       input.encodeInstallation(value).pipe(Effect.orDie),
     fs: input.fs,
@@ -323,20 +326,41 @@ const bootstrapSameReleaseRestart = (input: {
     if (runtimeBucket !== bucket) {
       return yield* new BootstrapError({ code: "BUCKET_MISMATCH_REFUSED" });
     }
-    // ZA-06: same-release admission before any mutate. Digest mismatch →
-    // RESET_REQUIRED (no silent rewrite). Leave a seam for ZA-08 admitted
-    // same-release schema migrate on existing volumes AFTER this check.
+    // Tip continuous-deploy admission (Pre-launch / AGENTS.md). Default false:
+    // ZA-06 RESET_REQUIRED. When true (ops/fly/fly.toml), digest mismatch is a
+    // controlled upgrade — migrate schema first, then rewrite digest.
+    const admitHostedReleaseUpgrade = yield* Config.boolean(
+      "ZOEN_ADMIT_HOSTED_RELEASE_UPGRADE"
+    ).pipe(Config.withDefault(false));
+    const releasePlan = planReleaseAlign(
+      yield* fs.readFileString(installationPath),
+      yield* fs.readFile(releaseFile),
+      yield* fs.readFileString(runtimeEnvPath),
+      admitHostedReleaseUpgrade
+        ? { admitHostedReleaseUpgrade: true }
+        : undefined
+    );
+    if (releasePlan.kind === "error") {
+      return yield* new BootstrapError({ code: releasePlan.code });
+    }
+    const releaseUpgrade = releasePlan.releaseUpgrade === true;
+    // --- ZA-08 seam (migrate on existing volumes) ---
+    // Same-release: migrate after digest admission. Admitted tip upgrade:
+    // migrate BEFORE rewriting installation.releaseDigest / worlds digests.
+    if (releaseUpgrade) {
+      yield* migrateExistingVolumeSchema(adminUrl);
+    }
     yield* alignExistingHostedRelease({
+      admitHostedReleaseUpgrade,
       encodeInstallation: encodeJson,
       fs,
       installationPath,
       releaseFile,
       runtimeEnvPath,
     });
-    // --- ZA-08 seam (migrate on existing same-release volumes) ---
-    // #92: rotate migration password via infra admin, then idempotent DDL.
-    // Digest admission above must stay first; incompatible images refuse before DDL.
-    yield* migrateExistingVolumeSchema(adminUrl);
+    if (!releaseUpgrade) {
+      yield* migrateExistingVolumeSchema(adminUrl);
+    }
     // --- end ZA-08 seam ---
     const adminAccess = Redacted.value(adminAccessKeyId);
     const adminSecret = Redacted.value(adminSecretAccessKey);
@@ -369,7 +393,9 @@ const bootstrapSameReleaseRestart = (input: {
     }
     return yield* Effect.logInfo({
       event: "all-in-one.bootstrap.ready",
-      mode: "same-release-restart",
+      mode: releaseUpgrade
+        ? "admitted-release-upgrade"
+        : "same-release-restart",
     });
   });
 

@@ -78,8 +78,9 @@ export const alignHostedInstallationPolicy = (
 
 /**
  * Pure projection of an installation onto a target release digest.
- * ZA-06: automatic bootstrap must NOT apply this on mismatch — use
- * {@link planReleaseAlign} which returns RESET_REQUIRED instead. Kept for
+ * ZA-06: automatic bootstrap must NOT apply this on mismatch unless
+ * {@link planReleaseAlign} was called with admitHostedReleaseUpgrade.
+ * Without admission, planReleaseAlign returns RESET_REQUIRED. Kept for
  * explicit admitted tooling / tests that assert cell/generation preservation.
  */
 export const alignInstallationRelease = (
@@ -179,8 +180,15 @@ export type ReleaseAlignPlan =
       readonly kind: "ready";
       readonly releaseDigest: string;
       /**
-       * Same-release policy rewrite only (ZA-03 legacy profile ids). Digest
-       * mismatch never populates this — that path is RESET_REQUIRED (ZA-06).
+       * When set, this plan upgrades installation.releaseDigest to the image
+       * digest (Pre-launch tip continuous-deploy admission). Bootstrap must
+       * run ZA-08 schema migrate BEFORE applying this rewrite.
+       */
+      readonly releaseUpgrade?: true;
+      /**
+       * Installation rewrite: same-release ZA-03 policy ids, and/or an
+       * admitted tip releaseDigest upgrade. Digest mismatch without admission
+       * never reaches ready (ZA-06 RESET_REQUIRED).
        */
       readonly rewriteInstallation: {
         readonly next: HostedInstallationFile;
@@ -216,8 +224,8 @@ export type ReleaseAlignStep =
 
 /**
  * Ordered side effects for a ready plan. Worlds reconcile always runs first.
- * Optional installation rewrite is policy-only on the same release digest
- * (ZA-03); digest mismatch never reaches ready (ZA-06).
+ * Optional installation rewrite may be ZA-03 policy-only or an admitted tip
+ * releaseDigest upgrade. Digest mismatch without admission never reaches ready.
  */
 export const releaseAlignSteps = (
   plan: Extract<ReleaseAlignPlan, { readonly kind: "ready" }>
@@ -241,16 +249,27 @@ export const releaseAlignSteps = (
   return steps;
 };
 
+export type PlanReleaseAlignOptions = {
+  /**
+   * Pre-launch tip continuous-deploy admission (AGENTS.md Evolution). When
+   * true, a different image releaseDigest plans a controlled upgrade instead
+   * of RESET_REQUIRED. Default false — ZA-06 fail-closed.
+   */
+  readonly admitHostedReleaseUpgrade?: boolean;
+};
+
 /**
  * Decide whether a volume with `.bootstrap-complete` may continue on this
- * image. Different digest → RESET_REQUIRED (ZA-06; never silent digest
- * replacement). Same digest → ready, optionally rewriting known ZA-03 legacy
- * policy profile ids in installation.json.
+ * image. Different digest → RESET_REQUIRED unless
+ * {@link PlanReleaseAlignOptions.admitHostedReleaseUpgrade} is set (explicit
+ * tip-deploy admission; never silent). Same digest → ready, optionally
+ * rewriting known ZA-03 legacy policy profile ids in installation.json.
  */
 export const planReleaseAlign = (
   installationText: string,
   releaseBytes: Uint8Array,
-  runtimeEnvText: string
+  runtimeEnvText: string,
+  options?: PlanReleaseAlignOptions
 ): ReleaseAlignPlan => {
   let installedUnknown: unknown;
   try {
@@ -285,11 +304,26 @@ export const planReleaseAlign = (
     releaseDigest: installedDigest,
   } = hosted.installation;
   if (installedDigest !== releaseDigest) {
+    if (options?.admitHostedReleaseUpgrade !== true) {
+      return {
+        code: "RESET_REQUIRED",
+        installedDigest,
+        kind: "error",
+        releaseDigest,
+      };
+    }
+    const upgraded = alignInstallationRelease(withPolicy, releaseDigest).next;
     return {
-      code: "RESET_REQUIRED",
-      installedDigest,
-      kind: "error",
+      authorityUrl,
+      cellId,
+      generationId,
+      kind: "ready",
       releaseDigest,
+      releaseUpgrade: true,
+      rewriteInstallation: {
+        next: upgraded,
+        previousDigest: installedDigest,
+      },
     };
   }
   return {

@@ -150,6 +150,44 @@ describe("all-in-one release align", () => {
     });
   });
 
+  it("plans admitted tip upgrade when digest changes with admission", () => {
+    const releaseBytes = new TextEncoder().encode('{"format":"next"}\n');
+    const releaseDigest = digestReleaseBytes(releaseBytes);
+    const plan = planReleaseAlign(
+      `${JSON.stringify(sampleInstallation)}\n`,
+      releaseBytes,
+      authorityEnv,
+      { admitHostedReleaseUpgrade: true }
+    );
+    expect(plan).toStrictEqual({
+      authorityUrl: "postgresql://auth@127.0.0.1/zoen",
+      cellId: "11111111-1111-4111-8111-111111111111",
+      generationId: "22222222-2222-4222-8222-222222222222",
+      kind: "ready",
+      releaseDigest,
+      releaseUpgrade: true,
+      rewriteInstallation: {
+        next: {
+          installation: {
+            cellEpoch: "1",
+            cellId: "11111111-1111-4111-8111-111111111111",
+            generationId: "22222222-2222-4222-8222-222222222222",
+            releaseDigest,
+          },
+          policy: { profileId: "worlds-hosted-retained-v1" },
+        },
+        previousDigest: "a".repeat(64),
+      },
+    });
+    if (plan.kind !== "ready") {
+      return;
+    }
+    expect(releaseAlignSteps(plan).map((step) => step.step)).toStrictEqual([
+      "reconcile-worlds",
+      "rewrite-installation",
+    ]);
+  });
+
   it("plans INVALID_INSTALLATION_FILE for bad JSON", () => {
     expect(
       planReleaseAlign("{", new TextEncoder().encode("x"), authorityEnv)
