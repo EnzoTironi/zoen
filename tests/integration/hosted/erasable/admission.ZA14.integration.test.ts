@@ -7,6 +7,12 @@ import { SqlClient } from "effect/unstable/sql";
 import { makeWorldsPostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import {
+  PurgeWorldContent,
+  RequestWorldErasure,
+} from "../../../../packages/contracts/src/erasure/operations.js";
+import { HostedErasableTarget } from "../../../../packages/contracts/src/hosted/erasable/values.js";
+import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
+import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
 } from "../../../../packages/ontology/src/commit/configuration.js";
@@ -44,12 +50,6 @@ import {
   VerifiedRequestContext,
 } from "../../../../packages/ontology/src/ports/worlds/context.js";
 import { digestBytes } from "../../../../packages/ontology/src/values/canonical.js";
-import {
-  PurgeWorldContent,
-  RequestWorldErasure,
-} from "../../../../packages/contracts/src/erasure/operations.js";
-import { HostedErasableTarget } from "../../../../packages/contracts/src/hosted/erasable/values.js";
-import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 
 const releaseDigest = digestBytes(
   new TextEncoder().encode("ZA-14 hosted erasable local exact-image fixture")
