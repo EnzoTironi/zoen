@@ -14,11 +14,11 @@ Condensed from audit `FRONTIER.md` + `TIP-TO-TARGET.md` + `SHARED-UNDERSTANDING.
 | Responsibility | Now (observed roots) | Next (bounded) |
 | --- | --- | --- |
 | Product UI | `apps/web`, `apps/cli` | same roots |
-| Domain kernel | `packages/authority` | rename to `packages/ontology` only in a later atomic PR (ZA-15) |
+| Domain kernel | `packages/ontology` | renamed from `packages/authority` (ZA-15); no dual package |
 | Contracts | `packages/contracts` | per-family schemas + semantic envelope when needed |
 | Auth / presence | server identity / worlds | stay server-owned; no Door package now |
-| Sources / evidence / meaning / sharing / erasure | under `authority/` by feature | move with ontology rename; keep first-class modules |
-| Eve | `authority/ports/eve` + server composition | optional `apps/server/src/eve` + `contracts/eve` when repaired |
+| Sources / evidence / meaning / sharing / erasure | under `ontology/` by feature | first-class modules retained after ZA-15 rename |
+| Eve | `ontology/ports/eve` + server composition | optional `apps/server/src/eve` + `contracts/eve` when repaired |
 | I/O adapters | `apps/server/src/adapters` | extract only for a real second consumer |
 | Deploy / migrate | `ops/` | stay; Docker local; Fly `zoen-rebuild`; no paid staging |
 | Unbuilt hosts / packs | absent | absent until a real capability trigger |

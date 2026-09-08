@@ -2,20 +2,20 @@ import { randomUUID } from "node:crypto";
 
 import { DateTime, Effect, Layer, Schema } from "effect";
 
+import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
-} from "../../../../packages/authority/src/commit/configuration.js";
-import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
-import { ErasureRestoreActivation } from "../../../../packages/authority/src/ports/erasure/restore-activation.js";
+} from "../../../../packages/ontology/src/commit/configuration.js";
+import { ErasureAttemptRegister } from "../../../../packages/ontology/src/ports/erasure/attempt-register.js";
+import { ErasureRestoreActivation } from "../../../../packages/ontology/src/ports/erasure/restore-activation.js";
 import {
   DataPolicy,
   HostedRetainedDataPolicySchema,
   RetainedDataPolicySchema,
   VerifiedRequestContext,
-} from "../../../../packages/authority/src/ports/worlds/context.js";
-import { digestBytes } from "../../../../packages/authority/src/values/canonical.js";
-import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
+} from "../../../../packages/ontology/src/ports/worlds/context.js";
+import { digestBytes } from "../../../../packages/ontology/src/values/canonical.js";
 
 export const installation = Schema.decodeSync(AuthorityInstallationSchema)({
   cellEpoch: "1",

@@ -75,7 +75,7 @@ Do not commit Fly secrets or `.env*` files. See [SECURITY.md](SECURITY.md).
 | `apps/server` | HTTP surface, identity, adapters (PostgreSQL / S3) |
 | `apps/cli` | Same verbs as the web, over the same client |
 | `packages/contracts` | Effect Schema, HttpApi, public DTOs |
-| `packages/authority` | Commit boundary, access, evidence, knowledge, semantic executor |
+| `packages/ontology` | Commit boundary, access, evidence, knowledge, semantic executor |
 | `ops/` | Compose, containers, migrations, Fly |
 | `tests/` | Integration and acceptance on real components |
 

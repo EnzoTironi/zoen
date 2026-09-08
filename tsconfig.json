@@ -16,7 +16,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@zoen/contracts/*": ["./packages/contracts/src/*.ts"],
-      "@zoen/authority/*": ["./packages/authority/src/*.ts"]
+      "@zoen/ontology/*": ["./packages/ontology/src/*.ts"]
     },
     "jsx": "react-jsx",
     "types": ["node", "bun-types/sqlite"],

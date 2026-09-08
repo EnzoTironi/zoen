@@ -7,13 +7,10 @@ import {
   ListObjectVersionsCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import type { EvidenceObjectStore } from "@zoen/authority/ports/worlds/storage";
-import {
-  CaptureId,
-  StorageFailure,
-} from "@zoen/authority/ports/worlds/storage";
-import { digestBytes } from "@zoen/authority/values/canonical";
 import { WorldRef } from "@zoen/contracts/worlds/values";
+import type { EvidenceObjectStore } from "@zoen/ontology/ports/worlds/storage";
+import { CaptureId, StorageFailure } from "@zoen/ontology/ports/worlds/storage";
+import { digestBytes } from "@zoen/ontology/values/canonical";
 import { Config, Effect, Redacted, Schema, Stream } from "effect";
 import type { Scope } from "effect";
 

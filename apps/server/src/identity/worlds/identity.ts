@@ -1,13 +1,13 @@
-import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
-import { PrincipalDirectory } from "@zoen/authority/ports/sharing/directory";
+import { Unauthenticated, Unavailable } from "@zoen/contracts/worlds/errors";
+import { Instant } from "@zoen/contracts/worlds/values";
+import { DisclosureFence } from "@zoen/ontology/ports/disclosure/fence";
+import { PrincipalDirectory } from "@zoen/ontology/ports/sharing/directory";
 import {
   Presence,
   PrincipalId,
   SessionId,
   VerifiedPresence,
-} from "@zoen/authority/ports/worlds/context";
-import { Unauthenticated, Unavailable } from "@zoen/contracts/worlds/errors";
-import { Instant } from "@zoen/contracts/worlds/values";
+} from "@zoen/ontology/ports/worlds/context";
 import { betterAuth } from "better-auth";
 import {
   Context,

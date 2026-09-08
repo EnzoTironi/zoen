@@ -9,7 +9,7 @@ import type { loadConfiguration as ConfigurationEffect } from "../../../../apps/
 import {
   canonicalJson,
   digestBytes,
-} from "../../../../packages/authority/src/values/canonical.js";
+} from "../../../../packages/ontology/src/values/canonical.js";
 
 const baseEnv = (installationPath: string) => ({
   ZOEN_AUTHORITY_DATABASE_URL: "postgres://fixture:fixture@localhost/authority",

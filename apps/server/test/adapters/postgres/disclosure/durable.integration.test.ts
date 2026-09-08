@@ -1,10 +1,10 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
-import type { DisclosurePermit } from "@zoen/authority/ports/disclosure/fence";
-import { VerifiedPresence } from "@zoen/authority/ports/worlds/context";
 import { Instant, WorldRef } from "@zoen/contracts/worlds/values";
+import { DisclosureFence } from "@zoen/ontology/ports/disclosure/fence";
+import type { DisclosurePermit } from "@zoen/ontology/ports/disclosure/fence";
+import { VerifiedPresence } from "@zoen/ontology/ports/worlds/context";
 import { DateTime, Deferred, Effect, Exit, Fiber, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

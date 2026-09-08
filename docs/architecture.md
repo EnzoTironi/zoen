@@ -2,7 +2,7 @@
 
 ## Forma inicial
 
-Começar com um monólito modular de autoridade, servidor e dois clientes. Cinco workspaces bastam para a primeira jornada. São fronteiras de código; separação de pacote não equivale a isolamento de processo ou credencial.
+Começar com um monólito modular de ontologia, servidor e dois clientes. Cinco workspaces bastam para a primeira jornada. São fronteiras de código; separação de pacote não equivale a isolamento de processo ou credencial.
 
 ```text
 apps/
@@ -16,7 +16,7 @@ apps/
   cli/src/                # comandos sobre HttpApiClient
 packages/
   contracts/src/          # Effect Schema, HttpApi, operações e DTOs públicos
-  authority/src/
+  ontology/src/
     commit/               # única fronteira de mutação e idempotência
     access/               # direitos e disclosure
     evidence/             # captura, retenção e referências
@@ -45,7 +45,7 @@ flowchart LR
   S --> E
 ```
 
-O diagrama representa chamadas, não imports de cliente para backend. `contracts` não importa `authority`, servidor, SQL ou configuração de autenticação. Web/CLI importam contratos e usam `HttpApiClient`; não precisam de um pacote `client` que apenas embrulhe esse cliente. `authority` nunca importa `apps/server`; a composição fornece serviços e drivers. Nenhum handler HTTP acessa um adapter para contornar o executor.
+O diagrama representa chamadas, não imports de cliente para backend. `contracts` não importa `ontology`, servidor, SQL ou configuração de autenticação. Web/CLI importam contratos e usam `HttpApiClient`; não precisam de um pacote `client` que apenas embrulhe esse cliente. `ontology` nunca importa `apps/server`; a composição fornece serviços e drivers. Nenhum handler HTTP acessa um adapter para contornar o executor.
 
 ## Effect como base
 

@@ -4,8 +4,8 @@ import { SqlClient } from "effect/unstable/sql";
 import type { SqlError } from "effect/unstable/sql/SqlError";
 
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { serializable } from "../../../../packages/authority/src/commit/transaction.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import { serializable } from "../../../../packages/ontology/src/commit/transaction.js";
 import { configuration, makeInput } from "./fixture.js";
 
 it.live(

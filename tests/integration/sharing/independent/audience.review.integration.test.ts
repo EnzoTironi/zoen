@@ -10,30 +10,6 @@ import { SqlClient } from "effect/unstable/sql";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
 import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
-import { inspectWorldAccess } from "../../../../packages/authority/src/access/sharing/inspect.ts";
-import {
-  grantWorldReadAccess,
-  revokeWorldReadAccess,
-} from "../../../../packages/authority/src/access/sharing/mutation.ts";
-import {
-  AuthorityInstallation,
-  AuthorityInstallationSchema,
-} from "../../../../packages/authority/src/commit/configuration.ts";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.ts";
-import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.ts";
-import { openEvidence } from "../../../../packages/authority/src/evidence/worlds/open.ts";
-import { answerQuestion } from "../../../../packages/authority/src/knowledge/corrections/answer.ts";
-import { proposeCorrection } from "../../../../packages/authority/src/knowledge/corrections/propose.ts";
-import { undoCorrection } from "../../../../packages/authority/src/knowledge/corrections/undo.ts";
-import { inspect } from "../../../../packages/authority/src/knowledge/worlds/inspect.ts";
-import {
-  Presence,
-  VerifiedRequestContext,
-} from "../../../../packages/authority/src/ports/worlds/context.ts";
-import {
-  canonicalJson,
-  digestBytes,
-} from "../../../../packages/authority/src/values/canonical.ts";
 import {
   GrantWorldReadAccess,
   InspectWorldAccess,
@@ -49,6 +25,30 @@ import {
   UndoCorrection,
 } from "../../../../packages/contracts/src/worlds/operations.ts";
 import type { WorldRef } from "../../../../packages/contracts/src/worlds/values.ts";
+import { inspectWorldAccess } from "../../../../packages/ontology/src/access/sharing/inspect.ts";
+import {
+  grantWorldReadAccess,
+  revokeWorldReadAccess,
+} from "../../../../packages/ontology/src/access/sharing/mutation.ts";
+import {
+  AuthorityInstallation,
+  AuthorityInstallationSchema,
+} from "../../../../packages/ontology/src/commit/configuration.ts";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.ts";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.ts";
+import { openEvidence } from "../../../../packages/ontology/src/evidence/worlds/open.ts";
+import { answerQuestion } from "../../../../packages/ontology/src/knowledge/corrections/answer.ts";
+import { proposeCorrection } from "../../../../packages/ontology/src/knowledge/corrections/propose.ts";
+import { undoCorrection } from "../../../../packages/ontology/src/knowledge/corrections/undo.ts";
+import { inspect } from "../../../../packages/ontology/src/knowledge/worlds/inspect.ts";
+import {
+  Presence,
+  VerifiedRequestContext,
+} from "../../../../packages/ontology/src/ports/worlds/context.ts";
+import {
+  canonicalJson,
+  digestBytes,
+} from "../../../../packages/ontology/src/values/canonical.ts";
 import { configuration } from "../../worlds/commit/fixture.ts";
 
 type Fixture = Parameters<Parameters<typeof withIdentityDatabase>[0]>[0];

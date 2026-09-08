@@ -30,7 +30,7 @@ jobs:
       - name: Load compiled core with Node
         run: |
           node packages/contracts/dist/worlds/api.js
-          node packages/authority/dist/semantic/executor.js
+          node packages/ontology/dist/semantic/executor.js
       - run: python3 tooling/verify_plan.py
       - run: python3 -m unittest discover -s tooling -p 'test_*.py'
       - name: Exact-image admission policy fixtures (ZA-07)

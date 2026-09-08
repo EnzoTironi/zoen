@@ -2,8 +2,8 @@ import { randomUUID } from "node:crypto";
 
 import { NodeHttpServer } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { WorldCreated } from "@zoen/contracts/worlds/operations";
+import { SemanticExecutor } from "@zoen/ontology/semantic/executor";
 import { Deferred, Effect, Exit, Fiber, Layer, Schedule, Schema } from "effect";
 import {
   HttpClient,

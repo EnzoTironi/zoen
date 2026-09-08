@@ -6,19 +6,19 @@ import { fileURLToPath } from "node:url";
 
 import { PutBucketVersioningCommand } from "@aws-sdk/client-s3";
 import { NodeServices } from "@effect/platform-node";
+import { decodeSemanticRequest } from "@zoen/contracts/worlds/operations";
 import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
-} from "@zoen/authority/commit/configuration";
-import { ErasureAttemptRegister } from "@zoen/authority/ports/erasure/attempt-register";
-import { ErasureCopyCatalog } from "@zoen/authority/ports/erasure/copy-catalog";
+} from "@zoen/ontology/commit/configuration";
+import { ErasureAttemptRegister } from "@zoen/ontology/ports/erasure/attempt-register";
+import { ErasureCopyCatalog } from "@zoen/ontology/ports/erasure/copy-catalog";
 import {
   DataPolicy,
   DataPolicySchema,
-} from "@zoen/authority/ports/worlds/context";
-import { SemanticExecutor } from "@zoen/authority/semantic/executor";
-import { intentDigest } from "@zoen/authority/values/canonical";
-import { decodeSemanticRequest } from "@zoen/contracts/worlds/operations";
+} from "@zoen/ontology/ports/worlds/context";
+import { SemanticExecutor } from "@zoen/ontology/semantic/executor";
+import { intentDigest } from "@zoen/ontology/values/canonical";
 import { Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import {
   Cookies,

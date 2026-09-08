@@ -20,7 +20,7 @@ Data: 2026-09-07 (PT). Tip de partida: `644d400`. Tip verificado stub: `3d2e71c`
 ```bash
 pnpm exec vitest run --project unit \
   packages/contracts/test/eve \
-  packages/authority/test/ports/eve
+  packages/ontology/test/ports/eve
 ```
 
 ## Não alegado

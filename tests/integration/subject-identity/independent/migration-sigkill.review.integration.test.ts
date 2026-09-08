@@ -3,8 +3,8 @@ import { fileURLToPath } from "node:url";
 
 import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
-import { readCut } from "@zoen/authority/commit/guards";
 import { WorldRef } from "@zoen/contracts/worlds/values";
+import { readCut } from "@zoen/ontology/commit/guards";
 import { Effect, FileSystem, Layer, Path, Redacted, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

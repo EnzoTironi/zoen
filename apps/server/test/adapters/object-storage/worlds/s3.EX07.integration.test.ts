@@ -8,12 +8,12 @@ import {
   S3ServiceException,
 } from "@aws-sdk/client-s3";
 import { describe, expect, it } from "@effect/vitest";
+import { WorldLimits } from "@zoen/contracts/worlds/values";
 import {
   EvidenceObjectStore,
   StorageFailure,
-} from "@zoen/authority/ports/worlds/storage";
-import { digestBytes } from "@zoen/authority/values/canonical";
-import { WorldLimits } from "@zoen/contracts/worlds/values";
+} from "@zoen/ontology/ports/worlds/storage";
+import { digestBytes } from "@zoen/ontology/values/canonical";
 import { Deferred, Effect, Fiber, Redacted, Schema, Stream } from "effect";
 
 import { layer } from "../../../../src/adapters/object-storage/worlds/s3.js";

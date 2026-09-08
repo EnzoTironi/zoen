@@ -14,10 +14,10 @@ import {
   UploadPartCommand,
 } from "@aws-sdk/client-s3";
 import { expect, it } from "@effect/vitest";
-import { ErasureObjectInventory } from "@zoen/authority/ports/erasure/inventory";
-import { ErasurePurgeStore } from "@zoen/authority/ports/erasure/purge";
-import { StorageFailure } from "@zoen/authority/ports/worlds/storage";
 import { WorldRef } from "@zoen/contracts/worlds/values";
+import { ErasureObjectInventory } from "@zoen/ontology/ports/erasure/inventory";
+import { ErasurePurgeStore } from "@zoen/ontology/ports/erasure/purge";
+import { StorageFailure } from "@zoen/ontology/ports/worlds/storage";
 import { Config, Effect, Redacted, Schema } from "effect";
 import type { Scope } from "effect";
 

@@ -19,8 +19,8 @@ import { HttpRouter, HttpServer } from "effect/unstable/http";
 import type * as Pg from "pg";
 
 import type * as ApplicationModule from "../../../../apps/server/src/composition.ts";
-import type * as InstallationModule from "../../../../packages/authority/src/commit/configuration.ts";
-import type * as PolicyModule from "../../../../packages/authority/src/ports/worlds/context.ts";
+import type * as InstallationModule from "../../../../packages/ontology/src/commit/configuration.ts";
+import type * as PolicyModule from "../../../../packages/ontology/src/ports/worlds/context.ts";
 import {
   Barrier,
   makeHttpProcessConfiguration,
@@ -147,7 +147,7 @@ const program = Effect.scoped(
       (): Promise<typeof InstallationModule> =>
         import(
           new URL(
-            "../../../../packages/authority/dist/commit/configuration.js",
+            "../../../../packages/ontology/dist/commit/configuration.js",
             import.meta.url
           ).href
         )
@@ -156,7 +156,7 @@ const program = Effect.scoped(
       (): Promise<typeof PolicyModule> =>
         import(
           new URL(
-            "../../../../packages/authority/dist/ports/worlds/context.js",
+            "../../../../packages/ontology/dist/ports/worlds/context.js",
             import.meta.url
           ).href
         )

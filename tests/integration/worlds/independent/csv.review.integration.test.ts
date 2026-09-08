@@ -7,15 +7,15 @@ import { SqlClient } from "effect/unstable/sql";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
 import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.ts";
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
-import { SemanticExecutor } from "../../../../packages/authority/src/semantic/executor.ts";
-import { canonicalJson } from "../../../../packages/authority/src/values/canonical.ts";
-import { parseImportDocument } from "../../../../packages/authority/src/values/document.ts";
 import {
   EvidenceImported,
   EvidenceOpened,
   FrameInspected,
   WorldCreated,
 } from "../../../../packages/contracts/src/worlds/operations.ts";
+import { SemanticExecutor } from "../../../../packages/ontology/src/semantic/executor.ts";
+import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.ts";
+import { parseImportDocument } from "../../../../packages/ontology/src/values/document.ts";
 import { configuration } from "../commit/fixture.ts";
 
 const encoded = (value: unknown) =>

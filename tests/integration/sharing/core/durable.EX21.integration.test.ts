@@ -16,19 +16,19 @@ import { SqlClient, SqlError } from "effect/unstable/sql";
 
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
 import {
-  grantWorldReadAccess,
-  revokeWorldReadAccess,
-} from "../../../../packages/authority/src/access/sharing/mutation.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import {
-  membershipDisclosureKey,
-  sessionDisclosureKey,
-} from "../../../../packages/authority/src/ports/disclosure/keys.js";
-import type { VerifiedRequestContext } from "../../../../packages/authority/src/ports/worlds/context.js";
-import {
   GrantWorldReadAccess,
   RevokeWorldReadAccess,
 } from "../../../../packages/contracts/src/sharing/operations.js";
+import {
+  grantWorldReadAccess,
+  revokeWorldReadAccess,
+} from "../../../../packages/ontology/src/access/sharing/mutation.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import {
+  membershipDisclosureKey,
+  sessionDisclosureKey,
+} from "../../../../packages/ontology/src/ports/disclosure/keys.js";
+import type { VerifiedRequestContext } from "../../../../packages/ontology/src/ports/worlds/context.js";
 import { configuration } from "../../worlds/commit/fixture.js";
 import {
   genesisRequest,

@@ -5,26 +5,26 @@ import { DateTime, Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { authorizeWorld } from "../../../../packages/authority/src/access/world.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import {
-  readCut,
-  validateBasis,
-} from "../../../../packages/authority/src/commit/guards.js";
-import { bindWorldIntent } from "../../../../packages/authority/src/commit/intent.js";
-import { commitMutation } from "../../../../packages/authority/src/commit/mutation.js";
-import {
-  CurrentInternalBasis,
-  ReadSet,
-} from "../../../../packages/authority/src/ports/worlds/basis.js";
-import { VerifiedRequestContext } from "../../../../packages/authority/src/ports/worlds/context.js";
-import {
-  canonicalJson,
-  structuredDigest,
-} from "../../../../packages/authority/src/values/canonical.js";
 import { SemanticError } from "../../../../packages/contracts/src/worlds/errors.js";
 import { ImportEvidence } from "../../../../packages/contracts/src/worlds/operations.js";
 import { WorldRef } from "../../../../packages/contracts/src/worlds/values.js";
+import { authorizeWorld } from "../../../../packages/ontology/src/access/world.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import {
+  readCut,
+  validateBasis,
+} from "../../../../packages/ontology/src/commit/guards.js";
+import { bindWorldIntent } from "../../../../packages/ontology/src/commit/intent.js";
+import { commitMutation } from "../../../../packages/ontology/src/commit/mutation.js";
+import {
+  CurrentInternalBasis,
+  ReadSet,
+} from "../../../../packages/ontology/src/ports/worlds/basis.js";
+import { VerifiedRequestContext } from "../../../../packages/ontology/src/ports/worlds/context.js";
+import {
+  canonicalJson,
+  structuredDigest,
+} from "../../../../packages/ontology/src/values/canonical.js";
 import { configuration, makeInput } from "./fixture.js";
 
 it.live(

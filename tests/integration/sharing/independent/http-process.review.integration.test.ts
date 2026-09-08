@@ -6,20 +6,6 @@ import { NodeServices } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
 import { expect, it } from "@effect/vitest";
 import {
-  AuthorityInstallation,
-  AuthorityInstallationSchema,
-} from "@zoen/authority/commit/configuration";
-import {
-  membershipDisclosureKey,
-  sessionDisclosureKey,
-} from "@zoen/authority/ports/disclosure/keys";
-import {
-  DataPolicy,
-  DataPolicySchema,
-  PrincipalId,
-  VerifiedPresence,
-} from "@zoen/authority/ports/worlds/context";
-import {
   PrincipalRef,
   WorldReadAccessGranted,
   WorldReadAccessRevoked,
@@ -30,6 +16,20 @@ import {
   FrameInspected,
   WorldCreated,
 } from "@zoen/contracts/worlds/operations";
+import {
+  AuthorityInstallation,
+  AuthorityInstallationSchema,
+} from "@zoen/ontology/commit/configuration";
+import {
+  membershipDisclosureKey,
+  sessionDisclosureKey,
+} from "@zoen/ontology/ports/disclosure/keys";
+import {
+  DataPolicy,
+  DataPolicySchema,
+  PrincipalId,
+  VerifiedPresence,
+} from "@zoen/ontology/ports/worlds/context";
 import {
   Config,
   Effect,

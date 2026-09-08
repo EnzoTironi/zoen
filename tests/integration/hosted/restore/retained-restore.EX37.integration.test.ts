@@ -16,9 +16,9 @@ import { SqlClient } from "effect/unstable/sql";
 import { grantWorldsRoles } from "../../../../apps/server/sql/proposals/worlds/grants.js";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { authorizeWorld } from "../../../../packages/authority/src/access/world.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { HostedRetainedDataPolicySchema } from "../../../../packages/authority/src/ports/worlds/context.js";
+import { authorizeWorld } from "../../../../packages/ontology/src/access/world.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import { HostedRetainedDataPolicySchema } from "../../../../packages/ontology/src/ports/worlds/context.js";
 import {
   DisposableRestoreFailure,
   roleUrlForDatabase,

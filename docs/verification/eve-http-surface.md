@@ -31,7 +31,7 @@ Mesmos headers EX42/EX43: `User-Agent: opencode/1.17.20 zoen-eve`, `x-opencode-c
 ```bash
 pnpm exec vitest run --project unit \
   packages/contracts/test/eve \
-  packages/authority/test/ports/eve \
+  packages/ontology/test/ports/eve \
   apps/web/test/integration/eve
 
 pnpm exec vitest run --project integration \
@@ -40,7 +40,7 @@ pnpm exec vitest run --project integration \
 # Live (optional; skips/Blocked without key):
 set -a; source .local/opencode.env; set +a
 pnpm exec vitest run --project integration \
-  packages/authority/test/ports/eve/opencode-zen.EX43.integration.test.ts
+  packages/ontology/test/ports/eve/opencode-zen.EX43.integration.test.ts
 ```
 
 ## Não alegado

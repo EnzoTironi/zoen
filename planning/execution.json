@@ -27,7 +27,7 @@
     "apps/web",
     "apps/cli",
     "packages/contracts",
-    "packages/authority"
+    "packages/ontology"
   ],
   "path_policy": "Globs são allowlists propostas, não ordem para criar arquivos vazios. Worker escreve somente seus paths; root detém configs/entrypoints/composição/migrações numeradas e conecta exports. Propostas SQL não numeradas podem ser testadas isoladamente. Entrypoints dos cinco workspaces e scripts são root. Nenhum worker edita root manifests/lock/CI/configs/composição ou numbering.",
   "dependency_semantics": {
@@ -103,7 +103,7 @@
         "apps/web/src/main.*",
         "apps/cli/src/main.*",
         "packages/contracts/src/index.ts",
-        "packages/authority/src/index.ts",
+        "packages/ontology/src/index.ts",
         "ops/migrations/**",
         "tests/infrastructure/**",
         "oxfmt.config.ts",
@@ -169,8 +169,8 @@
       "owns": [
         "packages/contracts/src/worlds/**",
         "packages/contracts/test/worlds/**",
-        "packages/authority/src/ports/worlds/**",
-        "packages/authority/test/ports/worlds/**",
+        "packages/ontology/src/ports/worlds/**",
+        "packages/ontology/test/ports/worlds/**",
         "docs/contracts/worlds.md"
       ],
       "status": "planned",
@@ -199,7 +199,7 @@
       ],
       "outputs": [
         "Schemas/HttpApi públicos importáveis em packages/contracts/src/worlds; nenhuma operação exposta sem handler real.",
-        "Contratos privados específicos em packages/authority/src/ports/worlds; SQL continua usando SqlClient Effect.",
+        "Contratos privados específicos em packages/ontology/src/ports/worlds; SQL continua usando SqlClient Effect.",
         "docs/contracts/worlds.md: contrato curto congelado do incremento, consumido por EX05/EX06/EX08/EX09 e validado pelo integrador."
       ],
       "persistence_handoff": {
@@ -313,8 +313,8 @@
         "Compilação negativa para mistura de IDs se suportada pelo contrato TS7 real."
       ],
       "owns": [
-        "packages/authority/src/values/**",
-        "packages/authority/test/values/**"
+        "packages/ontology/src/values/**",
+        "packages/ontology/test/values/**"
       ],
       "status": "planned",
       "reviewer": "worker-2",
@@ -371,12 +371,12 @@
         "Revogar membership antes do replay e observar ausência de payload; falha transacional não deixa parcial."
       ],
       "owns": [
-        "packages/authority/src/commit/**",
-        "packages/authority/src/access/**",
-        "packages/authority/test/commit/**",
-        "packages/authority/test/access/**",
-        "packages/authority/src/semantic/**",
-        "packages/authority/test/semantic/**"
+        "packages/ontology/src/commit/**",
+        "packages/ontology/src/access/**",
+        "packages/ontology/test/commit/**",
+        "packages/ontology/test/access/**",
+        "packages/ontology/src/semantic/**",
+        "packages/ontology/test/semantic/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -549,10 +549,10 @@
         "Fazer GC concorrente e falha de staging no store real; preservar objetos pinned e limpar somente órfãos elegíveis."
       ],
       "owns": [
-        "packages/authority/src/evidence/worlds/**",
-        "packages/authority/src/knowledge/worlds/**",
-        "packages/authority/test/evidence/worlds/**",
-        "packages/authority/test/knowledge/worlds/**"
+        "packages/ontology/src/evidence/worlds/**",
+        "packages/ontology/src/knowledge/worlds/**",
+        "packages/ontology/test/evidence/worlds/**",
+        "packages/ontology/test/knowledge/worlds/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -678,7 +678,7 @@
         "apps/server/src/http/**",
         "ops/migrations/**",
         "packages/contracts/src/index.ts",
-        "packages/authority/src/index.ts",
+        "packages/ontology/src/index.ts",
         "apps/server/test/composition/worlds/**"
       ],
       "status": "planned",
@@ -864,8 +864,8 @@
         "Dois clientes correm mesma operação; apenas um receipt. Atualizar guard via outra operação real; resposta antiga é rejeitada."
       ],
       "owns": [
-        "packages/authority/src/knowledge/corrections/**",
-        "packages/authority/test/knowledge/corrections/**"
+        "packages/ontology/src/knowledge/corrections/**",
+        "packages/ontology/test/knowledge/corrections/**"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -1067,7 +1067,7 @@
       "owns": [
         "docs/contracts/worlds-csv.md",
         "packages/contracts/src/worlds/values.ts",
-        "packages/authority/src/ports/worlds/storage.ts",
+        "packages/ontology/src/ports/worlds/storage.ts",
         "ops/migrations/**",
         "apps/server/test/adapters/postgres/worlds/database.ts"
       ],
@@ -1130,9 +1130,9 @@
       "owns": [
         "packages/contracts/src/worlds/operations.ts",
         "packages/contracts/test/worlds/**",
-        "packages/authority/src/values/**",
-        "packages/authority/test/values/**",
-        "packages/authority/src/evidence/worlds/**",
+        "packages/ontology/src/values/**",
+        "packages/ontology/test/values/**",
+        "packages/ontology/src/evidence/worlds/**",
         "tests/integration/worlds/evidence/**"
       ],
       "status": "planned",
@@ -1199,7 +1199,7 @@
       "owns": [
         "apps/server/src/adapters/object-storage/worlds/**",
         "apps/server/test/adapters/object-storage/worlds/**",
-        "packages/authority/src/ports/worlds/storage.ts"
+        "packages/ontology/src/ports/worlds/storage.ts"
       ],
       "status": "planned",
       "reviewer": "worker-3",
@@ -1345,8 +1345,8 @@
       "owns": [
         "docs/contracts/d03-sharing.md",
         "docs/contracts/disclosure-fence.md",
-        "packages/authority/src/ports/disclosure/**",
-        "packages/authority/src/ports/sharing/**",
+        "packages/ontology/src/ports/disclosure/**",
+        "packages/ontology/src/ports/sharing/**",
         "ops/migrations/**",
         "apps/server/test/adapters/postgres/worlds/database.ts",
         "apps/server/sql/proposals/disclosure/**"
@@ -1412,18 +1412,18 @@
         "packages/contracts/src/sharing/**",
         "packages/contracts/test/sharing/**",
         "packages/contracts/src/worlds/operations.ts",
-        "packages/authority/src/access/world.ts",
-        "packages/authority/src/access/sharing/**",
-        "packages/authority/src/commit/intent.ts",
-        "packages/authority/src/commit/mutation.ts",
-        "packages/authority/src/commit/receipt.ts",
-        "packages/authority/src/ports/worlds/persistence.ts",
-        "packages/authority/src/values/canonical.ts",
-        "packages/authority/src/knowledge/worlds/inspect.ts",
-        "packages/authority/src/knowledge/corrections/frame.ts",
-        "packages/authority/src/knowledge/corrections/answer.ts",
-        "packages/authority/src/evidence/worlds/policy.ts",
-        "packages/authority/src/evidence/worlds/open.ts",
+        "packages/ontology/src/access/world.ts",
+        "packages/ontology/src/access/sharing/**",
+        "packages/ontology/src/commit/intent.ts",
+        "packages/ontology/src/commit/mutation.ts",
+        "packages/ontology/src/commit/receipt.ts",
+        "packages/ontology/src/ports/worlds/persistence.ts",
+        "packages/ontology/src/values/canonical.ts",
+        "packages/ontology/src/knowledge/worlds/inspect.ts",
+        "packages/ontology/src/knowledge/corrections/frame.ts",
+        "packages/ontology/src/knowledge/corrections/answer.ts",
+        "packages/ontology/src/evidence/worlds/policy.ts",
+        "packages/ontology/src/evidence/worlds/open.ts",
         "tests/integration/d03-sharing/core/**"
       ]
     },
@@ -1548,7 +1548,7 @@
         "Build/container e revisões independentes no commit combinado; ativação local somente após provas."
       ],
       "owns": [
-        "packages/authority/src/semantic/executor.ts",
+        "packages/ontology/src/semantic/executor.ts",
         "packages/contracts/src/worlds/api.ts",
         "apps/server/src/composition.ts",
         "apps/server/src/http/**",
@@ -1609,8 +1609,8 @@
       "owns": [
         "packages/contracts/src/subject-identity/**",
         "packages/contracts/test/subject-identity/**",
-        "packages/authority/src/knowledge/subject-identity/pure/**",
-        "packages/authority/test/knowledge/subject-identity/**"
+        "packages/ontology/src/knowledge/subject-identity/pure/**",
+        "packages/ontology/test/knowledge/subject-identity/**"
       ],
       "model": "gpt-6-astra",
       "reasoning_effort": "low"
@@ -1659,14 +1659,14 @@
       ],
       "owns": [
         "docs/contracts/corrections-basis-compatibility.md",
-        "packages/authority/src/ports/worlds/basis.ts",
-        "packages/authority/src/commit/guards.ts",
-        "packages/authority/src/commit/mutation.ts",
-        "packages/authority/src/commit/genesis.ts",
-        "packages/authority/src/commit/README.md",
-        "packages/authority/src/knowledge/worlds/inspect.ts",
-        "packages/authority/src/knowledge/corrections/**",
-        "packages/authority/test/commit/**",
+        "packages/ontology/src/ports/worlds/basis.ts",
+        "packages/ontology/src/commit/guards.ts",
+        "packages/ontology/src/commit/mutation.ts",
+        "packages/ontology/src/commit/genesis.ts",
+        "packages/ontology/src/commit/README.md",
+        "packages/ontology/src/knowledge/worlds/inspect.ts",
+        "packages/ontology/src/knowledge/corrections/**",
+        "packages/ontology/test/commit/**",
         "tests/integration/d02-identity/basis/**"
       ],
       "model": "gpt-6-astra",
@@ -1679,7 +1679,7 @@
           "owns": [
             "ops/migrations/**",
             "apps/server/src/composition.ts",
-            "packages/authority/src/index.ts"
+            "packages/ontology/src/index.ts"
           ]
         }
       ]
@@ -1773,9 +1773,9 @@
         "Replay histórico e conflito de intenção; viewer negado antes de lookup/contagem/travessia."
       ],
       "owns": [
-        "packages/authority/src/knowledge/subject-identity/handlers/**",
-        "packages/authority/src/knowledge/subject-identity/persistence/**",
-        "packages/authority/src/knowledge/subject-identity/request.ts",
+        "packages/ontology/src/knowledge/subject-identity/handlers/**",
+        "packages/ontology/src/knowledge/subject-identity/persistence/**",
+        "packages/ontology/src/knowledge/subject-identity/request.ts",
         "tests/integration/d02-identity/core/**"
       ],
       "model": "gpt-6-astra",
@@ -1788,7 +1788,7 @@
           "owns": [
             "ops/migrations/**",
             "packages/contracts/src/index.ts",
-            "packages/authority/src/index.ts",
+            "packages/ontology/src/index.ts",
             "apps/server/src/composition.ts",
             "apps/server/src/http/**"
           ]
@@ -1889,11 +1889,11 @@
         "Artefato container e CI do commit integrado; resultados separados de D02 completo."
       ],
       "owns": [
-        "packages/authority/src/semantic/**",
+        "packages/ontology/src/semantic/**",
         "packages/contracts/src/worlds/api.ts",
         "packages/contracts/src/worlds/operations.ts",
         "packages/contracts/src/index.ts",
-        "packages/authority/src/index.ts",
+        "packages/ontology/src/index.ts",
         "apps/server/src/composition.ts",
         "apps/server/src/http/**",
         "apps/server/src/main.ts",
@@ -2019,8 +2019,8 @@
         "Teste de bloqueio: restore/ativação recusa Registrada sem desfecho."
       ],
       "owns": [
-        "packages/authority/src/ports/erasure/**",
-        "packages/authority/test/ports/erasure/**"
+        "packages/ontology/src/ports/erasure/**",
+        "packages/ontology/test/ports/erasure/**"
       ],
       "model": "gpt-6-astra",
       "reasoning_effort": "low"
@@ -2079,7 +2079,7 @@
         "Nenhum DELETE de conteúdo admitido neste pacote."
       ],
       "owns": [
-        "packages/authority/src/knowledge/erasure/**",
+        "packages/ontology/src/knowledge/erasure/**",
         "tests/integration/erasure/core/**"
       ],
       "model": "gpt-6-astra",
@@ -2091,7 +2091,7 @@
           "completion": "Dispatcher/composição importam handlers; perfil novo só após EX34; sem rebind de Worlds retidos.",
           "owns": [
             "ops/migrations/**",
-            "packages/authority/src/index.ts",
+            "packages/ontology/src/index.ts",
             "apps/server/src/composition.ts",
             "apps/server/src/http/**"
           ]
@@ -2337,8 +2337,8 @@
       "owns": [
         "packages/contracts/src/hosted/policy/**",
         "packages/contracts/test/hosted/policy/**",
-        "packages/authority/src/ports/hosted/**",
-        "packages/authority/test/ports/hosted/**"
+        "packages/ontology/src/ports/hosted/**",
+        "packages/ontology/test/ports/hosted/**"
       ],
       "model": null,
       "reasoning_effort": null,
@@ -2349,7 +2349,7 @@
           "completion": "Exportar perfil hosted nos indexes e compor DataPolicy sem rebind de Worlds antigos (edição de ports/worlds/context.ts sob root, fora do owns do worker).",
           "owns": [
             "packages/contracts/src/index.ts",
-            "packages/authority/src/index.ts",
+            "packages/ontology/src/index.ts",
             "apps/server/src/composition.ts"
           ]
         }
@@ -2451,8 +2451,8 @@
       ],
       "owns": [
         "packages/contracts/src/hosted/admission/**",
-        "packages/authority/src/hosted/admission/**",
-        "packages/authority/test/hosted/admission/**"
+        "packages/ontology/src/hosted/admission/**",
+        "packages/ontology/test/hosted/admission/**"
       ],
       "model": null,
       "reasoning_effort": null
@@ -2627,12 +2627,12 @@
         "real-model-blocked e voice-blocked nunca fabricam sucesso; authorityCredentialPresent permanece false."
       ],
       "planned_direct_checks": [
-        "pnpm exec vitest run --project unit packages/authority/test/ports/eve",
+        "pnpm exec vitest run --project unit packages/ontology/test/ports/eve",
         "python3 tooling/verify_plan.py"
       ],
       "owns": [
-        "packages/authority/src/ports/eve/**",
-        "packages/authority/test/ports/eve/**"
+        "packages/ontology/src/ports/eve/**",
+        "packages/ontology/test/ports/eve/**"
       ],
       "model": null,
       "reasoning_effort": null,
@@ -2642,7 +2642,7 @@
           "trigger": "EX41 journal stub e testes de unidade verdes.",
           "completion": "Opcional: exportar porta nos indexes e compor layer só em installs de proof — sem ativar modelo real nem redeploy.",
           "owns": [
-            "packages/authority/src/index.ts",
+            "packages/ontology/src/index.ts",
             "apps/server/src/composition.ts"
           ]
         }
@@ -2688,14 +2688,14 @@
         "Client envia User-Agent opencode/*, x-opencode-client/session/request; nunca fabrica sucesso sem upstream."
       ],
       "planned_direct_checks": [
-        "pnpm exec vitest run --project unit packages/contracts/test/eve packages/authority/test/ports/eve/opencode-zen.EX42.test.ts",
+        "pnpm exec vitest run --project unit packages/contracts/test/eve packages/ontology/test/ports/eve/opencode-zen.EX42.test.ts",
         "python3 tooling/verify_plan.py"
       ],
       "owns": [
         "packages/contracts/src/eve/**",
         "packages/contracts/test/eve/**",
-        "packages/authority/src/ports/eve/opencode-zen.ts",
-        "packages/authority/test/ports/eve/opencode-zen.EX42.test.ts"
+        "packages/ontology/src/ports/eve/opencode-zen.ts",
+        "packages/ontology/test/ports/eve/opencode-zen.EX42.test.ts"
       ],
       "model": null,
       "reasoning_effort": null,
@@ -2751,15 +2751,15 @@
         "Artefato ZN-0063 registra headers free-tier, model big-pickle, key só env/Fly."
       ],
       "planned_direct_checks": [
-        "pnpm exec vitest run --project unit packages/authority/test/ports/eve",
+        "pnpm exec vitest run --project unit packages/ontology/test/ports/eve",
         "python3 tooling/verify_plan.py"
       ],
       "owns": [
-        "packages/authority/src/ports/eve/turn.ts",
-        "packages/authority/src/ports/eve/journal.ts",
-        "packages/authority/test/ports/eve/turn.EX43.test.ts",
-        "packages/authority/test/ports/eve/opencode-zen.EX43.integration.test.ts",
-        "packages/authority/test/ports/eve/journal.EX41.test.ts",
+        "packages/ontology/src/ports/eve/turn.ts",
+        "packages/ontology/src/ports/eve/journal.ts",
+        "packages/ontology/test/ports/eve/turn.EX43.test.ts",
+        "packages/ontology/test/ports/eve/opencode-zen.EX43.integration.test.ts",
+        "packages/ontology/test/ports/eve/journal.EX41.test.ts",
         "docs/verification/eve-opencode-zen.md",
         "docs/contracts/eve-freeze.md",
         "docs/contracts/eve.md",
@@ -2822,20 +2822,20 @@
         "INV-01: snapshot/recover sem API key; Settle client Unsupported."
       ],
       "planned_direct_checks": [
-        "pnpm exec vitest run --project unit packages/authority/test/ports/eve/voice.EX44.test.ts packages/authority/test/ports/eve/handlers.EX44.test.ts packages/contracts/test/eve apps/web/test/features/eve apps/web/test/integration/eve",
+        "pnpm exec vitest run --project unit packages/ontology/test/ports/eve/voice.EX44.test.ts packages/ontology/test/ports/eve/handlers.EX44.test.ts packages/contracts/test/eve apps/web/test/features/eve apps/web/test/integration/eve",
         "pnpm exec vitest run --project integration apps/server/test/composition/eve/http.EX44.integration.test.ts",
         "python3 tooling/verify_plan.py"
       ],
       "owns": [
         "packages/contracts/src/eve/**",
         "packages/contracts/test/eve/**",
-        "packages/authority/src/ports/eve/voice.ts",
-        "packages/authority/src/ports/eve/handlers.ts",
-        "packages/authority/src/ports/eve/request.ts",
-        "packages/authority/src/ports/eve/journal.ts",
-        "packages/authority/src/ports/eve/turn.ts",
-        "packages/authority/test/ports/eve/voice.EX44.test.ts",
-        "packages/authority/test/ports/eve/handlers.EX44.test.ts",
+        "packages/ontology/src/ports/eve/voice.ts",
+        "packages/ontology/src/ports/eve/handlers.ts",
+        "packages/ontology/src/ports/eve/request.ts",
+        "packages/ontology/src/ports/eve/journal.ts",
+        "packages/ontology/src/ports/eve/turn.ts",
+        "packages/ontology/test/ports/eve/voice.EX44.test.ts",
+        "packages/ontology/test/ports/eve/handlers.EX44.test.ts",
         "apps/cli/src/eve/**",
         "apps/cli/test/eve/**",
         "apps/web/src/features/eve/**",
@@ -2973,7 +2973,7 @@
     "apps/web/src/main.*",
     "apps/cli/src/main.*",
     "packages/contracts/src/index.ts",
-    "packages/authority/src/index.ts",
+    "packages/ontology/src/index.ts",
     "ops/migrations/**",
     "oxfmt.config.ts",
     "vite.config.ts"

@@ -52,7 +52,7 @@ export default defineConfig({
         "tests/integration/subject-identity/**",
         "apps/cli/test/subject-identity/**",
         "apps/web/test/integration/subject-identity/**",
-        "packages/authority/test/knowledge/subject-identity/**",
+        "packages/ontology/test/knowledge/subject-identity/**",
       ],
       rules: {
         "effecttsgo/any-unknown-in-error-context": "off",
@@ -76,7 +76,7 @@ export default defineConfig({
         "tests/integration/erasure/**",
         "apps/cli/test/erasure/**",
         "apps/web/test/integration/erasure/**",
-        "packages/authority/test/ports/erasure/**",
+        "packages/ontology/test/ports/erasure/**",
         "packages/contracts/test/erasure/**",
         "apps/server/test/adapters/object-storage/erasure/**",
         "apps/server/src/adapters/object-storage/erasure/**",
@@ -98,8 +98,8 @@ export default defineConfig({
     {
       files: [
         "tests/integration/hosted/**",
-        "packages/authority/test/hosted/**",
-        "packages/authority/test/ports/hosted/**",
+        "packages/ontology/test/hosted/**",
+        "packages/ontology/test/ports/hosted/**",
         "packages/contracts/test/hosted/**",
         "ops/local/**",
       ],
@@ -129,8 +129,8 @@ export default defineConfig({
     },
     {
       files: [
-        "packages/authority/src/ports/eve/**",
-        "packages/authority/test/ports/eve/**",
+        "packages/ontology/src/ports/eve/**",
+        "packages/ontology/test/ports/eve/**",
         "packages/contracts/test/eve/**",
         "apps/cli/src/eve/**",
         "apps/web/src/features/eve/**",
@@ -155,7 +155,7 @@ export default defineConfig({
     },
     {
       files: [
-        "packages/authority/src/semantic/executor.ts",
+        "packages/ontology/src/semantic/executor.ts",
         "apps/cli/src/worlds/transport.ts",
         "apps/web/src/features/worlds/client.ts",
       ],
@@ -195,7 +195,7 @@ export default defineConfig({
       },
     },
     {
-      files: ["packages/contracts/src/**", "packages/authority/src/ports/**"],
+      files: ["packages/contracts/src/**", "packages/ontology/src/ports/**"],
       rules: { "max-classes-per-file": ["error", { max: 16 }] },
     },
     {
@@ -213,9 +213,9 @@ export default defineConfig({
           "error",
           {
             patterns: [
-              "@zoen/authority",
-              "@zoen/authority/*",
-              "**/authority/**",
+              "@zoen/ontology",
+              "@zoen/ontology/*",
+              "**/ontology/**",
               "**/apps/server/**",
               "@zoen/server",
               "@zoen/server/*",
@@ -237,9 +237,9 @@ export default defineConfig({
           "error",
           {
             patterns: [
-              "@zoen/authority",
-              "@zoen/authority/*",
-              "**/authority/**",
+              "@zoen/ontology",
+              "@zoen/ontology/*",
+              "**/ontology/**",
               "**/apps/server/**",
               "@zoen/server",
               "@zoen/server/*",

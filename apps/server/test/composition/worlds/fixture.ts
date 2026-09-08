@@ -2,9 +2,9 @@ import { randomBytes, randomUUID } from "node:crypto";
 
 import { PutBucketVersioningCommand } from "@aws-sdk/client-s3";
 import { NodeHttpServer, NodeServices } from "@effect/platform-node";
-import { AuthorityInstallationSchema } from "@zoen/authority/commit/configuration";
-import { DataPolicySchema } from "@zoen/authority/ports/worlds/context";
-import { digestBytes } from "@zoen/authority/values/canonical";
+import { AuthorityInstallationSchema } from "@zoen/ontology/commit/configuration";
+import { DataPolicySchema } from "@zoen/ontology/ports/worlds/context";
+import { digestBytes } from "@zoen/ontology/values/canonical";
 import { Effect, Layer, Redacted, Schema } from "effect";
 import type { Scope } from "effect";
 import {

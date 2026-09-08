@@ -1,7 +1,7 @@
-import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { ApplicationApi } from "@zoen/contracts/worlds/api";
 import { Expired } from "@zoen/contracts/worlds/errors";
 import { WorldLimits } from "@zoen/contracts/worlds/values";
+import { SemanticExecutor } from "@zoen/ontology/semantic/executor";
 import { Effect, Redacted, Scope } from "effect";
 import { HttpServerResponse } from "effect/unstable/http";
 import { HttpApiBuilder } from "effect/unstable/httpapi";

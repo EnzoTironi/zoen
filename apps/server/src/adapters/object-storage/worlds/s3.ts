@@ -8,20 +8,20 @@ import {
   S3ServiceException,
 } from "@aws-sdk/client-s3";
 import {
-  CaptureId,
-  EvidenceObjectStore,
-  ObjectLocation,
-  StorageFailure,
-} from "@zoen/authority/ports/worlds/storage";
-import type { DocumentStageInput } from "@zoen/authority/ports/worlds/storage";
-import { digestBytes } from "@zoen/authority/values/canonical";
-import {
   WorldLimits,
   Digest,
   DocumentFormat,
   WorldRef,
   exact,
 } from "@zoen/contracts/worlds/values";
+import {
+  CaptureId,
+  EvidenceObjectStore,
+  ObjectLocation,
+  StorageFailure,
+} from "@zoen/ontology/ports/worlds/storage";
+import type { DocumentStageInput } from "@zoen/ontology/ports/worlds/storage";
+import { digestBytes } from "@zoen/ontology/values/canonical";
 import { Context, Data, Effect, Layer, Redacted, Schema, Stream } from "effect";
 
 import { collectExactBytes } from "./bytes.js";

@@ -15,30 +15,30 @@ import {
 import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
 import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
 import {
-  reserveCapture,
-  stageCapture,
-} from "../../../../packages/authority/src/evidence/worlds/capture.js";
-import { sweepExpiredCaptures } from "../../../../packages/authority/src/evidence/worlds/cleanup.js";
-import {
-  Presence,
-  VerifiedRequestContext,
-} from "../../../../packages/authority/src/ports/worlds/context.js";
-import {
-  EvidenceObjectStore,
-  ObjectLocation,
-} from "../../../../packages/authority/src/ports/worlds/storage.js";
-import { SemanticExecutor } from "../../../../packages/authority/src/semantic/executor.js";
-import {
-  canonicalJson,
-  digestBytes,
-} from "../../../../packages/authority/src/values/canonical.js";
-import { parseImportDocument } from "../../../../packages/authority/src/values/document.js";
-import {
   EvidenceImported,
   EvidenceOpened,
   FrameInspected,
   WorldCreated,
 } from "../../../../packages/contracts/src/worlds/operations.js";
+import {
+  reserveCapture,
+  stageCapture,
+} from "../../../../packages/ontology/src/evidence/worlds/capture.js";
+import { sweepExpiredCaptures } from "../../../../packages/ontology/src/evidence/worlds/cleanup.js";
+import {
+  Presence,
+  VerifiedRequestContext,
+} from "../../../../packages/ontology/src/ports/worlds/context.js";
+import {
+  EvidenceObjectStore,
+  ObjectLocation,
+} from "../../../../packages/ontology/src/ports/worlds/storage.js";
+import { SemanticExecutor } from "../../../../packages/ontology/src/semantic/executor.js";
+import {
+  canonicalJson,
+  digestBytes,
+} from "../../../../packages/ontology/src/values/canonical.js";
+import { parseImportDocument } from "../../../../packages/ontology/src/values/document.js";
 import { configuration } from "../commit/fixture.js";
 
 const bytes = (value: unknown) =>

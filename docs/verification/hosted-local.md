@@ -44,8 +44,8 @@ ZOEN_LOCAL_PROFILE=hosted-retained-v1 \
 ```bash
 pnpm format:check && pnpm lint && pnpm typecheck
 pnpm exec vitest run --project unit ops/local/world-policy.test.ts \
-  packages/contracts/test/hosted packages/authority/test/hosted \
-  packages/authority/test/ports/hosted
+  packages/contracts/test/hosted packages/ontology/test/hosted \
+  packages/ontology/test/ports/hosted
 pnpm exec vitest run --project integration \
   tests/integration/hosted/independent \
   tests/integration/hosted/restore

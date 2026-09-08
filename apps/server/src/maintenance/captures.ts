@@ -1,11 +1,11 @@
-import { AuthorityInstallation } from "@zoen/authority/commit/configuration";
+import { WorldId } from "@zoen/contracts/worlds/values";
+import type { WorldRef } from "@zoen/contracts/worlds/values";
+import { AuthorityInstallation } from "@zoen/ontology/commit/configuration";
 import {
   CaptureSweepCursor,
   sweepExpiredCaptures,
-} from "@zoen/authority/evidence/worlds/cleanup";
-import { DataPolicy } from "@zoen/authority/ports/worlds/context";
-import { WorldId } from "@zoen/contracts/worlds/values";
-import type { WorldRef } from "@zoen/contracts/worlds/values";
+} from "@zoen/ontology/evidence/worlds/cleanup";
+import { DataPolicy } from "@zoen/ontology/ports/worlds/context";
 import { Effect, Layer, Schedule, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

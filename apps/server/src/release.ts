@@ -1,8 +1,8 @@
 import { fileURLToPath } from "node:url";
 
-import { digestBytes } from "@zoen/authority/values/canonical";
-import { parseJsonBytes } from "@zoen/authority/values/json";
 import { Digest, exact } from "@zoen/contracts/worlds/values";
+import { digestBytes } from "@zoen/ontology/values/canonical";
+import { parseJsonBytes } from "@zoen/ontology/values/json";
 import { Effect, FileSystem, Schema } from "effect";
 
 const ReleaseManifest = Schema.Struct({
@@ -41,7 +41,7 @@ export const verifyRelease = Effect.gen(function* verifyExecutableRelease() {
     if (
       seen.has(entry.path) ||
       parts.some((part) => part === ".." || part === "." || part === "") ||
-      !/^(?:packages\/(?:contracts|authority)|apps\/(?:server|cli|web))\/(?:dist\/|package\.json$)/u.test(
+      !/^(?:packages\/(?:contracts|ontology)|apps\/(?:server|cli|web))\/(?:dist\/|package\.json$)/u.test(
         entry.path
       ) ||
       entry.path.includes("\\")

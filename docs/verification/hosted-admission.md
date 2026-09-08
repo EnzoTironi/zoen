@@ -8,7 +8,7 @@ Perfil `d04-hosted-retained-v1` declara admission flags honestos: só superfíci
 
 ## Provas
 
-- Unidade: `packages/authority/test/hosted/admission/flags.EX38.test.ts`
+- Unidade: `packages/ontology/test/hosted/admission/flags.EX38.test.ts`
 - Matriz disabled vs enabled; negativo provider ausente / canal não qualificado
 
 ## Não alegado

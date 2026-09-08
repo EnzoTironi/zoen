@@ -49,7 +49,7 @@ Object Lock re-probe evidence remains [`erasure-fly-object-lock.md`](./erasure-f
 ## Reproduction
 
 ```bash
-pnpm exec vitest run --project unit packages/authority/src/knowledge/erasure/object-write-settlement.test.ts
+pnpm exec vitest run --project unit packages/ontology/src/knowledge/erasure/object-write-settlement.test.ts
 pnpm exec vitest run --project integration \
   tests/integration/erasure/core/object-writer-containment.ZA10.integration.test.ts \
   apps/server/test/adapters/object-storage/erasure/writer-containment.ZA10.integration.test.ts

@@ -8,7 +8,7 @@ Esta proposta se subordina a `docs/invariants.md`, em particular às regras de r
 
 | Fato verificado no candidato atual | Consequência |
 | --- | --- |
-| `DataPolicySchema` em `packages/authority/src/ports/worlds/context.ts` exige `worlds-local-retained-v1`, `erasure:false`, `restoreAfterErasure:false`, `retention:'while-pinned'` | Não há autorização para apagar dados desses Worlds. |
+| `DataPolicySchema` em `packages/ontology/src/ports/worlds/context.ts` exige `worlds-local-retained-v1`, `erasure:false`, `restoreAfterErasure:false`, `retention:'while-pinned'` | Não há autorização para apagar dados desses Worlds. |
 | Esse perfil também exige `admitted-non-sensitive`, `live`, `legalHold:false` e `licensedExpiry:false` | Ausência de suporte a hold ou expiração licenciada não permite ignorá-los. |
 | A autorização de World verifica membership, perfil e emergency deny | Não existe hoje lifecycle admitido de erasure de World. |
 | O armazenamento admite referências a versões específicas | Apagar somente a versão corrente ou criar delete marker é insuficiente. |

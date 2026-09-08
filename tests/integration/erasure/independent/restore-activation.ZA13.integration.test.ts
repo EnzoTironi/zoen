@@ -7,29 +7,6 @@ import { fileURLToPath } from "node:url";
 import { NodeServices } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
 import { describe, expect, it } from "@effect/vitest";
-import { admitWorldContent } from "@zoen/authority/access/erasure/content";
-import { admitRestoredWorldAccess } from "@zoen/authority/access/erasure/restore";
-import { AuthorityInstallation } from "@zoen/authority/commit/configuration";
-import { createPersonalWorld } from "@zoen/authority/commit/genesis";
-import { requestWorldErasure } from "@zoen/authority/knowledge/erasure/handlers/request";
-import {
-  currentRestoreActivationQualification,
-  gatesAdmitRestorePromotion,
-  linearizeErasureVersusActivation,
-} from "@zoen/authority/knowledge/erasure/restore-activation";
-import {
-  ErasureAttemptRegister,
-  blocksWorldContentAdmission,
-} from "@zoen/authority/ports/erasure/attempt-register";
-import {
-  anchoredLocalErasureAttemptRegisterLayer,
-  applyErasureAttemptSchema,
-} from "@zoen/authority/ports/erasure/local-pg";
-import {
-  ErasureRestoreActivation,
-  memoryRestoreActivationLayer,
-} from "@zoen/authority/ports/erasure/restore-activation";
-import { DataPolicy } from "@zoen/authority/ports/worlds/context";
 import {
   RequestWorldErasure,
   WorldErasureRequested,
@@ -37,6 +14,29 @@ import {
 import { CreatePersonalWorld } from "@zoen/contracts/worlds/operations";
 import { OperationId, WorldId } from "@zoen/contracts/worlds/values";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
+import { admitWorldContent } from "@zoen/ontology/access/erasure/content";
+import { admitRestoredWorldAccess } from "@zoen/ontology/access/erasure/restore";
+import { AuthorityInstallation } from "@zoen/ontology/commit/configuration";
+import { createPersonalWorld } from "@zoen/ontology/commit/genesis";
+import { requestWorldErasure } from "@zoen/ontology/knowledge/erasure/handlers/request";
+import {
+  currentRestoreActivationQualification,
+  gatesAdmitRestorePromotion,
+  linearizeErasureVersusActivation,
+} from "@zoen/ontology/knowledge/erasure/restore-activation";
+import {
+  ErasureAttemptRegister,
+  blocksWorldContentAdmission,
+} from "@zoen/ontology/ports/erasure/attempt-register";
+import {
+  anchoredLocalErasureAttemptRegisterLayer,
+  applyErasureAttemptSchema,
+} from "@zoen/ontology/ports/erasure/local-pg";
+import {
+  ErasureRestoreActivation,
+  memoryRestoreActivationLayer,
+} from "@zoen/ontology/ports/erasure/restore-activation";
+import { DataPolicy } from "@zoen/ontology/ports/worlds/context";
 import { Config, Effect, Layer, Redacted, Schema, Stream } from "effect";
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";

@@ -7,10 +7,16 @@ import { SqlClient } from "effect/unstable/sql";
 import { makeWorldsPostgresLayer } from "../../../../apps/server/src/adapters/postgres/worlds/postgres.js";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
 import {
+  PurgeWorldContent,
+  RequestWorldErasure,
+} from "../../../../packages/contracts/src/erasure/operations.js";
+import { HostedErasableTarget } from "../../../../packages/contracts/src/hosted/erasable/values.js";
+import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
+import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
-} from "../../../../packages/authority/src/commit/configuration.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
+} from "../../../../packages/ontology/src/commit/configuration.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
 import {
   HostedErasableAdmission,
   HostedErasableObservedIdentity,
@@ -18,38 +24,32 @@ import {
   evaluateHostedErasableAdmission,
   gatesAdmitFullHostedErased,
   refuseProtectedResource,
-} from "../../../../packages/authority/src/hosted/erasable/admission.js";
-import { purgeWorldContent } from "../../../../packages/authority/src/knowledge/erasure/handlers/purge.js";
-import { requestWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/request.js";
-import { applyWorldErasureSchema } from "../../../../packages/authority/src/knowledge/erasure/schema.js";
+} from "../../../../packages/ontology/src/hosted/erasable/admission.js";
+import { purgeWorldContent } from "../../../../packages/ontology/src/knowledge/erasure/handlers/purge.js";
+import { requestWorldErasure } from "../../../../packages/ontology/src/knowledge/erasure/handlers/request.js";
+import { applyWorldErasureSchema } from "../../../../packages/ontology/src/knowledge/erasure/schema.js";
 import {
   ErasureAttemptRegister,
   blocksWorldContentAdmission,
-} from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
+} from "../../../../packages/ontology/src/ports/erasure/attempt-register.js";
 import {
   applyControlledCopyCatalogSchema,
   localErasureCopyCatalogLayer,
-} from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.js";
-import { ErasureObjectInventory } from "../../../../packages/authority/src/ports/erasure/inventory.js";
+} from "../../../../packages/ontology/src/ports/erasure/copy-catalog-pg.js";
+import { ErasureObjectInventory } from "../../../../packages/ontology/src/ports/erasure/inventory.js";
 import {
   applyErasureAttemptSchema,
   localErasureAttemptRegisterLayer,
-} from "../../../../packages/authority/src/ports/erasure/local-pg.js";
-import { ErasurePurgeStore } from "../../../../packages/authority/src/ports/erasure/purge.js";
-import { ErasureRestoreActivation } from "../../../../packages/authority/src/ports/erasure/restore-activation.js";
+} from "../../../../packages/ontology/src/ports/erasure/local-pg.js";
+import { ErasurePurgeStore } from "../../../../packages/ontology/src/ports/erasure/purge.js";
+import { ErasureRestoreActivation } from "../../../../packages/ontology/src/ports/erasure/restore-activation.js";
 import {
   DataPolicy,
   HostedErasableDataPolicySchema,
   HostedRetainedDataPolicySchema,
   VerifiedRequestContext,
-} from "../../../../packages/authority/src/ports/worlds/context.js";
-import { digestBytes } from "../../../../packages/authority/src/values/canonical.js";
-import {
-  PurgeWorldContent,
-  RequestWorldErasure,
-} from "../../../../packages/contracts/src/erasure/operations.js";
-import { HostedErasableTarget } from "../../../../packages/contracts/src/hosted/erasable/values.js";
-import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
+} from "../../../../packages/ontology/src/ports/worlds/context.js";
+import { digestBytes } from "../../../../packages/ontology/src/values/canonical.js";
 
 const releaseDigest = digestBytes(
   new TextEncoder().encode("ZA-14 hosted erasable local exact-image fixture")

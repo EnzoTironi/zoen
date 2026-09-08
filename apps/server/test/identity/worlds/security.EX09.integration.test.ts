@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { Presence } from "@zoen/authority/ports/worlds/context";
+import { Presence } from "@zoen/ontology/ports/worlds/context";
 import { Effect, Redacted, Schema } from "effect";
 
 import { IdentityAuth } from "../../../src/identity/worlds/identity.ts";

@@ -11,8 +11,8 @@ import {
   EvidenceObjectStore,
   ObjectLocation,
   StorageFailure,
-} from "@zoen/authority/ports/worlds/storage";
-import { digestBytes } from "@zoen/authority/values/canonical";
+} from "@zoen/ontology/ports/worlds/storage";
+import { digestBytes } from "@zoen/ontology/values/canonical";
 import { Effect, Schema, Stream } from "effect";
 
 import {

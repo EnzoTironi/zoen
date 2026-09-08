@@ -5,19 +5,19 @@ import { PutBucketVersioningCommand } from "@aws-sdk/client-s3";
 import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
 import {
-  AuthorityInstallation,
-  AuthorityInstallationSchema,
-} from "@zoen/authority/commit/configuration";
-import {
-  DataPolicy,
-  DataPolicySchema,
-} from "@zoen/authority/ports/worlds/context";
-import {
   PrincipalRef,
   WorldReadAccessGranted,
   WorldReadAccessRevoked,
 } from "@zoen/contracts/sharing/operations";
 import { WorldCreated } from "@zoen/contracts/worlds/operations";
+import {
+  AuthorityInstallation,
+  AuthorityInstallationSchema,
+} from "@zoen/ontology/commit/configuration";
+import {
+  DataPolicy,
+  DataPolicySchema,
+} from "@zoen/ontology/ports/worlds/context";
 import {
   Deferred,
   Effect,

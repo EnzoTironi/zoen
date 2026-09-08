@@ -29,7 +29,7 @@ Prova local dump→restore do escopo retained habilitado em ambiente descartáve
 
 ## EX38 (admission flags)
 
-Flags/contratos em `packages/contracts/src/hosted/admission/**` + enforcement em `packages/authority/src/hosted/admission/**`: web/cli/file admitted; WhatsApp/Telegram/OAuth/model/feed/GPU/broker/custodian explicitamente `disabled` (nunca healthy falso). Unidade sob `packages/authority/test/hosted/admission/**`. Sem deploy.
+Flags/contratos em `packages/contracts/src/hosted/admission/**` + enforcement em `packages/ontology/src/hosted/admission/**`: web/cli/file admitted; WhatsApp/Telegram/OAuth/model/feed/GPU/broker/custodian explicitamente `disabled` (nunca healthy falso). Unidade sob `packages/ontology/test/hosted/admission/**`. Sem deploy.
 
 ## EX39 (compose/verify local)
 

@@ -17,7 +17,7 @@ Data: 2026-09-07 (PT). Tip de partida: `daabe8e`. Tip verificado: `663b1d9` (`66
 | --- | --- |
 | Freeze F05/F07 (Web Speech voice; Zen text) | Landed — `docs/contracts/eve-freeze.md` |
 | Schemas `eve-web-speech-v1` / `web-speech` + capabilities | Landed — `packages/contracts/src/eve/**` |
-| Probe puro + `runEveVoiceTurn` (transcript → Zen settle → speakText) | Landed — `packages/authority/src/ports/eve/voice.ts` |
+| Probe puro + `runEveVoiceTurn` (transcript → Zen settle → speakText) | Landed — `packages/ontology/src/ports/eve/voice.ts` |
 | `@zoen/web` STT/TTS adapter | Landed — `apps/web/src/features/eve/**` |
 | Cloud STT/TTS | **Não** — sem keys; não inventado |
 | D05 integral / processo Eve separado | **Não** alegado |
@@ -38,7 +38,7 @@ Unit:
 ```bash
 pnpm exec vitest run --project unit \
   packages/contracts/test/eve \
-  packages/authority/test/ports/eve \
+  packages/ontology/test/ports/eve \
   apps/web/test/features/eve
 ```
 

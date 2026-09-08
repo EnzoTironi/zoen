@@ -1,18 +1,18 @@
 import { randomUUID } from "node:crypto";
 
 import { expect, it } from "@effect/vitest";
-import { admitWorldContent } from "@zoen/authority/access/erasure/content";
-import { grantWorldReadAccess } from "@zoen/authority/access/sharing/mutation";
-import { createPersonalWorld } from "@zoen/authority/commit/genesis";
-import { reserveCapture } from "@zoen/authority/evidence/worlds/capture";
-import { requestWorldErasure } from "@zoen/authority/knowledge/erasure/handlers/request";
-import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
-import { worldDisclosureKey } from "@zoen/authority/ports/disclosure/keys";
-import { PrincipalDirectory } from "@zoen/authority/ports/sharing/directory";
 import { RequestWorldErasure } from "@zoen/contracts/erasure/operations";
 import { GrantWorldReadAccess } from "@zoen/contracts/sharing/operations";
 import { CreatePersonalWorld } from "@zoen/contracts/worlds/operations";
 import { Revision } from "@zoen/contracts/worlds/values";
+import { admitWorldContent } from "@zoen/ontology/access/erasure/content";
+import { grantWorldReadAccess } from "@zoen/ontology/access/sharing/mutation";
+import { createPersonalWorld } from "@zoen/ontology/commit/genesis";
+import { reserveCapture } from "@zoen/ontology/evidence/worlds/capture";
+import { requestWorldErasure } from "@zoen/ontology/knowledge/erasure/handlers/request";
+import { DisclosureFence } from "@zoen/ontology/ports/disclosure/fence";
+import { worldDisclosureKey } from "@zoen/ontology/ports/disclosure/keys";
+import { PrincipalDirectory } from "@zoen/ontology/ports/sharing/directory";
 import { Deferred, Effect, Fiber, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

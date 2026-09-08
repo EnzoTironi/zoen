@@ -6,13 +6,13 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { readCut } from "../../../../packages/authority/src/commit/guards.js";
-import { bindWorldIntent } from "../../../../packages/authority/src/commit/intent.js";
-import { commitMutation } from "../../../../packages/authority/src/commit/mutation.js";
-import { importEvidence } from "../../../../packages/authority/src/evidence/worlds/import.js";
-import { canonicalJson } from "../../../../packages/authority/src/values/canonical.js";
 import { ImportEvidence } from "../../../../packages/contracts/src/worlds/operations.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import { readCut } from "../../../../packages/ontology/src/commit/guards.js";
+import { bindWorldIntent } from "../../../../packages/ontology/src/commit/intent.js";
+import { commitMutation } from "../../../../packages/ontology/src/commit/mutation.js";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.js";
+import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.js";
 import { configuration, makeInput } from "../commit/fixture.js";
 
 it.live(

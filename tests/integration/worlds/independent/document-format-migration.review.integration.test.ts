@@ -6,14 +6,14 @@ import {
 } from "@aws-sdk/client-s3";
 import { NodeServices } from "@effect/platform-node";
 import { expect, it } from "@effect/vitest";
+import { ImportDocument } from "@zoen/contracts/worlds/evidence";
+import { WorldRef } from "@zoen/contracts/worlds/values";
 import {
   CaptureId,
   EvidenceObjectStore,
   ObjectLocation,
-} from "@zoen/authority/ports/worlds/storage";
-import { digestBytes } from "@zoen/authority/values/canonical";
-import { ImportDocument } from "@zoen/contracts/worlds/evidence";
-import { WorldRef } from "@zoen/contracts/worlds/values";
+} from "@zoen/ontology/ports/worlds/storage";
+import { digestBytes } from "@zoen/ontology/values/canonical";
 import { Effect, Layer, Schema, Stream } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 

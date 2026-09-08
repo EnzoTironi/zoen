@@ -6,14 +6,14 @@ import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.js";
-import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
-import { isRestoreEligible } from "../../../../packages/authority/src/knowledge/erasure/copy-catalog.js";
+import { Digest } from "../../../../packages/contracts/src/worlds/values.js";
+import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
+import { isRestoreEligible } from "../../../../packages/ontology/src/knowledge/erasure/copy-catalog.js";
 import {
   applyControlledCopyCatalogSchema,
   localErasureCopyCatalogLayer,
-} from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.js";
-import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
-import { Digest } from "../../../../packages/contracts/src/worlds/values.js";
+} from "../../../../packages/ontology/src/ports/erasure/copy-catalog-pg.js";
+import { ErasureCopyCatalog } from "../../../../packages/ontology/src/ports/erasure/copy-catalog.js";
 import { withLogicalDumpRestore } from "./dump-restore.js";
 import {
   hostedConfiguration,
