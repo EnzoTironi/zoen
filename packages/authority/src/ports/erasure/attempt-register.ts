@@ -19,6 +19,9 @@ import type { PrincipalId } from "../worlds/context.js";
  * Local PG adapter under `local-pg.ts` is qualified-enough for disposable compose
  * proofs only. A real controller (distinct topology, grants, epochs, independent
  * anti-rollback anchor) remains blocked for production Closing/purge.
+ *
+ * ZA-11 local narrow profile: separately scoped controller store + external
+ * monotone anchor. Hosted/full independence stays fail-closed (H-01 / G-OPS).
  */
 export interface ErasureAttemptIdentity {
   readonly deploymentEpoch: string;
@@ -38,10 +41,26 @@ export interface ErasureAttemptObservation {
   readonly state: ErasureAttemptExternalState;
 }
 
+/**
+ * World-level controller observation for content admission (ZA-11).
+ * `Clear` means the controller knows no blocking attempt for the World.
+ */
+export type ErasureWorldSuppressionObservation =
+  | ErasureAttemptObservation
+  | { readonly state: "Clear" };
+
 /** Registered / Unknown block restore activation; Confirmed/Aborted are terminals. */
 export const blocksWorldActivation = (
   state: ErasureAttemptExternalState
 ): boolean => state === "Registered" || state === "Unknown";
+
+/** States that keep content admission closed until reconciliation (ZA-11-01). */
+export const blocksWorldContentAdmission = (
+  observation: ErasureWorldSuppressionObservation
+): boolean =>
+  observation.state === "Registered" ||
+  observation.state === "Confirmed" ||
+  observation.state === "Unknown";
 
 const failUnavailable = () =>
   Effect.fail(new Unavailable({ code: "UNAVAILABLE" }));
@@ -66,10 +85,20 @@ export class ErasureAttemptRegister extends Context.Service<
       identity: ErasureAttemptIdentity,
       outcome: "Confirmed" | "Aborted"
     ) => EffectType.Effect<ErasureAttemptObservation, Conflict | Unavailable>;
+    /**
+     * Observe whether any attempt for the World still blocks content admission.
+     * Prefer Confirmed over Registered over Unknown when multiple rows exist.
+     * Unqualified controllers report Clear (no independent knowledge) — local
+     * progress fence remains authoritative for those installs.
+     */
+    readonly observeWorld: (
+      worldRef: WorldRef
+    ) => EffectType.Effect<ErasureWorldSuppressionObservation, Unavailable>;
   }
 >()("zoen/authority/ports/erasure/AttemptRegister") {
   /**
    * Unqualified controller oracle: never fabricates Confirmed/Aborted.
+   * observeWorld returns Clear so retained/non-controller paths keep working.
    * Retained until a topology-qualified adapter is admitted.
    */
   static readonly unqualifiedLayer = Layer.succeed(
@@ -77,6 +106,7 @@ export class ErasureAttemptRegister extends Context.Service<
     ErasureAttemptRegister.of({
       inspect: () => failUnavailable(),
       mirrorLocalOutcome: () => failUnavailable(),
+      observeWorld: () => Effect.succeed({ state: "Clear" as const }),
       register: () => failUnavailable(),
     })
   );

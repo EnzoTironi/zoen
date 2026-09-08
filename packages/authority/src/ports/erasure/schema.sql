@@ -1,5 +1,6 @@
--- Numbered as ops/migrations/009_erasure_attempt_register.sql (root). Candidate copy for domain docs/tests.
--- Keep in sync with the numbered migration. Separate schema: not authority.*; outside Closing TX.
+-- Numbered as ops/migrations/009_erasure_attempt_register.sql + 015_object_write_settlement.sql + 016_controlled_copy_catalog.sql + 017_erasure_controller_head.sql.
+-- Candidate copy for domain docs/tests. Keep in sync with numbered migrations.
+-- Separate schema: not authority.*; outside Closing TX.
 CREATE SCHEMA IF NOT EXISTS erasure_attempt;
 
 CREATE TABLE IF NOT EXISTS erasure_attempt.attempts (
@@ -50,3 +51,16 @@ CREATE TABLE IF NOT EXISTS jobs.object_write_attempts (
     OR (state IN ('terminal_observed', 'unknown') AND submitted_at IS NOT NULL AND resolved_at IS NOT NULL)
   )
 );
+
+-- Numbered as ops/migrations/017_erasure_controller_head.sql. Keep in sync.
+CREATE TABLE IF NOT EXISTS erasure_attempt.controller_head (
+  singleton boolean PRIMARY KEY DEFAULT true CHECK (singleton),
+  sequence bigint NOT NULL CHECK (sequence >= 0),
+  head_digest text COLLATE "C" NOT NULL
+    CHECK (head_digest ~ '^[0-9a-f]{64}$'),
+  updated_at timestamptz NOT NULL DEFAULT clock_timestamp()
+);
+
+INSERT INTO erasure_attempt.controller_head (singleton, sequence, head_digest)
+VALUES (true, 0, repeat('0', 64))
+ON CONFLICT (singleton) DO NOTHING;

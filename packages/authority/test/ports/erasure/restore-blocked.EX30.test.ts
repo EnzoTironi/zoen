@@ -5,6 +5,7 @@ import { Effect, Schema } from "effect";
 import {
   ErasureAttemptRegister,
   blocksWorldActivation,
+  blocksWorldContentAdmission,
 } from "../../../src/ports/erasure/attempt-register.js";
 import {
   DataPolicySchema,
@@ -64,5 +65,13 @@ describe("EX30/EX31 erasure gates still blocked", () => {
     expect(blocksWorldActivation("Unknown")).toBeTruthy();
     expect(blocksWorldActivation("Confirmed")).toBeFalsy();
     expect(blocksWorldActivation("Aborted")).toBeFalsy();
+  });
+
+  it("Registered/Confirmed/Unknown block content admission until reconciled (ZA-11)", () => {
+    expect(blocksWorldContentAdmission({ state: "Registered" })).toBeTruthy();
+    expect(blocksWorldContentAdmission({ state: "Confirmed" })).toBeTruthy();
+    expect(blocksWorldContentAdmission({ state: "Unknown" })).toBeTruthy();
+    expect(blocksWorldContentAdmission({ state: "Aborted" })).toBeFalsy();
+    expect(blocksWorldContentAdmission({ state: "Clear" })).toBeFalsy();
   });
 });

@@ -77,6 +77,9 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
   const erasureAttemptDatabaseUrl = yield* Config.redacted(
     "ZOEN_ERASURE_ATTEMPT_DATABASE_URL"
   ).pipe(Config.option);
+  const erasureControllerAnchorPath = yield* Config.string(
+    "ZOEN_ERASURE_CONTROLLER_ANCHOR_PATH"
+  ).pipe(Config.option);
   const application: ApplicationConfig = {
     authorityDatabaseUrl: yield* Config.redacted("ZOEN_AUTHORITY_DATABASE_URL"),
     identity: {
@@ -102,6 +105,10 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
     },
     ...(Option.isSome(erasureAttemptDatabaseUrl)
       ? { erasureAttemptDatabaseUrl: erasureAttemptDatabaseUrl.value }
+      : {}),
+    ...(Option.isSome(erasureControllerAnchorPath) &&
+    erasureControllerAnchorPath.value.length > 0
+      ? { erasureControllerAnchorPath: erasureControllerAnchorPath.value }
       : {}),
   };
   const openCodeApiKey = yield* Config.redacted("ZOEN_OPENCODE_API_KEY").pipe(
