@@ -12,6 +12,10 @@ The HTTP transport uses `HttpApiClient.make(ApplicationApi)` and the real EX09 i
 
 Acceptance remains pending real process integration against EX10 and independent review by worker-2/root. The installed Effect CLI declaration references a stripped internal type; the separately reviewed root dependency patch is also required for strict compilation.
 
+## Household commitment journey (ZA-22)
+
+The same verbs support the doméstico / household tracer bullet: import two ordinary bill lists, `inspect` one `subjectKey`, propose/confirm/undo a scoped correction, and share/revoke with an ordinary viewer. Example documents live in `docs/product/examples/household-bill-list-*.json`. Product narrative: [docs/product/household-commitments.md](../../../../docs/product/household-commitments.md). Do not invent household-specific authorization branches.
+
 ## Bakery order journey (ZA-23)
 
 The same verbs support the confeitaria / bakery tracer bullet: import customer order vs shop production lists, `inspect` one order `subjectKey`, propose/confirm/undo a scoped correction, and share/revoke with an ordinary viewer. Example documents live in `docs/product/examples/bakery-order-list-*.json`. Product narrative: [docs/product/bakery-order-reconciliation.md](../../../../docs/product/bakery-order-reconciliation.md). Recipe grams/stock quantities are not admitted currencies — unsupported inputs fail closed. Do not invent bakery-specific authorization branches.

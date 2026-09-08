@@ -1054,6 +1054,14 @@
       "notes": "verified_for_profile ONLY for narrow text-profile acceptance. Product Eve stays unadmitted until ZA-19 grounding + key + journal. See docs/verification/eve-grounded-text.md."
     },
     {
+      "id": "za22-household-commitments",
+      "state": "implemented_pending_independent_review",
+      "profile": "household / doméstico commitment reconciliation (ZA-22)",
+      "scope": "ZA-22 delivers one household bill/commitment reconciliation journey through real web/CLI and shared SemanticExecutor: contested comparable lists (ZA-22-01), non-comparable subject/unit/time (ZA-22-02), undo + ordinary viewer revocation (ZA-22-03). Reuses worlds import/inspect/correct/undo and sharing; no Eve touch; no packs. Does NOT claim ICP complete or activated because this PR merged.",
+      "verified_for_profile": false,
+      "notes": "Local unit + household integration seam required before merge evidence. Browser/CLI acceptance under apps/web/test/features/household when ZOEN_TEST_WEB_URL is live. See docs/product/household-commitments.md."
+    },
+    {
       "id": "za23-bakery-order-reconciliation",
       "state": "implemented_pending_independent_review",
       "profile": "bakery / confeitaria order reconciliation (ZA-23)",

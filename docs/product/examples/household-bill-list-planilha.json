@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "worlds.v1",
+  "source": {
+    "namespace": "household.spreadsheet",
+    "externalId": "planilha-contas-setembro-2026",
+    "label": "Planilha de contas — setembro",
+    "revision": "1"
+  },
+  "records": [
+    {
+      "externalId": "luz-2026-09",
+      "predicate": "obligation.amount",
+      "subjectKey": "conta-luz-2026-09",
+      "validTime": {
+        "_tag": "DateInterval",
+        "from": "2026-09-01",
+        "to": "2026-10-01"
+      },
+      "value": {
+        "_tag": "Known",
+        "amount": "210.00",
+        "currency": "BRL"
+      }
+    },
+    {
+      "externalId": "internet-2026-q3",
+      "predicate": "obligation.amount",
+      "subjectKey": "internet-2026-q3",
+      "validTime": {
+        "_tag": "DateInterval",
+        "from": "2026-07-01",
+        "to": "2026-10-01"
+      },
+      "value": {
+        "_tag": "Known",
+        "amount": "99.90",
+        "currency": "BRL"
+      }
+    }
+  ]
+}
