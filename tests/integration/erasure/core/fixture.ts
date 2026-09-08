@@ -8,6 +8,7 @@ import {
 } from "../../../../packages/authority/src/commit/configuration.js";
 import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
+import { ErasureRestoreActivation } from "../../../../packages/authority/src/ports/erasure/restore-activation.js";
 import {
   DataPolicy,
   ErasableDataPolicySchema,
@@ -47,15 +48,17 @@ export const erasablePolicy = Schema.decodeSync(ErasableDataPolicySchema)({
   retention: "while-pinned",
 });
 
-export const erasableConfiguration = Layer.merge(
+export const erasableConfiguration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
-  Layer.succeed(DataPolicy, erasablePolicy)
+  Layer.succeed(DataPolicy, erasablePolicy),
+  ErasureRestoreActivation.unqualifiedLayer
 );
 
 export const retainedConfiguration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
   Layer.succeed(DataPolicy, retainedPolicy),
-  ErasureAttemptRegister.unqualifiedLayer
+  ErasureAttemptRegister.unqualifiedLayer,
+  ErasureRestoreActivation.unqualifiedLayer
 );
 
 export const makeContext = Effect.fn("EX32.makeContext")(function* makeContext(

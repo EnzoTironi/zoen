@@ -13,6 +13,7 @@ import {
   localErasureAttemptRegisterLayer,
 } from "@zoen/authority/ports/erasure/local-pg";
 import { ErasureObjectWriteSettlement } from "@zoen/authority/ports/erasure/object-write";
+import { ErasureRestoreActivation } from "@zoen/authority/ports/erasure/restore-activation";
 import {
   currentProductEveAdmissionInput,
   isProductEveAdmitted,
@@ -190,6 +191,9 @@ export const makeApplication = (config: ApplicationConfig) =>
         erasureCopyCatalog,
         // Honest G-STORAGE-FENCE: Blocked — no fictitious vendor containment.
         ErasureObjectWriteSettlement.unqualifiedLayer,
+        // ZA-13: restore activation fail-closed (H-01/G-OPS/G-STORAGE-FENCE unqualified;
+        // restoreAfterErasure stays false; Object Lock restoreAfterErasure Unknown).
+        ErasureRestoreActivation.unqualifiedLayer,
         eveSurface
       );
       const executor = SemanticExecutor.layerWithoutEve.pipe(

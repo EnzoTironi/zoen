@@ -56,6 +56,7 @@ import { ErasureAttemptRegister } from "../ports/erasure/attempt-register.js";
 import { ErasureCopyCatalog } from "../ports/erasure/copy-catalog.js";
 import { ErasureObjectInventory } from "../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../ports/erasure/purge.js";
+import { ErasureRestoreActivation } from "../ports/erasure/restore-activation.js";
 import {
   acceptConversationTurn,
   cancelConversationTurn,
@@ -493,6 +494,7 @@ export class SemanticExecutor extends Context.Service<
     Layer.provide(EveJournal.stubMemoryLayer),
     Layer.provide(EveOpenCodeZen.blockedLayer),
     Layer.provide(ErasureAttemptRegister.unqualifiedLayer),
+    Layer.provide(ErasureRestoreActivation.unqualifiedLayer),
     Layer.provide(ErasureObjectInventory.unqualifiedLayer),
     Layer.provide(ErasurePurgeStore.unqualifiedLayer),
     Layer.provide(ErasureCopyCatalog.unqualifiedLayer)
