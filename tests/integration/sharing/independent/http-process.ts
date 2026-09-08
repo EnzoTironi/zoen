@@ -1,11 +1,6 @@
 // Native APIs are the observed boundary: the barrier must block synchronously without an Effect yield.
 /* oxlint-disable effecttsgo/node-builtin-import */
-import {
-  appendFileSync,
-  existsSync,
-  readFileSync,
-  writeFileSync,
-} from "node:fs";
+import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { createServer, ServerResponse } from "node:http";
 import { createRequire } from "node:module";
 
@@ -28,6 +23,19 @@ import {
 
 const json = Schema.encodeSync(Schema.fromJsonString(Schema.Unknown));
 
+/** Atomically publish a control sentinel (temp + rename) so readers never see partial files. */
+const publishSentinel = (target: string, contents: string) => {
+  const temp = `${target}.${process.pid}.tmp`;
+  writeFileSync(temp, contents, { mode: 0o600 });
+  renameSync(temp, target);
+};
+
+/** Append one complete line via temp+rename so concurrent readers never observe a torn write. */
+const appendSentinelLine = (target: string, line: string) => {
+  const prior = existsSync(target) ? readFileSync(target, "utf-8") : "";
+  publishSentinel(target, `${prior}${line}`);
+};
+
 // Both observers delegate exactly once. They never synthesize SQL/provider results or change body bytes.
 const installObservers = (prefix: string) => {
   const waitCell = new Int32Array(new SharedArrayBuffer(4));
@@ -40,9 +48,7 @@ const installObservers = (prefix: string) => {
       : null;
   const pause = (kind: typeof Barrier.Type.kind) => {
     paused = true;
-    writeFileSync(`${prefix}.reached`, json({ kind, pid: process.pid }), {
-      mode: 0o600,
-    });
+    publishSentinel(`${prefix}.reached`, json({ kind, pid: process.pid }));
     const deadline = performance.now() + 15_000;
     while (!existsSync(`${prefix}.release`)) {
       if (performance.now() >= deadline) {
@@ -94,10 +100,9 @@ const installObservers = (prefix: string) => {
                 })
               )(response)
             ) {
-              writeFileSync(
+              publishSentinel(
                 `${prefix}.exclusive-waiting`,
-                "real-exclusive-try-returned-false\n",
-                { mode: 0o600 }
+                "real-exclusive-try-returned-false\n"
               );
             }
             const result: unknown = Reflect.apply(
@@ -126,14 +131,15 @@ const installObservers = (prefix: string) => {
       ) {
         pause("before-end");
       }
-      const result: unknown = Reflect.apply(target, receiver, args);
+      // Publish the submitted marker before native end returns so a loopback
+      // client cannot complete Fiber.join before the sentinel is visible.
       if (gate !== null && bytes instanceof Uint8Array) {
-        appendFileSync(
+        appendSentinelLine(
           `${prefix}.submitted`,
-          `${json({ bytes: bytes.byteLength, event: "end.return" })}\n`,
-          { mode: 0o600 }
+          `${json({ bytes: bytes.byteLength, event: "end.return" })}\n`
         );
       }
+      const result: unknown = Reflect.apply(target, receiver, args);
       return result;
     },
   });
