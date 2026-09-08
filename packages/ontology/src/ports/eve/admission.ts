@@ -27,9 +27,12 @@ export interface ProductEveAdmissionInput {
  * later tickets land real durable journal + grounding + profile acceptance.
  */
 export const currentProductEveAdmissionInput = (
-  openCodeKeyPresent: boolean
+  openCodeKeyPresent: boolean,
+  options?: { readonly durableJournalQualified?: boolean }
 ): ProductEveAdmissionInput => ({
-  durableJournalQualified: false,
+  // ZA-18 sets durableJournalQualified when a restricted journal identity is wired.
+  // Evidence grounding + text profile remain false until ZA-19/ZA-20.
+  durableJournalQualified: options?.durableJournalQualified === true,
   evidenceGroundingQualified: false,
   openCodeKeyPresent,
   textProfileAccepted: false,

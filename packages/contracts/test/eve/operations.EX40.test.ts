@@ -211,6 +211,7 @@ describe("EX40 eve schemas", () => {
           version: "1",
         },
       ],
+      unresolvedAttempts: [],
     });
     expect(snapshot.authorityCredentialPresent).toBeFalsy();
     expect(snapshot.turns).toHaveLength(1);

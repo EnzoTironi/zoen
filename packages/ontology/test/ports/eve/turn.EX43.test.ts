@@ -1,5 +1,7 @@
+/* oxlint-disable eslint/sort-keys -- ZA-18 owner/CAS field insertions */
 import { describe, expect, it } from "@effect/vitest";
 import {
+  AttemptId,
   ConversationId,
   IngressId,
   MessageId,
@@ -13,6 +15,7 @@ import { EveJournal } from "../../../src/ports/eve/journal.js";
 import type { EveFetch } from "../../../src/ports/eve/opencode-zen.js";
 import { EveOpenCodeZen } from "../../../src/ports/eve/opencode-zen.js";
 import { runEveTurn } from "../../../src/ports/eve/turn.js";
+import { PrincipalId } from "../../../src/ports/worlds/context.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
   "00000000-0000-4000-8000-000000000401"
@@ -38,6 +41,13 @@ const turnCancel = Schema.decodeSync(TurnId)(
 const messageCancel = Schema.decodeSync(MessageId)(
   "00000000-0000-4000-8000-000000000408"
 );
+const ownerPrincipalId = Schema.decodeSync(PrincipalId)(
+  "00000000-0000-4000-8000-000000000410"
+);
+const attemptId = Schema.decodeSync(AttemptId)(
+  "00000000-0000-4000-8000-000000000411"
+);
+const purpose = "personal-records" as const;
 
 const settings = {
   apiKey: Redacted.make("unit-test-key-must-not-journal"),
@@ -75,6 +85,9 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
     Effect.gen(function* path() {
       const result = yield* runEveTurn({
         conversationId,
+        attemptId,
+        ownerPrincipalId,
+        purpose,
         ingressId,
         messageId,
         profileId: "eve-opencode-zen-v1",
@@ -84,7 +97,12 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
         userText: "reply with eve-ok",
       });
       const journal = yield* EveJournal;
-      const snapshot = yield* journal.recover(conversationId);
+      const snapshot = yield* journal.recover({
+        conversationId,
+        ownerPrincipalId,
+        purpose,
+        worldRef: null,
+      });
       const wire = JSON.stringify(snapshot);
       expect({
         admission: snapshot.providerAdmission,
@@ -130,12 +148,15 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
         "00000000-0000-4000-8000-000000000494"
       );
       const result = yield* runEveTurn({
+        attemptId,
         conversationId: linkConversation,
         evidenceLinks: [{ claimRef: null, evidenceRef }],
         ingressId: linkIngress,
         messageId: linkMessage,
+        ownerPrincipalId,
         profileId: "eve-opencode-zen-v1",
         providerAdmission: "opencode-zen",
+        purpose,
         relationshipId,
         turnId: linkTurn,
         userText: "reply with eve-ok",
@@ -162,6 +183,9 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
       const exit = yield* Effect.exit(
         runEveTurn({
           conversationId,
+          attemptId,
+          ownerPrincipalId,
+          purpose,
           ingressId: ingressCancel,
           messageId: messageCancel,
           profileId: "eve-opencode-zen-v1",
@@ -173,7 +197,12 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
         })
       );
       const journal = yield* EveJournal;
-      const snapshot = yield* journal.recover(conversationId);
+      const snapshot = yield* journal.recover({
+        conversationId,
+        ownerPrincipalId,
+        purpose,
+        worldRef: null,
+      });
       const turn = snapshot.turns.find((row) => row.turnId === turnCancel);
       expect({
         exit: exit._tag,
@@ -194,6 +223,9 @@ describe("EX43 Eve turn path (OpenCode Zen)", () => {
       const exit = yield* Effect.exit(
         runEveTurn({
           conversationId,
+          attemptId,
+          ownerPrincipalId,
+          purpose,
           ingressId,
           messageId,
           profileId: "eve-opencode-zen-v1",

@@ -1,5 +1,7 @@
+/* oxlint-disable eslint/sort-keys -- ZA-18 owner/CAS field insertions */
 import { describe, expect, it } from "@effect/vitest";
 import {
+  AttemptId,
   ConversationId,
   IngressId,
   MessageId,
@@ -17,6 +19,7 @@ import { EveJournal } from "../../../src/ports/eve/journal.js";
 import type { EveFetch } from "../../../src/ports/eve/opencode-zen.js";
 import { EveOpenCodeZen } from "../../../src/ports/eve/opencode-zen.js";
 import { runEveVoiceTurn } from "../../../src/ports/eve/voice.js";
+import { PrincipalId } from "../../../src/ports/worlds/context.js";
 
 const conversationId = Schema.decodeSync(ConversationId)(
   "00000000-0000-4000-8000-000000000501"
@@ -32,6 +35,12 @@ const turnId = Schema.decodeSync(TurnId)(
 );
 const messageId = Schema.decodeSync(MessageId)(
   "00000000-0000-4000-8000-000000000505"
+);
+const ownerPrincipalId = Schema.decodeSync(PrincipalId)(
+  "00000000-0000-4000-8000-000000000610"
+);
+const attemptId = Schema.decodeSync(AttemptId)(
+  "00000000-0000-4000-8000-000000000611"
 );
 
 const settings = {
@@ -114,6 +123,9 @@ describe("EX44 Eve web-speech voice profile", () => {
         const result = yield* runEveVoiceTurn({
           capabilities: capable,
           conversationId,
+          attemptId,
+          ownerPrincipalId,
+          purpose: "personal-records",
           ingressId,
           messageId,
           relationshipId,
@@ -121,7 +133,12 @@ describe("EX44 Eve web-speech voice profile", () => {
           turnId,
         });
         const journal = yield* EveJournal;
-        const snapshot = yield* journal.recover(conversationId);
+        const snapshot = yield* journal.recover({
+          conversationId,
+          ownerPrincipalId,
+          purpose: "personal-records",
+          worldRef: null,
+        });
         const wire = JSON.stringify(snapshot);
         expect({
           admission: snapshot.providerAdmission,
@@ -149,6 +166,9 @@ describe("EX44 Eve web-speech voice profile", () => {
         runEveVoiceTurn({
           capabilities: missing,
           conversationId,
+          attemptId,
+          ownerPrincipalId,
+          purpose: "personal-records",
           ingressId,
           messageId,
           relationshipId,
@@ -166,6 +186,9 @@ describe("EX44 Eve web-speech voice profile", () => {
         runEveVoiceTurn({
           capabilities: capable,
           conversationId,
+          attemptId,
+          ownerPrincipalId,
+          purpose: "personal-records",
           ingressId,
           messageId,
           relationshipId,

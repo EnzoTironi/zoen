@@ -25,6 +25,7 @@ import {
   sdk,
   withStorage,
 } from "../../adapters/object-storage/worlds/fixture.ts";
+import { grantTestEveJournalRole } from "../../adapters/postgres/eve/database.ts";
 import { withWorldsDatabase } from "../../adapters/postgres/worlds/database.ts";
 import type { WorldsTestDatabase } from "../../adapters/postgres/worlds/database.ts";
 
@@ -62,6 +63,13 @@ export interface WithWorldsHttpOptions {
     readonly baseUrl: string;
     readonly model: string;
   };
+  /**
+   * ZA-18: wire restricted eve journal identity into makeApplication.
+   * Requires install path that applied migration 019 + journal grants.
+   */
+  readonly eveJournalDatabaseUrl?: Redacted.Redacted;
+  /** When true, apply erasure migrator (incl. 019) + grant eve journal role. */
+  readonly withEveJournal?: boolean;
 }
 
 export const withWorldsHttp = <A, E>(
@@ -122,6 +130,13 @@ export const withWorldsHttp = <A, E>(
             ...(options?.openCodeZen === undefined
               ? {}
               : { openCodeZen: options.openCodeZen }),
+            ...(options?.eveJournalDatabaseUrl === undefined &&
+            options?.withEveJournal !== true
+              ? {}
+              : {
+                  eveJournalDatabaseUrl:
+                    options.eveJournalDatabaseUrl ?? database.urls.eveJournal,
+                }),
             policy,
             storage,
           });
@@ -136,9 +151,22 @@ export const withWorldsHttp = <A, E>(
       ),
     undefined,
     (database) =>
-      applyIdentityBasisMigrations(database.names).pipe(
-        Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
-      )
+      Effect.gen(function* installHttp() {
+        if (options?.withEveJournal === true) {
+          yield* applyErasureMigrations(database.names).pipe(
+            Effect.provide(
+              Layer.mergeAll(database.migration, NodeServices.layer)
+            )
+          );
+          yield* grantTestEveJournalRole(database);
+        } else {
+          yield* applyIdentityBasisMigrations(database.names).pipe(
+            Effect.provide(
+              Layer.mergeAll(database.migration, NodeServices.layer)
+            )
+          );
+        }
+      })
   );
 
 export const http = Effect.fn("test.http")(function* sendHttpRequest(

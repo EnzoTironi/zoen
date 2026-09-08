@@ -9,6 +9,7 @@ import {
   grantContentBarrierAdmit,
   grantErasureRole,
 } from "../../apps/server/sql/proposals/erasure/grants.ts";
+import { grantEveJournalRole } from "../../apps/server/sql/proposals/eve/grants.ts";
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantWorldsRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
 import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
@@ -132,6 +133,14 @@ export const applyDisclosureMigrations = Effect.fn(
     fileURLToPath(new URL("017_erasure_controller_head.sql", import.meta.url))
   );
   yield* sql.withTransaction(sql.unsafe(controllerHead));
+  // ZA-18: eve journal schema must exist on every retained/disclosure install
+  // before runtime role checks probe has_schema_privilege(..., 'eve', ...).
+  // Apply without migrator id 19 here so identity events 7/8 still record;
+  // applyErasureMigrations records id 19 after 7–18.
+  const eveJournal = yield* fs.readFileString(
+    fileURLToPath(new URL("019_eve_owned_durable_journal.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(eveJournal));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
   // Progress + object-write + controller observe grants for capture (F02).
   yield* sql.withTransaction(grantContentBarrierAdmit(roles.authority));
@@ -227,12 +236,32 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),
     });
+    const eveJournal = yield* fs.readFileString(
+      fileURLToPath(
+        new URL("019_eve_owned_durable_journal.sql", import.meta.url)
+      )
+    );
+    const eveExtension = yield* PgMigrator.run({
+      loader: PgMigrator.fromRecord({
+        "19_eve_owned_durable_journal": sql
+          .unsafe(eveJournal)
+          .pipe(Effect.asVoid),
+      }),
+    });
     yield* sql.withTransaction(
       Effect.gen(function* grantErasureAndWorldBarrier() {
         yield* grantErasureRole(roles.authority);
         yield* grantDisclosureRole(roles.authority);
       })
     );
-    return [...base, ...extension];
+    return [...base, ...extension, ...eveExtension];
   }
 );
+
+/** ZA-18: grant the restricted journal role after schema 019 exists. */
+export const grantEveJournalMigrations = Effect.fn(
+  "migrations.grantEveJournal"
+)(function* grantEveJournalMigrations(journalRole: string) {
+  const sql = yield* SqlClient.SqlClient;
+  yield* sql.withTransaction(grantEveJournalRole(journalRole));
+});

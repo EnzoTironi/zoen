@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { describe, expect, it } from "@effect/vitest";
 import {
+  AttemptId,
   ConversationId,
   IngressId,
   MessageId,
@@ -18,6 +19,7 @@ import {
   readOpenCodeZenSettingsFromEnv,
 } from "../../../src/ports/eve/opencode-zen.js";
 import { runEveTurn } from "../../../src/ports/eve/turn.js";
+import { PrincipalId } from "../../../src/ports/worlds/context.js";
 
 /** Load `.local/opencode.env` into process.env when present (never log values). */
 const loadLocalOpenCodeEnv = (): void => {
@@ -88,11 +90,14 @@ describe("EX43 OpenCode Zen live smoke / admission (ZA-17)", () => {
       Effect.gen(function* productBlocked() {
         const exit = yield* Effect.exit(
           runEveTurn({
+            attemptId: Schema.decodeSync(AttemptId)(randomUUID()),
             conversationId: Schema.decodeSync(ConversationId)(randomUUID()),
             ingressId: Schema.decodeSync(IngressId)(randomUUID()),
             messageId: Schema.decodeSync(MessageId)(randomUUID()),
+            ownerPrincipalId: Schema.decodeSync(PrincipalId)(randomUUID()),
             profileId: "eve-opencode-zen-v1",
             providerAdmission: "opencode-zen",
+            purpose: "personal-records",
             relationshipId: Schema.decodeSync(RelationshipId)(randomUUID()),
             turnId: Schema.decodeSync(TurnId)(randomUUID()),
             userText: "Reply with exactly the token eve-ok and nothing else.",

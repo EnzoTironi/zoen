@@ -36,6 +36,10 @@ export const checkWorldsRuntimeRole = Effect.gen(
       OR has_schema_privilege(oid, 'authority', 'CREATE')
       OR has_schema_privilege(oid, 'identity', 'CREATE')
       OR has_schema_privilege(oid, 'jobs', 'CREATE')
+      OR (
+        EXISTS (SELECT FROM pg_namespace WHERE nspname = 'eve')
+        AND has_schema_privilege(oid, 'eve', 'CREATE')
+      )
       OR has_schema_privilege(oid, 'public', 'CREATE')
       )
     ) AS allowed
