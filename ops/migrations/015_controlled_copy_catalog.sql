@@ -12,7 +12,10 @@ CREATE TABLE IF NOT EXISTS authority.controlled_copy_coverage (
   cut_at timestamptz(3) NOT NULL DEFAULT clock_timestamp(),
   CHECK (
     (status = 'Unknown' AND evidence_ref IS NULL)
-    OR (status <> 'Unknown')
+    OR (
+      status IN ('BoundedComplete', 'Incomplete')
+      AND evidence_ref IS NOT NULL
+    )
   )
 );
 

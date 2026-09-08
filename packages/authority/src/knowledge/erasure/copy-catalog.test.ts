@@ -6,6 +6,7 @@ import type { ControlledCopyRecord } from "../../ports/erasure/copy-catalog.js";
 import {
   admitsFullErasureOrRestore,
   blocksAdmission,
+  blocksAdmissionByDisposition,
   copyBelongsToWorld,
   isExplainedDisposition,
   isRestoreEligible,
@@ -44,6 +45,9 @@ describe("ZA-12 copy catalog laws", () => {
     expect(admitsFullErasureOrRestore("Incomplete")).toBeFalsy();
     expect(blocksAdmission("Unknown", "restore")).toBeTruthy();
     expect(blocksAdmission("Unknown", "full-erased")).toBeTruthy();
+    expect(blocksAdmissionByDisposition("Unaccounted")).toBeTruthy();
+    expect(blocksAdmissionByDisposition("Unknown")).toBeTruthy();
+    expect(blocksAdmissionByDisposition("AccountedActive")).toBeFalsy();
   });
 
   it("never treats quarantined or unpublished copies as restore-eligible", () => {

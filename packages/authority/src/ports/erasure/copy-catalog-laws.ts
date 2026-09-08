@@ -43,6 +43,11 @@ export const isRestoreEligible = (copy: ControlledCopyRecord): boolean => {
   }
 };
 
+/** Unknown / Unaccounted never stand in for explained empty success. */
+export const blocksAdmissionByDisposition = (
+  disposition: ControlledCopyDisposition
+): boolean => disposition === "Unknown" || disposition === "Unaccounted";
+
 export const isExplainedDisposition = (
   disposition: ControlledCopyDisposition
 ): boolean =>

@@ -14,6 +14,7 @@ import {
   readMutationReplay,
 } from "../../../commit/mutation.js";
 import { ErasureAttemptRegister } from "../../../ports/erasure/attempt-register.js";
+import { ErasureCopyCatalog } from "../../../ports/erasure/copy-catalog.js";
 import { ErasureObjectInventory } from "../../../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../../../ports/erasure/purge.js";
 import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
@@ -50,6 +51,7 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
     const register = yield* ErasureAttemptRegister;
     const inventory = yield* ErasureObjectInventory;
     const purgeStore = yield* ErasurePurgeStore;
+    const copyCatalog = yield* ErasureCopyCatalog;
     const sql = yield* SqlClient.SqlClient;
     const world = request.worldRef;
 
@@ -85,7 +87,7 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
       return yield* new Conflict({ code: "CONFLICT" });
     }
 
-    yield* requireErasablePolicy(current.policy_version);
+    const erasablePolicy = yield* requireErasablePolicy(current.policy_version);
 
     const observed = yield* register.inspect({
       deploymentEpoch: deploymentEpochOf(installation),
@@ -194,6 +196,11 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
             FOR UPDATE
           `;
           yield* lockPurgingProgress(progressIdentity);
+          // ZA-12: Full Erased requires current BoundedComplete catalog admission.
+          yield* copyCatalog.requireAdmission(
+            erasablePolicy.profileId,
+            "full-erased"
+          );
           yield* purgeWorldSqlContent({
             closingReceiptId,
             purgeReceiptId: receiptRef,

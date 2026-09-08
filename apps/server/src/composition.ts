@@ -6,6 +6,7 @@ import {
   HostedAdmissionFlags,
   hostedRetainedAdmissionFlags,
 } from "@zoen/authority/hosted/admission/flags";
+import { localErasureCopyCatalogLayer } from "@zoen/authority/ports/erasure/copy-catalog-pg";
 import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
 import {
   currentProductEveAdmissionInput,
@@ -134,6 +135,9 @@ export const makeApplication = (config: ApplicationConfig) =>
       const erasureRegister = localErasureAttemptRegisterLayer.pipe(
         Layer.provide(erasureAttemptPg)
       );
+      const erasureCopyCatalog = localErasureCopyCatalogLayer.pipe(
+        Layer.provide(authorityPg)
+      );
       // ZA-17: key alone must not admit stubMemory or live Zen.
       const eveSurface = yield* makeProductEveSurface(
         config.openCodeZen !== undefined
@@ -149,6 +153,7 @@ export const makeApplication = (config: ApplicationConfig) =>
         Layer.succeed(DataPolicy, policy),
         hostedAdmissionLayerFor(policy),
         erasureRegister,
+        erasureCopyCatalog,
         eveSurface
       );
       const executor = SemanticExecutor.layerWithoutEve.pipe(

@@ -1,13 +1,14 @@
 import { Conflict, Unavailable } from "@zoen/contracts/worlds/errors";
-import { Digest, exact } from "@zoen/contracts/worlds/values";
+import { Digest, WorldId, exact } from "@zoen/contracts/worlds/values";
 import { Effect, Layer, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 import type { SqlError } from "effect/unstable/sql";
 
+import { worldDisclosureKey } from "../disclosure/keys.js";
 import {
   admitsFullErasureOrRestore,
+  blocksAdmissionByDisposition,
   isRestoreEligible,
-  publicationAllowedDuringClosing,
 } from "./copy-catalog-laws.js";
 import {
   ControlledCopyBackingSystem,
@@ -40,7 +41,10 @@ CREATE TABLE IF NOT EXISTS authority.controlled_copy_coverage (
   cut_at timestamptz(3) NOT NULL DEFAULT clock_timestamp(),
   CHECK (
     (status = 'Unknown' AND evidence_ref IS NULL)
-    OR (status <> 'Unknown')
+    OR (
+      status IN ('BoundedComplete', 'Incomplete')
+      AND evidence_ref IS NOT NULL
+    )
   )
 );
 
@@ -124,6 +128,19 @@ const EntryRow = Schema.Struct({
   world_id: Schema.NullOr(Schema.String.check(Schema.isUUID())),
 }).annotate(exact);
 
+const RegistrationIdentityRow = Schema.Struct({
+  backing_system: ControlledCopyBackingSystem,
+  generation_id: Schema.String,
+  inspection_evidence: Schema.String,
+  integrity_digest: Digest,
+  owner_principal_id: Schema.NullOr(Schema.String.check(Schema.isUUID())),
+  profile_id: Schema.String,
+  realm: Schema.NullOr(Schema.Literal("live")),
+  rights_retention: Schema.String,
+  scope_kind: Schema.Literals(["world", "installation", "host"]),
+  world_id: Schema.NullOr(Schema.String.check(Schema.isUUID())),
+}).annotate(exact);
+
 const CoverageRow = Schema.Struct({
   cut_at: Schema.String,
   evidence_ref: Schema.NullOr(Schema.String),
@@ -160,6 +177,22 @@ const toCoverage = (row: typeof CoverageRow.Type): ControlledCopyCoverage => ({
  * Local durable copy catalog. Provide SqlClient from the authority install.
  * Defaults every profile to Unknown coverage (G-OPS fail-closed) until set.
  */
+const sameRegistrationPayload = (
+  existing: typeof RegistrationIdentityRow.Type,
+  decoded: ControlledCopyRegistration
+): boolean =>
+  existing.profile_id === decoded.profileId &&
+  existing.backing_system === decoded.backingSystem &&
+  existing.generation_id === decoded.generationId &&
+  existing.integrity_digest === decoded.integrityDigest &&
+  existing.scope_kind === decoded.scopeKind &&
+  (existing.world_id ?? null) === (decoded.worldRef?.worldId ?? null) &&
+  (existing.realm ?? null) === (decoded.worldRef?.realm ?? null) &&
+  (existing.owner_principal_id ?? null) ===
+    (decoded.ownerPrincipalId ?? null) &&
+  existing.inspection_evidence === decoded.inspectionEvidence &&
+  existing.rights_retention === decoded.rightsRetention;
+
 export const localErasureCopyCatalogLayer: Layer.Layer<
   ErasureCopyCatalog,
   never,
@@ -174,6 +207,17 @@ export const localErasureCopyCatalogLayer: Layer.Layer<
         INSERT INTO authority.controlled_copy_coverage (profile_id, status, evidence_ref)
         VALUES (${profileId}, ${"Unknown"}, NULL)
         ON CONFLICT (profile_id) DO NOTHING
+      `.pipe(Effect.mapError(() => unavailable()));
+
+    /** New registrations invalidate BoundedComplete — proof is cut-time only. */
+    const invalidateCompleteCoverage = (profileId: string) =>
+      sql`
+        UPDATE authority.controlled_copy_coverage
+        SET status = ${"Unknown"},
+            evidence_ref = NULL,
+            cut_at = clock_timestamp()
+        WHERE profile_id = ${profileId}
+          AND status = ${"BoundedComplete"}
       `.pipe(Effect.mapError(() => unavailable()));
 
     const loadEntry = (copyId: ControlledCopyId) =>
@@ -273,39 +317,60 @@ export const localErasureCopyCatalogLayer: Layer.Layer<
             coverage,
           };
         }),
-      publish: (copyId, opts) =>
+      publish: (copyId) =>
         Effect.gen(function* publish() {
           const existing = yield* loadEntry(copyId);
-          const worldClosing = opts?.worldClosing === true;
-          const registeredBeforeClosing =
-            opts?.registeredBeforeClosing === true;
-          if (
-            !publicationAllowedDuringClosing({
-              alreadyRegisteredBeforeClosing: registeredBeforeClosing,
-              worldClosing,
-            })
-          ) {
-            return yield* unavailable();
-          }
           if (existing.disposition === "QuarantinedUnpublishable") {
             return yield* conflict();
           }
           if (existing.publishedAt !== null) {
             return existing;
           }
+          // Durable Closing cut + registration order — never caller booleans.
+          let worldKey = "";
+          if (existing.worldRef !== null) {
+            const worldId = yield* Schema.decodeEffect(WorldId)(
+              existing.worldRef.worldId
+            ).pipe(Effect.mapError(() => unavailable()));
+            worldKey = worldDisclosureKey({
+              realm: existing.worldRef.realm,
+              worldId,
+            });
+          }
           const updated = yield* sql`
-            UPDATE authority.controlled_copy_entries
+            UPDATE authority.controlled_copy_entries AS e
             SET published_at = clock_timestamp(),
                 disposition = ${"AccountedActive"}
-            WHERE copy_id = ${copyId}
-              AND published_at IS NULL
-              AND disposition <> ${"QuarantinedUnpublishable"}
+            WHERE e.copy_id = ${copyId}
+              AND e.published_at IS NULL
+              AND e.disposition <> ${"QuarantinedUnpublishable"}
+              AND (
+                e.scope_kind <> ${"world"}
+                OR NOT EXISTS (
+                  SELECT 1
+                  FROM jobs.disclosure_world_closing AS c
+                  WHERE c.world_key = ${worldKey}
+                )
+                OR EXISTS (
+                  SELECT 1
+                  FROM jobs.disclosure_world_closing AS c
+                  WHERE c.world_key = ${worldKey}
+                    AND e.registered_at <= c.created_at
+                )
+              )
             RETURNING copy_id
           `.pipe(Effect.mapError(() => unavailable()));
-          if (updated.length !== 1) {
+          if (updated.length === 1) {
+            return yield* loadEntry(copyId);
+          }
+          const again = yield* loadEntry(copyId);
+          if (again.publishedAt !== null) {
+            return again;
+          }
+          if (again.disposition === "QuarantinedUnpublishable") {
             return yield* conflict();
           }
-          return yield* loadEntry(copyId);
+          return yield* unavailable();
         }),
       quarantineUnpublishable: (copyId, inspectionEvidence) =>
         Effect.gen(function* quarantine() {
@@ -397,45 +462,83 @@ export const localErasureCopyCatalogLayer: Layer.Layer<
             })
           );
           if (inserted.length > 0) {
+            // Post-cut registration must not keep a prior BoundedComplete proof.
+            yield* invalidateCompleteCoverage(decoded.profileId);
             return yield* loadEntry(decoded.copyId);
           }
-          const existing = yield* loadEntry(decoded.copyId);
-          if (
-            existing.backingSystem !== decoded.backingSystem ||
-            existing.generationId !== decoded.generationId ||
-            existing.integrityDigest !== decoded.integrityDigest ||
-            existing.scopeKind !== decoded.scopeKind ||
-            (existing.worldRef?.worldId ?? null) !==
-              (decoded.worldRef?.worldId ?? null)
-          ) {
+          const identityRows = yield* sql`
+            SELECT profile_id, backing_system, scope_kind, world_id, realm,
+              owner_principal_id, generation_id, integrity_digest,
+              rights_retention, inspection_evidence
+            FROM authority.controlled_copy_entries
+            WHERE copy_id = ${decoded.copyId}
+          `.pipe(Effect.mapError(() => unavailable()));
+          const identities = yield* Schema.decodeUnknownEffect(
+            Schema.Array(RegistrationIdentityRow)
+          )(identityRows).pipe(Effect.mapError(() => unavailable()));
+          if (identities.length !== 1 || identities[0] === undefined) {
+            return yield* unavailable();
+          }
+          if (!sameRegistrationPayload(identities[0], decoded)) {
             return yield* conflict();
           }
-          return existing;
+          return yield* loadEntry(decoded.copyId);
         }),
       requireAdmission: (profileId, purpose) =>
         Effect.gen(function* require() {
           yield* Schema.decodeEffect(
             Schema.Literals(["full-erased", "restore"])
           )(purpose).pipe(Effect.mapError(() => unavailable()));
-          const coverage = yield* loadCoverage(profileId);
+          // FOR UPDATE pairs with caller TX (e.g. purge mutation) when present.
+          yield* ensureCoverageRow(profileId);
+          const covRows = yield* sql`
+            SELECT profile_id, status, evidence_ref, cut_at::text AS cut_at
+            FROM authority.controlled_copy_coverage
+            WHERE profile_id = ${profileId}
+            FOR UPDATE
+          `.pipe(Effect.mapError(() => unavailable()));
+          const covDecoded = yield* Schema.decodeUnknownEffect(
+            Schema.Array(CoverageRow)
+          )(covRows).pipe(Effect.mapError(() => unavailable()));
+          if (covDecoded.length !== 1 || covDecoded[0] === undefined) {
+            return yield* unavailable();
+          }
+          const coverage = toCoverage(covDecoded[0]);
           if (!admitsFullErasureOrRestore(coverage.status)) {
             return yield* unavailable();
           }
-          if (purpose === "restore") {
-            const rows = yield* selectEntriesSql(profileId).pipe(
-              Effect.mapError(() => unavailable())
-            );
-            const cut = yield* Schema.decodeUnknownEffect(
-              Schema.Array(EntryRow)
-            )(rows).pipe(Effect.mapError(() => unavailable()));
-            for (const row of cut) {
-              const record = toRecord(row);
-              if (
-                record.disposition === "Unknown" ||
-                record.disposition === "Unaccounted"
-              ) {
-                return yield* unavailable();
-              }
+          // Durable invariant: complete/incomplete proofs require evidence.
+          if (coverage.evidenceRef === null) {
+            return yield* unavailable();
+          }
+          const stale = yield* sql`
+            SELECT EXISTS (
+              SELECT 1
+              FROM authority.controlled_copy_entries AS e
+              WHERE e.profile_id = ${profileId}
+                AND e.registered_at > (
+                  SELECT c.cut_at
+                  FROM authority.controlled_copy_coverage AS c
+                  WHERE c.profile_id = ${profileId}
+                )
+            ) AS found
+          `.pipe(Effect.mapError(() => unavailable()));
+          const staleDecoded = yield* Schema.decodeUnknownEffect(
+            Schema.Tuple([Schema.Struct({ found: Schema.Boolean })])
+          )(stale).pipe(Effect.mapError(() => unavailable()));
+          if (staleDecoded[0]?.found) {
+            return yield* unavailable();
+          }
+          const rows = yield* selectEntriesSql(profileId).pipe(
+            Effect.mapError(() => unavailable())
+          );
+          const cut = yield* Schema.decodeUnknownEffect(Schema.Array(EntryRow))(
+            rows
+          ).pipe(Effect.mapError(() => unavailable()));
+          // Full Erased and restore both reject Unknown / Unaccounted cuts.
+          for (const row of cut) {
+            if (blocksAdmissionByDisposition(toRecord(row).disposition)) {
+              return yield* unavailable();
             }
           }
           return coverage;

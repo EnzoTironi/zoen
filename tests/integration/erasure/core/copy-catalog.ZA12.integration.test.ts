@@ -11,13 +11,17 @@ import {
   isExplainedDisposition,
   isRestoreEligible,
 } from "../../../../packages/authority/src/knowledge/erasure/copy-catalog.js";
+import { worldDisclosureKey } from "../../../../packages/authority/src/ports/disclosure/keys.js";
 import {
   applyControlledCopyCatalogSchema,
   localErasureCopyCatalogLayer,
 } from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.js";
 import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
-import { Digest } from "../../../../packages/contracts/src/worlds/values.js";
+import {
+  Digest,
+  WorldId,
+} from "../../../../packages/contracts/src/worlds/values.js";
 import { erasableConfiguration, makeContext } from "./fixture.js";
 
 const digestOf = (material: string) =>
@@ -226,16 +230,20 @@ it.live(
           .pipe(Effect.flip);
         expect(incomplete).toMatchObject({ code: "UNAVAILABLE" });
 
-        // BoundedComplete still fails restore while a copy remains Unaccounted.
+        // BoundedComplete still fails Full Erased and restore while Unaccounted.
         yield* catalog.setCoverage(
           PROFILE,
           "BoundedComplete",
           "local/za12-02-complete-but-unaccounted"
         );
-        const unaccounted = yield* catalog
+        const unaccountedRestore = yield* catalog
           .requireAdmission(PROFILE, "restore")
           .pipe(Effect.flip);
-        expect(unaccounted).toMatchObject({ code: "UNAVAILABLE" });
+        expect(unaccountedRestore).toMatchObject({ code: "UNAVAILABLE" });
+        const unaccountedFull = yield* catalog
+          .requireAdmission(PROFILE, "full-erased")
+          .pipe(Effect.flip);
+        expect(unaccountedFull).toMatchObject({ code: "UNAVAILABLE" });
 
         yield* catalog.publish(copyId);
         yield* catalog.recordDisposition(
@@ -243,10 +251,41 @@ it.live(
           "SuppressedOnRestore",
           "local/za12-02-suppressed"
         );
-        const admitted = yield* catalog.requireAdmission(PROFILE, "restore");
-        expect(admitted.status).toBe("BoundedComplete");
+        const admittedRestore = yield* catalog.requireAdmission(
+          PROFILE,
+          "restore"
+        );
+        expect(admittedRestore.status).toBe("BoundedComplete");
+        const admittedFull = yield* catalog.requireAdmission(
+          PROFILE,
+          "full-erased"
+        );
+        expect(admittedFull.status).toBe("BoundedComplete");
       })
     )
+);
+
+const markWorldClosing = Effect.fn("ZA12.markWorldClosing")(
+  function* markWorldClosing(worldRef: {
+    readonly realm: "live";
+    readonly worldId: string;
+  }) {
+    const sql = yield* SqlClient.SqlClient;
+    const worldKey = worldDisclosureKey({
+      realm: worldRef.realm,
+      worldId: Schema.decodeSync(WorldId)(worldRef.worldId),
+    });
+    yield* sql`
+      INSERT INTO jobs.disclosure_subjects (subject_key, revision)
+      VALUES (${worldKey}, 0)
+      ON CONFLICT (subject_key) DO NOTHING
+    `;
+    yield* sql`
+      INSERT INTO jobs.disclosure_world_closing (world_key)
+      VALUES (${worldKey})
+      ON CONFLICT (world_key) DO NOTHING
+    `;
+  }
 );
 
 it.live(
@@ -257,7 +296,10 @@ it.live(
         const ctx = yield* makeContext();
         const world = yield* createWorld(ctx);
         const catalog = yield* ErasureCopyCatalog;
+        const scoped = liveRef(world.worldRef);
 
+        // Closing first, then register → publish must fail closed from durable state.
+        yield* markWorldClosing(scoped);
         const raced = randomUUID();
         yield* catalog.register({
           backingSystem: "temporary-output",
@@ -269,14 +311,9 @@ it.live(
           profileId: PROFILE,
           rightsRetention: "while-pinned",
           scopeKind: "world",
-          worldRef: liveRef(world.worldRef),
+          worldRef: scoped,
         });
-        const blockedPublish = yield* catalog
-          .publish(raced, {
-            registeredBeforeClosing: false,
-            worldClosing: true,
-          })
-          .pipe(Effect.flip);
+        const blockedPublish = yield* catalog.publish(raced).pipe(Effect.flip);
         expect(blockedPublish).toMatchObject({ code: "UNAVAILABLE" });
 
         const quarantined = yield* catalog.quarantineUnpublishable(
@@ -287,6 +324,10 @@ it.live(
         expect(quarantined.publishedAt).toBeNull();
         expect(isRestoreEligible(quarantined)).toBeFalsy();
 
+        // Fresh World: register before Closing, then mark Closing — publish allowed.
+        const ctxOrdered = yield* makeContext();
+        const worldOrdered = yield* createWorld(ctxOrdered);
+        const scopedOrdered = liveRef(worldOrdered.worldRef);
         const ordered = randomUUID();
         yield* catalog.register({
           backingSystem: "sql-logical-dump",
@@ -294,16 +335,14 @@ it.live(
           generationId: `ordered-${ordered}`,
           inspectionEvidence: "local/pg_dump/pre-closing",
           integrityDigest: digestOf(`ordered:${ordered}`),
-          ownerPrincipalId: ctx.presence.principalId,
+          ownerPrincipalId: ctxOrdered.presence.principalId,
           profileId: PROFILE,
           rightsRetention: "while-pinned",
           scopeKind: "world",
-          worldRef: liveRef(world.worldRef),
+          worldRef: scopedOrdered,
         });
-        const published = yield* catalog.publish(ordered, {
-          registeredBeforeClosing: true,
-          worldClosing: true,
-        });
+        yield* markWorldClosing(scopedOrdered);
+        const published = yield* catalog.publish(ordered);
         expect(published.disposition).toBe("AccountedActive");
         expect(published.publishedAt).not.toBeNull();
         expect(isRestoreEligible(published)).toBeTruthy();
@@ -324,6 +363,102 @@ it.live(
           "full-erased"
         );
         expect(admitted.status).toBe("BoundedComplete");
+      })
+    )
+);
+
+it.live(
+  "ZA-12-04: register after BoundedComplete invalidates proof; replay conflicts on profile/evidence",
+  () =>
+    withCatalogRuntime(
+      Effect.gen(function* staleAndReplay() {
+        const catalog = yield* ErasureCopyCatalog;
+        const first = randomUUID();
+        yield* catalog.register({
+          backingSystem: "sql-logical-dump",
+          copyId: first,
+          generationId: `first-${first}`,
+          inspectionEvidence: "local/first",
+          integrityDigest: digestOf(`first:${first}`),
+          ownerPrincipalId: null,
+          profileId: PROFILE,
+          rightsRetention: "while-pinned",
+          scopeKind: "installation",
+          worldRef: null,
+        });
+        yield* catalog.publish(first);
+        yield* catalog.recordDisposition(
+          first,
+          "AccountedActive",
+          "local/first-active"
+        );
+        yield* catalog.setCoverage(
+          PROFILE,
+          "BoundedComplete",
+          "local/za12-04-cut"
+        );
+        const admitted = yield* catalog.requireAdmission(PROFILE, "restore");
+        expect(admitted.status).toBe("BoundedComplete");
+
+        // Post-cut registration must invalidate completeness.
+        const second = randomUUID();
+        yield* catalog.register({
+          backingSystem: "object-version-set",
+          copyId: second,
+          generationId: `second-${second}`,
+          inspectionEvidence: "local/second",
+          integrityDigest: digestOf(`second:${second}`),
+          ownerPrincipalId: null,
+          profileId: PROFILE,
+          rightsRetention: "while-pinned",
+          scopeKind: "installation",
+          worldRef: null,
+        });
+        const cut = yield* catalog.inspectCut(PROFILE);
+        expect(cut.coverage.status).toBe("Unknown");
+        const blocked = yield* catalog
+          .requireAdmission(PROFILE, "full-erased")
+          .pipe(Effect.flip);
+        expect(blocked).toMatchObject({ code: "UNAVAILABLE" });
+
+        // Same copyId with different profile/evidence → Conflict (not silent replay).
+        const conflicted = yield* catalog
+          .register({
+            backingSystem: "sql-logical-dump",
+            copyId: first,
+            generationId: `first-${first}`,
+            inspectionEvidence: "local/first-DIFFERENT",
+            integrityDigest: digestOf(`first:${first}`),
+            ownerPrincipalId: null,
+            profileId: PROFILE,
+            rightsRetention: "while-pinned",
+            scopeKind: "installation",
+            worldRef: null,
+          })
+          .pipe(Effect.flip);
+        expect(conflicted).toMatchObject({
+          _tag: "Conflict",
+          code: "CONFLICT",
+        });
+
+        const profileConflict = yield* catalog
+          .register({
+            backingSystem: "sql-logical-dump",
+            copyId: first,
+            generationId: `first-${first}`,
+            inspectionEvidence: "local/first",
+            integrityDigest: digestOf(`first:${first}`),
+            ownerPrincipalId: null,
+            profileId: "worlds-hosted-retained-v1",
+            rightsRetention: "while-pinned",
+            scopeKind: "installation",
+            worldRef: null,
+          })
+          .pipe(Effect.flip);
+        expect(profileConflict).toMatchObject({
+          _tag: "Conflict",
+          code: "CONFLICT",
+        });
       })
     )
 );

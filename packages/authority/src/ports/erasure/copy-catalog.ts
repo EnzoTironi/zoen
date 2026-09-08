@@ -155,15 +155,12 @@ export class ErasureCopyCatalog extends Context.Service<
     ) => EffectType.Effect<ControlledCopyRecord, Conflict | Unavailable>;
     /**
      * Publish a registered copy (eligible for backup/restore ops).
-     * Fail-closed when World Closing raced an unregistered snapshot — use
-     * quarantineUnpublishable instead.
+     * Derives World Closing + registration order from durable DB state — never
+     * from caller assertions. Fail-closed when Closing raced registration —
+     * use quarantineUnpublishable instead.
      */
     readonly publish: (
-      copyId: ControlledCopyId,
-      opts?: {
-        readonly registeredBeforeClosing?: boolean;
-        readonly worldClosing?: boolean;
-      }
+      copyId: ControlledCopyId
     ) => EffectType.Effect<ControlledCopyRecord, Conflict | Unavailable>;
     /**
      * Mark an unpublished copy as quarantined/unpublishable (ZA-12-03 race).

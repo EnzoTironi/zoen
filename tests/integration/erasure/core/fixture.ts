@@ -6,6 +6,7 @@ import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
 } from "../../../../packages/authority/src/commit/configuration.js";
+import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
 import {
   DataPolicy,
   ErasableDataPolicySchema,
@@ -73,3 +74,14 @@ export const makeContext = Effect.fn("EX32.makeContext")(function* makeContext(
     purpose: "personal-records",
   });
 });
+
+/** Empty BoundedComplete cut for purge handlers under ZA-12. */
+export const admitEmptyCopyCatalog = (profileId = "worlds-local-erasable-v1") =>
+  Effect.gen(function* admit() {
+    const catalog = yield* ErasureCopyCatalog;
+    yield* catalog.setCoverage(
+      profileId,
+      "BoundedComplete",
+      `test/admit-empty/${profileId}`
+    );
+  });

@@ -6,6 +6,8 @@ import { makeWorldsPostgresLayer } from "../../../../apps/server/src/adapters/po
 import type { WorldsTestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { applyErasureMigrations } from "../../../../ops/migrations/run.ts";
+import { localErasureCopyCatalogLayer } from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.ts";
+import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.ts";
 import { localErasureAttemptRegisterLayer } from "../../../../packages/authority/src/ports/erasure/local-pg.ts";
 import { erasableConfiguration } from "../core/fixture.ts";
 
@@ -15,14 +17,16 @@ export const withErasureRuntime = <A, E, R>(
 ) =>
   withWorldsDatabase(
     (database) => {
+      const authorityPg = makeWorldsPostgresLayer({
+        applicationName: "zoen-erasure-register-test",
+        maxConnections: 4,
+        url: database.urls.authority,
+      });
       const register = localErasureAttemptRegisterLayer.pipe(
-        Layer.provide(
-          makeWorldsPostgresLayer({
-            applicationName: "zoen-erasure-register-test",
-            maxConnections: 4,
-            url: database.urls.authority,
-          })
-        )
+        Layer.provide(authorityPg)
+      );
+      const copyCatalog = localErasureCopyCatalogLayer.pipe(
+        Layer.provide(database.authority)
       );
       const fence = makeDisclosureFenceLayer({
         applicationName: "zoen-erasure-disclosure-test",
@@ -35,6 +39,7 @@ export const withErasureRuntime = <A, E, R>(
             erasableConfiguration,
             database.authority,
             register,
+            copyCatalog,
             fence
           )
         )
@@ -46,3 +51,14 @@ export const withErasureRuntime = <A, E, R>(
         Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
       )
   );
+
+/** Empty BoundedComplete cut so purge may reach Erased under ZA-12 admission. */
+export const admitEmptyCopyCatalog = (profileId = "worlds-local-erasable-v1") =>
+  Effect.gen(function* admit() {
+    const catalog = yield* ErasureCopyCatalog;
+    yield* catalog.setCoverage(
+      profileId,
+      "BoundedComplete",
+      `test/admit-empty/${profileId}`
+    );
+  });

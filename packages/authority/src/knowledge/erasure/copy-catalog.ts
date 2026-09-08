@@ -5,6 +5,7 @@
 export {
   admitsFullErasureOrRestore,
   blocksAdmission,
+  blocksAdmissionByDisposition,
   copyBelongsToWorld,
   isExplainedDisposition,
   isRestoreEligible,
