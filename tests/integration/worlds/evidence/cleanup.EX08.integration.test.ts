@@ -44,24 +44,26 @@ it.live(
           expect(
             yield* stageCapture(context, late, bytes).pipe(Effect.flip)
           ).toMatchObject({ _tag: "Expired" });
-          // The provider accepted the late stage, but SQL fencing denied confirmation.
-          const orphan = yield* store.locate({
-            captureId: late.captureId,
-            expectedBytes: late.expectedBytes,
-            expectedDigest: late.expectedDigest,
-            worldRef,
-          });
-          expect(yield* store.read(orphan)).toStrictEqual(bytes);
-          yield* sweepExpiredCaptures(worldRef, null);
-          expect(yield* store.read(orphan).pipe(Effect.flip)).toMatchObject({
+          // ZA-10: submit gate refuses PutObject once cleanup moved the capture
+          // off reserved, so late stage cannot recreate an orphan object.
+          expect(
+            yield* store
+              .locate({
+                captureId: late.captureId,
+                expectedBytes: late.expectedBytes,
+                expectedDigest: late.expectedDigest,
+                worldRef,
+              })
+              .pipe(Effect.flip)
+          ).toMatchObject({
             _tag: "StorageFailure",
             reason: "NotFound",
           });
           const rows =
             yield* sql`SELECT state, fence::text FROM jobs.captures WHERE world_id = ${worldRef.worldId}`;
           expect(rows).toStrictEqual([
-            { fence: "2", state: "removed" },
-            { fence: "2", state: "removed" },
+            { fence: "1", state: "removed" },
+            { fence: "1", state: "removed" },
           ]);
           expect(
             yield* sql`SELECT count(*)::int AS evidence FROM authority.evidence`

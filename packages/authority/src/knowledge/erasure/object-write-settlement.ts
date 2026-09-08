@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 
-import { Blocked, Unavailable } from "@zoen/contracts/worlds/errors";
+import { Blocked, Expired, Unavailable } from "@zoen/contracts/worlds/errors";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
@@ -70,6 +70,35 @@ export const markObjectWriteSubmitted = Effect.fn(
     RETURNING a.attempt_id::text AS attempt_id
   `;
   if (rows.length !== 1) {
+    // Cleanup/expiration fencing must surface Expired (EX08). Missing attempt,
+    // non-registered attempt, or other ledger faults stay Unavailable (ZA-10
+    // settlement fail-closed).
+    const status = yield* sql`
+      SELECT a.state AS attempt_state, c.state AS capture_state
+      FROM jobs.object_write_attempts AS a
+      LEFT JOIN jobs.captures AS c
+        ON c.world_id = a.world_id AND c.realm = a.realm AND c.capture_id = a.capture_id
+      WHERE a.world_id = ${input.world.worldId} AND a.realm = ${input.world.realm}
+        AND a.capture_id = ${input.captureId}
+    `;
+    if (status.length === 1) {
+      const denied = yield* Schema.decodeUnknownEffect(
+        Schema.Struct({
+          attempt_state: Schema.String,
+          capture_state: Schema.NullOr(Schema.String),
+        })
+      )(status[0]).pipe(
+        Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
+      );
+      if (
+        denied.attempt_state === "registered" &&
+        (denied.capture_state === null ||
+          denied.capture_state === "cleanup_pending" ||
+          denied.capture_state === "removed")
+      ) {
+        return yield* new Expired({ code: "EXPIRED" });
+      }
+    }
     return yield* new Unavailable({ code: "UNAVAILABLE" });
   }
   return yield* Schema.decodeUnknownEffect(
