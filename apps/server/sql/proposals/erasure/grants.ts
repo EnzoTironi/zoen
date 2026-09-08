@@ -14,7 +14,8 @@ export const grantErasureRole = Effect.fn("grantErasureRole")(
         authority.claims, authority.pins, authority.evidence, authority.sources,
         authority.receipts, authority.operations, authority.bootstrap_operations,
         authority.memberships, authority.identity_decisions TO "${role}";
-       GRANT DELETE ON jobs.captures, jobs.outbox TO "${role}"`
+       GRANT DELETE ON jobs.captures, jobs.outbox TO "${role}";
+       GRANT SELECT, INSERT, UPDATE ON jobs.object_write_attempts TO "${role}"`
     );
   }
 );

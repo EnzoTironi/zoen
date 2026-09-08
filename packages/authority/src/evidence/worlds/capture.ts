@@ -23,6 +23,12 @@ import {
 } from "../../access/context.js";
 import { admitWorldContent } from "../../access/erasure/content.js";
 import { serializable } from "../../commit/transaction.js";
+import {
+  markObjectWriteSubmitted,
+  markObjectWriteTerminal,
+  markObjectWriteUnknown,
+  registerObjectWriteAttempt,
+} from "../../knowledge/erasure/object-write-settlement.js";
 import type { VerifiedRequestContext } from "../../ports/worlds/context.js";
 import { CaptureState } from "../../ports/worlds/persistence.js";
 import {
@@ -101,6 +107,13 @@ export const reserveCapture = Effect.fn("authority.evidence.reserveCapture")(
         )(row).pipe(
           Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
         );
+        const objectKey = `worlds/${world.realm}/${world.worldId.toLowerCase()}/captures/${captureId.toLowerCase()}`;
+        yield* registerObjectWriteAttempt({
+          captureId,
+          erasureEpoch: epoch,
+          objectKey,
+          world,
+        });
         return yield* Schema.decodeEffect(CaptureReservation)({
           captureId,
           documentFormat,
@@ -184,7 +197,12 @@ export const stageCapture = Effect.fn("authority.evidence.stageCapture")(
       return yield* new InvalidInput({ code: "INVALID_INPUT" });
     }
     const store = yield* EvidenceObjectStore;
-    const location = yield* store
+    // Durable external_submitted precedes PutObject (ZA-10). Ambiguous outcomes → unknown.
+    yield* markObjectWriteSubmitted({
+      captureId: reservation.captureId,
+      world: reservation.worldRef,
+    });
+    const staged = yield* store
       .stageDocument({
         captureId: reservation.captureId,
         content: Stream.make(bytes),
@@ -193,7 +211,24 @@ export const stageCapture = Effect.fn("authority.evidence.stageCapture")(
         expectedDigest: reservation.expectedDigest,
         worldRef: reservation.worldRef,
       })
-      .pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
+      .pipe(
+        Effect.map((location) => ({ _tag: "terminal" as const, location })),
+        Effect.catchTag("StorageFailure", () =>
+          Effect.succeed({ _tag: "unknown" as const })
+        )
+      );
+    if (staged._tag === "unknown") {
+      yield* markObjectWriteUnknown({
+        captureId: reservation.captureId,
+        world: reservation.worldRef,
+      });
+      return yield* new Unavailable({ code: "UNAVAILABLE" });
+    }
+    yield* markObjectWriteTerminal({
+      captureId: reservation.captureId,
+      world: reservation.worldRef,
+    });
+    const { location } = staged;
     const checked = yield* Schema.decodeEffect(ObjectLocation)(location).pipe(
       Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" }))
     );

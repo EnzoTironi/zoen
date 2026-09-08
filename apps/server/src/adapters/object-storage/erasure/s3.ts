@@ -2,11 +2,16 @@ import {
   DeleteObjectCommand,
   GetObjectLegalHoldCommand,
   GetObjectRetentionCommand,
+  ListMultipartUploadsCommand,
   ListObjectVersionsCommand,
   S3Client,
   S3ServiceException,
 } from "@aws-sdk/client-s3";
 import { ErasureObjectInventory } from "@zoen/authority/ports/erasure/inventory";
+import type {
+  ErasureMultipartManifest,
+  ErasureMultipartUpload,
+} from "@zoen/authority/ports/erasure/inventory";
 import { ErasurePurgeStore } from "@zoen/authority/ports/erasure/purge";
 import type { ErasureVersionTarget } from "@zoen/authority/ports/erasure/purge";
 import type {
@@ -351,7 +356,85 @@ export const layer = (
           return results;
         });
 
-      const inventory = ErasureObjectInventory.of({ listWorldVersions });
+      const listMultipartPage = (
+        prefix: string,
+        keyMarker: string | undefined,
+        uploadIdMarker: string | undefined
+      ) =>
+        Effect.tryPromise({
+          catch: unavailable,
+          try: (signal) =>
+            client.send(
+              new ListMultipartUploadsCommand({
+                Bucket: config.bucket,
+                MaxUploads: ErasureLimits.inventoryPageSize,
+                Prefix: prefix,
+                ...(keyMarker === undefined ? {} : { KeyMarker: keyMarker }),
+                ...(uploadIdMarker === undefined
+                  ? {}
+                  : { UploadIdMarker: uploadIdMarker }),
+              }),
+              { abortSignal: signal }
+            ),
+        });
+
+      const listWorldMultipartUploads = (worldRef: WorldRef) =>
+        Effect.gen(function* listMultipart() {
+          if (worldRef.realm !== config.realm) {
+            return yield* unavailable();
+          }
+          const prefix = worldObjectPrefix(worldRef);
+          const uploads: ErasureMultipartUpload[] = [];
+          let keyMarker: string | undefined;
+          let uploadIdMarker: string | undefined;
+          const visited = new Set<string>();
+          let page = 0;
+          for (;;) {
+            const response = yield* listMultipartPage(
+              prefix,
+              keyMarker,
+              uploadIdMarker
+            );
+            for (const upload of response.Uploads ?? []) {
+              if (
+                upload.Key === undefined ||
+                upload.Key.length === 0 ||
+                upload.UploadId === undefined ||
+                upload.UploadId.length === 0
+              ) {
+                return yield* unavailable();
+              }
+              if (!isRealmErasureObjectKey(upload.Key, config.realm)) {
+                return yield* unavailable();
+              }
+              uploads.push({ key: upload.Key, uploadId: upload.UploadId });
+            }
+            if (response.IsTruncated !== true) {
+              break;
+            }
+            if (response.NextKeyMarker === undefined) {
+              return yield* unavailable();
+            }
+            const cursor = `${response.NextKeyMarker}\u0000${response.NextUploadIdMarker ?? ""}`;
+            if (visited.has(cursor)) {
+              return yield* unavailable();
+            }
+            visited.add(cursor);
+            keyMarker = response.NextKeyMarker;
+            uploadIdMarker = response.NextUploadIdMarker;
+            page += 1;
+            if (page >= ErasureLimits.inventoryPagesPerPrefix) {
+              return yield* unavailable();
+            }
+          }
+          const manifest: ErasureMultipartManifest = { prefix, uploads };
+          return manifest;
+        });
+
+      const inventory = ErasureObjectInventory.of({
+        listWorldMultipartUploads,
+        listWorldVersions,
+      });
       const purge = ErasurePurgeStore.of({
         inspectHold,
         purgeManifest,
