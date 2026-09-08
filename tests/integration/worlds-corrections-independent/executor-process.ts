@@ -107,7 +107,7 @@ const program = Effect.scoped(
       try: (): Promise<typeof IdentityModule> =>
         import(
           new URL(
-            "../../../apps/server/dist/identity/worlds/identity.js",
+            "../../../apps/server/dist/identity/identity.js",
             import.meta.url
           ).href
         ),
