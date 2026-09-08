@@ -1,8 +1,9 @@
 import type { EveWebSpeechCapabilities } from "./values.js";
 
 /**
- * Pure Web Speech capability probe (ZN-0063 / EX44).
- * Shared by authority ports and `@zoen/web` — no network, no keys.
+ * Pure Web Speech capability probe (ZN-0063 / EX44 / ZA-21).
+ * Shared by ontology ports and `@zoen/web` — no network, no keys.
+ * API presence alone is not device-speech qualification (see browser-voice.ts).
  */
 
 export interface EveSpeechHost {

@@ -24,8 +24,9 @@ export const EveOpenCodeZenProfileId = Schema.Literal("eve-opencode-zen-v1");
 export type EveOpenCodeZenProfileId = typeof EveOpenCodeZenProfileId.Type;
 
 /**
- * Browser Web Speech voice I/O profile (ZN-0063 voice qualification).
- * Separate from text Zen — STT/TTS via SpeechRecognition + speechSynthesis.
+ * Browser Web Speech voice I/O profile (ZN-0063 / ZA-21).
+ * Optional STT/TTS adapter over the admitted text turn (eve-opencode-zen-v1).
+ * Not cloud speech; changing channel does not grant extra authority.
  */
 export const EveWebSpeechProfileId = Schema.Literal("eve-web-speech-v1");
 export type EveWebSpeechProfileId = typeof EveWebSpeechProfileId.Type;

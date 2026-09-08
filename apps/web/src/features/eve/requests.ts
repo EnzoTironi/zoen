@@ -14,7 +14,7 @@ const envelope = {
 
 const invalid = () => new InvalidInput({ code: "INVALID_INPUT" });
 
-/** Grounded text path eve-opencode-zen-v1 / opencode-zen (ZA-20 profile). Server fails closed until journal+grounding+G-PROVIDER; tip keeps textProfileAccepted false without live provider proof (ZA-17/19). Domain tools share Inspect. */
+/** Grounded text path eve-opencode-zen-v1 / opencode-zen (ZA-20 profile). Browser voice (ZA-21) submits the same AcceptConversationTurn after transcript review — channel change grants no extra authority. Server fails closed until journal+grounding+G-PROVIDER; tip keeps textProfileAccepted false without live provider proof (ZA-17/19). Domain tools share Inspect. */
 export const acceptEveTurnRequest = (
   worldRef: WorldRef,
   input: {
