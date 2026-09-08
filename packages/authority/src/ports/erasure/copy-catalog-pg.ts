@@ -28,7 +28,7 @@ const conflict = () => new Conflict({ code: "CONFLICT" });
 
 /**
  * Candidate DDL for controlled-copy catalog. Tests apply this; root numbers
- * ops/migrations/015_controlled_copy_catalog.sql.
+ * ops/migrations/016_controlled_copy_catalog.sql.
  */
 export const controlledCopyCatalogSchemaSql = `
 CREATE TABLE IF NOT EXISTS authority.controlled_copy_coverage (

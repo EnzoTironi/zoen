@@ -19,7 +19,11 @@ import { ErasureObjectInventory } from "../../../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../../../ports/erasure/purge.js";
 import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
 import { requireErasablePolicy } from "../policy.js";
-import { lockPurgingProgress, requireSettledCaptures } from "../purge-guard.js";
+import {
+  lockPurgingProgress,
+  requireEmptyObjectSurface,
+  requireSettledExternalWriters,
+} from "../purge-guard.js";
 import { completePurgeOutcomes } from "../purge-outcomes.js";
 import { purgeWorldSqlContent } from "../sql-purge.js";
 
@@ -116,7 +120,7 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
       return yield* new Stale({ code: "STALE" });
     }
 
-    yield* requireSettledCaptures(world);
+    yield* requireSettledExternalWriters(world);
 
     if (current.phase === "Closing" || current.phase === "Suppressed") {
       yield* sql`
@@ -182,10 +186,7 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
       );
     }
 
-    const after = yield* inventory.listWorldVersions(world);
-    if (after.entries.length > 0) {
-      return yield* new Unavailable({ code: "UNAVAILABLE" });
-    }
+    yield* requireEmptyObjectSurface(world);
 
     const result = yield* commitMutation(context, bound, {
       apply: (receiptRef) =>

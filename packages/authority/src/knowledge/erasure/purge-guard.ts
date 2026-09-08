@@ -3,6 +3,9 @@ import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
+import { ErasureObjectInventory } from "../../ports/erasure/inventory.js";
+import { requireSettledObjectWriters } from "./object-write-settlement.js";
+
 /**
  * Refuse captures that can still finish a remote PUT (`reserved`) or are mid-cleanup
  * (`cleanup_pending`). Durable `removed` rows cannot stage uploads and are deleted only
@@ -20,6 +23,43 @@ export const requireSettledCaptures = Effect.fn(
   if (uncertain.length !== 0) {
     return yield* new Unavailable({ code: "UNAVAILABLE" });
   }
+  return yield* Effect.void;
+});
+
+/**
+ * ZA-10: captures + object-write ledger + multipart inventory must be settled
+ * before purge completion. HEAD 404 is not consulted here.
+ */
+export const requireSettledExternalWriters = Effect.fn(
+  "erasure.requireSettledExternalWriters"
+)(function* requireSettledExternalWriters(world: WorldRef) {
+  yield* requireSettledCaptures(world);
+  yield* requireSettledObjectWriters(world);
+  const inventory = yield* ErasureObjectInventory;
+  const multipart = yield* inventory.listWorldMultipartUploads(world);
+  if (multipart.uploads.length !== 0) {
+    return yield* new Unavailable({ code: "UNAVAILABLE" });
+  }
+  return yield* Effect.void;
+});
+
+/**
+ * After version purge: versions empty, multipart empty, writers settled.
+ * Keeps purgeWorldContent below the complexity budget.
+ */
+export const requireEmptyObjectSurface = Effect.fn(
+  "erasure.requireEmptyObjectSurface"
+)(function* requireEmptyObjectSurface(world: WorldRef) {
+  const inventory = yield* ErasureObjectInventory;
+  const after = yield* inventory.listWorldVersions(world);
+  if (after.entries.length > 0) {
+    return yield* new Unavailable({ code: "UNAVAILABLE" });
+  }
+  const afterMultipart = yield* inventory.listWorldMultipartUploads(world);
+  if (afterMultipart.uploads.length > 0) {
+    return yield* new Unavailable({ code: "UNAVAILABLE" });
+  }
+  yield* requireSettledExternalWriters(world);
   return yield* Effect.void;
 });
 
@@ -45,6 +85,7 @@ export const lockPurgingProgress = Effect.fn("erasure.lockPurgingProgress")(
     if (rows.length !== 1) {
       return yield* new Conflict({ code: "CONFLICT" });
     }
+    yield* requireSettledObjectWriters(input.world);
     yield* requireSettledCaptures(input.world);
     return yield* Effect.void;
   }

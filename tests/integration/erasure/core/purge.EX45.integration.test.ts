@@ -38,6 +38,11 @@ const emptyObjectLayers = Layer.mergeAll(
   Layer.succeed(
     ErasureObjectInventory,
     ErasureObjectInventory.of({
+      listWorldMultipartUploads: (worldRef) =>
+        Effect.succeed({
+          prefix: `worlds/${worldRef.realm}/${worldRef.worldId.toLowerCase()}/`,
+          uploads: [],
+        }),
       listWorldVersions: (worldRef) =>
         Effect.succeed({
           entries: [],
@@ -67,6 +72,7 @@ const grantErasureSchemas = Effect.fn("EX45.grantErasure")(
          authority.receipts, authority.operations, authority.bootstrap_operations,
          authority.memberships, authority.identity_decisions TO "${authorityRole}";
        GRANT SELECT, INSERT, UPDATE, DELETE ON jobs.captures, jobs.outbox TO "${authorityRole}";
+       GRANT SELECT, INSERT, UPDATE ON jobs.object_write_attempts TO "${authorityRole}";
        GRANT SELECT, INSERT, UPDATE ON authority.controlled_copy_coverage, authority.controlled_copy_entries TO "${authorityRole}"`
     );
   }
@@ -92,6 +98,18 @@ const withErasureRuntime = <A, E, R, ROut, EOut>(
           )
         );
         yield* sql.withTransaction(sql.unsafe(membership));
+        const objectWrite = yield* Effect.promise(() =>
+          import("node:fs/promises").then((fs) =>
+            fs.readFile(
+              new URL(
+                "../../../../ops/migrations/015_object_write_settlement.sql",
+                import.meta.url
+              ),
+              "utf-8"
+            )
+          )
+        );
+        yield* sql.withTransaction(sql.unsafe(objectWrite));
         yield* applyErasureAttemptSchema();
         yield* applyWorldErasureSchema();
         yield* applyControlledCopyCatalogSchema();

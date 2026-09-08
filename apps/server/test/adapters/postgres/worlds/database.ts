@@ -179,6 +179,18 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
             )
           ).pipe(Effect.provide(NodeFileSystem.layer));
           yield* sql.withTransaction(sql.unsafe(worldClosing));
+          // ZA-10: object-write settlement ledger for capture admission (fail-closed).
+          const objectWrite = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/015_object_write_settlement.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(objectWrite));
           // ZA-09 capture admission: retained DBs need progress DDL + admit grants (F02).
           const worldErasureProgress = yield* FileSystem.FileSystem.use((fs) =>
             fs.readFileString(
@@ -216,6 +228,11 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
           yield* grantWorldsRoles(names);
           yield* grantDisclosureRole(names.authority);
           yield* grantContentBarrierAdmit(names.authority);
+          // Attempt register schema may be absent on this lightweight path; grant only
+          // the object-write ledger used by every capture admission (ZA-10).
+          yield* sql.unsafe(
+            `GRANT SELECT, INSERT, UPDATE ON jobs.object_write_attempts TO "${names.authority.replaceAll('"', "")}"`
+          );
           if (misconfiguration === "public-create") {
             yield* sql`GRANT CREATE ON SCHEMA public TO ${sql(names.authority)}`;
           }

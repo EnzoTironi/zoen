@@ -15,19 +15,21 @@ export const grantErasureRole = Effect.fn("grantErasureRole")(
         authority.claims, authority.pins, authority.evidence, authority.sources,
         authority.receipts, authority.operations, authority.bootstrap_operations,
         authority.memberships, authority.identity_decisions TO "${role}";
-       GRANT DELETE ON jobs.captures, jobs.outbox TO "${role}"`
+       GRANT DELETE ON jobs.captures, jobs.outbox TO "${role}";
+       GRANT SELECT, INSERT, UPDATE ON jobs.object_write_attempts TO "${role}"`
     );
   }
 );
 
-/** Admit grants for ZA-09 capture barrier on retained installs (F02). */
+/** Admit grants for ZA-09/ZA-10 capture barrier + object-write ledger on retained installs (F02). */
 export const grantContentBarrierAdmit = Effect.fn("grantContentBarrierAdmit")(
   function* grantContentBarrierAdmit(authorityRole: string) {
     const sql = yield* SqlClient.SqlClient;
     const role = authorityRole.replaceAll('"', "");
-    // FOR SHARE / progress reads; keep aligned with grantErasureRole table privileges.
+    // FOR SHARE / progress reads + object-write admission; keep aligned with grantErasureRole.
     yield* sql.unsafe(
-      `GRANT SELECT, INSERT, UPDATE ON authority.world_erasure_progress, authority.world_erasure_receipts TO "${role}"`
+      `GRANT SELECT, INSERT, UPDATE ON authority.world_erasure_progress, authority.world_erasure_receipts TO "${role}";
+       GRANT SELECT, INSERT, UPDATE ON jobs.object_write_attempts TO "${role}"`
     );
   }
 );
