@@ -7,7 +7,11 @@ import {
   hostedRetainedAdmissionFlags,
 } from "@zoen/authority/hosted/admission/flags";
 import { localErasureCopyCatalogLayer } from "@zoen/authority/ports/erasure/copy-catalog-pg";
-import { localErasureAttemptRegisterLayer } from "@zoen/authority/ports/erasure/local-pg";
+import {
+  anchoredLocalErasureAttemptRegisterLayer,
+  applyErasureAttemptSchema,
+  localErasureAttemptRegisterLayer,
+} from "@zoen/authority/ports/erasure/local-pg";
 import { ErasureObjectWriteSettlement } from "@zoen/authority/ports/erasure/object-write";
 import {
   currentProductEveAdmissionInput,
@@ -21,10 +25,10 @@ import {
 } from "@zoen/authority/ports/worlds/context";
 import { SemanticExecutor } from "@zoen/authority/semantic/executor";
 import { ApplicationApi } from "@zoen/contracts/worlds/api";
-import { Effect, Layer, Schema } from "effect";
-import type { Redacted } from "effect";
+import { Effect, Layer, Redacted, Schema } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
+import { fileErasureExternalAnchorLayer } from "./adapters/erasure/file-anchor.ts";
 import { layer as erasureStorageLayer } from "./adapters/object-storage/erasure/s3.ts";
 import type { S3EvidenceConfig } from "./adapters/object-storage/worlds/config.ts";
 import { layer as s3EvidenceLayer } from "./adapters/object-storage/worlds/s3.ts";
@@ -48,6 +52,8 @@ export interface ApplicationConfig {
   readonly authorityDatabaseUrl: Redacted.Redacted;
   /** Dedicated pool/DB for attempt register (outside Closing TX). Defaults to authority URL. */
   readonly erasureAttemptDatabaseUrl?: Redacted.Redacted;
+  /** Absolute path for local-narrow external anchor (ZA-11). */
+  readonly erasureControllerAnchorPath?: string;
   readonly identity: IdentityConfig;
   readonly installation: typeof AuthorityInstallationSchema.Type;
   /**
@@ -133,9 +139,35 @@ export const makeApplication = (config: ApplicationConfig) =>
         maxConnections: 4,
         url: erasureAttemptUrl,
       });
-      const erasureRegister = localErasureAttemptRegisterLayer.pipe(
-        Layer.provide(erasureAttemptPg)
-      );
+      // ZA-11: anchored local-narrow profile only when a separate anchor path is
+      // configured. Same-URL register without an anchor does not claim independence.
+      // Hosted/H-01 full activation remains disabled (restoreAfterErasure:false).
+      const erasureRegister =
+        config.erasureControllerAnchorPath === undefined
+          ? localErasureAttemptRegisterLayer.pipe(
+              Layer.provide(erasureAttemptPg)
+            )
+          : anchoredLocalErasureAttemptRegisterLayer.pipe(
+              Layer.provide(erasureAttemptPg),
+              Layer.provide(
+                fileErasureExternalAnchorLayer(
+                  config.erasureControllerAnchorPath
+                )
+              )
+            );
+      // Separate controller DB must receive attempt+head DDL before register use.
+      // Same-URL installs rely on numbered migrations (F02 / applyErasureMigrations).
+      const ensureSeparateControllerSchema =
+        config.erasureAttemptDatabaseUrl !== undefined &&
+        Redacted.value(config.erasureAttemptDatabaseUrl) !==
+          Redacted.value(config.authorityDatabaseUrl)
+          ? Layer.effectDiscard(
+              applyErasureAttemptSchema().pipe(
+                Effect.provide(erasureAttemptPg),
+                Effect.orDie
+              )
+            )
+          : Layer.empty;
       const erasureCopyCatalog = localErasureCopyCatalogLayer.pipe(
         Layer.provide(authorityPg)
       );
@@ -153,6 +185,7 @@ export const makeApplication = (config: ApplicationConfig) =>
         Layer.succeed(AuthorityInstallation, installation),
         Layer.succeed(DataPolicy, policy),
         hostedAdmissionLayerFor(policy),
+        ensureSeparateControllerSchema,
         erasureRegister,
         erasureCopyCatalog,
         // Honest G-STORAGE-FENCE: Blocked — no fictitious vendor containment.

@@ -12,6 +12,7 @@ import {
   isRestoreEligible,
 } from "../../../../packages/authority/src/knowledge/erasure/copy-catalog.js";
 import { worldDisclosureKey } from "../../../../packages/authority/src/ports/disclosure/keys.js";
+import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import {
   applyControlledCopyCatalogSchema,
   localErasureCopyCatalogLayer,
@@ -52,7 +53,12 @@ const withCatalogRuntime = <A, E, R>(run: Effect.Effect<A, E, R>) =>
       );
       return yield* run.pipe(
         Effect.provide(
-          Layer.mergeAll(erasableConfiguration, database.authority, catalog)
+          Layer.mergeAll(
+            erasableConfiguration,
+            ErasureAttemptRegister.unqualifiedLayer,
+            database.authority,
+            catalog
+          )
         )
       );
     })

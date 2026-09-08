@@ -52,6 +52,7 @@ import { resolveIdentity } from "../knowledge/subject-identity/handlers/resolve.
 import { parseSubjectIdentityBytes } from "../knowledge/subject-identity/request.js";
 import { inspect } from "../knowledge/worlds/inspect.js";
 import { DisclosureFence } from "../ports/disclosure/fence.js";
+import { ErasureAttemptRegister } from "../ports/erasure/attempt-register.js";
 import { ErasureCopyCatalog } from "../ports/erasure/copy-catalog.js";
 import { ErasureObjectInventory } from "../ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../ports/erasure/purge.js";
@@ -491,6 +492,7 @@ export class SemanticExecutor extends Context.Service<
   static readonly layer = SemanticExecutor.layerWithoutEve.pipe(
     Layer.provide(EveJournal.stubMemoryLayer),
     Layer.provide(EveOpenCodeZen.blockedLayer),
+    Layer.provide(ErasureAttemptRegister.unqualifiedLayer),
     Layer.provide(ErasureObjectInventory.unqualifiedLayer),
     Layer.provide(ErasurePurgeStore.unqualifiedLayer),
     Layer.provide(ErasureCopyCatalog.unqualifiedLayer)

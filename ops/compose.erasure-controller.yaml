@@ -1,0 +1,31 @@
+# Local narrow ZA-11 profile — declared rollback separation only.
+# Does NOT qualify H-01 hosted independence, G-OPS inventory, or restoreAfterErasure.
+# Usage (alongside ops/compose.yaml):
+#   docker compose -f ops/compose.yaml -f ops/compose.erasure-controller.yaml up -d
+name: zoen-rebuild
+
+services:
+  postgres-erasure-controller:
+    image: postgres:18.6-trixie@sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280
+    environment:
+      POSTGRES_USER: zoen_erasure_controller
+      POSTGRES_DB: zoen_erasure_controller
+      POSTGRES_PASSWORD: ${ZOEN_ERASURE_CONTROLLER_DB_PASSWORD:?Set the disposable controller database password}
+    ports:
+      - "127.0.0.1:55435:5432"
+    volumes:
+      - erasure_controller_pg_data:/var/lib/postgresql
+      - erasure_controller_anchor:/var/zoen/erasure-controller-anchor
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U zoen_erasure_controller -d zoen_erasure_controller",
+        ]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  erasure_controller_pg_data:
+  erasure_controller_anchor:

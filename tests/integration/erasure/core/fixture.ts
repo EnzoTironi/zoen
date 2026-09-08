@@ -6,6 +6,7 @@ import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
 } from "../../../../packages/authority/src/commit/configuration.js";
+import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
 import {
   DataPolicy,
@@ -51,9 +52,10 @@ export const erasableConfiguration = Layer.merge(
   Layer.succeed(DataPolicy, erasablePolicy)
 );
 
-export const retainedConfiguration = Layer.merge(
+export const retainedConfiguration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
-  Layer.succeed(DataPolicy, retainedPolicy)
+  Layer.succeed(DataPolicy, retainedPolicy),
+  ErasureAttemptRegister.unqualifiedLayer
 );
 
 export const makeContext = Effect.fn("EX32.makeContext")(function* makeContext(

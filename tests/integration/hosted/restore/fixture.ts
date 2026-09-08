@@ -6,6 +6,7 @@ import {
   AuthorityInstallation,
   AuthorityInstallationSchema,
 } from "../../../../packages/authority/src/commit/configuration.js";
+import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import {
   DataPolicy,
   HostedRetainedDataPolicySchema,
@@ -50,14 +51,16 @@ export const localRetainedPolicy = Schema.decodeSync(RetainedDataPolicySchema)({
   retention: "while-pinned",
 });
 
-export const hostedConfiguration = Layer.merge(
+export const hostedConfiguration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
-  Layer.succeed(DataPolicy, hostedRetainedPolicy)
+  Layer.succeed(DataPolicy, hostedRetainedPolicy),
+  ErasureAttemptRegister.unqualifiedLayer
 );
 
-export const localRetainedConfiguration = Layer.merge(
+export const localRetainedConfiguration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
-  Layer.succeed(DataPolicy, localRetainedPolicy)
+  Layer.succeed(DataPolicy, localRetainedPolicy),
+  ErasureAttemptRegister.unqualifiedLayer
 );
 
 export const makeContext = Effect.fn("EX37.makeContext")(function* makeContext(

@@ -5,6 +5,8 @@ import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
+import { requireControllerAlignedContent } from "../../knowledge/erasure/controller-gate.js";
+
 const ProgressAdmission = Schema.Struct({
   erasure_revision: Revision,
   phase: WorldErasurePhase,
@@ -15,10 +17,17 @@ const ProgressAdmission = Schema.Struct({
  * absence predicate), refuse non-Active phases, and return the admitted epoch.
  * Callers bind capture/publication work to this epoch; caller-supplied
  * generations never authorize admission.
+ *
+ * ZA-11: always consults ErasureAttemptRegister controller knowledge via the
+ * shared gate. Restoring a pre-Closing application snapshot cannot reopen
+ * content while the controller still exposes a blocking attempt. Composition
+ * must provide the register (unqualified observeWorld → Clear).
  */
 export const admitWorldContent = Effect.fn(
   "authority.access.admitWorldContent"
 )(function* admitWorldContent(world: WorldRef) {
+  yield* requireControllerAlignedContent(world);
+
   const sql = yield* SqlClient.SqlClient;
   const rows = yield* sql`
       SELECT phase, erasure_revision::text
