@@ -55,7 +55,7 @@ describe("ZA-22 household presentation", () => {
     const view = inspectionView(contestedHouseholdFrame, "household-session");
     expect(view.title).toBe("conta-luz-2026-09");
     expect(view.explanation).toBe(
-      "As listas importadas divergem sobre o mesmo compromisso em um período comparável. Confira ambas as fontes e a interpretação atual."
+      "As fontes divergem em um período comparável. Confira ambas as fontes e a interpretação atual."
     );
     expect(view.statusLabel).toContain("fontes divergentes");
     expect(view.sources.map((source) => source.name)).toStrictEqual([

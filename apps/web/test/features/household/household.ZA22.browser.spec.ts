@@ -187,7 +187,7 @@ test("ZA-22 browser household lists: contested commitment, CLI agreement, correc
     expect(frame.selection).toStrictEqual({ _tag: "unresolved" });
     await expect(
       page.getByText(
-        "As listas importadas divergem sobre o mesmo compromisso em um período comparável. Confira ambas as fontes e a interpretação atual.",
+        "As fontes divergem em um período comparável. Confira ambas as fontes e a interpretação atual.",
         { exact: true }
       )
     ).toBeVisible();
