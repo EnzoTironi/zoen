@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "worlds.v1",
+  "source": {
+    "namespace": "finance.ledger",
+    "externalId": "livro-razao-faturas-2026-09",
+    "label": "Livro-razão / faturas — setembro (reconhecimento)",
+    "revision": "1"
+  },
+  "records": [
+    {
+      "externalId": "fatura-consultoria-2026-09",
+      "predicate": "obligation.amount",
+      "subjectKey": "fatura-consultoria-2026-09",
+      "validTime": {
+        "_tag": "DateInterval",
+        "from": "2026-09-01",
+        "to": "2026-10-01"
+      },
+      "value": {
+        "_tag": "Known",
+        "amount": "3500.00",
+        "currency": "BRL"
+      }
+    },
+    {
+      "externalId": "fatura-software-2026-09",
+      "predicate": "obligation.amount",
+      "subjectKey": "fatura-software-2026-09",
+      "validTime": {
+        "_tag": "DateInterval",
+        "from": "2026-09-01",
+        "to": "2026-10-01"
+      },
+      "value": {
+        "_tag": "Known",
+        "amount": "890.00",
+        "currency": "BRL"
+      }
+    }
+  ]
+}

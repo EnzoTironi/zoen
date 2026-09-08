@@ -23,3 +23,7 @@ The same verbs support the confeitaria / bakery tracer bullet: import customer o
 ## Clinic administrative journey (ZA-24)
 
 The same verbs support the clínica / clinic administrative tracer bullet: import agenda vs fee-schedule lists, `inspect` one appointment `subjectKey`, propose/confirm a scoped correction, `open` permitted evidence, and share/revoke with an ordinary viewer. Example documents live in `docs/product/examples/clinic-appointment-agenda.json` and `clinic-fee-schedule.json`. Product narrative: [docs/product/clinic-administrative-scope.md](../../../../docs/product/clinic-administrative-scope.md). Clinical predicates/fields are not in the admitted wire schema — unsupported inputs fail closed before retrieval; no clinical corpus is sent to models. Do not invent clinic-specific authorization branches or activate Eve.
+
+## Finance record journey (ZA-25)
+
+The same verbs support the finanças / personal or small-business finance tracer bullet: import ledger/invoice vs authorized statement lists, `inspect` one invoice `subjectKey`, propose/confirm/undo a scoped correction, and share/revoke with an ordinary viewer. Example documents live in `docs/product/examples/finance-ledger-invoices.json` and `finance-authorized-statement.json`. Product narrative: [docs/product/finance-record-reconciliation.md](../../../../docs/product/finance-record-reconciliation.md). Recognition (ledger) is never treated as bank settlement; verification stays unverified. Do not invent finance-specific authorization branches, payment rails, or Eve activation.
