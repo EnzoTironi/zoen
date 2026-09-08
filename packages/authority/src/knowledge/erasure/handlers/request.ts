@@ -16,6 +16,10 @@ import {
 } from "../../../commit/mutation.js";
 import type { ErasureAttemptIdentity } from "../../../ports/erasure/attempt-register.js";
 import { ErasureAttemptRegister } from "../../../ports/erasure/attempt-register.js";
+import {
+  ErasureRestoreActivation,
+  linearizeErasureVersusActivation,
+} from "../../../ports/erasure/restore-activation.js";
 import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
 import { requireErasablePolicy } from "../policy.js";
 
@@ -67,6 +71,25 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
     yield* authorizeWorld(context, request.worldRef, "erasure");
     const installation = yield* AuthorityInstallation;
     const register = yield* ErasureAttemptRegister;
+    const restoreActivation = yield* ErasureRestoreActivation;
+    const restoreObservation = yield* restoreActivation.observe;
+    // ZA-13: when a restore quarantine is active, linearize erasure vs activation
+    // so erased scopes never get an admitted window on the restoring epoch.
+    if (restoreObservation.phase !== "NotRestored") {
+      const race =
+        restoreObservation.phase === "Active"
+          ? ({ kind: "erasure-after-drain" } as const)
+          : ({
+              kind: "erasure-admitted-before-drain",
+              suppression: { state: "Registered" },
+            } as const);
+      const order = linearizeErasureVersusActivation(race);
+      if (order.order === "reject-old-writer") {
+        return yield* new Conflict({ code: "CONFLICT" });
+      }
+      // include / defer / block-promotion: proceed with erasure registration so
+      // suppression stays durable; promotion path separately refuses admission.
+    }
     const identity = identityOf(context, request, installation);
     const intention = {
       confirmEntireWorld: true as const,

@@ -99,7 +99,7 @@ export const authorizeWorld = Effect.fn("authority.access.authorizeWorld")(
       return yield* new Blocked({ code: "PROFILE_BLOCKED" });
     }
     if (policy.erasure && capability !== "erasure") {
-      yield* admitWorldContent(world);
+      yield* admitWorldContent(world, context.presence.principalId);
     }
     return access;
   }

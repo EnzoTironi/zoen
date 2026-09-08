@@ -13,6 +13,7 @@ import {
   localErasureAttemptRegisterLayer,
 } from "@zoen/authority/ports/erasure/local-pg";
 import { ErasureObjectWriteSettlement } from "@zoen/authority/ports/erasure/object-write";
+import { ErasureRestoreActivation } from "@zoen/authority/ports/erasure/restore-activation";
 import {
   currentProductEveAdmissionInput,
   isProductEveAdmitted,
@@ -171,6 +172,10 @@ export const makeApplication = (config: ApplicationConfig) =>
       const erasureCopyCatalog = localErasureCopyCatalogLayer.pipe(
         Layer.provide(authorityPg)
       );
+      // ZA-13: ordinary installs use unqualified (NotRestored). Durable
+      // postgresRestoreActivationLayer is available for restore seams/tests;
+      // promotion stays fail-closed — never advertise restoreAfterErasure:true.
+      const restoreActivation = ErasureRestoreActivation.unqualifiedLayer;
       // ZA-17: key alone must not admit stubMemory or live Zen.
       const eveSurface = yield* makeProductEveSurface(
         config.openCodeZen !== undefined
@@ -190,6 +195,7 @@ export const makeApplication = (config: ApplicationConfig) =>
         erasureCopyCatalog,
         // Honest G-STORAGE-FENCE: Blocked — no fictitious vendor containment.
         ErasureObjectWriteSettlement.unqualifiedLayer,
+        restoreActivation,
         eveSurface
       );
       const executor = SemanticExecutor.layerWithoutEve.pipe(

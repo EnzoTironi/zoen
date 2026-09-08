@@ -1,4 +1,6 @@
+import { probeRestoredContentServingReadiness } from "@zoen/authority/access/erasure/restore";
 import { DisclosureFence } from "@zoen/authority/ports/disclosure/fence";
+import { ErasureRestoreActivation } from "@zoen/authority/ports/erasure/restore-activation";
 import { Effect, Layer } from "effect";
 import { HttpRouter, HttpServerResponse } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
@@ -14,7 +16,9 @@ export const readinessRoutes = Layer.effectDiscard(
     const identity = yield* IdentityAuth;
     const storage = yield* S3Health;
     const disclosure = yield* DisclosureFence;
-    const check = Effect.all(
+    // Satisfy Layer context: restore activation is provided by infrastructure.
+    const restoreActivation = yield* ErasureRestoreActivation;
+    const infrastructure = Effect.all(
       [
         checkAuthorityRole.pipe(
           Effect.provideService(SqlClient.SqlClient, sql)
@@ -25,11 +29,20 @@ export const readinessRoutes = Layer.effectDiscard(
       ],
       { concurrency: 4, discard: true }
     ).pipe(Effect.timeout("3 seconds"));
-    yield* check;
+    // Boot-time: infrastructure only. Quarantine must not abort layer construction.
+    yield* infrastructure;
+    /** ZA-13: content-serving readiness via authority probe (no duplicated policy). */
+    const contentServing = probeRestoredContentServingReadiness().pipe(
+      Effect.provideService(ErasureRestoreActivation, restoreActivation)
+    );
+    const readyCheck = Effect.all([infrastructure, contentServing], {
+      concurrency: 2,
+      discard: true,
+    });
     yield* router.add(
       "GET",
       "/ready",
-      check.pipe(
+      readyCheck.pipe(
         Effect.as(HttpServerResponse.jsonUnsafe({ status: "ready" })),
         Effect.orElseSucceed(() =>
           HttpServerResponse.jsonUnsafe(

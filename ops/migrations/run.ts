@@ -198,6 +198,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
     const controllerHead = yield* fs.readFileString(
       fileURLToPath(new URL("017_erasure_controller_head.sql", import.meta.url))
     );
+    const restoreActivation = yield* fs.readFileString(
+      fileURLToPath(new URL("018_restore_activation.sql", import.meta.url))
+    );
     const extension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
@@ -217,6 +220,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
           .pipe(Effect.asVoid),
         "17_erasure_controller_head": sql
           .unsafe(controllerHead)
+          .pipe(Effect.asVoid),
+        "18_restore_activation": sql
+          .unsafe(restoreActivation)
           .pipe(Effect.asVoid),
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),

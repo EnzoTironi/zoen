@@ -115,7 +115,10 @@ it.live(
             ).toStrictEqual([{ n: 1 }]);
             // No stale snapshot may publish after the closed epoch.
             expect(
-              yield* admitWorldContent(world).pipe(Effect.flip)
+              yield* admitWorldContent(
+                world,
+                context.presence.principalId
+              ).pipe(Effect.flip)
             ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
             if (reserved._tag !== "Success") {
               expect(
@@ -183,9 +186,11 @@ it.live(
             fence.shared(member.presence, world, member.deadline)
           ).pipe(Effect.flip)
         ).toMatchObject({ code: "UNAVAILABLE" });
-        expect(yield* admitWorldContent(world).pipe(Effect.flip)).toMatchObject(
-          { code: "NOT_FOUND_OR_DENIED" }
-        );
+        expect(
+          yield* admitWorldContent(world, context.presence.principalId).pipe(
+            Effect.flip
+          )
+        ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
       })
     )
 );
@@ -200,10 +205,14 @@ it.live(
         const bytes = new TextEncoder().encode("epoch-bound");
         const reservation = yield* reserveCapture(context, world, bytes);
         expect(reservation.fence).toBe("0");
-        expect(yield* admitWorldContent(world)).toBe("0");
+        expect(
+          yield* admitWorldContent(world, context.presence.principalId)
+        ).toBe("0");
         const forgedFence = yield* Schema.decodeEffect(Revision)("999");
         expect(forgedFence).not.toBe(reservation.fence);
-        expect(yield* admitWorldContent(world)).toBe(reservation.fence);
+        expect(
+          yield* admitWorldContent(world, context.presence.principalId)
+        ).toBe(reservation.fence);
         // Caller-forged fence cannot match the server-admitted DB row.
         const sqlProbe = yield* SqlClient.SqlClient;
         expect(
@@ -228,9 +237,11 @@ it.live(
           ])}`}, 0)
           ON CONFLICT (subject_key) DO UPDATE
             SET revision = jobs.disclosure_subjects.revision + 1`;
-        expect(yield* admitWorldContent(world).pipe(Effect.flip)).toMatchObject(
-          { code: "NOT_FOUND_OR_DENIED" }
-        );
+        expect(
+          yield* admitWorldContent(world, context.presence.principalId).pipe(
+            Effect.flip
+          )
+        ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
         expect(
           yield* sql`SELECT count(*)::int AS n FROM jobs.disclosure_world_closing
             WHERE world_key = ${worldDisclosureKey(world)}`

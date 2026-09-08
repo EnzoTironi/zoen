@@ -8,9 +8,15 @@ import { NodeServices } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
 import { describe, expect, it } from "@effect/vitest";
 import { admitWorldContent } from "@zoen/authority/access/erasure/content";
+import { admitRestoredWorldAccess } from "@zoen/authority/access/erasure/restore";
 import { AuthorityInstallation } from "@zoen/authority/commit/configuration";
 import { createPersonalWorld } from "@zoen/authority/commit/genesis";
 import { requestWorldErasure } from "@zoen/authority/knowledge/erasure/handlers/request";
+import {
+  currentRestoreActivationQualification,
+  gatesAdmitRestorePromotion,
+  linearizeErasureVersusActivation,
+} from "@zoen/authority/knowledge/erasure/restore-activation";
 import {
   ErasureAttemptRegister,
   blocksWorldContentAdmission,
@@ -20,16 +26,16 @@ import {
   applyErasureAttemptSchema,
 } from "@zoen/authority/ports/erasure/local-pg";
 import {
-  isFullIndependentControllerAdmitted,
-  localNarrowControllerQualification,
-  unqualifiedControllerQualification,
-} from "@zoen/authority/ports/erasure/qualification";
+  ErasureRestoreActivation,
+  memoryRestoreActivationLayer,
+} from "@zoen/authority/ports/erasure/restore-activation";
+import { DataPolicy } from "@zoen/authority/ports/worlds/context";
 import {
   RequestWorldErasure,
   WorldErasureRequested,
 } from "@zoen/contracts/erasure/operations";
 import { CreatePersonalWorld } from "@zoen/contracts/worlds/operations";
-import { OperationId } from "@zoen/contracts/worlds/values";
+import { OperationId, WorldId } from "@zoen/contracts/worlds/values";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Config, Effect, Layer, Redacted, Schema, Stream } from "effect";
 import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
@@ -39,17 +45,17 @@ import { fileErasureExternalAnchorLayer } from "../../../../apps/server/src/adap
 import { makeDisclosureFenceLayer } from "../../../../apps/server/src/adapters/postgres/disclosure/fence.ts";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import { applyErasureMigrations } from "../../../../ops/migrations/run.ts";
-import { erasableConfiguration, makeContext } from "../core/fixture.ts";
+import { erasablePolicy, installation, makeContext } from "../core/fixture.ts";
 
-class Za11ComposeFailure extends Schema.TaggedError<Za11ComposeFailure>()(
-  "Za11ComposeFailure",
+class Za13ComposeFailure extends Schema.TaggedError<Za13ComposeFailure>()(
+  "Za13ComposeFailure",
   { detail: Schema.String }
 ) {}
 
 const repoRoot = fileURLToPath(new URL("../../../..", import.meta.url));
 
 const profile = (url: Redacted.Redacted, name: string) => ({
-  applicationName: `zoen-za11-${name}`,
+  applicationName: `zoen-za13-${name}`,
   maxConnections: 4,
   url,
 });
@@ -61,7 +67,7 @@ const text = <E, R>(stream: Stream.Stream<Uint8Array, E, R>) =>
     Effect.map((parts) => parts.join(""))
   );
 
-const composeExec = Effect.fn("ZA11.composeExec")(function* composeExec(
+const composeExec = Effect.fn("ZA13.composeExec")(function* composeExec(
   ...args: string[]
 ) {
   const spawner = yield* ChildProcessSpawner.ChildProcessSpawner;
@@ -81,7 +87,7 @@ const composeExec = Effect.fn("ZA11.composeExec")(function* composeExec(
     { concurrency: "unbounded" }
   );
   if (result.exitCode !== 0) {
-    return yield* new Za11ComposeFailure({
+    return yield* new Za13ComposeFailure({
       detail: `compose exec failed (${String(result.exitCode)}): ${result.stderr || result.stdout}`,
     });
   }
@@ -155,12 +161,8 @@ const erasureRequest = (worldRef: WorldRef, operationId: string) =>
     worldRef,
   });
 
-/**
- * ZA-11 local narrow seam: application store, separately owned controller store,
- * and file anchor outside both DB rollback units. Proves only the declared
- * separation — not whole-host / H-01 hosted independence.
- */
-const withIndependentControllerRuntime = <A, E, R>(
+const withRestoreActivationRuntime = <A, E, R>(
+  rights: ReadonlyMap<string, "active" | "revoked" | "unknown">,
   run: (handles: {
     readonly appAdminUrl: string;
     readonly controllerAdminUrl: string;
@@ -169,8 +171,8 @@ const withIndependentControllerRuntime = <A, E, R>(
   Effect.gen(function* configure() {
     const adminUrl = yield* Config.redacted("ZOEN_TEST_DATABASE_URL");
     const suffix = randomBytes(12).toString("hex");
-    const controllerDb = `za11_controller_${suffix}`;
-    const controllerRole = `za11_controller_${suffix}`;
+    const controllerDb = `za13_controller_${suffix}`;
+    const controllerRole = `za13_controller_${suffix}`;
     const controllerPassword = randomBytes(32).toString("hex");
     const controllerRoleUrl = (() => {
       const url = new URL(Redacted.value(adminUrl));
@@ -185,14 +187,12 @@ const withIndependentControllerRuntime = <A, E, R>(
       return url.href;
     })();
     const anchorDir = yield* Effect.tryPromise(() =>
-      mkdtemp(path.join(tmpdir(), "za11-anchor-"))
+      mkdtemp(path.join(tmpdir(), "za13-anchor-"))
     );
     const anchorPath = path.join(anchorDir, "admitted-sequence");
     yield* Effect.tryPromise(() => writeFile(anchorPath, "0\n", "utf-8"));
 
     const adminLayer = PgClient.layer(profile(adminUrl, "admin"));
-    // Owner of the disposable controller DB — use plain PgClient (EX31), not
-    // makeWorldsPostgresLayer (rejects CREATE-on-database owners).
     const controllerPg = PgClient.layer(
       profile(controllerRoleUrl, "controller")
     );
@@ -201,6 +201,7 @@ const withIndependentControllerRuntime = <A, E, R>(
       Layer.provide(fileErasureExternalAnchorLayer(anchorPath)),
       Layer.provide(NodeServices.layer)
     );
+    const restoreActivation = memoryRestoreActivationLayer({ rights });
 
     return yield* Effect.scoped(
       Effect.gen(function* own() {
@@ -231,7 +232,7 @@ const withIndependentControllerRuntime = <A, E, R>(
         return yield* withWorldsDatabase(
           (database) => {
             const fence = makeDisclosureFenceLayer({
-              applicationName: "zoen-za11-disclosure",
+              applicationName: "zoen-za13-disclosure",
               maxConnections: 4,
               url: database.urls.authority,
             });
@@ -246,9 +247,11 @@ const withIndependentControllerRuntime = <A, E, R>(
             return run({ appAdminUrl, controllerAdminUrl }).pipe(
               Effect.provide(
                 Layer.mergeAll(
-                  erasableConfiguration,
+                  Layer.succeed(AuthorityInstallation, installation),
+                  Layer.succeed(DataPolicy, erasablePolicy),
                   database.authority,
                   register,
+                  restoreActivation,
                   fence,
                   NodeServices.layer
                 )
@@ -267,88 +270,130 @@ const withIndependentControllerRuntime = <A, E, R>(
     ).pipe(Effect.provide(adminLayer));
   });
 
-describe("ZA-11 independent erasure controller (local narrow)", () => {
-  it("qualification stays fail-closed for H-01/G-OPS hosted independence", () => {
-    const unqualified = unqualifiedControllerQualification();
-    const local = localNarrowControllerQualification();
-    expect(isFullIndependentControllerAdmitted(unqualified)).toBeFalsy();
-    expect(isFullIndependentControllerAdmitted(local)).toBeFalsy();
-    expect(local.localNarrowRollbackSeparation).toBeTruthy();
-    expect(local.restoreAfterErasure).toBeFalsy();
-    expect(local.h01Approved).toBeFalsy();
+describe("ZA-13 restore activation after erasure", () => {
+  it("qualification stays fail-closed; Object Lock restoreAfterErasure Unknown", () => {
+    const qualification = currentRestoreActivationQualification();
+    expect(gatesAdmitRestorePromotion(qualification)).toBeFalsy();
+    expect(qualification.restoreAfterErasure).toBeFalsy();
+    expect(qualification.objectLockRestoreAfterErasure).toBe("Unknown");
+    expect(qualification.h01).toBe("Blocked");
+    expect(qualification.gOps).toBe("Unknown");
+    expect(qualification.gStorageFence).toBe("Blocked");
   });
 
   it.live(
-    "ZA-11-01 restore pre-Closing application backup keeps controller attempt and closes content",
-    () =>
-      withIndependentControllerRuntime((handles) =>
-        Effect.gen(function* appRestore() {
-          const context = yield* makeContext();
-          const created = yield* createPersonalWorld(
-            context,
-            yield* Schema.decodeEffect(CreatePersonalWorld)({
-              input: {},
-              operation: "CreatePersonalWorld",
-              operationId: randomUUID(),
-              purpose: "personal-records",
-              schemaVersion: "worlds.v1",
-            })
-          );
-          expect(
-            yield* admitWorldContent(
-              created.worldRef,
-              context.presence.principalId
-            )
-          ).toBe("0");
+    "ZA-13-01 restore old backup after erasure keeps erased closed; revoked rights denied",
+    () => {
+      const viewerId = randomUUID();
+      const survivingWorldId = Schema.decodeSync(WorldId)(randomUUID());
+      return withRestoreActivationRuntime(
+        new Map([[`live:${survivingWorldId}:${viewerId}`, "revoked"]]),
+        (handles) =>
+          Effect.gen(function* scenario() {
+            const owner = yield* makeContext();
+            const created = yield* createPersonalWorld(
+              owner,
+              yield* Schema.decodeEffect(CreatePersonalWorld)({
+                input: {},
+                operation: "CreatePersonalWorld",
+                operationId: randomUUID(),
+                purpose: "personal-records",
+                schemaVersion: "worlds.v1",
+              })
+            );
+            expect(
+              yield* admitWorldContent(
+                created.worldRef,
+                owner.presence.principalId
+              )
+            ).toBe("0");
 
-          const preClosingDump = yield* dumpDatabase(
-            handles.appAdminUrl,
-            `za11-app-pre-${randomBytes(8).toString("hex")}`
-          );
+            const preDump = yield* dumpDatabase(
+              handles.appAdminUrl,
+              `za13-app-pre-${randomBytes(8).toString("hex")}`
+            );
 
-          const closed = yield* requestWorldErasure(
-            context,
-            yield* erasureRequest(created.worldRef, randomUUID())
-          ).pipe(
-            Effect.flatMap(Schema.decodeUnknownEffect(WorldErasureRequested))
-          );
-          expect(closed).toMatchObject({
-            attemptExternalState: "Confirmed",
-            phase: "Closing",
-            restoreAfterErasure: false,
-          });
-          expect(
-            yield* admitWorldContent(
-              created.worldRef,
-              context.presence.principalId
-            ).pipe(Effect.flip)
-          ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
+            const closed = yield* requestWorldErasure(
+              owner,
+              yield* erasureRequest(created.worldRef, randomUUID())
+            ).pipe(
+              Effect.flatMap(Schema.decodeUnknownEffect(WorldErasureRequested))
+            );
+            expect(closed).toMatchObject({
+              attemptExternalState: "Confirmed",
+              phase: "Closing",
+              restoreAfterErasure: false,
+            });
 
-          const register = yield* ErasureAttemptRegister;
-          expect((yield* register.observeWorld(created.worldRef)).state).toBe(
-            "Confirmed"
-          );
+            const register = yield* ErasureAttemptRegister;
+            expect((yield* register.observeWorld(created.worldRef)).state).toBe(
+              "Confirmed"
+            );
 
-          yield* restoreDatabase(handles.appAdminUrl, preClosingDump);
+            yield* restoreDatabase(handles.appAdminUrl, preDump);
 
-          expect((yield* register.observeWorld(created.worldRef)).state).toBe(
-            "Confirmed"
-          );
-          expect(
-            yield* admitWorldContent(
-              created.worldRef,
-              context.presence.principalId
-            ).pipe(Effect.flip)
-          ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
-        })
-      )
+            const activation = yield* ErasureRestoreActivation;
+            const started = yield* activation.beginQuarantinedRestore({
+              backupGenerationId: (yield* AuthorityInstallation).generationId,
+            });
+            expect(started.phase).toBe("Quarantined");
+            expect(started.deploymentWriterId.length).toBeGreaterThan(0);
+
+            // Erased scope stays unavailable after restore (controller Confirmed).
+            expect(
+              yield* admitWorldContent(
+                created.worldRef,
+                owner.presence.principalId
+              ).pipe(Effect.flip)
+            ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
+
+            // Revoked principal cannot access surviving content under current rights.
+            const survivingRef = {
+              realm: "live" as const,
+              worldId: survivingWorldId,
+            };
+            expect(
+              yield* activation.observeCurrentRights(survivingRef, viewerId)
+            ).toBe("revoked");
+            expect(
+              yield* Effect.exit(
+                admitRestoredWorldAccess(survivingRef, viewerId)
+              )
+            ).toMatchObject({ _tag: "Failure" });
+
+            expect(
+              yield* Effect.exit(activation.requireContentServing)
+            ).toMatchObject({ _tag: "Failure" });
+            expect(
+              yield* Effect.exit(activation.requireCredentialPromotion)
+            ).toMatchObject({ _tag: "Failure" });
+
+            yield* activation.enterPreparing(started.preparationId);
+            expect(
+              yield* Effect.exit(
+                activation.requirePromotion(started.preparationId, {
+                  catalogCoverage: "BoundedComplete",
+                  controllerSuppression: { state: "Clear" },
+                  erasureRace: {
+                    kind: "erasure-admitted-before-drain",
+                    suppression: { state: "Clear" },
+                  },
+                  principalRights: "active",
+                  writersSettled: true,
+                })
+              )
+            ).toMatchObject({ _tag: "Failure" });
+            expect((yield* activation.observe).phase).toBe("PromotionBlocked");
+          })
+      );
+    }
   );
 
   it.live(
-    "ZA-11-02 restored controller snapshot / old signed head is rejected against current anchor",
+    "ZA-13-02 controller Unknown / rights unknown → no content-serving or credentials",
     () =>
-      withIndependentControllerRuntime((handles) =>
-        Effect.gen(function* controllerRestore() {
+      withRestoreActivationRuntime(new Map(), (handles) =>
+        Effect.gen(function* unknown() {
           const context = yield* makeContext();
           const created = yield* createPersonalWorld(
             context,
@@ -367,7 +412,7 @@ describe("ZA-11 independent erasure controller (local narrow)", () => {
 
           const controllerDump = yield* dumpDatabase(
             handles.controllerAdminUrl,
-            `za11-controller-${randomBytes(8).toString("hex")}`
+            `za13-controller-${randomBytes(8).toString("hex")}`
           );
 
           const otherContext = yield* makeContext();
@@ -392,39 +437,62 @@ describe("ZA-11 independent erasure controller (local narrow)", () => {
           const stale = yield* register.observeWorld(created.worldRef);
           expect(stale.state).toBe("Unknown");
           expect(blocksWorldContentAdmission(stale)).toBeTruthy();
+
+          const activation = yield* ErasureRestoreActivation;
+          const started = yield* activation.beginQuarantinedRestore({
+            backupGenerationId: null,
+          });
+          const rights = yield* activation.observeCurrentRights(
+            created.worldRef,
+            context.presence.principalId
+          );
+          expect(rights).toBe("unknown");
+
           expect(
             yield* admitWorldContent(
               created.worldRef,
               context.presence.principalId
             ).pipe(Effect.flip)
           ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
-
-          const installed = yield* AuthorityInstallation;
-          const registerExit = yield* Effect.exit(
-            register.register(
-              {
-                deploymentEpoch: `cell:${installed.cellId}:epoch:${installed.cellEpoch}`,
-                operationId: Schema.decodeSync(OperationId)(randomUUID()),
-                principalId: context.presence.principalId,
-                worldRef: created.worldRef,
-              },
-              {
-                confirmEntireWorld: true,
-                expectedErasureRevision: null,
-                policyVersion: "worlds-local-erasable-v1",
-              }
+          expect(
+            yield* Effect.exit(activation.requireContentServing)
+          ).toMatchObject({ _tag: "Failure" });
+          expect(
+            yield* Effect.exit(activation.requireCredentialPromotion)
+          ).toMatchObject({ _tag: "Failure" });
+          expect(
+            yield* Effect.exit(
+              admitRestoredWorldAccess(
+                created.worldRef,
+                context.presence.principalId
+              )
             )
-          );
-          expect(registerExit._tag).toBe("Failure");
+          ).toMatchObject({ _tag: "Failure" });
+
+          yield* activation.enterPreparing(started.preparationId);
+          expect(
+            yield* Effect.exit(
+              activation.requirePromotion(started.preparationId, {
+                catalogCoverage: "Unknown",
+                controllerSuppression: stale,
+                erasureRace: {
+                  kind: "controller-unknown-or-stale",
+                  suppression: stale,
+                },
+                principalRights: rights,
+                writersSettled: false,
+              })
+            )
+          ).toMatchObject({ _tag: "Failure" });
         })
       )
   );
 
   it.live(
-    "ZA-11-03 crash between register and local decision leaves Registered blocked without invented Abort",
+    "ZA-13-03 erasure race / old writer resume → one permitted order, no erased window",
     () =>
-      withIndependentControllerRuntime(() =>
-        Effect.gen(function* crashWindow() {
+      withRestoreActivationRuntime(new Map(), () =>
+        Effect.gen(function* race() {
           const context = yield* makeContext();
           const created = yield* createPersonalWorld(
             context,
@@ -438,33 +506,73 @@ describe("ZA-11 independent erasure controller (local narrow)", () => {
           );
           const register = yield* ErasureAttemptRegister;
           const installed = yield* AuthorityInstallation;
-          const operationId = Schema.decodeSync(OperationId)(randomUUID());
-          const identity = {
-            deploymentEpoch: `cell:${installed.cellId}:epoch:${installed.cellEpoch}`,
-            operationId,
-            principalId: context.presence.principalId,
-            worldRef: created.worldRef,
-          };
-          const registered = yield* register.register(identity, {
-            confirmEntireWorld: true,
-            expectedErasureRevision: null,
-            policyVersion: "worlds-local-erasable-v1",
-          });
+          const registered = yield* register.register(
+            {
+              deploymentEpoch: `cell:${installed.cellId}:epoch:${installed.cellEpoch}`,
+              operationId: Schema.decodeSync(OperationId)(randomUUID()),
+              principalId: context.presence.principalId,
+              worldRef: created.worldRef,
+            },
+            {
+              confirmEntireWorld: true,
+              expectedErasureRevision: null,
+              policyVersion: "worlds-local-erasable-v1",
+            }
+          );
           expect(registered.state).toBe("Registered");
 
-          const observed = yield* register.inspect(identity);
-          expect(observed.state).toBe("Registered");
-          expect(observed.state).not.toBe("Aborted");
+          const activation = yield* ErasureRestoreActivation;
+          const started = yield* activation.beginQuarantinedRestore({
+            backupGenerationId: null,
+          });
+          yield* activation.enterPreparing(started.preparationId);
 
-          const worldObs = yield* register.observeWorld(created.worldRef);
-          expect(worldObs.state).toBe("Registered");
-          expect(blocksWorldContentAdmission(worldObs)).toBeTruthy();
+          expect(
+            linearizeErasureVersusActivation({
+              kind: "erasure-admitted-before-drain",
+              suppression: { state: "Registered" },
+            })
+          ).toStrictEqual({
+            contentAdmitted: false,
+            order: "include-erasure-in-cut",
+          });
+          expect(
+            linearizeErasureVersusActivation({ kind: "erasure-after-drain" })
+          ).toStrictEqual({
+            oldEpochAdmitted: false,
+            order: "defer-erasure-to-new-epoch",
+          });
+          expect(
+            linearizeErasureVersusActivation({
+              kind: "old-writer-resume-after-seal",
+            })
+          ).toStrictEqual({
+            contentAdmitted: false,
+            order: "reject-old-writer",
+          });
+
           expect(
             yield* admitWorldContent(
               created.worldRef,
               context.presence.principalId
             ).pipe(Effect.flip)
           ).toMatchObject({ code: "NOT_FOUND_OR_DENIED" });
+          expect((yield* activation.observe).phase).toBe("Preparing");
+          expect(
+            yield* Effect.exit(activation.requireContentServing)
+          ).toMatchObject({ _tag: "Failure" });
+          expect(
+            yield* Effect.exit(
+              activation.requirePromotion(started.preparationId, {
+                catalogCoverage: "BoundedComplete",
+                controllerSuppression: { state: "Registered" },
+                erasureRace: { kind: "old-writer-resume-after-seal" },
+                principalRights: "active",
+                writersSettled: true,
+              })
+            )
+          ).toMatchObject({ _tag: "Failure" });
+          expect((yield* activation.observe).phase).toBe("PromotionBlocked");
         })
       )
   );

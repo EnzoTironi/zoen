@@ -80,6 +80,7 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
   const erasureControllerAnchorPath = yield* Config.string(
     "ZOEN_ERASURE_CONTROLLER_ANCHOR_PATH"
   ).pipe(Config.option);
+  // ZA-13: no configuration key may advertise restoreAfterErasure before H-01/G-OPS/G-STORAGE-FENCE qualify.
   const application: ApplicationConfig = {
     authorityDatabaseUrl: yield* Config.redacted("ZOEN_AUTHORITY_DATABASE_URL"),
     identity: {

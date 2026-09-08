@@ -6,6 +6,7 @@ import { Effect, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { requireControllerAlignedContent } from "../../knowledge/erasure/controller-gate.js";
+import { requireRestoreAlignedContent } from "../../knowledge/erasure/restore-activation.js";
 
 const ProgressAdmission = Schema.Struct({
   erasure_revision: Revision,
@@ -22,11 +23,16 @@ const ProgressAdmission = Schema.Struct({
  * shared gate. Restoring a pre-Closing application snapshot cannot reopen
  * content while the controller still exposes a blocking attempt. Composition
  * must provide the register (unqualified observeWorld → Clear).
+ *
+ * ZA-13: ErasureRestoreActivation gates restored installs. Quarantine denies
+ * content until promotion; unqualified restoreAfterErasure stays false.
  */
 export const admitWorldContent = Effect.fn(
   "authority.access.admitWorldContent"
-)(function* admitWorldContent(world: WorldRef) {
+)(function* admitWorldContent(world: WorldRef, principalId: string) {
   yield* requireControllerAlignedContent(world);
+  // ZA-13: restored installs stay quarantined until promotion; rights independent of login.
+  yield* requireRestoreAlignedContent(world, principalId);
 
   const sql = yield* SqlClient.SqlClient;
   const rows = yield* sql`

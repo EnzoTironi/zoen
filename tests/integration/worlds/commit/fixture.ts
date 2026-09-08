@@ -10,6 +10,7 @@ import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports
 import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
 import { ErasureObjectInventory } from "../../../../packages/authority/src/ports/erasure/inventory.js";
 import { ErasurePurgeStore } from "../../../../packages/authority/src/ports/erasure/purge.js";
+import { ErasureRestoreActivation } from "../../../../packages/authority/src/ports/erasure/restore-activation.js";
 import {
   DataPolicy,
   DataPolicySchema,
@@ -42,6 +43,7 @@ export const configuration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
   Layer.succeed(DataPolicy, policy),
   ErasureAttemptRegister.unqualifiedLayer,
+  ErasureRestoreActivation.unqualifiedLayer,
   ErasureCopyCatalog.unqualifiedLayer,
   ErasureObjectInventory.unqualifiedLayer,
   ErasurePurgeStore.unqualifiedLayer

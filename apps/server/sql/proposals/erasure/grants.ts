@@ -7,6 +7,7 @@ export const grantErasureRole = Effect.fn("grantErasureRole")(
     const sql = yield* SqlClient.SqlClient;
     yield* sql`GRANT USAGE ON SCHEMA erasure_attempt TO ${sql(authorityRole)}`;
     yield* sql`GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA erasure_attempt TO ${sql(authorityRole)}`;
+    // ZA-13 restore activation rows live in erasure_attempt (covered by ALL TABLES).
     yield* sql`GRANT SELECT, INSERT, UPDATE ON authority.world_erasure_progress, authority.world_erasure_receipts TO ${sql(authorityRole)}`;
     yield* sql`GRANT SELECT, INSERT, UPDATE ON authority.controlled_copy_coverage, authority.controlled_copy_entries TO ${sql(authorityRole)}`;
     const role = authorityRole.replaceAll('"', "");
