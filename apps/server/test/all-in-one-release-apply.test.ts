@@ -7,6 +7,7 @@ import type { ReleaseAlignStep } from "../src/all-in-one-release-align.ts";
 import {
   applyHostedReleaseAlign,
   HostedReleaseAlignError,
+  runHostedReleaseRestartSeams,
 } from "../src/all-in-one-release-apply.ts";
 
 const encodeJson = Schema.encodeEffect(Schema.fromJsonString(Schema.Unknown));
@@ -79,6 +80,69 @@ describe("applyHostedReleaseAlign workflow", () => {
         expect(yield* fs.readFileString(installationPath)).toBe(
           installationText
         );
+      })
+    ).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, NodePath.layer)))
+  );
+
+  it.effect("applies admitted tip digest upgrade when flag set", () =>
+    withTempRoot(({ installationPath, releaseFile, runtimeEnvPath }) =>
+      Effect.gen(function* assertAdmittedUpgrade() {
+        const fs = yield* FileSystem.FileSystem;
+        const oldBytes = new TextEncoder().encode('{"format":"old"}\n');
+        const newBytes = new TextEncoder().encode('{"format":"new"}\n');
+        const oldDigest = digestReleaseBytes(oldBytes);
+        const newDigest = digestReleaseBytes(newBytes);
+        const installed = {
+          installation: {
+            cellEpoch: "1",
+            cellId: "11111111-1111-4111-8111-111111111111",
+            generationId: "22222222-2222-4222-8222-222222222222",
+            releaseDigest: oldDigest,
+          },
+          policy: samplePolicy,
+        };
+        yield* fs.writeFileString(
+          installationPath,
+          yield* encodeJson(installed),
+          { mode: 0o600 }
+        );
+        yield* fs.writeFileString(
+          runtimeEnvPath,
+          'ZOEN_AUTHORITY_DATABASE_URL="postgresql://auth@127.0.0.1/zoen"\n',
+          { mode: 0o600 }
+        );
+        yield* fs.writeFile(releaseFile, newBytes);
+
+        const reconciled: string[] = [];
+        const result = yield* applyHostedReleaseAlign({
+          admitHostedReleaseUpgrade: true,
+          encodeInstallation: (value) => encodeJson(value).pipe(Effect.orDie),
+          fs,
+          installationPath,
+          reconcileWorlds: (step) =>
+            Effect.sync(() => {
+              reconciled.push(step.releaseDigest);
+            }),
+          releaseFile,
+          runtimeEnvPath,
+        });
+        expect(reconciled).toStrictEqual([newDigest]);
+        expect(result).toStrictEqual({
+          event: "all-in-one.bootstrap.release-aligned",
+          from: oldDigest,
+          to: newDigest,
+        });
+        const rewritten = yield* fs.readFileString(installationPath);
+        const parsed = yield* Schema.decodeEffect(
+          Schema.fromJsonString(
+            Schema.Struct({
+              installation: Schema.Struct({
+                releaseDigest: Schema.String,
+              }),
+            })
+          )
+        )(rewritten);
+        expect(parsed.installation.releaseDigest).toBe(newDigest);
       })
     ).pipe(Effect.provide(Layer.mergeAll(NodeFileSystem.layer, NodePath.layer)))
   );
@@ -196,5 +260,64 @@ describe("applyHostedReleaseAlign workflow", () => {
       ).pipe(
         Effect.provide(Layer.mergeAll(NodeFileSystem.layer, NodePath.layer))
       )
+  );
+
+  it.effect(
+    "runs migrate before align for admitted upgrade orchestration",
+    () =>
+      Effect.gen(function* assertUpgradeOrder() {
+        const order: string[] = [];
+        yield* runHostedReleaseRestartSeams({
+          align: () =>
+            Effect.sync(() => {
+              order.push("align-release");
+            }),
+          beginUpgrade: () =>
+            Effect.sync(() => {
+              order.push("begin-upgrade");
+            }),
+          completeUpgrade: () =>
+            Effect.sync(() => {
+              order.push("complete-upgrade");
+            }),
+          migrate: () =>
+            Effect.sync(() => {
+              order.push("migrate-schema");
+            }),
+          releaseUpgrade: true,
+        });
+        expect(order).toStrictEqual([
+          "begin-upgrade",
+          "migrate-schema",
+          "align-release",
+          "complete-upgrade",
+        ]);
+      })
+  );
+
+  it.effect("runs align before migrate for same-release orchestration", () =>
+    Effect.gen(function* assertSameReleaseOrder() {
+      const order: string[] = [];
+      yield* runHostedReleaseRestartSeams({
+        align: () =>
+          Effect.sync(() => {
+            order.push("align-release");
+          }),
+        beginUpgrade: () =>
+          Effect.sync(() => {
+            order.push("begin-upgrade");
+          }),
+        completeUpgrade: () =>
+          Effect.sync(() => {
+            order.push("complete-upgrade");
+          }),
+        migrate: () =>
+          Effect.sync(() => {
+            order.push("migrate-schema");
+          }),
+        releaseUpgrade: false,
+      });
+      expect(order).toStrictEqual(["align-release", "migrate-schema"]);
+    })
   );
 });
