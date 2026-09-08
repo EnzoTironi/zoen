@@ -52,7 +52,9 @@ export class DisclosureFence extends Context.Service<
     readonly shared: (
       presence: VerifiedPresence,
       world: WorldRef,
-      deadline: typeof Instant.Type
+      deadline: typeof Instant.Type,
+      /** Erasure HTTP must emit Closing/Inspect/Purge after the World barrier. */
+      options?: { readonly allowAfterWorldClosing?: boolean }
     ) => Effect.Effect<DisclosurePermit, Expired | Unavailable, Scope.Scope>;
     readonly exclusiveSession: (
       presence: VerifiedPresence,
