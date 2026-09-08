@@ -12,11 +12,11 @@ import {
   isRestoreEligible,
 } from "../../../../packages/authority/src/knowledge/erasure/copy-catalog.js";
 import { worldDisclosureKey } from "../../../../packages/authority/src/ports/disclosure/keys.js";
+import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import {
   applyControlledCopyCatalogSchema,
   localErasureCopyCatalogLayer,
 } from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.js";
-import { ErasureAttemptRegister } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import { ErasureCopyCatalog } from "../../../../packages/authority/src/ports/erasure/copy-catalog.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 import {
