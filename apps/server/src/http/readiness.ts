@@ -37,7 +37,9 @@ export const readinessRoutes = Layer.effectDiscard(
       const qualification = yield* restoreActivation.qualification;
       // Object Lock never elevates restoreAfterErasure (stays Unknown).
       if (qualification.objectLockRestoreAfterErasure !== "Unknown") {
-        return yield* Effect.fail("restore-after-erasure-not-qualified" as const);
+        return yield* Effect.fail(
+          "restore-after-erasure-not-qualified" as const
+        );
       }
       const frozen = currentRestoreActivationQualification();
       if (
