@@ -11,3 +11,7 @@ Import reads unchanged UTF-8 document text through `--file` or stdin, including 
 The HTTP transport uses `HttpApiClient.make(ApplicationApi)` and the real EX09 identity endpoints. There are no authority, SQL, or storage imports. Four local tests exercise result/error formatting, URL validation, raw input boundaries, and session permissions/origin binding. They do not prove server behavior.
 
 Acceptance remains pending real process integration against EX10 and independent review by worker-2/root. The installed Effect CLI declaration references a stripped internal type; the separately reviewed root dependency patch is also required for strict compilation.
+
+## Bakery order journey (ZA-23)
+
+The same verbs support the confeitaria / bakery tracer bullet: import customer order vs shop production lists, `inspect` one order `subjectKey`, propose/confirm/undo a scoped correction, and share/revoke with an ordinary viewer. Example documents live in `docs/product/examples/bakery-order-list-*.json`. Product narrative: [docs/product/bakery-order-reconciliation.md](../../../../docs/product/bakery-order-reconciliation.md). Recipe grams/stock quantities are not admitted currencies — unsupported inputs fail closed. Do not invent bakery-specific authorization branches.

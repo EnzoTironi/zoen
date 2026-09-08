@@ -1052,6 +1052,14 @@
       "scope": "ZA-20 records textProfileAccepted for durable grounded text conversation; journal settle/replay + fail-closed missing-key proofs. Evidence grounding (ZA-19/#107 merged) is wired true; tip keeps textProfileAccepted false without G-PROVIDER live proof. Live G-PROVIDER still required for product Eve admission. Does NOT conclude D05, cloud voice, or multi-provider.",
       "verified_for_profile": true,
       "notes": "verified_for_profile ONLY for narrow text-profile acceptance. Product Eve stays unadmitted until ZA-19 grounding + key + journal. See docs/verification/eve-grounded-text.md."
+    },
+    {
+      "id": "za23-bakery-order-reconciliation",
+      "state": "implemented_pending_independent_review",
+      "profile": "bakery / confeitaria order reconciliation (ZA-23)",
+      "scope": "ZA-23 delivers one bakery order-commitment reconciliation journey through real web/CLI and shared SemanticExecutor: contested comparable order quotes (ZA-23-01), unsupported recipe grams/stock notes not coerced into currency (ZA-23-02), concurrent stale consent + hidden viewer staff context + revoke (ZA-23-03). Reuses worlds import/inspect/correct/undo and sharing; no Eve touch; no packs. Does NOT claim ICP complete or activated because this PR merged.",
+      "verified_for_profile": false,
+      "notes": "Local unit + bakery integration seam required before merge evidence. Browser/CLI acceptance under apps/web/test/features/bakery when ZOEN_TEST_WEB_URL is live. See docs/product/bakery-order-reconciliation.md."
     }
   ],
   "verified_deliveries": [],
