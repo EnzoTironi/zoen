@@ -221,11 +221,12 @@ const program = Effect.scoped(
           disableLogger: true,
         })
       );
-      yield* fs.writeFileString(
-        `${file}.ready`,
-        json({ origin, pid: process.pid }),
-        { mode: 0o600 }
-      );
+      const readyPath = `${file}.ready`;
+      const readyTemp = `${readyPath}.tmp`;
+      yield* fs.writeFileString(readyTemp, json({ origin, pid: process.pid }), {
+        mode: 0o600,
+      });
+      yield* fs.rename(readyTemp, readyPath);
       return yield* Effect.never;
     }).pipe(
       Effect.provide(
