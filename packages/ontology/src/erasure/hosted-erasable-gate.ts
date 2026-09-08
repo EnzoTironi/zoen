@@ -13,20 +13,20 @@ import { Blocked } from "@zoen/contracts/worlds/errors";
 import type { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Option } from "effect";
 
-import { AuthorityInstallation } from "../../commit/configuration.js";
+import { AuthorityInstallation } from "../commit/configuration.js";
 import {
   HostedErasableAdmission,
   gatesAdmitFullHostedErased,
-} from "../../hosted/erasable/admission.js";
+} from "../hosted/erasable/admission.js";
 import type {
   HostedErasableAdmissionPurpose,
   HostedErasableCandidate,
-} from "../../hosted/erasable/admission.js";
-import { HostedErasableObservedIdentity } from "../../hosted/erasable/observed-identity.js";
-import { ErasureCopyCatalog } from "../../ports/erasure/copy-catalog.js";
-import { ErasureObjectInventory } from "../../ports/erasure/inventory.js";
-import { ErasurePurgeStore } from "../../ports/erasure/purge.js";
-import type { DataPolicySchema } from "../../ports/worlds/context.js";
+} from "../hosted/erasable/admission.js";
+import { HostedErasableObservedIdentity } from "../hosted/erasable/observed-identity.js";
+import { ErasureCopyCatalog } from "../ports/erasure/copy-catalog.js";
+import { ErasureObjectInventory } from "../ports/erasure/inventory.js";
+import { ErasurePurgeStore } from "../ports/erasure/purge.js";
+import type { DataPolicySchema } from "../ports/worlds/context.js";
 import { isHostedErasablePolicy } from "./policy.js";
 
 export const requireHostedErasableAdmissionForPolicy = Effect.fn(
