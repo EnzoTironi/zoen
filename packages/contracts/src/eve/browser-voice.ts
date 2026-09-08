@@ -36,6 +36,7 @@ export const EveBrowserVoiceUnavailableReason = Schema.Literals([
   "permission-denied",
   "recognition-error",
   "synthesis-missing",
+  "synthesis-error",
   "cloud-speech-disabled",
 ]);
 export type EveBrowserVoiceUnavailableReason =

@@ -59,6 +59,8 @@ export const buildVoiceTextTurnRequest = (
 export interface CreateBrowserVoiceSessionOptions {
   readonly lang?: string;
   readonly submitTextTurn: VoiceSessionDeps["submitTextTurn"];
+  /** Invokes CancelConversationTurn for an in-flight AcceptConversationTurn. */
+  readonly cancelSubmittedTurn?: VoiceSessionDeps["cancelSubmittedTurn"];
   readonly listenOnce?: VoiceSessionDeps["listenOnce"];
   readonly readCapabilities?: VoiceSessionDeps["readCapabilities"];
   readonly speakText?: VoiceSessionDeps["speakText"];
@@ -75,6 +77,9 @@ export const createBrowserVoiceSession = (
     readCapabilities: options.readCapabilities ?? readWebSpeechCapabilities,
     speakText: options.speakText ?? speakText,
     submitTextTurn: options.submitTextTurn,
+    ...(options.cancelSubmittedTurn === undefined
+      ? {}
+      : { cancelSubmittedTurn: options.cancelSubmittedTurn }),
     ...(options.lang === undefined ? {} : { lang: options.lang }),
   };
   return createVoiceSession(deps);

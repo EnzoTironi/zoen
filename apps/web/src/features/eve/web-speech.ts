@@ -254,12 +254,16 @@ export const speakText = (
         resolve();
       });
     };
-    utterance.onerror = () => {
+    utterance.onerror = (event: { readonly error?: string }) => {
       finish(() => {
+        const detail =
+          typeof event.error === "string" && event.error.length > 0
+            ? event.error
+            : "unknown";
         reject(
           new EveWebSpeechError({
-            message: "eve-web-speech: speechSynthesis error",
-            reason: "synthesis-missing",
+            message: `eve-web-speech: speechSynthesis playback error ${detail}`,
+            reason: "synthesis-error",
           })
         );
       });

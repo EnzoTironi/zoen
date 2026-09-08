@@ -1,5 +1,9 @@
 import { describe, expect, it } from "@effect/vitest";
 import { browserVoiceTextTurnBinding } from "@zoen/contracts/eve/browser-voice";
+import type {
+  EveBrowserVoiceControlId,
+  EveBrowserVoicePhase,
+} from "@zoen/contracts/eve/browser-voice";
 import type { EveWebSpeechCapabilities } from "@zoen/contracts/eve/values";
 import { WorldRef } from "@zoen/contracts/worlds/values";
 import { Effect, Schema } from "effect";
@@ -8,7 +12,10 @@ import {
   buildVoiceTextTurnRequest,
   createBrowserVoiceSession,
 } from "../../../src/features/eve/voice-pipeline.ts";
-import { createVoiceSession } from "../../../src/features/eve/voice-session.ts";
+import {
+  browserVoiceControlsFor,
+  createVoiceSession,
+} from "../../../src/features/eve/voice-session.ts";
 import { EveWebSpeechError } from "../../../src/features/eve/web-speech.ts";
 
 const capable: EveWebSpeechCapabilities = {
@@ -44,6 +51,20 @@ const controlEnabled = (
   >["controls"],
   id: string
 ): boolean => controls.find((row) => row.id === id)?.enabled === true;
+
+const controlRow = (
+  phase: EveBrowserVoicePhase,
+  transcript: string,
+  id: EveBrowserVoiceControlId
+) => {
+  const row = browserVoiceControlsFor(phase, transcript).find(
+    (control) => control.id === id
+  );
+  if (row === undefined) {
+    throw new Error(`missing control ${id}`);
+  }
+  return row;
+};
 
 describe("ZA-21 browser voice session adapter", () => {
   it("ZA-21-01a: explicit start yields reviewable transcript and visible controls", async () => {
@@ -365,6 +386,274 @@ describe("ZA-21 browser voice session adapter", () => {
       cloud: false,
       grants: false,
       profile: "eve-opencode-zen-v1",
+    });
+  });
+
+  it("ZA-21-01c: browserVoiceControlsFor maps every phase/transcript case directly", () => {
+    const phases: readonly EveBrowserVoicePhase[] = [
+      "idle",
+      "unavailable",
+      "recording",
+      "reviewing",
+      "submitting",
+      "speaking",
+      "cancelled",
+    ];
+    const mapped = phases.flatMap((phase) => [
+      {
+        case: `${phase}/start`,
+        row: controlRow(phase, "", "start-speech"),
+      },
+      {
+        case: `${phase}/cancel`,
+        row: controlRow(phase, "", "cancel"),
+      },
+      {
+        case: `${phase}/edit`,
+        row: controlRow(phase, "ok", "edit-transcript"),
+      },
+      {
+        case: `${phase}/confirm-empty`,
+        row: controlRow(phase, "", "confirm-transcript"),
+      },
+      {
+        case: `${phase}/confirm-text`,
+        row: controlRow(phase, "ok", "confirm-transcript"),
+      },
+      {
+        case: `${phase}/stop`,
+        row: controlRow(phase, "", "stop-speech"),
+      },
+    ]);
+    expect(
+      mapped.map((entry) => ({
+        case: entry.case,
+        enabled: entry.row.enabled,
+        id: entry.row.id,
+        visible: entry.row.visible,
+      }))
+    ).toStrictEqual(
+      phases.flatMap((phase) => [
+        {
+          case: `${phase}/start`,
+          enabled: phase === "idle" || phase === "cancelled",
+          id: "start-speech",
+          visible: phase !== "unavailable",
+        },
+        {
+          case: `${phase}/cancel`,
+          enabled:
+            phase === "recording" ||
+            phase === "reviewing" ||
+            phase === "submitting" ||
+            phase === "speaking",
+          id: "cancel",
+          visible: true,
+        },
+        {
+          case: `${phase}/edit`,
+          enabled: phase === "reviewing",
+          id: "edit-transcript",
+          visible: phase === "reviewing" || phase === "submitting",
+        },
+        {
+          case: `${phase}/confirm-empty`,
+          enabled: false,
+          id: "confirm-transcript",
+          visible: phase === "reviewing" || phase === "submitting",
+        },
+        {
+          case: `${phase}/confirm-text`,
+          enabled: phase === "reviewing",
+          id: "confirm-transcript",
+          visible: phase === "reviewing" || phase === "submitting",
+        },
+        {
+          case: `${phase}/stop`,
+          enabled: phase === "speaking",
+          id: "stop-speech",
+          visible: phase === "speaking" || phase === "idle",
+        },
+      ])
+    );
+  });
+
+  it("ZA-21-03c: cancel during submit invokes domain CancelConversationTurn dependency", async () => {
+    let releaseSubmit!: () => void;
+    const submitGate = new Promise<void>((resolve) => {
+      releaseSubmit = resolve;
+    });
+    let domainCancels = 0;
+    let submitStarted = false;
+    let resolveStarted!: () => void;
+    const startedGate = new Promise<void>((resolve) => {
+      resolveStarted = resolve;
+    });
+
+    const session = createVoiceSession({
+      cancelSubmittedTurn: () => {
+        domainCancels += 1;
+      },
+      listenOnce: () => Promise.resolve("cancel me after submit"),
+      readCapabilities: () => capable,
+      speakText: () => Promise.reject(new Error("must not speak after cancel")),
+      submitTextTurn: ({ signal }) =>
+        new Promise((resolve, reject) => {
+          submitStarted = true;
+          resolveStarted();
+          if (signal.aborted) {
+            reject(new DOMException("Aborted", "AbortError"));
+            return;
+          }
+          signal.addEventListener(
+            "abort",
+            () => {
+              reject(new DOMException("Aborted", "AbortError"));
+            },
+            { once: true }
+          );
+          void submitGate.then(() => {
+            resolve({
+              phase: "Settled",
+              visibleText: "should not speak",
+            });
+          });
+        }),
+    });
+
+    await session.startSpeech();
+    const confirmPromise = session.confirmTranscript();
+    await startedGate;
+    expect(submitStarted).toBeTruthy();
+    const mid = session.cancel();
+    releaseSubmit();
+    const done = await confirmPromise;
+
+    expect({
+      domainCancels,
+      donePhase: done.phase,
+      midPhase: mid.phase,
+      settled: done.settledSpeakText,
+    }).toStrictEqual({
+      domainCancels: 1,
+      donePhase: "cancelled",
+      midPhase: "cancelled",
+      settled: null,
+    });
+  });
+
+  it("ZA-21-03d: superseded recognition cannot mark a newer recording cancelled", async () => {
+    let firstAbortHandler: (() => void) | undefined;
+    let firstResolve!: (value: string) => void;
+    const firstListen = new Promise<string>((resolve) => {
+      firstResolve = resolve;
+    });
+    let listenCalls = 0;
+
+    const session = createVoiceSession({
+      listenOnce: ({ signal }) => {
+        listenCalls += 1;
+        if (listenCalls === 1) {
+          return new Promise((resolve, reject) => {
+            if (signal.aborted) {
+              reject(new DOMException("Aborted", "AbortError"));
+              return;
+            }
+            firstAbortHandler = () => {
+              reject(new DOMException("Aborted", "AbortError"));
+            };
+            signal.addEventListener("abort", firstAbortHandler, { once: true });
+            void firstListen.then(resolve);
+          });
+        }
+        return Promise.resolve("second transcript");
+      },
+      readCapabilities: () => capable,
+      speakText: () => Promise.resolve(),
+      submitTextTurn: () =>
+        Promise.resolve({ phase: "Settled", visibleText: "n/a" }),
+    });
+
+    const firstStart = session.startSpeech();
+    await Promise.resolve();
+    const second = await session.startSpeech();
+    // Stale first abort must not overwrite the second recording/review.
+    firstAbortHandler?.();
+    firstResolve("stale-first");
+    const stale = await firstStart;
+    const finalSnap = session.snapshot();
+
+    expect({
+      finalPhase: finalSnap.phase,
+      finalTranscript: finalSnap.transcript,
+      listenCalls,
+      secondPhase: second.phase,
+      secondTranscript: second.transcript,
+      staleCancelled: stale.phase === "cancelled",
+    }).toStrictEqual({
+      finalPhase: "reviewing",
+      finalTranscript: "second transcript",
+      listenCalls: 2,
+      secondPhase: "reviewing",
+      secondTranscript: "second transcript",
+      staleCancelled: false,
+    });
+  });
+
+  it("ZA-21-03e: capability-failed restart stops prior recognition first", async () => {
+    let caps: EveWebSpeechCapabilities = capable;
+    let listenCalls = 0;
+    let releaseListen!: () => void;
+    const listenGate = new Promise<void>((resolve) => {
+      releaseListen = resolve;
+    });
+
+    const session = createVoiceSession({
+      listenOnce: ({ signal }) => {
+        listenCalls += 1;
+        return new Promise((resolve, reject) => {
+          if (signal.aborted) {
+            reject(new DOMException("Aborted", "AbortError"));
+            return;
+          }
+          signal.addEventListener(
+            "abort",
+            () => {
+              reject(new DOMException("Aborted", "AbortError"));
+            },
+            { once: true }
+          );
+          void listenGate.then(() => {
+            resolve("should-not-restore-reviewing");
+          });
+        });
+      },
+      readCapabilities: () => caps,
+      speakText: () => Promise.resolve(),
+      submitTextTurn: () =>
+        Promise.resolve({ phase: "Settled", visibleText: "n/a" }),
+    });
+
+    const first = session.startSpeech();
+    await Promise.resolve();
+    expect(session.snapshot().phase).toBe("recording");
+    caps = missing;
+    const second = await session.startSpeech();
+    releaseListen();
+    const stale = await first;
+
+    expect({
+      listenCalls,
+      secondPhase: second.phase,
+      secondReason: second.unavailableReason,
+      stalePhase: stale.phase,
+      transcript: session.snapshot().transcript,
+    }).toStrictEqual({
+      listenCalls: 1,
+      secondPhase: "unavailable",
+      secondReason: "api-missing",
+      stalePhase: "unavailable",
+      transcript: "",
     });
   });
 });

@@ -71,4 +71,17 @@ describe("ZA-21 browser voice contracts + server policy", () => {
       "recognition-error"
     );
   });
+
+  it("distinguishes synthesis-missing from synthesis-error in the reason union", () => {
+    const reasons = [
+      "api-missing",
+      "permission-denied",
+      "recognition-error",
+      "synthesis-missing",
+      "synthesis-error",
+      "cloud-speech-disabled",
+    ] as const;
+    expect(new Set(reasons)).toContain("synthesis-missing");
+    expect(new Set(reasons)).toContain("synthesis-error");
+  });
 });

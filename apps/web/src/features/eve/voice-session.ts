@@ -37,6 +37,11 @@ export interface VoiceSessionDeps {
     readonly phase: "Accepted" | "Cancelled" | "Interrupted" | "Settled";
     readonly visibleText: string;
   }>;
+  /**
+   * Domain cancel for a turn already handed to AcceptConversationTurn.
+   * Transport AbortSignal alone is not CancelConversationTurn.
+   */
+  readonly cancelSubmittedTurn?: () => void | Promise<void>;
   readonly cancelSpeechOutput?: () => void;
   readonly lang?: string;
 }
@@ -55,7 +60,8 @@ export interface VoiceSessionSnapshot {
   readonly unavailableReason: EveBrowserVoiceUnavailableReason | null;
 }
 
-const controlsFor = (
+/** Pure control chrome mapping — exported for direct table-driven unit tests. */
+export const browserVoiceControlsFor = (
   phase: EveBrowserVoicePhase,
   transcript: string
 ): readonly EveBrowserVoiceControl[] => {
@@ -111,11 +117,14 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
   let cancelled = false;
   let listening = false;
   let runAbort: AbortController | null = null;
+  let runGeneration = 0;
+  /** True while AcceptConversationTurn may still be in flight on the server. */
+  let submitInFlight = false;
 
   const snapshot = (): VoiceSessionSnapshot => ({
     cancelled,
     capabilities,
-    controls: controlsFor(phase, transcript),
+    controls: browserVoiceControlsFor(phase, transcript),
     // Continuous / hidden background capture is never armed.
     hiddenListenerActive: false,
     listening,
@@ -126,6 +135,9 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
     unavailableReason,
   });
 
+  const ownsRun = (generation: number, controller: AbortController): boolean =>
+    runGeneration === generation && runAbort === controller;
+
   const stopActive = () => {
     runAbort?.abort();
     runAbort = null;
@@ -133,7 +145,28 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
     deps.cancelSpeechOutput?.();
   };
 
+  const requestDomainCancelIfSubmitting = () => {
+    if (!submitInFlight) {
+      return;
+    }
+    submitInFlight = false;
+    const cancelTurn = deps.cancelSubmittedTurn;
+    if (cancelTurn === undefined) {
+      return;
+    }
+    void (async () => {
+      try {
+        await cancelTurn();
+      } catch {
+        // Domain cancel is best-effort at the browser boundary; local abort already ran.
+      }
+    })();
+  };
+
   const startSpeech = async (): Promise<VoiceSessionSnapshot> => {
+    // Always release any prior run before capability checks so a stale
+    // recognition cannot later restore reviewing over an unavailable start.
+    stopActive();
     capabilities = deps.readCapabilities();
     if (!voiceRecognitionReady(capabilities)) {
       phase = "unavailable";
@@ -147,7 +180,6 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
       return snapshot();
     }
 
-    stopActive();
     cancelled = false;
     settledSpeakText = null;
     transcript = "";
@@ -155,6 +187,8 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
     phase = "recording";
     listening = true;
     const controller = new AbortController();
+    runGeneration += 1;
+    const generation = runGeneration;
     runAbort = controller;
 
     try {
@@ -162,6 +196,9 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
         signal: controller.signal,
         ...(deps.lang === undefined ? {} : { lang: deps.lang }),
       });
+      if (!ownsRun(generation, controller)) {
+        return snapshot();
+      }
       if (controller.signal.aborted || cancelled) {
         phase = "cancelled";
         listening = false;
@@ -172,6 +209,9 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
       listening = false;
       return snapshot();
     } catch (error) {
+      if (!ownsRun(generation, controller)) {
+        return snapshot();
+      }
       listening = false;
       if (isAbortError(error) || cancelled) {
         phase = "cancelled";
@@ -213,16 +253,24 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
       return snapshot();
     }
 
+    stopActive();
     const controller = new AbortController();
+    runGeneration += 1;
+    const generation = runGeneration;
     runAbort = controller;
     cancelled = false;
     phase = "submitting";
+    submitInFlight = true;
 
     try {
       const settled = await deps.submitTextTurn({
         signal: controller.signal,
         userText,
       });
+      if (!ownsRun(generation, controller)) {
+        return snapshot();
+      }
+      submitInFlight = false;
       if (controller.signal.aborted || cancelled) {
         phase = "cancelled";
         settledSpeakText = null;
@@ -246,6 +294,9 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
         signal: controller.signal,
         ...(deps.lang === undefined ? {} : { lang: deps.lang }),
       });
+      if (!ownsRun(generation, controller)) {
+        return snapshot();
+      }
       if (controller.signal.aborted || cancelled) {
         phase = "cancelled";
         return snapshot();
@@ -253,6 +304,10 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
       phase = "idle";
       return snapshot();
     } catch (error) {
+      if (!ownsRun(generation, controller)) {
+        return snapshot();
+      }
+      submitInFlight = false;
       if (isAbortError(error) || cancelled) {
         phase = "cancelled";
         settledSpeakText = null;
@@ -273,8 +328,14 @@ export const createVoiceSession = (deps: VoiceSessionDeps) => {
   };
 
   const cancel = (): VoiceSessionSnapshot => {
+    const wasSubmitting = phase === "submitting" || submitInFlight;
     cancelled = true;
     stopActive();
+    if (wasSubmitting) {
+      requestDomainCancelIfSubmitting();
+    } else {
+      submitInFlight = false;
+    }
     // If we were only reviewing, drop pending submit; no settle after cancel.
     if (
       phase === "recording" ||
