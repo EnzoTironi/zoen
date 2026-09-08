@@ -158,7 +158,7 @@ it.live(
         });
 
         const operationId = randomUUID();
-        const requested = yield* cli([
+        const requestArgs = [
           "request-world-erasure",
           "--world-id",
           worldRef.worldId,
@@ -167,7 +167,17 @@ it.live(
           "--confirm-entire-world",
           "--operation-id",
           operationId,
-        ]);
+        ] as const;
+        // Closing fail-closes while grant disclosure pending remains (ZA-09);
+        // retry the same operation id until writers ACK, matching the grant loop.
+        let requested = yield* cli(requestArgs);
+        for (
+          let attempt = 0;
+          attempt < 10 && requested.exitCode !== 0;
+          attempt += 1
+        ) {
+          requested = yield* cli(requestArgs);
+        }
         expect(requested.exitCode).toBe(0);
         expect(requested.stderr).toBe("");
         const closing = Schema.decodeUnknownSync(WorldErasureRequested)(

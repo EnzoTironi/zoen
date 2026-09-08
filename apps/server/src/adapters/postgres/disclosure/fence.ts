@@ -148,7 +148,7 @@ export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
             epochSendState.set(proven.writerEpoch, "retired");
             yield* remaining(deadline);
           }),
-        shared: (presence, world, deadline) =>
+        shared: (presence, world, deadline, options) =>
           Effect.gen(function* registerDisclosure() {
             const worldKey = worldDisclosureKey(world);
             const sessionKey = sessionDisclosureKey(presence);
@@ -174,7 +174,8 @@ export const makeDisclosureFenceLayer = (config: WorldsPostgresConfig) =>
               worldKey,
               writerEpoch,
               sessionKey,
-              membershipKey
+              membershipKey,
+              options?.allowAfterWorldClosing === true
             ).pipe(
               Effect.interruptible,
               Effect.timeoutOrElse({

@@ -22,10 +22,24 @@ export const registerPending = (
   worldKey: string,
   writerEpoch: string,
   sessionKey: string,
-  membershipKey: string
+  membershipKey: string,
+  allowAfterWorldClosing = false
 ) =>
   connection.transaction(
     Effect.gen(function* insertPending() {
+      // Content/sharing emitters fail closed after Closing; erasure responses may
+      // still emit (prepare already inserted the durable World barrier).
+      if (!allowAfterWorldClosing) {
+        const worldClosed = yield* connection
+          .statement(
+            "SELECT EXISTS (SELECT FROM jobs.disclosure_world_closing WHERE world_key = $1) AS found",
+            [worldKey]
+          )
+          .pipe(Effect.flatMap(found));
+        if (worldClosed) {
+          return yield* new Unavailable({ code: "UNAVAILABLE" });
+        }
+      }
       const closing = yield* connection
         .statement(
           "SELECT EXISTS (SELECT FROM jobs.disclosure_session_closing WHERE session_key = $1) AS found",

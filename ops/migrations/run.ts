@@ -5,7 +5,10 @@ import { Effect, FileSystem } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { grantDisclosureRole } from "../../apps/server/sql/proposals/disclosure/grants.ts";
-import { grantErasureRole } from "../../apps/server/sql/proposals/erasure/grants.ts";
+import {
+  grantContentBarrierAdmit,
+  grantErasureRole,
+} from "../../apps/server/sql/proposals/erasure/grants.ts";
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantWorldsRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
 import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
@@ -93,15 +96,28 @@ export const applyDisclosureMigrations = Effect.fn(
       "6_durable_disclosure": sql.unsafe(disclosure).pipe(Effect.asVoid),
     }),
   });
-  // Apply orphaned-recovery DDL without migrator id 12 here: Effect migrator skips
-  // any id <= latest, so recording 12 before 7/8 would skip identity events.
+  // Apply progress / orphaned-recovery / world-closing DDL without migrator ids
+  // 10/12/14 here: Effect migrator skips any id <= latest, so recording them
+  // before 7/8 would skip identity events. Erasure migrator records 10/12/14
+  // after 7–11. Capture admission (ZA-09) needs progress DDL+grants on retained
+  // installs too (F02: schema without enabling erasure).
+  const progress = yield* fs.readFileString(
+    fileURLToPath(new URL("010_world_erasure_closing.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(progress));
   const recovery = yield* fs.readFileString(
     fileURLToPath(
       new URL("012_orphaned_disclosure_recovery.sql", import.meta.url)
     )
   );
   yield* sql.withTransaction(sql.unsafe(recovery));
+  const worldClosing = yield* fs.readFileString(
+    fileURLToPath(new URL("014_world_closing_barrier.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(worldClosing));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
+  // Progress admit grants for capture barrier on retained paths (F02).
+  yield* sql.withTransaction(grantContentBarrierAdmit(roles.authority));
   return [...base, ...durable];
 });
 
@@ -153,6 +169,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
     const policyIds = yield* fs.readFileString(
       fileURLToPath(new URL("013_za03_policy_profile_ids.sql", import.meta.url))
     );
+    const worldClosing = yield* fs.readFileString(
+      fileURLToPath(new URL("014_world_closing_barrier.sql", import.meta.url))
+    );
     const extension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "10_world_erasure_closing": sql.unsafe(closing).pipe(Effect.asVoid),
@@ -161,10 +180,18 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
           .unsafe(recovery)
           .pipe(Effect.asVoid),
         "13_za03_policy_profile_ids": sql.unsafe(policyIds).pipe(Effect.asVoid),
+        "14_world_closing_barrier": sql
+          .unsafe(worldClosing)
+          .pipe(Effect.asVoid),
         "9_erasure_attempt_register": sql.unsafe(attempt).pipe(Effect.asVoid),
       }),
     });
-    yield* sql.withTransaction(grantErasureRole(roles.authority));
+    yield* sql.withTransaction(
+      Effect.gen(function* grantErasureAndWorldBarrier() {
+        yield* grantErasureRole(roles.authority);
+        yield* grantDisclosureRole(roles.authority);
+      })
+    );
     return [...base, ...extension];
   }
 );

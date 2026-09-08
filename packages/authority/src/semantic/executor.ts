@@ -379,7 +379,11 @@ export class SemanticExecutor extends Context.Service<
                 .shared(
                   prepared.context.presence,
                   prepared.worldRef,
-                  prepared.context.deadline
+                  prepared.context.deadline,
+                  // prepare may already have inserted disclosure_world_closing.
+                  family === "erasure"
+                    ? { allowAfterWorldClosing: true }
+                    : undefined
                 )
                 .pipe(Scope.provide(requestScope)),
               (held) =>

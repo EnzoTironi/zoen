@@ -7,6 +7,7 @@ import { Config, Effect, FileSystem, Redacted } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
 import { grantDisclosureRole } from "../../../../sql/proposals/disclosure/grants.ts";
+import { grantContentBarrierAdmit } from "../../../../sql/proposals/erasure/grants.ts";
 import { grantWorldsRoles } from "../../../../sql/proposals/worlds/grants.ts";
 import { makeWorldsPostgresLayer } from "../../../../src/adapters/postgres/worlds/postgres.ts";
 
@@ -167,6 +168,29 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
             )
           ).pipe(Effect.provide(NodeFileSystem.layer));
           yield* sql.withTransaction(sql.unsafe(disclosureRecovery));
+          const worldClosing = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/014_world_closing_barrier.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(worldClosing));
+          // ZA-09 capture admission: retained DBs need progress DDL + admit grants (F02).
+          const worldErasureProgress = yield* FileSystem.FileSystem.use((fs) =>
+            fs.readFileString(
+              fileURLToPath(
+                new URL(
+                  "../../../../../../ops/migrations/010_world_erasure_closing.sql",
+                  import.meta.url
+                )
+              )
+            )
+          ).pipe(Effect.provide(NodeFileSystem.layer));
+          yield* sql.withTransaction(sql.unsafe(worldErasureProgress));
           const identityBasis = yield* FileSystem.FileSystem.use((fs) =>
             fs.readFileString(
               fileURLToPath(
@@ -191,6 +215,7 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
           yield* sql.withTransaction(sql.unsafe(identityEvents));
           yield* grantWorldsRoles(names);
           yield* grantDisclosureRole(names.authority);
+          yield* grantContentBarrierAdmit(names.authority);
           if (misconfiguration === "public-create") {
             yield* sql`GRANT CREATE ON SCHEMA public TO ${sql(names.authority)}`;
           }
