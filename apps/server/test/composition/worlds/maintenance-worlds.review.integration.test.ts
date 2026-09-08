@@ -5,11 +5,8 @@ import { ImportEvidence } from "@zoen/contracts/worlds/operations";
 import { Digest } from "@zoen/contracts/worlds/values";
 import { AuthorityInstallation } from "@zoen/ontology/commit/configuration";
 import { createPersonalWorld } from "@zoen/ontology/commit/genesis";
-import {
-  reserveCapture,
-  stageCapture,
-} from "@zoen/ontology/evidence/worlds/capture";
-import { importEvidence } from "@zoen/ontology/evidence/worlds/import";
+import { reserveCapture, stageCapture } from "@zoen/ontology/evidence/capture";
+import { importEvidence } from "@zoen/ontology/evidence/import";
 import {
   CaptureId,
   EvidenceObjectStore,

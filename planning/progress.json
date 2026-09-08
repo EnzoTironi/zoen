@@ -242,7 +242,7 @@
     },
     {
       "task": "EX22",
-      "path": "apps/server/test/identity/worlds/**",
+      "path": "apps/server/test/identity/**",
       "owner": "worker-2",
       "integration_owner": "root",
       "reason": "Compor a cerca real do banco de autoridade nos fixtures standalone de identidade; sem adapter opcional ou falso."
@@ -326,7 +326,7 @@
     },
     {
       "task": "EX32",
-      "path": "packages/ontology/src/knowledge/erasure/**",
+      "path": "packages/ontology/src/erasure/**",
       "owner": "worker-1",
       "integration_owner": "root",
       "reason": "Closing local semântico; sem purge até gates do freeze."

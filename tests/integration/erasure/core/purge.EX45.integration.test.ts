@@ -13,10 +13,10 @@ import {
 } from "../../../../packages/contracts/src/erasure/operations.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
 import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
-import { inspectWorldErasure } from "../../../../packages/ontology/src/knowledge/erasure/handlers/inspect.js";
-import { purgeWorldContent } from "../../../../packages/ontology/src/knowledge/erasure/handlers/purge.js";
-import { requestWorldErasure } from "../../../../packages/ontology/src/knowledge/erasure/handlers/request.js";
-import { applyWorldErasureSchema } from "../../../../packages/ontology/src/knowledge/erasure/schema.js";
+import { inspectWorldErasure } from "../../../../packages/ontology/src/erasure/handlers/inspect.js";
+import { purgeWorldContent } from "../../../../packages/ontology/src/erasure/handlers/purge.js";
+import { requestWorldErasure } from "../../../../packages/ontology/src/erasure/handlers/request.js";
+import { applyWorldErasureSchema } from "../../../../packages/ontology/src/erasure/schema.js";
 import {
   applyControlledCopyCatalogSchema,
   localErasureCopyCatalogLayer,

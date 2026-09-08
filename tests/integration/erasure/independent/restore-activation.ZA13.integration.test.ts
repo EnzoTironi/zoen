@@ -18,12 +18,12 @@ import { admitWorldContent } from "@zoen/ontology/access/erasure/content";
 import { admitRestoredWorldAccess } from "@zoen/ontology/access/erasure/restore";
 import { AuthorityInstallation } from "@zoen/ontology/commit/configuration";
 import { createPersonalWorld } from "@zoen/ontology/commit/genesis";
-import { requestWorldErasure } from "@zoen/ontology/knowledge/erasure/handlers/request";
+import { requestWorldErasure } from "@zoen/ontology/erasure/handlers/request";
 import {
   currentRestoreActivationQualification,
   gatesAdmitRestorePromotion,
   linearizeErasureVersusActivation,
-} from "@zoen/ontology/knowledge/erasure/restore-activation";
+} from "@zoen/ontology/erasure/restore-activation";
 import {
   ErasureAttemptRegister,
   blocksWorldContentAdmission,

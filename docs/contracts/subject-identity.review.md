@@ -48,7 +48,7 @@ Os identificadores de itens imutáveis usados por UndoEffect precisam estar vinc
 
 ## Consumidores realmente examinados
 
-Foram lidos `ports/worlds/basis.ts`, `commit/guards.ts`, `knowledge/worlds/inspect.ts`, `knowledge/worlds/selection.ts` e os consumidores `knowledge/corrections/{frame,propose,answer,undo,projection,scope}.ts`. O cut atual tem cinco domínios; identities não vazio é rejeitado pelos guards. Inspect literal retém sua base privada e a leitura histórica retorna o payload preservado. Correções carregam Frame/Case antes do commit em caminhos relevantes, portanto um decoder que aceite só a nova versão quebraria replay antes de chegar ao guard de compatibilidade. O candidato G agora exige auditar precisamente essa ordem.
+Foram lidos `ports/worlds/basis.ts`, `commit/guards.ts`, `knowledge/inspect.ts`, `knowledge/selection.ts` e os consumidores `knowledge/corrections/{frame,propose,answer,undo,projection,scope}.ts`. O cut atual tem cinco domínios; identities não vazio é rejeitado pelos guards. Inspect literal retém sua base privada e a leitura histórica retorna o payload preservado. Correções carregam Frame/Case antes do commit em caminhos relevantes, portanto um decoder que aceite só a nova versão quebraria replay antes de chegar ao guard de compatibilidade. O candidato G agora exige auditar precisamente essa ordem.
 
 A consulta histórica se limitou aos registros específicos C024/C025 e ZN-0038/0039/0040/SPEC-006 referenciados pelo candidato; não conferiu autoridade a código antigo, pacote ontology, clínica ou DDL. A proposta continua sujeita às invariantes atuais e à ratificação do integrador.
 

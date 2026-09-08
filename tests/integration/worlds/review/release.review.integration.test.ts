@@ -73,7 +73,7 @@ it.live(
           Effect.provideService(ConfigProvider.ConfigProvider, provider)
         );
         expect(yield* load.pipe(Effect.as("loaded"))).toBe("loaded");
-        const target = `${root}packages/ontology/dist/knowledge/worlds/selection.js`;
+        const target = `${root}packages/ontology/dist/knowledge/selection.js`;
         const original = yield* fs.readFileString(target);
         yield* Effect.acquireRelease(
           fs.writeFileString(

@@ -34,8 +34,8 @@ import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
-import { createAccount } from "../../../../apps/server/test/identity/worlds/http.js";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/database.js";
+import { createAccount } from "../../../../apps/server/test/identity/http.js";
 import { makeProcessConfiguration } from "../../worlds-corrections-independent/process-configuration.ts";
 import { configuration } from "../../worlds/commit/fixture.js";
 

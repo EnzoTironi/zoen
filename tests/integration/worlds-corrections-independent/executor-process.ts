@@ -4,7 +4,7 @@ import { Config, Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import type * as StorageModule from "../../../apps/server/src/adapters/object-storage/worlds/s3.ts";
 import type * as DisclosureModule from "../../../apps/server/src/adapters/postgres/disclosure/fence.ts";
 import type * as PostgresModule from "../../../apps/server/src/adapters/postgres/worlds/postgres.ts";
-import type * as IdentityModule from "../../../apps/server/src/identity/worlds/identity.ts";
+import type * as IdentityModule from "../../../apps/server/src/identity/identity.ts";
 import type * as InstallationModule from "../../../packages/ontology/src/commit/configuration.ts";
 import type * as ErasureRegisterModule from "../../../packages/ontology/src/ports/erasure/attempt-register.ts";
 import type * as PolicyModule from "../../../packages/ontology/src/ports/worlds/context.ts";
@@ -107,7 +107,7 @@ const program = Effect.scoped(
       try: (): Promise<typeof IdentityModule> =>
         import(
           new URL(
-            "../../../apps/server/dist/identity/worlds/identity.js",
+            "../../../apps/server/dist/identity/identity.js",
             import.meta.url
           ).href
         ),

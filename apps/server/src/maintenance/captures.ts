@@ -4,7 +4,7 @@ import { AuthorityInstallation } from "@zoen/ontology/commit/configuration";
 import {
   CaptureSweepCursor,
   sweepExpiredCaptures,
-} from "@zoen/ontology/evidence/worlds/cleanup";
+} from "@zoen/ontology/evidence/cleanup";
 import { DataPolicy } from "@zoen/ontology/ports/worlds/context";
 import { Effect, Layer, Schedule, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";

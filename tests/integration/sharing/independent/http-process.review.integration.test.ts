@@ -206,21 +206,26 @@ for (const mode of ["open", "inspect", "retained"] as const) {
                           })
                           .pipe(Effect.orDie)
                       );
-                      yield* waitUntil(fs.exists(`${file}.ready`));
-                      const ready = yield* fs
+                      const ReadySchema = Schema.Struct({
+                        origin: Schema.String,
+                        pid: Schema.Int,
+                      });
+                      const readReady = fs
                         .readFileString(`${file}.ready`)
                         .pipe(
                           Effect.flatMap(
                             Schema.decodeEffect(
-                              Schema.fromJsonString(
-                                Schema.Struct({
-                                  origin: Schema.String,
-                                  pid: Schema.Int,
-                                })
-                              )
+                              Schema.fromJsonString(ReadySchema)
                             )
                           )
                         );
+                      yield* waitUntil(
+                        readReady.pipe(
+                          Effect.as(true),
+                          Effect.orElseSucceed(() => false)
+                        )
+                      );
+                      const ready = yield* readReady;
                       return { ...ready, child, prefix };
                     });
                     const controller = yield* spawn("controller");

@@ -12,7 +12,7 @@ import {
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantWorldsRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
 import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
-import { grantIdentityRole } from "../../apps/server/src/identity/worlds/grants.ts";
+import { grantIdentityRole } from "../../apps/server/src/identity/grants.ts";
 
 /** Called only by the migration owner, never by the server's runtime pool. */
 export const applyWorldsBaselineMigrations = Effect.fn(

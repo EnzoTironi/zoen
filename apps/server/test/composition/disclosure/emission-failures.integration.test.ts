@@ -18,7 +18,7 @@ import { configuration } from "../../../../../tests/integration/worlds/commit/fi
 import { makePrivateJsonEmitter } from "../../../src/http/disclosure.ts";
 import { ResponseSecurityHeaders } from "../../../src/http/security.ts";
 import { withStorage } from "../../adapters/object-storage/worlds/fixture.ts";
-import { createAccount } from "../../identity/worlds/http.ts";
+import { createAccount } from "../../identity/http.ts";
 
 const bytes = (value: unknown) =>
   new TextEncoder().encode(

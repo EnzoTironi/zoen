@@ -13,10 +13,10 @@ import {
   ProposeCorrection,
 } from "../../../../packages/contracts/src/worlds/operations.js";
 import { createPersonalWorld } from "../../../../packages/ontology/src/commit/genesis.js";
-import { importEvidence } from "../../../../packages/ontology/src/evidence/worlds/import.js";
+import { importEvidence } from "../../../../packages/ontology/src/evidence/import.js";
 import { answerQuestion } from "../../../../packages/ontology/src/knowledge/corrections/answer.js";
 import { proposeCorrection } from "../../../../packages/ontology/src/knowledge/corrections/propose.js";
-import { inspect } from "../../../../packages/ontology/src/knowledge/worlds/inspect.js";
+import { inspect } from "../../../../packages/ontology/src/knowledge/inspect.js";
 import { canonicalJson } from "../../../../packages/ontology/src/values/canonical.js";
 import { configuration, makeInput } from "../commit/fixture.js";
 

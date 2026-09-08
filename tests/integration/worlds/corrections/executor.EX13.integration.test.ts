@@ -4,11 +4,11 @@ import { expect, it } from "@effect/vitest";
 import { Effect, Layer, Schema } from "effect";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/database.js";
 import {
   createAccount,
   postAuth,
-} from "../../../../apps/server/test/identity/worlds/http.js";
+} from "../../../../apps/server/test/identity/http.js";
 import {
   CorrectionApplied,
   CorrectionProposed,

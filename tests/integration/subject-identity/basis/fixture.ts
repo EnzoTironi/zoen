@@ -30,14 +30,14 @@ import type { HttpClientResponse } from "effect/unstable/http";
 import { SqlClient } from "effect/unstable/sql";
 
 import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.ts";
-import type { IdentityAuth } from "../../../../apps/server/src/identity/worlds/identity.ts";
+import type { IdentityAuth } from "../../../../apps/server/src/identity/identity.ts";
 import {
   sdk,
   withStorage,
 } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
 import { withWorldsDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
 import type { WorldsTestDatabase } from "../../../../apps/server/test/adapters/postgres/worlds/database.ts";
-import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/worlds/database.ts";
+import { makeTestIdentityLayer } from "../../../../apps/server/test/identity/database.ts";
 import {
   applyDisclosureMigrations,
   applyIdentityBasisMigrations,

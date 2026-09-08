@@ -13,7 +13,7 @@ import {
   HttpServerResponse,
 } from "effect/unstable/http";
 
-import { IdentityAuth } from "../identity/worlds/identity.ts";
+import { IdentityAuth } from "../identity/identity.ts";
 import { checkRequestAudience, readJsonBody } from "./request.ts";
 
 const errorResponse = (

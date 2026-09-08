@@ -30,7 +30,7 @@ import { ChildProcess, ChildProcessSpawner } from "effect/unstable/process";
 import { SqlClient } from "effect/unstable/sql";
 
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.ts";
-import { createAccount } from "../../../../apps/server/test/identity/worlds/http.ts";
+import { createAccount } from "../../../../apps/server/test/identity/http.ts";
 import { makeProcessConfiguration } from "../../worlds-corrections-independent/process-configuration.ts";
 import { configuration } from "../../worlds/commit/fixture.ts";
 import { withSharingDatabase } from "./fixture.ts";

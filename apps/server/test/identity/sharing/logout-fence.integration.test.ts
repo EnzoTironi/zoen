@@ -8,8 +8,8 @@ import { Presence, PrincipalId } from "@zoen/ontology/ports/worlds/context";
 import { DateTime, Deferred, Effect, Fiber, Schema } from "effect";
 import { SqlClient } from "effect/unstable/sql";
 
-import { withIdentityDatabase } from "../worlds/database.ts";
-import { createAccount, postAuth } from "../worlds/http.ts";
+import { withIdentityDatabase } from "../database.ts";
+import { createAccount, postAuth } from "../http.ts";
 
 it.live(
   "EX22 real logout stays unavailable across pending ACK, then confirms absence on retry",

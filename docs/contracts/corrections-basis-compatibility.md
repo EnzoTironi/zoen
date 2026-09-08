@@ -40,7 +40,7 @@ Os caminhos abaixo começam depois da entrada no executor comum. `semantic/execu
 
 ### Inspect atual
 
-`knowledge/worlds/inspect.ts`:
+`knowledge/inspect.ts`:
 
 1. Decodifica Inspect; abre transação REPEATABLE READ; autoriza read no World; confere instalação/cell/head admissível.
 2. Com atFrame: seleciona **somente visible_frame**, filtrando World/realm/Frame/principal/purpose/subjectKey; decodifica VisibleFrame; confere referências e devolve o payload salvo. Não lê InternalBasis, readCut ou claims atuais nesse ramo.

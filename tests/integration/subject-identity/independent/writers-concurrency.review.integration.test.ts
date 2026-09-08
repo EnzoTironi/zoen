@@ -18,11 +18,11 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { layer as s3EvidenceLayer } from "../../../../apps/server/src/adapters/object-storage/worlds/s3.js";
 import { withStorage } from "../../../../apps/server/test/adapters/object-storage/worlds/fixture.js";
-import { withIdentityDatabase } from "../../../../apps/server/test/identity/worlds/database.js";
+import { withIdentityDatabase } from "../../../../apps/server/test/identity/database.js";
 import {
   createAccount,
   postAuth,
-} from "../../../../apps/server/test/identity/worlds/http.js";
+} from "../../../../apps/server/test/identity/http.js";
 import { configuration } from "../../worlds/commit/fixture.js";
 
 const bytes = (value: unknown) =>

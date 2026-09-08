@@ -15,7 +15,7 @@ import {
   copyBelongsToWorld,
   isExplainedDisposition,
   isRestoreEligible,
-} from "../../../../packages/ontology/src/knowledge/erasure/copy-catalog.js";
+} from "../../../../packages/ontology/src/erasure/copy-catalog.js";
 import { worldDisclosureKey } from "../../../../packages/ontology/src/ports/disclosure/keys.js";
 import { ErasureAttemptRegister } from "../../../../packages/ontology/src/ports/erasure/attempt-register.js";
 import {

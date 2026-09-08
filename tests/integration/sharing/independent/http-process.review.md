@@ -33,7 +33,7 @@ The late private response is allowed because the competing revoke/logout did **n
 
 ## Initial failure retained
 
-The first four-case run produced 3 passes and 1 failure at the late logout error-envelope assertion: actual HTTP 503 body was `{code:"UNAVAILABLE"}`, while the test initially expected `{_tag:"Unavailable",code:"UNAVAILABLE"}`. Inspection of `apps/server/src/identity/worlds/identity.ts` and the existing `logout.EX09.integration.test.ts` confirmed that signout intentionally returns the former provider-adapter envelope. The test now distinguishes this established identity envelope from semantic endpoint errors. No status, privacy, pending, session, revision, receipt, retry or ordering expectation was weakened. The initial failure occurred before the later logout assertions; those assertions passed in the subsequent four-case run.
+The first four-case run produced 3 passes and 1 failure at the late logout error-envelope assertion: actual HTTP 503 body was `{code:"UNAVAILABLE"}`, while the test initially expected `{_tag:"Unavailable",code:"UNAVAILABLE"}`. Inspection of `apps/server/src/identity/identity.ts` and the existing `logout.EX09.integration.test.ts` confirmed that signout intentionally returns the former provider-adapter envelope. The test now distinguishes this established identity envelope from semantic endpoint errors. No status, privacy, pending, session, revision, receipt, retry or ordering expectation was weakened. The initial failure occurred before the later logout assertions; those assertions passed in the subsequent four-case run.
 
 ## Limits
 
