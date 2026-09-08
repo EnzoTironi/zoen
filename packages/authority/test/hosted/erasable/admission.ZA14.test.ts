@@ -7,6 +7,7 @@ import {
   RETAINED_BUCKET_NAME,
   currentHostedErasableQualification,
   evaluateHostedErasableAdmission,
+  evaluateHostedErasableBootstrap,
   gatesAdmitFullHostedErased,
   localExactImageProofQualification,
   refuseProtectedResource,
@@ -173,6 +174,48 @@ describe("ZA-14 hosted erasable admission", () => {
     ).toMatchObject({
       admitted: false,
       reason: "gates-incomplete",
+      status: "Blocked",
+    });
+  });
+
+  it("bootstrap refuses protected targets and blocks unqualified hosted erasable", () => {
+    expect(
+      evaluateHostedErasableBootstrap({
+        appName: LEGACY_FLY_APP,
+        bucketName: "other",
+        imageDigest: "bootstrap-unbound",
+        installId: "bootstrap-unbound",
+        policyProfileId: "worlds-hosted-erasable-v1",
+        volumeName: "zoen_data",
+      })
+    ).toMatchObject({ admitted: false, reason: "legacy-app-zoen" });
+
+    expect(
+      evaluateHostedErasableBootstrap({
+        appName: "zoen-rebuild",
+        bucketName: RETAINED_BUCKET_NAME,
+        imageDigest: "bootstrap-unbound",
+        installId: "bootstrap-unbound",
+        policyProfileId: "worlds-hosted-erasable-v1",
+        volumeName: "zoen_data",
+      })
+    ).toMatchObject({
+      admitted: false,
+      reason: "retained-bucket-name-reuse",
+    });
+
+    expect(
+      evaluateHostedErasableBootstrap({
+        appName: "zoen-erasable-new",
+        bucketName: "erasable-new",
+        imageDigest: "bootstrap-unbound",
+        installId: "bootstrap-unbound",
+        policyProfileId: "worlds-hosted-erasable-v1",
+        volumeName: "erasable_data",
+      })
+    ).toMatchObject({
+      admitted: false,
+      reason: "target-not-authorized",
       status: "Blocked",
     });
   });

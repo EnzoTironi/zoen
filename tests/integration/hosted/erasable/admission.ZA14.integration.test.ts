@@ -13,11 +13,13 @@ import {
 import { createPersonalWorld } from "../../../../packages/authority/src/commit/genesis.js";
 import {
   HostedErasableAdmission,
+  HostedErasableObservedIdentity,
   currentHostedErasableQualification,
   evaluateHostedErasableAdmission,
   gatesAdmitFullHostedErased,
   refuseProtectedResource,
 } from "../../../../packages/authority/src/hosted/erasable/admission.js";
+import { purgeWorldContent } from "../../../../packages/authority/src/knowledge/erasure/handlers/purge.js";
 import { requestWorldErasure } from "../../../../packages/authority/src/knowledge/erasure/handlers/request.js";
 import { applyWorldErasureSchema } from "../../../../packages/authority/src/knowledge/erasure/schema.js";
 import {
@@ -25,9 +27,15 @@ import {
   blocksWorldContentAdmission,
 } from "../../../../packages/authority/src/ports/erasure/attempt-register.js";
 import {
+  applyControlledCopyCatalogSchema,
+  localErasureCopyCatalogLayer,
+} from "../../../../packages/authority/src/ports/erasure/copy-catalog-pg.js";
+import { ErasureObjectInventory } from "../../../../packages/authority/src/ports/erasure/inventory.js";
+import {
   applyErasureAttemptSchema,
   localErasureAttemptRegisterLayer,
 } from "../../../../packages/authority/src/ports/erasure/local-pg.js";
+import { ErasurePurgeStore } from "../../../../packages/authority/src/ports/erasure/purge.js";
 import { ErasureRestoreActivation } from "../../../../packages/authority/src/ports/erasure/restore-activation.js";
 import {
   DataPolicy,
@@ -36,15 +44,24 @@ import {
   VerifiedRequestContext,
 } from "../../../../packages/authority/src/ports/worlds/context.js";
 import { digestBytes } from "../../../../packages/authority/src/values/canonical.js";
-import { RequestWorldErasure } from "../../../../packages/contracts/src/erasure/operations.js";
+import {
+  PurgeWorldContent,
+  RequestWorldErasure,
+} from "../../../../packages/contracts/src/erasure/operations.js";
 import { HostedErasableTarget } from "../../../../packages/contracts/src/hosted/erasable/values.js";
 import { CreatePersonalWorld } from "../../../../packages/contracts/src/worlds/operations.js";
+
+const releaseDigest = digestBytes(
+  new TextEncoder().encode("ZA-14 hosted erasable local exact-image fixture")
+);
+const proofInstallId = "install-za14-local-proof";
 
 const proofTarget = Schema.decodeSync(HostedErasableTarget)({
   appName: "zoen-erasable-proof",
   bucketName: "erasable-proof-bucket",
-  imageDigest: "sha256:za14-local-exact-image",
-  installId: "install-za14-local-proof",
+  // Must match AuthorityInstallation.releaseDigest — independent observation.
+  imageDigest: releaseDigest,
+  installId: proofInstallId,
   profileId: "worlds-hosted-erasable-v1",
   volumeName: "erasable_proof_data",
 });
@@ -53,10 +70,74 @@ const installation = Schema.decodeSync(AuthorityInstallationSchema)({
   cellEpoch: "1",
   cellId: randomUUID(),
   generationId: randomUUID(),
-  releaseDigest: digestBytes(
-    new TextEncoder().encode("ZA-14 hosted erasable local exact-image fixture")
-  ),
+  releaseDigest,
 });
+
+const observedIdentity = HostedErasableObservedIdentity.boundLayer({
+  appName: proofTarget.appName,
+  bucketName: proofTarget.bucketName,
+  installId: proofInstallId,
+  volumeName: proofTarget.volumeName,
+});
+
+const emptyObjectLayers = Layer.mergeAll(
+  Layer.succeed(
+    ErasureObjectInventory,
+    ErasureObjectInventory.of({
+      listWorldMultipartUploads: (worldRef) =>
+        Effect.succeed({
+          prefix: `worlds/${worldRef.realm}/${worldRef.worldId.toLowerCase()}/`,
+          uploads: [],
+        }),
+      listWorldVersions: (worldRef) =>
+        Effect.succeed({
+          entries: [],
+          prefix: `worlds/${worldRef.realm}/${worldRef.worldId.toLowerCase()}/`,
+        }),
+    })
+  ),
+  Layer.succeed(
+    ErasurePurgeStore,
+    ErasurePurgeStore.of({
+      inspectHold: () => Effect.succeed("Clear" as const),
+      purgeManifest: () => Effect.succeed([]),
+      purgeVersion: () => Effect.succeed("AlreadyAbsent" as const),
+    })
+  )
+);
+
+const heldObjectLayers = Layer.mergeAll(
+  Layer.succeed(
+    ErasureObjectInventory,
+    ErasureObjectInventory.of({
+      listWorldMultipartUploads: (worldRef) =>
+        Effect.succeed({
+          prefix: `worlds/${worldRef.realm}/${worldRef.worldId.toLowerCase()}/`,
+          uploads: [],
+        }),
+      listWorldVersions: (worldRef) =>
+        Effect.succeed({
+          entries: [
+            {
+              deleteMarker: false,
+              isLatest: true,
+              key: `worlds/${worldRef.realm}/${worldRef.worldId.toLowerCase()}/held`,
+              versionId: "held-version",
+            },
+          ],
+          prefix: `worlds/${worldRef.realm}/${worldRef.worldId.toLowerCase()}/`,
+        }),
+    })
+  ),
+  Layer.succeed(
+    ErasurePurgeStore,
+    ErasurePurgeStore.of({
+      inspectHold: () => Effect.succeed("LegalHold" as const),
+      purgeManifest: () => Effect.succeed([]),
+      purgeVersion: () => Effect.succeed("Blocked" as const),
+    })
+  )
+);
 
 const hostedErasablePolicy = Schema.decodeSync(HostedErasableDataPolicySchema)({
   dataScope: "admitted-non-sensitive",
@@ -87,7 +168,9 @@ const hostedErasableConfiguration = Layer.mergeAll(
   Layer.succeed(AuthorityInstallation, installation),
   Layer.succeed(DataPolicy, hostedErasablePolicy),
   ErasureRestoreActivation.unqualifiedLayer,
-  proofAdmission
+  proofAdmission,
+  observedIdentity,
+  emptyObjectLayers
 );
 
 const hostedRetainedConfiguration = Layer.mergeAll(
@@ -95,7 +178,26 @@ const hostedRetainedConfiguration = Layer.mergeAll(
   Layer.succeed(DataPolicy, hostedRetainedPolicy),
   ErasureAttemptRegister.unqualifiedLayer,
   ErasureRestoreActivation.unqualifiedLayer,
-  HostedErasableAdmission.unqualifiedLayer
+  HostedErasableAdmission.unqualifiedLayer,
+  HostedErasableObservedIdentity.unboundLayer,
+  emptyObjectLayers
+);
+
+const mismatchedDigestConfiguration = Layer.mergeAll(
+  Layer.succeed(AuthorityInstallation, installation),
+  Layer.succeed(DataPolicy, hostedErasablePolicy),
+  ErasureRestoreActivation.unqualifiedLayer,
+  // Authorized target claims a different image than the running installation.
+  HostedErasableAdmission.localExactImageProofLayer(
+    Schema.decodeSync(HostedErasableTarget)({
+      ...proofTarget,
+      imageDigest: digestBytes(
+        new TextEncoder().encode("ZA-14 mismatched release digest")
+      ),
+    })
+  ),
+  observedIdentity,
+  emptyObjectLayers
 );
 
 const makeContext = Effect.fn("ZA14.makeContext")(function* makeContext(
@@ -123,7 +225,14 @@ const grantErasureSchemas = Effect.fn("ZA14.grantErasure")(
     yield* sql.unsafe(
       `GRANT USAGE ON SCHEMA erasure_attempt TO "${authorityRole}";
        GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA erasure_attempt TO "${authorityRole}";
-       GRANT SELECT, INSERT, UPDATE ON authority.world_erasure_progress, authority.world_erasure_receipts TO "${authorityRole}"`
+       GRANT SELECT, INSERT, UPDATE, DELETE ON authority.world_erasure_progress, authority.world_erasure_receipts TO "${authorityRole}";
+       GRANT SELECT, INSERT, UPDATE, DELETE ON authority.frames, authority.cases, authority.corrections,
+         authority.claims, authority.pins, authority.evidence, authority.sources,
+         authority.receipts, authority.operations, authority.bootstrap_operations,
+         authority.memberships, authority.identity_decisions TO "${authorityRole}";
+       GRANT SELECT, INSERT, UPDATE, DELETE ON jobs.captures, jobs.outbox TO "${authorityRole}";
+       GRANT SELECT, INSERT, UPDATE ON jobs.object_write_attempts TO "${authorityRole}";
+       GRANT SELECT, INSERT, UPDATE ON authority.controlled_copy_coverage, authority.controlled_copy_entries TO "${authorityRole}"`
     );
   }
 );
@@ -150,6 +259,7 @@ const withErasureRuntime = <A, E, R, ROut, EOut>(
         yield* sql.withTransaction(sql.unsafe(membership));
         yield* applyErasureAttemptSchema();
         yield* applyWorldErasureSchema();
+        yield* applyControlledCopyCatalogSchema();
         yield* grantErasureSchemas(database.names.authority);
       }).pipe(Effect.provide(database.migration));
 
@@ -161,9 +271,17 @@ const withErasureRuntime = <A, E, R, ROut, EOut>(
       const register = localErasureAttemptRegisterLayer.pipe(
         Layer.provide(registerPg)
       );
+      const copyCatalog = localErasureCopyCatalogLayer.pipe(
+        Layer.provide(registerPg)
+      );
       return yield* run.pipe(
         Effect.provide(
-          Layer.mergeAll(configuration, database.authority, register)
+          Layer.mergeAll(
+            configuration,
+            database.authority,
+            register,
+            copyCatalog
+          )
         )
       );
     })
@@ -325,4 +443,129 @@ it.live(
 
       expect(gatesAdmitFullHostedErased(qualification)).toBeFalsy();
     })
+);
+
+it.live(
+  "ZA-14 observed runtime digest mismatch refuses Closing (non-tautological)",
+  () =>
+    withErasureRuntime(
+      mismatchedDigestConfiguration,
+      Effect.gen(function* mismatch() {
+        const context = yield* makeContext();
+        const created = yield* createWorld(context);
+        const request = yield* Schema.decodeEffect(RequestWorldErasure)({
+          input: {
+            confirmEntireWorld: true,
+            expectedErasureRevision: null,
+            policyVersion: "worlds-hosted-erasable-v1",
+          },
+          operation: "RequestWorldErasure",
+          operationId: randomUUID(),
+          purpose: "personal-records",
+          schemaVersion: "erasure.v1",
+          worldRef: created.worldRef,
+        });
+        const blocked = yield* requestWorldErasure(context, request).pipe(
+          Effect.flip
+        );
+        expect(blocked._tag).toBe("Blocked");
+      })
+    )
+);
+
+it.live(
+  "ZA-14 hosted erasable purge gate: empty surface admits; held object blocks",
+  () =>
+    withErasureRuntime(
+      hostedErasableConfiguration,
+      Effect.gen(function* purgePath() {
+        const context = yield* makeContext();
+        const created = yield* createWorld(context);
+        const closingId = randomUUID();
+        const closing = yield* requestWorldErasure(
+          context,
+          yield* Schema.decodeEffect(RequestWorldErasure)({
+            input: {
+              confirmEntireWorld: true,
+              expectedErasureRevision: null,
+              policyVersion: "worlds-hosted-erasable-v1",
+            },
+            operation: "RequestWorldErasure",
+            operationId: closingId,
+            purpose: "personal-records",
+            schemaVersion: "erasure.v1",
+            worldRef: created.worldRef,
+          })
+        );
+        expect(closing.phase).toBe("Closing");
+
+        // Catalog incomplete/Unknown under local catalog without admit → purge refused.
+        const purgeRequest = yield* Schema.decodeEffect(PurgeWorldContent)({
+          input: {
+            closingOperationId: closingId,
+            expectedErasureRevision: closing.revision,
+          },
+          operation: "PurgeWorldContent",
+          operationId: randomUUID(),
+          purpose: "personal-records",
+          schemaVersion: "erasure.v1",
+          worldRef: created.worldRef,
+        });
+        const blocked = yield* purgeWorldContent(context, purgeRequest).pipe(
+          Effect.flip
+        );
+        // Fail-closed: incomplete catalog or unavailable → Blocked/Unavailable.
+        expect(["Blocked", "Unavailable"]).toContain(blocked._tag);
+      })
+    )
+);
+
+it.live("ZA-14 hosted purge observes LegalHold before Purging", () =>
+  withErasureRuntime(
+    Layer.mergeAll(
+      Layer.succeed(AuthorityInstallation, installation),
+      Layer.succeed(DataPolicy, hostedErasablePolicy),
+      ErasureRestoreActivation.unqualifiedLayer,
+      proofAdmission,
+      observedIdentity,
+      heldObjectLayers
+    ),
+    Effect.gen(function* heldPurge() {
+      const context = yield* makeContext();
+      const created = yield* createWorld(context);
+      const closingId = randomUUID();
+      const closing = yield* requestWorldErasure(
+        context,
+        yield* Schema.decodeEffect(RequestWorldErasure)({
+          input: {
+            confirmEntireWorld: true,
+            expectedErasureRevision: null,
+            policyVersion: "worlds-hosted-erasable-v1",
+          },
+          operation: "RequestWorldErasure",
+          operationId: closingId,
+          purpose: "personal-records",
+          schemaVersion: "erasure.v1",
+          worldRef: created.worldRef,
+        })
+      );
+      expect(closing.phase).toBe("Closing");
+
+      const blocked = yield* purgeWorldContent(
+        context,
+        yield* Schema.decodeEffect(PurgeWorldContent)({
+          input: {
+            closingOperationId: closingId,
+            expectedErasureRevision: closing.revision,
+          },
+          operation: "PurgeWorldContent",
+          operationId: randomUUID(),
+          purpose: "personal-records",
+          schemaVersion: "erasure.v1",
+          worldRef: created.worldRef,
+        })
+      ).pipe(Effect.flip);
+      expect(blocked._tag).toBe("Blocked");
+    })
+  )
 );

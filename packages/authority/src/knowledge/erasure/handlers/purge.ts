@@ -95,6 +95,7 @@ export const purgeWorldContent = Effect.fn("erasure.purgeWorldContent")(
     const erasablePolicy = yield* requireErasablePolicy(current.policy_version);
     yield* requireHostedErasablePurgeAdmission({
       policy: erasablePolicy,
+      worldRef: world,
     });
 
     const observed = yield* register.inspect({

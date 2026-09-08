@@ -9,6 +9,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { NodeRuntime, NodeServices } from "@effect/platform-node";
 import { PgClient } from "@effect/sql-pg";
+import { evaluateHostedErasableBootstrap } from "@zoen/authority/hosted/erasable/admission";
 import {
   Config,
   Effect,
@@ -23,11 +24,6 @@ import { SqlClient } from "effect/unstable/sql";
 
 import { resolveLocalWorldPolicy } from "../../../ops/local/world-policy.ts";
 import { applyErasureMigrations } from "../../../ops/migrations/run.ts";
-import {
-  currentHostedErasableQualification,
-  evaluateHostedErasableAdmission,
-  refuseProtectedResource,
-} from "../../../packages/authority/src/hosted/erasable/admission.ts";
 import {
   beginHostedReleaseUpgrade,
   completeHostedReleaseUpgrade,
@@ -546,27 +542,20 @@ const program = Effect.gen(function* bootstrapAllInOne() {
       policyProfileId: policy.profileId,
       volumeName,
     };
-    const protectedDecision = refuseProtectedResource(candidate);
-    if (protectedDecision !== null) {
-      return yield* new BootstrapError({
-        code: `HOSTED_ERASABLE_REFUSED_${protectedDecision.reason}`,
-      });
-    }
-    const decision = evaluateHostedErasableAdmission({
-      candidate,
-      catalogCoverage: "Unknown",
-      controllerAvailable: false,
-      heldObject: false,
-      purpose: "closing",
-      qualification: currentHostedErasableQualification(),
-    });
+    const decision = evaluateHostedErasableBootstrap(candidate);
     switch (decision.admitted) {
       case true: {
         break;
       }
       case false: {
+        const protectedRefusal =
+          decision.reason === "legacy-app-zoen" ||
+          decision.reason === "retained-bucket-name-reuse" ||
+          decision.reason === "retained-install-profile";
         return yield* new BootstrapError({
-          code: `HOSTED_ERASABLE_BLOCKED_${decision.reason}`,
+          code: protectedRefusal
+            ? `HOSTED_ERASABLE_REFUSED_${decision.reason}`
+            : `HOSTED_ERASABLE_BLOCKED_${decision.reason}`,
         });
       }
       default: {

@@ -22,7 +22,7 @@ import {
 } from "../../../ports/erasure/restore-activation.js";
 import type { VerifiedRequestContext } from "../../../ports/worlds/context.js";
 import {
-  candidateFromAdmission,
+  candidateFromObservedRuntime,
   requireHostedErasableAdmissionForPolicy,
 } from "../hosted-erasable-gate.js";
 import { isHostedErasablePolicy, requireErasablePolicy } from "../policy.js";
@@ -75,7 +75,9 @@ export const requestWorldErasure = Effect.fn("erasure.requestWorldErasure")(
       request.input.policyVersion
     );
     if (isHostedErasablePolicy(erasablePolicy)) {
-      const candidate = yield* candidateFromAdmission(erasablePolicy.profileId);
+      const candidate = yield* candidateFromObservedRuntime(
+        erasablePolicy.profileId
+      );
       yield* requireHostedErasableAdmissionForPolicy({
         candidate,
         catalogCoverage: "Unknown",

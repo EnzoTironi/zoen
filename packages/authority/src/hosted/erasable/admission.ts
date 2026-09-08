@@ -24,6 +24,9 @@ export {
   HostedErasableTarget,
 } from "@zoen/contracts/hosted/erasable/values";
 
+export { HostedErasableObservedIdentity } from "./observed-identity.js";
+export type { HostedErasableObservedFields } from "./observed-identity.js";
+
 /** Fly / install names that must never receive erasable rebind. */
 export const LEGACY_FLY_APP = "zoen" as const;
 /** Retained live bucket name — refuse same-name erasable conversion. */
@@ -237,6 +240,27 @@ export const evaluateHostedErasableAdmission = (input: {
     reason: "gates-incomplete",
     status: "Blocked",
   };
+};
+
+/**
+ * Bootstrap gate for worlds-hosted-erasable-v1. Fail-closed without H-02:
+ * protected resources refused; unqualified product posture never admits.
+ */
+export const evaluateHostedErasableBootstrap = (
+  candidate: HostedErasableCandidate
+): HostedErasableAdmissionDecision => {
+  const protectedDecision = refuseProtectedResource(candidate);
+  if (protectedDecision !== null) {
+    return protectedDecision;
+  }
+  return evaluateHostedErasableAdmission({
+    candidate,
+    catalogCoverage: "Unknown",
+    controllerAvailable: false,
+    heldObject: false,
+    purpose: "closing",
+    qualification: currentHostedErasableQualification(),
+  });
 };
 
 export const decodeHostedErasableTarget =
