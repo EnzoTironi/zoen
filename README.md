@@ -10,7 +10,7 @@ Same grammar across ICPs already named in the roadmap (no new commercial persona
 
 - **Doméstico / household** — Import divergent household lists (bills, chores, commitments); see which source said what; correct one item and undo without losing history. Supported journey: [docs/product/household-commitments.md](docs/product/household-commitments.md) (ZA-22).
 - **Confeitaria / bakery shop** — Reconcile orders, recipes, and stock notes from CSV/JSON dumps; keep shop meaning inspectable before anyone acts on it. Supported journey: [docs/product/bakery-order-reconciliation.md](docs/product/bakery-order-reconciliation.md) (ZA-23).
-- **Clínica / clinic** — Keep administrative schedule truth under current rights; inspect evidence when two sources disagree; clinical scope stays a separate, qualified profile.
+- **Clínica / clinic** — Keep administrative schedule truth under current rights; inspect evidence when two sources disagree; clinical scope stays a separate, qualified profile. Supported journey: [docs/product/clinic-administrative-scope.md](docs/product/clinic-administrative-scope.md) (ZA-24).
 - **Finanças / personal or small-business finance** — Admit statements and ledgers as sources; distinguish known vs unknown; never treat a local interpretation as bank settlement.
 
 ## What you do

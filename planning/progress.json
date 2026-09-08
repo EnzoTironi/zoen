@@ -1068,6 +1068,14 @@
       "scope": "ZA-23 delivers one bakery order-commitment reconciliation journey through real web/CLI and shared SemanticExecutor: contested comparable order quotes (ZA-23-01), unsupported recipe grams/stock notes not coerced into currency (ZA-23-02), concurrent stale consent + hidden viewer staff context + revoke (ZA-23-03). Reuses worlds import/inspect/correct/undo and sharing; no Eve touch; no packs. Does NOT claim ICP complete or activated because this PR merged.",
       "verified_for_profile": false,
       "notes": "Local unit + bakery integration seam required before merge evidence. Browser/CLI acceptance under apps/web/test/features/bakery when ZOEN_TEST_WEB_URL is live. See docs/product/bakery-order-reconciliation.md."
+    },
+    {
+      "id": "za24-clinic-administrative-scope",
+      "state": "implemented_pending_independent_review",
+      "profile": "clinic administration with explicit clinical exclusion (ZA-24)",
+      "scope": "ZA-24 delivers one clinic administrative appointment/fee reconciliation journey through real web/CLI and shared SemanticExecutor: contested agenda vs fee quotes with scoped correction (ZA-24-01), clinical predicates/excluded sources denied before retrieval without metadata leak (ZA-24-02), mid-fetch revoke refuses final disclosure while owner admin work stays intact (ZA-24-03). Reuses worlds import/inspect/correct/open and sharing; no Eve touch; no packs; no clinical/financial provider claims. Does NOT claim ICP complete or activated because this PR merged.",
+      "verified_for_profile": false,
+      "notes": "Local unit + clinic integration seam required before merge evidence. Browser/CLI acceptance under apps/web/test/features/clinic when ZOEN_TEST_WEB_URL is live. See docs/product/clinic-administrative-scope.md."
     }
   ],
   "verified_deliveries": [],
