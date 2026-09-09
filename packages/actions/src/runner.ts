@@ -11,7 +11,7 @@ import {
   extractReceiptRef,
   extractWorldScope,
 } from "./encode.js";
-import type { ActionLog, ActionLogEntry } from "./log.js";
+import type { ActionLog, ActionLogAppendInput, ActionLogEntry } from "./log.js";
 import { validateActionParameters } from "./parameters.js";
 import { UnknownActionTypeError } from "./unknown-action-type-error.js";
 import { UnsupportedRuntimeBindingError } from "./unsupported-runtime-binding-error.js";
@@ -74,6 +74,20 @@ export const createActionRunner = (options: ActionRunnerOptions) => {
     let semanticOperation = "unknown";
     let operationId = extractOperationId(parameters);
     const world = extractWorldScope(parameters);
+    let outcomeLogged = false;
+
+    const baseLog = (): Omit<
+      ActionLogAppendInput,
+      "completedAt" | "outcome" | "receiptRef" | "rejectionCode" | "result"
+    > => ({
+      actionTypeId,
+      actorPrincipalId: actor.principalId,
+      attemptedAt,
+      operationId,
+      realm: world.realm,
+      semanticOperation,
+      worldId: world.worldId,
+    });
 
     try {
       let actionType;
@@ -103,21 +117,44 @@ export const createActionRunner = (options: ActionRunnerOptions) => {
       evaluateSubmissionCriteria(actionType, actor);
 
       const request = encodeSemanticRequest(actionType, parameters);
-      const result = await engine.execute(request);
+
+      // Durable attempt before engine work (crash / timeout still leaves a row).
+      await log.append({
+        ...baseLog(),
+        completedAt: attemptedAt,
+        outcome: "accepted",
+        receiptRef: null,
+        rejectionCode: null,
+        result: null,
+      });
+      outcomeLogged = true;
+
+      let result: unknown;
+      try {
+        result = await engine.execute(request);
+      } catch (engineError) {
+        const completedAt = nowIso();
+        await log.append({
+          ...baseLog(),
+          completedAt,
+          outcome: "failed",
+          receiptRef: null,
+          rejectionCode: rejectionCodeOf(engineError),
+          result: null,
+        });
+        throw engineError;
+      }
+
+      // Committed append is outside the preflight rejection catch so a log
+      // failure after a successful engine mutation is not rewritten as rejected.
       const completedAt = nowIso();
       const logEntry = await log.append({
-        actionTypeId: id,
-        actorPrincipalId: actor.principalId,
-        attemptedAt,
+        ...baseLog(),
         completedAt,
-        operationId,
         outcome: "committed",
-        realm: world.realm,
         receiptRef: extractReceiptRef(result),
         rejectionCode: null,
         result,
-        semanticOperation: operation,
-        worldId: world.worldId,
       });
 
       return {
@@ -127,21 +164,17 @@ export const createActionRunner = (options: ActionRunnerOptions) => {
         result,
       };
     } catch (error) {
-      const completedAt = nowIso();
-      await log.append({
-        actionTypeId,
-        actorPrincipalId: actor.principalId,
-        attemptedAt,
-        completedAt,
-        operationId,
-        outcome: "rejected",
-        realm: world.realm,
-        receiptRef: null,
-        rejectionCode: rejectionCodeOf(error),
-        result: null,
-        semanticOperation,
-        worldId: world.worldId,
-      });
+      if (!outcomeLogged) {
+        const completedAt = nowIso();
+        await log.append({
+          ...baseLog(),
+          completedAt,
+          outcome: "rejected",
+          receiptRef: null,
+          rejectionCode: rejectionCodeOf(error),
+          result: null,
+        });
+      }
       throw error;
     }
   };

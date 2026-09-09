@@ -210,7 +210,10 @@ describe("W2 ActionRunner", () => {
     );
     expect(success.logEntry.semanticOperation).toBe("CreatePersonalWorld");
     const entries = await log.list();
-    expect(entries).toHaveLength(1);
+    expect(entries.map((entry) => entry.outcome)).toStrictEqual([
+      "accepted",
+      "committed",
+    ]);
   });
 
   it("wires Worlds pack ActionTypes and still rejects unknown", async () => {
@@ -230,4 +233,128 @@ describe("W2 ActionRunner", () => {
       runner.run({ actionTypeId: "eve.Chat", parameters: {} })
     ).rejects.toBeInstanceOf(UnknownActionTypeError);
   });
+
+  it("rejects bare UUID worldRef (WorldRef object required)", async () => {
+    const log = createMemoryActionLog();
+    const runner = createActionRunner({
+      actor: authenticatedOwner,
+      engine: stubEngine({ _tag: "Unused" }),
+      log,
+      registry: defaultOmsRegistry,
+    });
+
+    await expect(
+      runner.run({
+        actionTypeId: "worlds.Inspect",
+        parameters: {
+          atFrame: null,
+          purpose: "personal-records",
+          subjectKey: "subject",
+          worldRef: randomUUID(),
+        },
+      })
+    ).rejects.toBeInstanceOf(InvalidActionParametersError);
+  });
+
+  it("records accepted before engine work and committed after", async () => {
+    const log = createMemoryActionLog();
+    let sawAcceptedBeforeExecute = false;
+    const runner = createActionRunner({
+      actor: authenticatedOwner,
+      engine: {
+        execute: async () => {
+          const entries = await log.list();
+          sawAcceptedBeforeExecute = entries.some(
+            (entry) => entry.outcome === "accepted"
+          );
+          return {
+            _tag: "WorldCreated",
+            receiptRef: randomUUID(),
+            worldRef: { realm: "live", worldId: randomUUID() },
+          };
+        },
+      },
+      log,
+      registry: defaultOmsRegistry,
+    });
+
+    await runner.run({
+      actionTypeId: "worlds.CreatePersonalWorld",
+      parameters: {
+        operationId: randomUUID(),
+        purpose: "personal-records",
+      },
+    });
+
+    expect(sawAcceptedBeforeExecute).toBeTruthy();
+    const outcomes = (await log.list()).map((entry) => entry.outcome);
+    expect(outcomes).toStrictEqual(["accepted", "committed"]);
+  });
+
+  it("records engine failures as failed, not rejected", async () => {
+    const log = createMemoryActionLog();
+    const runner = createActionRunner({
+      actor: authenticatedOwner,
+      engine: {
+        execute: () => Promise.reject(new Error("engine-down")),
+      },
+      log,
+      registry: defaultOmsRegistry,
+    });
+
+    await expect(
+      runner.run({
+        actionTypeId: "worlds.CreatePersonalWorld",
+        parameters: {
+          operationId: randomUUID(),
+          purpose: "personal-records",
+        },
+      })
+    ).rejects.toThrow("engine-down");
+
+    const outcomes = (await log.list()).map((entry) => entry.outcome);
+    expect(outcomes).toStrictEqual(["accepted", "failed"]);
+    expect((await log.list())[1]?.rejectionCode).toBe("Error");
+  });
+
+  it("does not rewrite committed engine work as rejected when log append fails", async () => {
+    const base = createMemoryActionLog();
+    const log = {
+      append: async (input: Parameters<typeof base.append>[0]) => {
+        if (input.outcome === "committed") {
+          throw new Error("log-append-failed");
+        }
+        return base.append(input);
+      },
+      list: () => base.list(),
+    };
+    const runner = createActionRunner({
+      actor: authenticatedOwner,
+      engine: {
+        execute: () =>
+          Promise.resolve({
+            _tag: "WorldCreated",
+            receiptRef: randomUUID(),
+            worldRef: { realm: "live", worldId: randomUUID() },
+          }),
+      },
+      log,
+      registry: defaultOmsRegistry,
+    });
+
+    await expect(
+      runner.run({
+        actionTypeId: "worlds.CreatePersonalWorld",
+        parameters: {
+          operationId: randomUUID(),
+          purpose: "personal-records",
+        },
+      })
+    ).rejects.toThrow("log-append-failed");
+
+    const outcomes = (await log.list()).map((entry) => entry.outcome);
+    expect(outcomes).toStrictEqual(["accepted"]);
+    expect(outcomes).not.toContain("rejected");
+  });
+
 });

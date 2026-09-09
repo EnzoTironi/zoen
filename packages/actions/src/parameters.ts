@@ -35,9 +35,8 @@ const kindMatches = (
       return value !== undefined;
     }
     case "ref": {
-      if (typeof value === "string" && uuidPattern.test(value)) {
-        return true;
-      }
+      // Worlds OMS refs are WorldRef objects (realm + worldId). Bare UUID
+      // strings are not accepted — SemanticRequest WorldRef is object-only.
       if (!isPlainObject(value)) {
         return false;
       }
