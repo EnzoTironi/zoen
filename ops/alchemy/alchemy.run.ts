@@ -16,7 +16,6 @@
  * Deploy: `pnpm alchemy:deploy -- --stage prod` (see ops/alchemy/README.md)
  */
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import * as Alchemy from "alchemy";
 import * as Docker from "alchemy/Docker";
@@ -28,10 +27,7 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Redacted from "effect/Redacted";
 
-const repoRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../.."
-);
+const repoRoot = path.resolve(import.meta.dirname, "../..");
 
 /** Non-secret env mirrored from ops/fly/fly.toml `[env]`. */
 const hostedEnv = {
@@ -55,8 +51,8 @@ const isLocalStage = (stage: string) =>
 const sanitizeStageSlug = (stage: string) =>
   stage
     .toLowerCase()
-    .replaceAll(/[^a-z0-9-]/g, "-")
-    .replaceAll(/-+/g, "-");
+    .replaceAll(/[^a-z0-9-]/gu, "-")
+    .replaceAll(/-+/gu, "-");
 
 const localDocker = (stage: string) =>
   Effect.gen(function* local() {
@@ -92,7 +88,7 @@ const localDocker = (stage: string) =>
       image: pgImage,
       name: `zoen-alchemy-${sanitizeStageSlug(stage)}-postgres`,
       networks: [{ aliases: ["postgres"], name: network.name }],
-      ports: [{ external: 55435, internal: 5432 }],
+      ports: [{ external: 55_435, internal: 5432 }],
       start: true,
       volumes: [
         { containerPath: "/var/lib/postgresql/data", hostPath: pgDataPath },
@@ -139,8 +135,8 @@ const localDocker = (stage: string) =>
       name: `zoen-alchemy-${sanitizeStageSlug(stage)}-minio`,
       networks: [{ aliases: ["minio"], name: network.name }],
       ports: [
-        { external: 59005, internal: 9000 },
-        { external: 59006, internal: 9001 },
+        { external: 59_005, internal: 9000 },
+        { external: 59_006, internal: 9001 },
       ],
       start: true,
       volumes: [{ containerPath: "/data", hostPath: minioDataPath }],
@@ -159,7 +155,10 @@ const flyHosted = (stage: string, prod: boolean) =>
     // Break-glass / ephemeral may build all-in-one locally. Prod must NOT fight
     // ZA-07 exact-image CD unless ZOEN_ALCHEMY_BREAK_GLASS=1.
     const image = yield* Effect.gen(function* resolveImage() {
-      if (prod && process.env.ZOEN_ALCHEMY_BREAK_GLASS !== "1") {
+      const breakGlass = yield* Config.string("ZOEN_ALCHEMY_BREAK_GLASS").pipe(
+        Config.withDefault("0")
+      );
+      if (prod && breakGlass !== "1") {
         return yield* Config.string("ZOEN_FLY_IMAGE");
       }
       if (prod) {
