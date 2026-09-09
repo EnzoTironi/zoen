@@ -58,9 +58,9 @@ describe("MCP W4 OMS ActionType codegen", () => {
   });
 
   it("dispatch still works for CreatePersonalWorld via generated tool", () => {
-    expect(toolDefinitions.some((t) => t.name === "CreatePersonalWorld")).toBe(
-      true
-    );
+    expect(
+      toolDefinitions.some((t) => t.name === "CreatePersonalWorld")
+    ).toBeTruthy();
     const run = (_request: SemanticRequest) => Effect.succeed(worldCreated);
     const result = Effect.runSync(
       runToolCall("CreatePersonalWorld", { operationId }, run)
