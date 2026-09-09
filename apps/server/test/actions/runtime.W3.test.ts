@@ -27,19 +27,21 @@ describe("server W3 ActionRuntime shape", () => {
       log,
       registry: defaultOmsRegistry,
     });
-    return runner
-      .run({
-        actionTypeId: "worlds.CreatePersonalWorld",
-        parameters: {
-          operationId: "11111111-1111-4111-8111-111111111111",
-          purpose: "personal-records",
-        },
-      })
-    // oxlint-disable-next-line effecttsgo/async-function -- Promise ActionLog.list union awaits in then-callback.
-      .then(async (success) => {
-        expect(success.logEntry.outcome).toBe("committed");
-        const entries = await Promise.resolve(log.list());
-        expect(entries.length).toBeGreaterThanOrEqual(2);
-      });
+    return (
+      runner
+        .run({
+          actionTypeId: "worlds.CreatePersonalWorld",
+          parameters: {
+            operationId: "11111111-1111-4111-8111-111111111111",
+            purpose: "personal-records",
+          },
+        })
+        // oxlint-disable-next-line effecttsgo/async-function -- Promise ActionLog.list union awaits in then-callback.
+        .then(async (success) => {
+          expect(success.logEntry.outcome).toBe("committed");
+          const entries = await Promise.resolve(log.list());
+          expect(entries.length).toBeGreaterThanOrEqual(2);
+        })
+    );
   });
 });

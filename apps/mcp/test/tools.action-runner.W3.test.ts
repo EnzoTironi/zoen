@@ -44,7 +44,7 @@ describe("MCP W3 ActionRunner path", () => {
       },
       log,
       request: createPersonalWorld,
-    // oxlint-disable-next-line effecttsgo/async-function -- Promise ActionLog.list union awaits in then-callback.
+      // oxlint-disable-next-line effecttsgo/async-function -- Promise ActionLog.list union awaits in then-callback.
     }).then(async (outcome) => {
       expect(outcome.via).toBe("action-runner");
       expect(engineHits).toBe(1);

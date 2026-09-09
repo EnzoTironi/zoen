@@ -24,7 +24,5 @@
       "path": "../../packages/oms/tsconfig.build.json"
     }
   ],
-  "include": [
-    "src/**/*.ts"
-  ]
+  "include": ["src/**/*.ts"]
 }

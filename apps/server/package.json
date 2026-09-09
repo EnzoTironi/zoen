@@ -7,12 +7,12 @@
     "@aws-sdk/client-s3": "3.1127.0",
     "@effect/platform-node": "4.0.0-rc.112",
     "@effect/sql-pg": "4.0.0-rc.112",
+    "@zoen/actions": "workspace:*",
     "@zoen/contracts": "workspace:*",
+    "@zoen/oms": "workspace:*",
     "@zoen/ontology": "workspace:*",
     "better-auth": "1.7.2",
     "effect": "4.0.0-rc.112",
-    "pg": "8.23.0",
-    "@zoen/actions": "workspace:*",
-    "@zoen/oms": "workspace:*"
+    "pg": "8.23.0"
   }
 }
