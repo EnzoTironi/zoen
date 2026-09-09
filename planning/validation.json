@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "scope": "Structural planning validation only; no product checks executed or approved",
+  "scope": "Structural planning validation only; tip_binding records post-ZA-26 tip SHA/lockfile/image — no product checks executed or approved; no full D05",
   "source_commit": "517d1e204fd4193cdb3b1748481702a2b1a09ba8",
   "hashed_snapshots": 4,
   "coverage": {
@@ -49,5 +49,15 @@
     "Semantic correctness of every historical pseudoplan was not reviewed",
     "Delivery dependencies need exact integrated contracts before implementation dispatch",
     "Path analysis checks declared glob ownership, not future code imports or behavior"
-  ]
+  ],
+  "tip_binding": {
+    "commit": "85bf4c7a0f3c32b87ffb8eaf0d610d33801a539b",
+    "short": "85bf4c7",
+    "lockfileSha256": "92afa1d6a7fd27ddae857fe5d008d4e28b2ade3b23b488ebd5348ca00a8f4ef2",
+    "imageIdentity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55",
+    "imageId": "sha256:f7235d494411f54b11a20a837cfa1e38c7fffc016ca5bd84ccb8eab893f26744",
+    "imageDigest": "sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55",
+    "exactImageVerifyRun": "https://github.com/EnzoTironi/zoen/actions/runs/34365417321",
+    "note": "Post-ZA-26 tip rebind after #115 alchemy. Structural source_commit below remains redesign snapshot; product gates stay Blocked (H-01/H-02/G-PROVIDER/G-STORAGE-FENCE); textProfileAccepted false."
+  }
 }

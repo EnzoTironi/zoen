@@ -25,9 +25,9 @@ const statusPath = path.resolve(
 );
 const lockPath = path.resolve(repoRoot, "pnpm-lock.yaml");
 
-const EXPECTED_TIP = "aa7bc313e5c3905e83fb69847123f436fc261a22";
+const EXPECTED_TIP = "85bf4c7a0f3c32b87ffb8eaf0d610d33801a539b";
 const EXPECTED_IMAGE_IDENTITY =
-  "ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c";
+  "ghcr.io/enzotironi/zoen/all-in-one@sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55";
 
 const loadStatus = (): FrontierStatusDocument => {
   const raw: unknown = JSON.parse(readFileSync(statusPath, "utf-8"));
