@@ -48,6 +48,23 @@ export default defineConfig({
   },
   overrides: [
     {
+      files: ["packages/actions/**"],
+      rules: {
+        "effecttsgo/async-function": "off",
+        "effecttsgo/global-date": "off",
+        "effecttsgo/global-date-in-effect": "off",
+        "effecttsgo/new-promise": "off",
+        "effecttsgo/node-builtin-import": "off",
+        "effecttsgo/schema-sync-in-effect": "off",
+        "promise/avoid-new": "off",
+      },
+    },
+    {
+      files: ["packages/actions/test/**"],
+      plugins: ["vitest"],
+      rules: { "vitest/max-expects": "off" },
+    },
+    {
       files: [
         "tests/integration/subject-identity/**",
         "apps/cli/test/subject-identity/**",

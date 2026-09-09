@@ -774,7 +774,7 @@
           "version": "0.1.0"
         }
       ],
-      "description": "Worlds ontology pack #1 — private truth with evidence, correction, sharing, erasure. Seeds only; tip SemanticExecutor still runs until W2/W3.",
+      "description": "Worlds ontology pack #1 — private truth with evidence, correction, sharing, erasure. Action Type stubs execute via W2 ActionRunner → SemanticExecutor adapter (dual path until W3).",
       "id": "worlds",
       "linkTypes": [
         {

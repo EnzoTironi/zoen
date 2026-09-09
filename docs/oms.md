@@ -5,20 +5,21 @@
 
 ## What this is
 
-`@zoen/oms` is the **Language plane** MVP: a versioned registry of **Object Types**, **Link Types**, and **Action Types** (schemas + cards). It is **not** a Foundry clone and does **not** execute Actions.
+`@zoen/oms` is the **Language plane** MVP: a versioned registry of **Object Types**, **Link Types**, and **Action Types** (schemas + cards). It is **not** a Foundry clone and does **not** execute Actions — execution is `@zoen/actions` (W2).
 
 - Registry document is git-versioned (`packages/oms` seed). A PR is the MVP proposal / review path; in-product Ontology Branching is a later upgrade.
 - Worlds is **pack #1** (`worlds`): World, Evidence, Source, Correction, Membership, ErasureAttempt — mapped from the glossary, not enterprise ERP types.
-- Action Type stubs declare parameters, submission-criteria placeholders, and edit intent. **`runtimeBinding: semantic-executor`** until **W2** lands the Action runtime.
+- Action Type stubs declare parameters, submission-criteria placeholders, and edit intent. **`runtimeBinding: semantic-executor`** names the Engine adapter; **W2** [`@zoen/actions`](actions.md) ActionRunner is the governed write path that wraps tip SemanticExecutor (dual path until W3).
 
 ## What this is not
 
 | Deferred                               | Wave |
 | -------------------------------------- | ---- |
-| Action runtime / grant path            | W2   |
 | Worlds pack migration off tip executor | W3   |
 | MCP codegen from Action Types          | W4   |
 | Funnel-lite / Approvals-lite           | W5   |
+
+Action runtime: see [actions.md](actions.md) (W2).
 
 No Eve / chat product surface. No Zep-as-kernel. Tip Worlds / MCP / CLI behavior is unchanged by this package (additive only).
 

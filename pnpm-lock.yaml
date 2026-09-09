@@ -163,6 +163,18 @@ importers:
         specifier: 19.2.8
         version: 19.2.8(react@19.2.8)
 
+  packages/actions:
+    dependencies:
+      '@zoen/contracts':
+        specifier: workspace:*
+        version: link:../contracts
+      '@zoen/oms':
+        specifier: workspace:*
+        version: link:../oms
+      effect:
+        specifier: 4.0.0-rc.112
+        version: 4.0.0-rc.112(patch_hash=018246c8b76de6883e5619c199cd8ac62a7abcb725f70aba2de5eb4f860bbf88)
+
   packages/application-client:
     dependencies:
       '@effect/platform-node':
