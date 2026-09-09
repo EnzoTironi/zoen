@@ -17,7 +17,7 @@ apps/
   mcp/src/                # ferramentas MCP sobre HttpApiClient (stdio)
 packages/
   contracts/src/          # Effect Schema, HttpApi, operações e DTOs públicos
-  application-client/src/ # sessão + ApplicationApi HTTP partilhados por CLI/MCP
+  application-client/src/ # routing ApplicationApi partilhado (web/CLI/MCP); sessão Node só CLI/MCP
   ontology/src/
     commit/               # única fronteira de mutação e idempotência
     access/               # direitos e membership/disclosure
@@ -49,7 +49,7 @@ flowchart LR
   S --> E
 ```
 
-O diagrama representa chamadas, não imports de cliente para backend. `contracts` não importa `ontology`, servidor, SQL ou configuração de autenticação. Web usa `HttpApiClient` no browser; CLI/MCP partilham `@zoen/application-client` para sessão Node + routing ApplicationApi (não é um SDK de produto separado). `ontology` nunca importa `apps/server`; a composição fornece serviços e drivers. Nenhum handler HTTP acessa um adapter para contornar o executor.
+O diagrama representa chamadas, não imports de cliente para backend. `contracts` não importa `ontology`, servidor, SQL ou configuração de autenticação. Web, CLI e MCP partilham o routing ApplicationApi de `@zoen/application-client`; a web autentica com cookie HttpOnly via Fetch, enquanto CLI/MCP usam session.json Node (não é um SDK de produto separado). `ontology` nunca importa `apps/server`; a composição fornece serviços e drivers. Nenhum handler HTTP acessa um adapter para contornar o executor.
 
 ## Effect como base
 

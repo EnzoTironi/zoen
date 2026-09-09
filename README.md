@@ -76,14 +76,14 @@ Do not commit Fly secrets or `.env*` files. See [SECURITY.md](SECURITY.md).
 | `apps/cli` | Same verbs as the web, over the same client |
 | `apps/mcp` | Stdio MCP server — Worlds + subject-identity verbs as tools over the same client |
 | `packages/contracts` | Effect Schema, HttpApi, public DTOs |
-| `packages/application-client` | Shared session + ApplicationApi HTTP client for CLI/MCP |
+| `packages/application-client` | Shared ApplicationApi execute routing (web/CLI/MCP); Node session.json for CLI/MCP only |
 | `packages/ontology` | Commit boundary, access, evidence, knowledge, semantic executor |
 | `ops/` | Compose, containers, migrations, Fly |
 | `tests/` | Integration and acceptance on real components |
 
 ## MCP (Cursor / Claude)
 
-`@zoen/mcp` v0 exposes the same Worlds **and subject-identity** semantic verbs as the CLI as MCP tools over stdio. CLI and MCP share `@zoen/application-client` (session.json + ApplicationApi HTTP routing). Tools assemble a `SemanticRequest`, decode it with the same contracts as CLI/web, then call `/api/*/execute`. Writes still go through the server semantic executor (policy + receipts). Sign-in stays on the CLI (no password tools on MCP). There is no Eve/chat/voice surface.
+`@zoen/mcp` v0 exposes the same Worlds **and subject-identity** semantic verbs as the CLI as MCP tools over stdio. Web, CLI, and MCP share `@zoen/application-client` ApplicationApi execute routing; CLI/MCP also share Node session.json (browser auth stays HttpOnly cookies). Tools assemble a `SemanticRequest`, decode it with the same contracts as CLI/web, then call `/api/*/execute`. Writes still go through the server semantic executor (policy + receipts). Sign-in stays on the CLI (no password tools on MCP). There is no Eve/chat/voice surface.
 
 1. Build: `pnpm install --frozen-lockfile && pnpm build`
 2. Sign in with the CLI (session file is reused):
