@@ -356,5 +356,4 @@ describe("W2 ActionRunner", () => {
     expect(outcomes).toStrictEqual(["accepted"]);
     expect(outcomes).not.toContain("rejected");
   });
-
 });
