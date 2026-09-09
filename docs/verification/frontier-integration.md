@@ -110,3 +110,7 @@ Public `/ready` never certifies image identity.
 - Destroying legacy Fly `zoen` or retained installs
 - New platform migration
 - Labeling the entire target diagram implemented
+
+## Related
+
+- Hosted gates operator prep (H-01/H-02/G-OPS/G-STORAGE-FENCE fail-closed): [`docs/ops/hosted-gates-operator-checklist.md`](../ops/hosted-gates-operator-checklist.md)

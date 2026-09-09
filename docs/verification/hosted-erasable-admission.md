@@ -40,3 +40,5 @@ Local **exact-image** disposable proof may exercise Closing → restore suppress
 
 - Object Lock re-probe (not Full Erased): [`erasure-fly-object-lock.md`](./erasure-fly-object-lock.md)
 - Hosted retained admission: [`hosted-admission.md`](./hosted-admission.md)
+
+- Operator prep (fail-closed, no destroy): [`docs/ops/hosted-gates-operator-checklist.md`](../ops/hosted-gates-operator-checklist.md) + `pnpm ops:prep-hosted-gates`
