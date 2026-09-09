@@ -42,24 +42,8 @@ export const dispatchTool = <E, R>(
     if (tool === undefined) {
       return yield* new McpFailure("MCP_INPUT");
     }
-    // MCP-edge mirrors of CLI confirm-before-send flags (not a second policy
-    // authority — Closing/authorization stay on the server).
-    if (name === "RequestWorldErasure") {
-      const args = asArgs(rawArgs);
-      if (args.confirmEntireWorld !== true) {
-        return yield* new McpFailure("MCP_INPUT");
-      }
-    }
-    if (name === "ProposeCorrection") {
-      const args = asArgs(rawArgs);
-      const hasClaim =
-        args.claimRef !== undefined &&
-        args.claimRef !== null &&
-        args.claimRef !== "";
-      if ((args.choice === "select-claim") !== hasClaim) {
-        return yield* new McpFailure("MCP_INPUT");
-      }
-    }
+    // Structural parse only — operation policy (e.g. whole-world confirm) lives
+    // on the shared semantic executor / server, not per-transport.
     const candidate = yield* Effect.try({
       catch: () => new McpFailure("MCP_INPUT"),
       try: () => tool.buildRequest(asArgs(rawArgs)),

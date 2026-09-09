@@ -37,12 +37,14 @@ describe("MCP tool dispatch", () => {
     });
   });
 
-  it("returns MCP_INPUT for unknown tools and bad ProposeCorrection shapes", () => {
+  it("returns MCP_INPUT for unknown tools and decode failures", () => {
     expect(
       Effect.runSync(
         dispatchTool("NotATool", {}, succeedCreated).pipe(Effect.flip)
       )
     ).toStrictEqual(new McpFailure("MCP_INPUT"));
+    // select-claim with empty/missing claimRef fails Uuid decode (structural),
+    // not an MCP-edge choice↔claimRef policy guard.
     expect(
       Effect.runSync(
         dispatchTool(
@@ -74,32 +76,29 @@ describe("MCP tool dispatch", () => {
     expect(JSON.parse(result.text)).toStrictEqual(worldCreated);
   });
 
-  it("requires confirmEntireWorld true for RequestWorldErasure at the MCP edge", () => {
-    const expectInput = (args: Record<string, unknown>) => {
-      expect(
-        Effect.runSync(
-          dispatchTool("RequestWorldErasure", args, succeedCreated).pipe(
-            Effect.flip
-          )
-        )
-      ).toStrictEqual(new McpFailure("MCP_INPUT"));
+  // confirmEntireWorld policy is owned by the shared erasure executor/server
+  // (Literal(true) on RequestWorldErasure input), not by MCP dispatch.
+  it("forwards RequestWorldErasure without MCP-edge confirm policy", () => {
+    let seen: SemanticRequest | undefined;
+    const run = (request: SemanticRequest) => {
+      seen = request;
+      return Effect.succeed(worldCreated);
     };
-    expectInput({
-      expectedRevision: null,
+    const result = Effect.runSync(
+      runToolCall(
+        "RequestWorldErasure",
+        {
+          expectedRevision: null,
+          operationId,
+          worldId,
+        },
+        run
+      )
+    );
+    expect(result.isError).toBeFalsy();
+    expect(seen).toMatchObject({
+      operation: "RequestWorldErasure",
       operationId,
-      worldId,
-    });
-    expectInput({
-      confirmEntireWorld: false,
-      expectedRevision: null,
-      operationId,
-      worldId,
-    });
-    expectInput({
-      confirmEntireWorld: "true",
-      expectedRevision: null,
-      operationId,
-      worldId,
     });
   });
 
