@@ -43,6 +43,8 @@ pnpm exec vitest run --project integration \
   apps/server/test/composition/eve/text-profile.ZA20.integration.test.ts
 ```
 
+Operator one-command (fail-closed sem key): `pnpm eve:qualify-gprovider` — ver `docs/ops/eve-gprovider-operator-runbook.md`.
+
 Live OpenCode (opcional; skip/Blocked sem key):
 
 ```bash

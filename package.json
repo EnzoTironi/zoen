@@ -41,7 +41,8 @@
     "alchemy:plan": "alchemy plan ops/alchemy/alchemy.run.ts",
     "alchemy:deploy": "alchemy deploy ops/alchemy/alchemy.run.ts",
     "alchemy:destroy": "alchemy destroy ops/alchemy/alchemy.run.ts",
-    "typecheck:alchemy": "tsc --noEmit -p ops/alchemy/tsconfig.json"
+    "typecheck:alchemy": "tsc --noEmit -p ops/alchemy/tsconfig.json",
+    "eve:qualify-gprovider": "python3 tests/integration/eve/gprovider/qualify.py"
   },
   "devDependencies": {
     "@alchemy.run/frontend-frameworks": "2.0.0-beta.76",
