@@ -183,16 +183,15 @@ describe("web Worlds execute routing", () => {
       });
       return Effect.gen(function* closed() {
         let capturedCredentials: RequestCredentials | undefined;
-        const mockFetch = (async (
-          _input: RequestInfo | URL,
-          init?: RequestInit
-        ) => {
+        const mockFetch: typeof globalThis.fetch = (_input, init) => {
           capturedCredentials = init?.credentials;
-          return Response.json(
-            { _tag: "InvalidInput", code: "INVALID_INPUT" },
-            { status: 400 }
+          return Promise.resolve(
+            Response.json(
+              { _tag: "InvalidInput", code: "INVALID_INPUT" },
+              { status: 400 }
+            )
           );
-        }) as typeof globalThis.fetch;
+        };
         const api = yield* BrowserApi.pipe(
           Effect.provide(browserApiLayer(origin))
         );
