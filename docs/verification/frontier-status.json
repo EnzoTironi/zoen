@@ -53,9 +53,7 @@
       "g-storage-fence-writer-containment",
       "g-provider-live-opencode-product"
     ],
-    "unknown": [
-      "g-ops-live-erasable-inventory"
-    ]
+    "unknown": ["g-ops-live-erasable-inventory"]
   },
   "conditionalGates": {
     "G-OPS": "Unknown",
