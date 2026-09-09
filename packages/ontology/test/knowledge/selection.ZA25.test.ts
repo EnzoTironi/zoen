@@ -94,9 +94,14 @@ it.effect(
         namespace: "finance.statement",
         subjectKey: "fatura-software-2026-09",
       });
-      expect(
-        (yield* classifyClaims([ledgerBrl, statementUsd])).contested
-      ).toBeFalsy();
+      const result = yield* classifyClaims([ledgerBrl, statementUsd]);
+      expect(result).toStrictEqual({
+        contested: false,
+        selection: {
+          _tag: "set-valued",
+          claimRefs: [ledgerBrl.claimRef, statementUsd.claimRef],
+        },
+      });
     })
 );
 

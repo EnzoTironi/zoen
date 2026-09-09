@@ -430,7 +430,20 @@ it.live(
               yield* inspectSubject(worldRef, consultoriaKey)
             );
             expect(current.frame.contested).toBeTruthy();
-            expect(current.frame.claims.length).toBeGreaterThanOrEqual(2);
+            // Ledger + both statement revisions (incl. revised 3100 BRL).
+            expect(
+              current.frame.claims
+                .map((claim) =>
+                  claim.value._tag === "Known"
+                    ? `${claim.value.amount} ${claim.value.currency}@${claim.source.namespace}@${claim.source.revision}`
+                    : "Unknown"
+                )
+                .toSorted()
+            ).toStrictEqual([
+              "3100 BRL@finance.statement@2",
+              "3200 BRL@finance.statement@1",
+              "3500 BRL@finance.ledger@1",
+            ]);
             const freshLedger = current.frame.claims.find(
               (claim) => claim.source.namespace === "finance.ledger"
             );
@@ -486,7 +499,19 @@ it.live(
               yield* inspectSubject(worldRef, consultoriaKey)
             );
             expect(corrected.frame.scopedCorrections).toHaveLength(1);
-            expect(corrected.frame.claims.length).toBeGreaterThanOrEqual(2);
+            expect(
+              corrected.frame.claims
+                .map((claim) =>
+                  claim.value._tag === "Known"
+                    ? `${claim.value.amount} ${claim.value.currency}@${claim.source.namespace}@${claim.source.revision}`
+                    : "Unknown"
+                )
+                .toSorted()
+            ).toStrictEqual([
+              "3100 BRL@finance.statement@2",
+              "3200 BRL@finance.statement@1",
+              "3500 BRL@finance.ledger@1",
+            ]);
             expect(corrected.frame.verification).toBe("unverified");
             // Correction receipt is a scoped local decision — not a payment receipt.
             expect(applied.correctionRef).toBeTruthy();
