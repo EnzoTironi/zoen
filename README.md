@@ -6,7 +6,7 @@ Operational ontology OS — Language · Engine · Security. **Worlds** is pack #
 
 ## Product framing
 
-Zoen is an **operational ontology OS**: typed Objects / Links plus governed **Action Types** (submission criteria → transactional edits → Action Log). Agents follow the golden rule — LLM proposes, validator grants. Surfaces today: **web**, **CLI**, and **MCP** over the same semantic verbs; MCP tools eventually codegen from Action Types.
+Zoen is an **operational ontology OS**: typed Objects / Links plus governed **Action Types** (submission criteria → transactional edits → Action Log). Agents follow the golden rule — LLM proposes, validator grants. Surfaces today: **web**, **CLI**, and **MCP** over the same semantic verbs; MCP Worlds tools are codegen'd from OMS Action Types (W4), with subject-identity as a documented escape hatch.
 
 Worlds remains the first domain pack and the tip product wedge — not a chat app, not a Foundry clone, not agent-memory-as-kernel. Constitution: [ADR-0001](docs/adr/ADR-0001-operational-ontology-os.md) · [glossary](docs/glossary/operational-ontology.md) · [OO OS roadmap](docs/roadmap-oo-os.md).
 
@@ -89,7 +89,7 @@ Do not commit Fly secrets or `.env*` files. See [SECURITY.md](SECURITY.md).
 
 ## MCP (Cursor / Claude)
 
-`@zoen/mcp` v0 exposes the same Worlds **and subject-identity** semantic verbs as the CLI as MCP tools over stdio. Web, CLI, and MCP share `@zoen/application-client` ApplicationApi execute routing; CLI/MCP also share Node session.json (browser auth stays HttpOnly cookies). Worlds pack tools/commands run through **ActionRunner** (OMS Action Types + Action Log) then `/api/*/execute`; subject-identity stays on direct SemanticRequest HTTP. Server SemanticExecutor still owns policy + receipts. Sign-in stays on the CLI (no password tools on MCP). There is no Eve/chat/voice surface.
+`@zoen/mcp` v0 exposes the same Worlds **and subject-identity** semantic verbs as the CLI as MCP tools over stdio. **Worlds tool names** come from the OMS Action Type registry (`@zoen/oms/mcp-codegen`); host binders supply MCP input schemas / SemanticRequest builders (no third hand verb list). Web, CLI, and MCP share `@zoen/application-client` ApplicationApi execute routing; CLI/MCP also share Node session.json (browser auth stays HttpOnly cookies). Worlds pack tools/commands run through **ActionRunner** (OMS Action Types + Action Log) then `/api/*/execute`; subject-identity stays on direct SemanticRequest HTTP (not OMS; escape hatch). Server SemanticExecutor still owns policy + receipts. Sign-in stays on the CLI (no password tools on MCP). There is no Eve/chat/voice surface.
 
 1. Build: `pnpm install --frozen-lockfile && pnpm build`
 2. Sign in with the CLI (session file is reused):
