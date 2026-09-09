@@ -2,7 +2,13 @@
 
 [![Verify](https://github.com/EnzoTironi/zoen/actions/workflows/verify.yml/badge.svg)](https://github.com/EnzoTironi/zoen/actions/workflows/verify.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Node.js](https://img.shields.io/badge/Node.js-24-green.svg)](.node-version)
 
-Shared governed Worlds for private truth — with evidence, rights, and erasure as first-class consequences.
+Operational ontology OS — Language · Engine · Security. **Worlds** is pack #1 (governed private truth: evidence, rights, erasure).
+
+## Product framing
+
+Zoen is an **operational ontology OS**: typed Objects / Links plus governed **Action Types** (submission criteria → transactional edits → Action Log). Agents follow the golden rule — LLM proposes, validator grants. Surfaces today: **web**, **CLI**, and **MCP** over the same semantic verbs; MCP tools eventually codegen from Action Types.
+
+Worlds remains the first domain pack and the tip product wedge — not a chat app, not a Foundry clone, not agent-memory-as-kernel. Constitution: [ADR-0001](docs/adr/ADR-0001-operational-ontology-os.md) · [glossary](docs/glossary/operational-ontology.md) · [OO OS roadmap](docs/roadmap-oo-os.md).
 
 ## Who it’s for
 
@@ -23,7 +29,7 @@ Same grammar across ICPs already named in the roadmap (no new commercial persona
 6. Share and revoke (when enabled)
 7. Retention / erasure when qualified
 
-Surfaces first: **web**, **CLI**, and **MCP** (same World verbs). Later SDK/agent adapters sit over that grammar — not a separate chat product. Product surface is ontology **Worlds** only.
+Surfaces first: **web**, **CLI**, and **MCP** (same World verbs → Action Types). Later SDK/agent adapters sit over that grammar — not a separate chat product. Tip wedge is the **Worlds** pack on the OO OS constitution.
 
 ## Live
 
@@ -112,11 +118,15 @@ Optional: `ZOEN_SESSION_DIR` overrides the default `~/.config/zoen` session dire
 
 ## Docs
 
+- [ADR-0001 — Operational Ontology OS](docs/adr/ADR-0001-operational-ontology-os.md) — constitution lock (W0)
+- [Glossary — operational ontology](docs/glossary/operational-ontology.md) — Object / Action / 4C / golden rule
+- [OO OS roadmap (W0–W5)](docs/roadmap-oo-os.md) — kernel rewrite waves + acceptance
 - [Architecture](docs/architecture.md) — workspaces and composition
 - [Architecture audit (post-#74 frontier)](docs/architecture-audit/README.md) — execution frontier, anti-list, ZA plan (docs only; 0 ZA accepted)
+- [OO + Palantir Impact memo (derived)](docs/architecture-audit/oo-palantir-as-zoen-spec.md) — research behind ADR-0001
 - [Frontier integration (ZA-26)](docs/verification/frontier-integration.md) — tip-bound selected-frontier status (finance demo; conditional gates stay blocked)
 - [Invariants](docs/invariants.md) — product laws
-- [Roadmap](docs/roadmap.md) — phases and deliveries
+- [Roadmap](docs/roadmap.md) — Worlds-era phases and deliveries
 - [Quality](docs/quality.md) — gates and proof layers
 - [Contributing](CONTRIBUTING.md) — setup and PR rules
 - [Security](SECURITY.md) — private vulnerability reporting

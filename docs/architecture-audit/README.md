@@ -13,5 +13,6 @@
 | [anti-list.md](anti-list.md) | What not to invent from atlas/ambition drawings |
 | [frontier.md](frontier.md) | Decided ownership / product grammar frontier |
 | [za-plan.md](za-plan.md) | ZA-01..26 one-line titles + gates note |
+| [oo-palantir-as-zoen-spec.md](oo-palantir-as-zoen-spec.md) | Derived research memo → OO OS constitution (ADR-0001) |
 
-Related product docs: [roadmap](../roadmap.md) (PT frontier section), [AGENTS.md](../../AGENTS.md) Pre-launch Evolution, honest increments in [`planning/progress.json`](../../planning/progress.json).
+Related product docs: [ADR-0001](../adr/ADR-0001-operational-ontology-os.md), [OO glossary](../glossary/operational-ontology.md), [OO roadmap](../roadmap-oo-os.md); [roadmap](../roadmap.md) (PT frontier section), [AGENTS.md](../../AGENTS.md) Pre-launch Evolution, honest increments in [`planning/progress.json`](../../planning/progress.json).
