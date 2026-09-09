@@ -7,7 +7,7 @@ import shutil
 def main():
     root = Path(__file__).resolve().parent.parent
     targets = []
-    for package in ["packages/contracts", "packages/application-client", "packages/ontology", "apps/server", "apps/cli", "apps/mcp", "apps/web"]:
+    for package in ["packages/contracts", "packages/application-client", "packages/ontology", "packages/oms", "apps/server", "apps/cli", "apps/mcp", "apps/web"]:
         for artifact in ["dist", "tsconfig.build.tsbuildinfo"]:
             relative = Path(package) / artifact
             target = root

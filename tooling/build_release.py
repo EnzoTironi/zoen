@@ -11,6 +11,7 @@ def main():
         "packages/contracts/dist",
         "packages/application-client/dist",
         "packages/ontology/dist",
+        "packages/oms/dist",
         "apps/server/dist",
         "apps/cli/dist",
         "apps/mcp/dist",
@@ -26,7 +27,7 @@ def main():
                 "path": path.relative_to(root).as_posix(),
                 "sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
             })
-    for package in ["packages/contracts", "packages/application-client", "packages/ontology", "apps/server", "apps/cli", "apps/mcp", "apps/web"]:
+    for package in ["packages/contracts", "packages/application-client", "packages/ontology", "packages/oms", "apps/server", "apps/cli", "apps/mcp", "apps/web"]:
         path = root / package / "package.json"
         files.append({"path": path.relative_to(root).as_posix(), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()})
     manifest = {

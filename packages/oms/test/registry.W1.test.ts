@@ -6,6 +6,9 @@ import {
 } from "../src/packs/default-registry.js";
 import { worldsSemanticOperations } from "../src/packs/worlds.js";
 import {
+  DuplicateTypeError,
+  InvalidReferenceError,
+  PackIdMismatchError,
   UnknownTypeError,
   acceptActionStub,
   loadRegistry,
@@ -13,6 +16,114 @@ import {
   lookupLinkType,
   lookupObjectType,
 } from "../src/registry.js";
+
+const emptyEditIntent = {
+  creates: [] as string[],
+  deletes: [] as string[],
+  linkCreates: [] as string[],
+  updates: [] as string[],
+};
+
+const baseObject = {
+  description: "World",
+  glossaryTerm: "World",
+  id: "worlds.World",
+  packId: "worlds",
+  properties: [
+    {
+      description: "World id",
+      kind: "uuid",
+      name: "worldId",
+      nullable: false,
+      optional: false,
+      refTypeId: null,
+    },
+  ],
+  version: "0.1.0",
+};
+
+const baseLink = {
+  cardinalityFrom: "one",
+  cardinalityTo: "zero-or-more",
+  description: "World has evidence",
+  fromTypeId: "worlds.World",
+  glossaryTerm: "WorldHasEvidence",
+  id: "worlds.WorldHasEvidence",
+  packId: "worlds",
+  toTypeId: "worlds.Evidence",
+  version: "0.1.0",
+};
+
+const evidenceObject = {
+  description: "Evidence",
+  glossaryTerm: "Evidence",
+  id: "worlds.Evidence",
+  packId: "worlds",
+  properties: [],
+  version: "0.1.0",
+};
+
+const baseAction = {
+  description: "Create a personal World",
+  editIntent: { ...emptyEditIntent, creates: ["worlds.World"] },
+  glossaryTerm: "CreatePersonalWorld",
+  id: "worlds.CreatePersonalWorld",
+  mode: "mutation",
+  packId: "worlds",
+  parameters: [
+    {
+      description: "Declared purpose",
+      kind: "string",
+      name: "purpose",
+      nullable: false,
+      optional: false,
+      refTypeId: null,
+    },
+  ],
+  runtimeBinding: "semantic-executor",
+  semanticOperation: "CreatePersonalWorld",
+  submissionCriteria: {
+    notes: "Authenticated principal",
+    requireAuthenticated: true,
+    requireOwner: false,
+    requireWorldScope: false,
+  },
+  version: "0.1.0",
+};
+
+const basePack = {
+  actionTypes: [baseAction],
+  description: "Worlds pack fixture",
+  id: "worlds",
+  linkTypes: [baseLink],
+  objectTypes: [baseObject, evidenceObject],
+  version: "0.1.0",
+};
+
+const baseRegistry = {
+  packs: [basePack],
+  schemaVersion: "oms.v1",
+  version: "0.1.0",
+};
+
+const ownerOnlyMutations = [
+  "ImportEvidence",
+  "ProposeCorrection",
+  "AnswerQuestion",
+  "UndoCorrection",
+  "GrantWorldReadAccess",
+  "RevokeWorldReadAccess",
+  "RequestWorldErasure",
+  "PurgeWorldContent",
+] as const;
+
+const requiredNullableParams = [
+  ["worlds.Inspect", "atFrame"],
+  ["worlds.InspectWorldAccess", "principalRef"],
+  ["worlds.GrantWorldReadAccess", "expectedRevision"],
+  ["worlds.RequestWorldErasure", "expectedErasureRevision"],
+  ["worlds.InspectWorldErasure", "operationId"],
+] as const;
 
 describe("OMS W1 registry", () => {
   it("loads the default registry document", () => {
@@ -72,6 +183,135 @@ describe("OMS W1 registry", () => {
       })
     ).toThrow(/Array|minLength|isMinLength|expected/iu);
   });
+
+  it("rejects duplicate pack ids", () => {
+    expect(() =>
+      loadRegistry({
+        ...baseRegistry,
+        packs: [basePack, { ...basePack }],
+      })
+    ).toThrow(DuplicateTypeError);
+  });
+
+  it("rejects duplicate object type ids", () => {
+    expect(() =>
+      loadRegistry({
+        ...baseRegistry,
+        packs: [
+          {
+            ...basePack,
+            objectTypes: [baseObject, evidenceObject, { ...baseObject }],
+          },
+        ],
+      })
+    ).toThrow(DuplicateTypeError);
+  });
+
+  it("rejects unknown link endpoints", () => {
+    expect(() =>
+      loadRegistry({
+        ...baseRegistry,
+        packs: [
+          {
+            ...basePack,
+            linkTypes: [{ ...baseLink, toTypeId: "worlds.MissingObject" }],
+          },
+        ],
+      })
+    ).toThrow(UnknownTypeError);
+  });
+
+  it("rejects unknown edit-intent object ids", () => {
+    expect(() =>
+      loadRegistry({
+        ...baseRegistry,
+        packs: [
+          {
+            ...basePack,
+            actionTypes: [
+              {
+                ...baseAction,
+                editIntent: {
+                  ...emptyEditIntent,
+                  creates: ["worlds.MissingObject"],
+                },
+              },
+            ],
+          },
+        ],
+      })
+    ).toThrow(UnknownTypeError);
+  });
+
+  it("rejects packId mismatches on typed cards", () => {
+    expect(() =>
+      loadRegistry({
+        ...baseRegistry,
+        packs: [
+          {
+            ...basePack,
+            objectTypes: [{ ...baseObject, packId: "other" }, evidenceObject],
+          },
+        ],
+      })
+    ).toThrow(PackIdMismatchError);
+  });
+
+  it("rejects ref fields without a registered target", () => {
+    expect(() =>
+      loadRegistry({
+        ...baseRegistry,
+        packs: [
+          {
+            ...basePack,
+            actionTypes: [
+              {
+                ...baseAction,
+                parameters: [
+                  {
+                    description: "Target World",
+                    kind: "ref",
+                    name: "worldRef",
+                    nullable: false,
+                    optional: false,
+                    refTypeId: "worlds.MissingObject",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      })
+    ).toThrow(InvalidReferenceError);
+  });
+
+  it("rejects non-ref fields that declare a refTypeId", () => {
+    expect(() =>
+      loadRegistry({
+        ...baseRegistry,
+        packs: [
+          {
+            ...basePack,
+            actionTypes: [
+              {
+                ...baseAction,
+                parameters: [
+                  {
+                    description: "Evidence document body",
+                    kind: "string",
+                    name: "document",
+                    nullable: false,
+                    optional: false,
+                    refTypeId: "worlds.World",
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      })
+    ).toThrow(InvalidReferenceError);
+  });
 });
 
 describe("OMS W1 Worlds pack completeness", () => {
@@ -127,6 +367,33 @@ describe("OMS W1 Worlds pack completeness", () => {
     for (const action of defaultOmsRegistry.actionTypes.values()) {
       expect(action.runtimeBinding).toBe("semantic-executor");
       expect(action.packId).toBe("worlds");
+    }
+  });
+
+  it("declares purpose on every Worlds Action Type", () => {
+    for (const action of defaultOmsRegistry.actionTypes.values()) {
+      const purpose = action.parameters.find((item) => item.name === "purpose");
+      expect(purpose?.optional).toBeFalsy();
+      expect(purpose?.nullable).toBeFalsy();
+      expect(purpose?.kind).toBe("string");
+    }
+  });
+
+  it("marks owner-only tip mutations with requireOwner", () => {
+    for (const operation of ownerOnlyMutations) {
+      const action = [...defaultOmsRegistry.actionTypes.values()].find(
+        (item) => item.semanticOperation === operation
+      );
+      expect(action?.submissionCriteria.requireOwner).toBeTruthy();
+    }
+  });
+
+  it("marks NullOr SemanticRequest fields as required+nullable", () => {
+    for (const [actionId, paramName] of requiredNullableParams) {
+      const action = lookupActionType(defaultOmsRegistry, actionId);
+      const param = action.parameters.find((item) => item.name === paramName);
+      expect(param?.optional).toBeFalsy();
+      expect(param?.nullable).toBeTruthy();
     }
   });
 });

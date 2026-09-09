@@ -27,7 +27,7 @@
     "test:integration": "python3 tooling/run_integration.py",
     "test:components": "playwright test",
     "build:web": "vite build --config vite.application.config.ts",
-    "build": "python3 tooling/clean_build.py && pnpm build:apps && pnpm build:web && python3 tooling/build_release.py",
+    "build": "python3 tooling/clean_build.py && pnpm build:core && pnpm build:apps && pnpm build:web && python3 tooling/build_release.py",
     "provision:local": "node --env-file=.env.infra ops/local/provision.ts",
     "staging:up": "python3 tooling/staging_up.py",
     "staging:down": "docker compose --env-file .env.infra -f ops/compose.yaml down",

@@ -2,6 +2,8 @@ import { Schema } from "effect";
 
 import { DuplicateTypeError } from "./duplicate-error.js";
 import { UnknownTypeError } from "./errors.js";
+import { InvalidReferenceError } from "./invalid-reference-error.js";
+import { PackIdMismatchError } from "./pack-id-mismatch-error.js";
 import { ActionType, LinkType, ObjectType } from "./schemas.js";
 import { OmsSchemaVersion, PackId, RegistryVersion, exact } from "./values.js";
 
@@ -52,6 +54,58 @@ const indexUnique = <T extends { readonly id: string }>(
   return map;
 };
 
+const assertPackId = (
+  cardKind: "object" | "link" | "action",
+  packId: string,
+  type: { readonly id: string; readonly packId: string }
+): void => {
+  if (type.packId !== packId) {
+    throw new PackIdMismatchError({
+      cardKind,
+      declaredPackId: type.packId,
+      packId,
+      typeId: type.id,
+    });
+  }
+};
+
+const assertReferenceField = (
+  kind: "object-property" | "action-parameter",
+  typeId: string,
+  field: string,
+  valueKind: string,
+  refTypeId: string | null,
+  objectTypes: ReadonlyMap<string, ObjectType>
+): void => {
+  if (valueKind === "ref") {
+    if (refTypeId === null) {
+      throw new InvalidReferenceError({
+        field,
+        kind,
+        reason: "kind-mismatch",
+        typeId,
+      });
+    }
+    if (!objectTypes.has(refTypeId)) {
+      throw new InvalidReferenceError({
+        field,
+        kind,
+        reason: "unknown-target",
+        typeId,
+      });
+    }
+    return;
+  }
+  if (refTypeId !== null) {
+    throw new InvalidReferenceError({
+      field,
+      kind,
+      reason: "kind-mismatch",
+      typeId,
+    });
+  }
+};
+
 /** Validate and index a registry document (git-versioned JSON/TS seed). */
 export const loadRegistry = (input: unknown): LoadedRegistry => {
   const registry = decodeRegistry(input);
@@ -67,22 +121,38 @@ export const loadRegistry = (input: unknown): LoadedRegistry => {
     packs.set(pack.id, pack);
 
     for (const [id, type] of indexUnique("object", pack.objectTypes)) {
+      assertPackId("object", pack.id, type);
       if (objectTypes.has(id)) {
         throw new DuplicateTypeError({ kind: "object", typeId: id });
       }
       objectTypes.set(id, type);
     }
     for (const [id, type] of indexUnique("link", pack.linkTypes)) {
+      assertPackId("link", pack.id, type);
       if (linkTypes.has(id)) {
         throw new DuplicateTypeError({ kind: "link", typeId: id });
       }
       linkTypes.set(id, type);
     }
     for (const [id, type] of indexUnique("action", pack.actionTypes)) {
+      assertPackId("action", pack.id, type);
       if (actionTypes.has(id)) {
         throw new DuplicateTypeError({ kind: "action", typeId: id });
       }
       actionTypes.set(id, type);
+    }
+  }
+
+  for (const objectType of objectTypes.values()) {
+    for (const property of objectType.properties) {
+      assertReferenceField(
+        "object-property",
+        objectType.id,
+        property.name,
+        property.kind,
+        property.refTypeId,
+        objectTypes
+      );
     }
   }
 
@@ -99,6 +169,16 @@ export const loadRegistry = (input: unknown): LoadedRegistry => {
   }
 
   for (const action of actionTypes.values()) {
+    for (const parameter of action.parameters) {
+      assertReferenceField(
+        "action-parameter",
+        action.id,
+        parameter.name,
+        parameter.kind,
+        parameter.refTypeId,
+        objectTypes
+      );
+    }
     for (const typeId of [
       ...action.editIntent.creates,
       ...action.editIntent.updates,
@@ -158,4 +238,6 @@ export const acceptActionStub = (
 ): ActionType => lookupActionType(loaded, typeId);
 
 export { DuplicateTypeError } from "./duplicate-error.js";
+export { InvalidReferenceError } from "./invalid-reference-error.js";
+export { PackIdMismatchError } from "./pack-id-mismatch-error.js";
 export { UnknownTypeError } from "./errors.js";

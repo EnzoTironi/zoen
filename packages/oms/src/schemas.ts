@@ -18,6 +18,7 @@ export const PropertyType = Schema.Struct({
   ),
   kind: PropertyValueKind,
   name: PropertyName,
+  nullable: Schema.Boolean,
   optional: Schema.Boolean,
   refTypeId: Schema.NullOr(TypeId),
 }).annotate(exact);
@@ -65,6 +66,7 @@ export const ActionParameter = Schema.Struct({
   ),
   kind: PropertyValueKind,
   name: PropertyName,
+  nullable: Schema.Boolean,
   optional: Schema.Boolean,
   refTypeId: Schema.NullOr(TypeId),
 }).annotate(exact);

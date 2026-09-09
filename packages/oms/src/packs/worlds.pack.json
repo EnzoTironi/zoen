@@ -19,6 +19,7 @@
               "description": "Declared purpose",
               "kind": "string",
               "name": "purpose",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -26,6 +27,7 @@
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -57,9 +59,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -67,6 +78,7 @@
               "description": "Evidence document body",
               "kind": "string",
               "name": "document",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -74,6 +86,7 @@
               "description": "Optional CSV format marker",
               "kind": "string",
               "name": "format",
+              "nullable": false,
               "optional": true,
               "refTypeId": null
             },
@@ -81,6 +94,7 @@
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -88,9 +102,9 @@
           "runtimeBinding": "semantic-executor",
           "semanticOperation": "ImportEvidence",
           "submissionCriteria": {
-            "notes": "Owner (or authorized writer) on World.",
+            "notes": "Owner required on World.",
             "requireAuthenticated": true,
-            "requireOwner": false,
+            "requireOwner": true,
             "requireWorldScope": true
           },
           "version": "0.1.0"
@@ -109,9 +123,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -119,6 +142,7 @@
               "description": "Subject key",
               "kind": "string",
               "name": "subjectKey",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -126,7 +150,8 @@
               "description": "Optional frame pointer",
               "kind": "uuid",
               "name": "atFrame",
-              "optional": true,
+              "nullable": true,
+              "optional": false,
               "refTypeId": null
             }
           ],
@@ -154,9 +179,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -164,6 +198,7 @@
               "description": "Evidence reference",
               "kind": "uuid",
               "name": "evidenceRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -192,9 +227,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -202,6 +246,7 @@
               "description": "Frame reference",
               "kind": "uuid",
               "name": "frameRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -209,6 +254,7 @@
               "description": "Correction consequence payload",
               "kind": "json",
               "name": "consequence",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -216,6 +262,7 @@
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -223,9 +270,9 @@
           "runtimeBinding": "semantic-executor",
           "semanticOperation": "ProposeCorrection",
           "submissionCriteria": {
-            "notes": "Owner/authorized writer; 4C as required.",
+            "notes": "Owner required on World.",
             "requireAuthenticated": true,
-            "requireOwner": false,
+            "requireOwner": true,
             "requireWorldScope": true
           },
           "version": "0.1.0"
@@ -244,9 +291,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -254,6 +310,7 @@
               "description": "Question reference",
               "kind": "uuid",
               "name": "questionRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -261,6 +318,7 @@
               "description": "confirm | unknown",
               "kind": "string",
               "name": "answer",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -268,6 +326,7 @@
               "description": "Digest of proposed consequence",
               "kind": "string",
               "name": "consequenceDigest",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -275,6 +334,7 @@
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -282,9 +342,9 @@
           "runtimeBinding": "semantic-executor",
           "semanticOperation": "AnswerQuestion",
           "submissionCriteria": {
-            "notes": "Owner/authorized writer on World.",
+            "notes": "Owner required on World.",
             "requireAuthenticated": true,
-            "requireOwner": false,
+            "requireOwner": true,
             "requireWorldScope": true
           },
           "version": "0.1.0"
@@ -303,9 +363,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -313,6 +382,7 @@
               "description": "Correction reference",
               "kind": "uuid",
               "name": "correctionRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -320,6 +390,7 @@
               "description": "Frame reference",
               "kind": "uuid",
               "name": "frameRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -327,6 +398,7 @@
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -334,9 +406,9 @@
           "runtimeBinding": "semantic-executor",
           "semanticOperation": "UndoCorrection",
           "submissionCriteria": {
-            "notes": "Owner/authorized writer on World.",
+            "notes": "Owner required on World.",
             "requireAuthenticated": true,
-            "requireOwner": false,
+            "requireOwner": true,
             "requireWorldScope": true
           },
           "version": "0.1.0"
@@ -355,9 +427,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -365,7 +446,8 @@
               "description": "Optional principal filter",
               "kind": "uuid",
               "name": "principalRef",
-              "optional": true,
+              "nullable": true,
+              "optional": false,
               "refTypeId": null
             }
           ],
@@ -393,9 +475,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -403,6 +494,7 @@
               "description": "Principal to grant",
               "kind": "uuid",
               "name": "principalRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -410,13 +502,15 @@
               "description": "Optimistic concurrency",
               "kind": "string",
               "name": "expectedRevision",
-              "optional": true,
+              "nullable": true,
+              "optional": false,
               "refTypeId": null
             },
             {
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -445,9 +539,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -455,6 +558,7 @@
               "description": "Principal to revoke",
               "kind": "uuid",
               "name": "principalRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -462,6 +566,7 @@
               "description": "Optimistic concurrency",
               "kind": "string",
               "name": "expectedRevision",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -469,6 +574,7 @@
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -497,9 +603,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -507,6 +622,7 @@
               "description": "Must be true",
               "kind": "boolean",
               "name": "confirmEntireWorld",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -514,6 +630,7 @@
               "description": "Erasure policy version",
               "kind": "string",
               "name": "policyVersion",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -521,13 +638,15 @@
               "description": "Optimistic concurrency",
               "kind": "string",
               "name": "expectedErasureRevision",
-              "optional": true,
+              "nullable": true,
+              "optional": false,
               "refTypeId": null
             },
             {
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -556,9 +675,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -566,7 +694,8 @@
               "description": "Optional attempt filter",
               "kind": "uuid",
               "name": "operationId",
-              "optional": true,
+              "nullable": true,
+              "optional": false,
               "refTypeId": null
             }
           ],
@@ -594,9 +723,18 @@
           "packId": "worlds",
           "parameters": [
             {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
               "description": "Target World",
               "kind": "ref",
               "name": "worldRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": "worlds.World"
             },
@@ -604,6 +742,7 @@
               "description": "Closing operation id",
               "kind": "uuid",
               "name": "closingOperationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -611,6 +750,7 @@
               "description": "Optimistic concurrency",
               "kind": "string",
               "name": "expectedErasureRevision",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -618,6 +758,7 @@
               "description": "Idempotency key",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -625,7 +766,7 @@
           "runtimeBinding": "semantic-executor",
           "semanticOperation": "PurgeWorldContent",
           "submissionCriteria": {
-            "notes": "Owner; Closing\u2192Erased only for controlled copies.",
+            "notes": "Owner; Closing→Erased only for controlled copies.",
             "requireAuthenticated": true,
             "requireOwner": true,
             "requireWorldScope": true
@@ -633,7 +774,7 @@
           "version": "0.1.0"
         }
       ],
-      "description": "Worlds ontology pack #1 \u2014 private truth with evidence, correction, sharing, erasure. Seeds only; tip SemanticExecutor still runs until W2/W3.",
+      "description": "Worlds ontology pack #1 — private truth with evidence, correction, sharing, erasure. Seeds only; tip SemanticExecutor still runs until W2/W3.",
       "id": "worlds",
       "linkTypes": [
         {
@@ -703,6 +844,7 @@
               "description": "World identifier",
               "kind": "uuid",
               "name": "worldId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -710,6 +852,7 @@
               "description": "live | evaluation",
               "kind": "string",
               "name": "realm",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -717,6 +860,7 @@
               "description": "Declared purpose string",
               "kind": "string",
               "name": "purpose",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -733,6 +877,7 @@
               "description": "Evidence reference",
               "kind": "uuid",
               "name": "evidenceRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -740,6 +885,7 @@
               "description": "application/json | text/csv",
               "kind": "string",
               "name": "mediaType",
+              "nullable": false,
               "optional": true,
               "refTypeId": null
             }
@@ -756,6 +902,7 @@
               "description": "Source reference",
               "kind": "uuid",
               "name": "sourceRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -763,6 +910,7 @@
               "description": "Source namespace",
               "kind": "string",
               "name": "namespace",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -770,6 +918,7 @@
               "description": "External source id",
               "kind": "string",
               "name": "externalId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -777,6 +926,7 @@
               "description": "Human label",
               "kind": "string",
               "name": "label",
+              "nullable": false,
               "optional": true,
               "refTypeId": null
             }
@@ -793,6 +943,7 @@
               "description": "Correction reference",
               "kind": "uuid",
               "name": "correctionRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -800,6 +951,7 @@
               "description": "Case reference",
               "kind": "uuid",
               "name": "caseRef",
+              "nullable": false,
               "optional": true,
               "refTypeId": null
             },
@@ -807,6 +959,7 @@
               "description": "Frame reference",
               "kind": "uuid",
               "name": "frameRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -823,6 +976,7 @@
               "description": "Principal reference",
               "kind": "uuid",
               "name": "principalRef",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -830,6 +984,7 @@
               "description": "owner | viewer",
               "kind": "string",
               "name": "role",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -837,6 +992,7 @@
               "description": "active | revoked",
               "kind": "string",
               "name": "state",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -844,6 +1000,7 @@
               "description": "Membership revision",
               "kind": "string",
               "name": "revision",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
@@ -860,6 +1017,7 @@
               "description": "Closing / attempt operation id",
               "kind": "uuid",
               "name": "operationId",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -867,6 +1025,7 @@
               "description": "World erasure phase",
               "kind": "string",
               "name": "phase",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -874,6 +1033,7 @@
               "description": "Erasure revision",
               "kind": "string",
               "name": "revision",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             },
@@ -881,6 +1041,7 @@
               "description": "Product default closed",
               "kind": "boolean",
               "name": "restoreAfterErasure",
+              "nullable": false,
               "optional": false,
               "refTypeId": null
             }
