@@ -17,10 +17,11 @@ import { makeErasureCommands } from "../erasure/command.js";
 import { makeCorrectionCommands } from "../integration/corrections/command.js";
 import { makeSharingCommands } from "../sharing/command.js";
 import { makeSubjectIdentityCommands } from "../subject-identity/command.js";
+import { executeViaActionRunner } from "./action-execute.js";
 import { readInput, validateBaseUrl } from "./input.js";
 import { CliFailure, formatFailure, formatSuccess } from "./output.js";
 import { readSession, removeSession, saveSession } from "./session.js";
-import { authenticate, execute, signOut } from "./transport.js";
+import { authenticate, signOut } from "./transport.js";
 
 const root = Command.make("zoen").pipe(
   Command.withSharedFlags({
@@ -87,7 +88,8 @@ const send = Effect.fn(function* send(request: unknown) {
     Effect.mapError(() => new CliFailure("CLI_INPUT"))
   );
   const cookie = yield* readSession(config.sessionDir, config.baseUrl);
-  const result = yield* execute(config.baseUrl, cookie, payload);
+  // Worlds pack verbs: ActionRunner primary path; subject-identity stays direct HTTP.
+  const result = yield* executeViaActionRunner(config.baseUrl, cookie, payload);
   yield* Console.log(formatSuccess(result));
 });
 

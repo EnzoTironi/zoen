@@ -5,8 +5,10 @@
   "type": "module",
   "dependencies": {
     "@effect/platform-node": "4.0.0-rc.112",
+    "@zoen/actions": "workspace:*",
     "@zoen/application-client": "workspace:*",
     "@zoen/contracts": "workspace:*",
+    "@zoen/oms": "workspace:*",
     "effect": "4.0.0-rc.112"
   }
 }

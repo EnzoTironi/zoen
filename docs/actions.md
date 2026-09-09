@@ -1,6 +1,6 @@
 # Action runtime (Engine write path)
 
-**Wave:** W2  
+**Wave:** W2–W3  
 **Constitution:** [ADR-0001](adr/ADR-0001-operational-ontology-os.md) · [Glossary](glossary/operational-ontology.md) · [OO roadmap](roadmap-oo-os.md) · [OMS](oms.md)
 
 ## What this is
@@ -13,15 +13,15 @@
 4. Encode tip `SemanticRequest` and call the existing **SemanticExecutor / ApplicationApi** engine (adapter)
 5. Append an **Action Log** entry (attempt + outcome; maps tip Receipt ideas)
 
-Dual path is intentional: tip Worlds / MCP / CLI keep calling SemanticExecutor; ActionRunner **wraps** the executor and does not migrate all verbs off the public API yet (W3).
+Dual path remains intentional during transition: tip HTTP Worlds groups still call SemanticExecutor emission for receipts/disclosure; **MCP and CLI Worlds pack verbs** now go through ActionRunner (OMS lookup + Action Log) with ApplicationApi / SemanticExecutor as the Engine adapter.
 
 ## What this is not
 
-| Deferred                                          | Wave |
-| ------------------------------------------------- | ---- |
-| Worlds pack fully off SemanticExecutor public API | W3   |
-| MCP codegen from Action Types                     | W4   |
-| Funnel-lite / Approvals-lite                      | W5   |
+| Deferred                                      | Wave  |
+| --------------------------------------------- | ----- |
+| MCP codegen from Action Types                 | W4    |
+| Funnel-lite / Approvals-lite                  | W5    |
+| Subject-identity OMS Action Types (W1 waived) | later |
 
 No Eve / chat product. No Zep-as-kernel. No Foundry parity claim.
 
@@ -33,6 +33,8 @@ No Eve / chat product. No Zep-as-kernel. No Foundry parity claim.
 | `packages/actions/src/parameters.ts` | Parameter validation against ActionType schema |
 | `packages/actions/src/criteria.ts` | Submission-criteria placeholders (fail closed) |
 | `packages/actions/src/encode.ts` | Worlds pack → SemanticRequest encoder |
+| `packages/actions/src/map-request.ts` / `host-execute.ts` | SemanticRequest → ActionRunner (MCP/CLI host path) |
+| `apps/server/src/actions/runtime.ts` | Composition: ActionRunner + PG Action Log |
 | `packages/actions/src/log.ts` / `log-memory.ts` / `log-pg.ts` | Action Log port + memory + PG shape |
 | `packages/actions/test/runner.W2.test.ts` | Unit proof |
 | `ops/migrations/021_action_log.sql` | Durable append-only `authority.action_log` |
@@ -77,7 +79,14 @@ await runner.run({
 });
 ```
 
+## MCP / CLI host path (W3)
+
+- **Primary:** `executeSemanticViaActionRunner` maps Worlds pack `SemanticRequest` → `worlds.*` Action Types, runs ActionRunner, then Engine (`ApplicationApi` HTTP).
+- **Escape hatch:** subject-identity ops are **not** OMS Action Types yet (W1 waived) — they stay on direct SemanticRequest → ApplicationApi. Documented in [roadmap-oo-os.md](roadmap-oo-os.md) W3 notes.
+- **Server:** `makeApplication` provides `ActionRuntime` (PG `createPgActionLog` on authority pool). HTTP emission path remains SemanticExecutor (receipts unchanged).
+
 ## Related
 
 - [OMS (Language plane)](oms.md)
 - [Roadmap W2 acceptance](roadmap-oo-os.md#w2--engine-write-path)
+- [Roadmap W3 acceptance](roadmap-oo-os.md#w3--worlds-pack-migration)

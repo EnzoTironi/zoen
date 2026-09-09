@@ -16,6 +16,12 @@
     },
     {
       "path": "../../packages/application-client/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/actions/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/oms/tsconfig.build.json"
     }
   ],
   "include": ["src/**/*.ts"]
