@@ -47,11 +47,13 @@
 
 **Goal:** Action runtime is the governed write path: auth → submission criteria → transactional ontology edits → Action Log → side effects with honest compensation boundary.
 
+**Status notes (in progress):** `@zoen/actions` ActionRunner wraps tip SemanticExecutor / ApplicationApi (dual path OK). Worlds pack Action Types encode → engine → append-only Action Log (`authority.action_log` migration 021). Unit proof: unknown ActionType rejected; param validation; CreatePersonalWorld happy path logs; criteria fail-closed / empty pass-through. MCP codegen deferred to W4; full Worlds migration off SemanticExecutor public API deferred to W3. See [actions.md](actions.md).
+
 **Acceptance criteria**
 
-- [ ] At least one end-to-end Action Type executes solely through the Action runtime (not a one-off switch arm).
-- [ ] Submission criteria fail closed; golden rule holds (no LLM grant path).
-- [ ] Action Log records attempt + outcome (maps from tip Receipt ideas).
+- [x] At least one end-to-end Action Type executes solely through the Action runtime (not a one-off switch arm). (`worlds.CreatePersonalWorld` via ActionRunner)
+- [x] Submission criteria fail closed; golden rule holds (no LLM grant path).
+- [x] Action Log records attempt + outcome (maps from tip Receipt ideas).
 - [ ] Side effects outside the authority transaction remain Unknown-until-reconciled (INV-aligned).
 - [ ] SERIALIZABLE / fencing invariants preserved for the Action under test.
 - [ ] Verify + targeted integration green.

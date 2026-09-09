@@ -149,7 +149,16 @@ export const applyDisclosureMigrations = Effect.fn(
     )
   );
   yield* sql.withTransaction(sql.unsafe(revokeEveJournal));
+  // W2 Action Log DDL without migrator id 21 here so identity events 7/8
+  // still record; applyErasureMigrations records id 21 after 7–20.
+  const actionLog = yield* fs.readFileString(
+    fileURLToPath(new URL("021_action_log.sql", import.meta.url))
+  );
+  yield* sql.withTransaction(sql.unsafe(actionLog));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
+  yield* sql.withTransaction(
+    sql`GRANT SELECT, INSERT ON authority.action_log TO ${sql(roles.authority)}`
+  );
   // Progress + object-write + controller observe grants for capture (F02).
   yield* sql.withTransaction(grantContentBarrierAdmit(roles.authority));
   return [...base, ...durable];
@@ -254,6 +263,9 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         new URL("020_revoke_eve_journal_privileges.sql", import.meta.url)
       )
     );
+    const actionLog = yield* fs.readFileString(
+      fileURLToPath(new URL("021_action_log.sql", import.meta.url))
+    );
     const eveExtension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "19_eve_owned_durable_journal": sql
@@ -262,12 +274,14 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         "20_revoke_eve_journal_privileges": sql
           .unsafe(revokeEveJournal)
           .pipe(Effect.asVoid),
+        "21_action_log": sql.unsafe(actionLog).pipe(Effect.asVoid),
       }),
     });
     yield* sql.withTransaction(
       Effect.gen(function* grantErasureAndWorldBarrier() {
         yield* grantErasureRole(roles.authority);
         yield* grantDisclosureRole(roles.authority);
+        yield* sql`GRANT SELECT, INSERT ON authority.action_log TO ${sql(roles.authority)}`;
       })
     );
     return [...base, ...extension, ...eveExtension];
