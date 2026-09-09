@@ -74,6 +74,35 @@ describe("MCP tool dispatch", () => {
     expect(JSON.parse(result.text)).toStrictEqual(worldCreated);
   });
 
+  it("requires confirmEntireWorld true for RequestWorldErasure at the MCP edge", () => {
+    const expectInput = (args: Record<string, unknown>) => {
+      expect(
+        Effect.runSync(
+          dispatchTool("RequestWorldErasure", args, succeedCreated).pipe(
+            Effect.flip
+          )
+        )
+      ).toStrictEqual(new McpFailure("MCP_INPUT"));
+    };
+    expectInput({
+      expectedRevision: null,
+      operationId,
+      worldId,
+    });
+    expectInput({
+      confirmEntireWorld: false,
+      expectedRevision: null,
+      operationId,
+      worldId,
+    });
+    expectInput({
+      confirmEntireWorld: "true",
+      expectedRevision: null,
+      operationId,
+      worldId,
+    });
+  });
+
   it("rejects realm/format/choice typos instead of coercing to live/json/unknown", () => {
     const expectInput = (name: string, args: Record<string, unknown>) => {
       expect(

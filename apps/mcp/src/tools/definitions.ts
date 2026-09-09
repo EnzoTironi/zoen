@@ -3,6 +3,8 @@
  * Names match SemanticRequest.operation literals — no invented product verbs.
  */
 
+import { Data } from "effect";
+
 export interface ToolDefinition {
   readonly name: string;
   readonly description: string;
@@ -63,6 +65,14 @@ const asString = (value: unknown, fallback?: string): string => {
   return "";
 };
 
+class McpInputError extends Data.TaggedError("McpInputError")<{
+  readonly field: string;
+}> {
+  constructor(field: string) {
+    super({ field });
+  }
+}
+
 /** Omitted → live (schema default); typos fail closed — never coerce to live. */
 const asRealm = (value: unknown): "live" | "evaluation" => {
   if (value === undefined || value === null || value === "") {
@@ -71,7 +81,7 @@ const asRealm = (value: unknown): "live" | "evaluation" => {
   if (value === "live" || value === "evaluation") {
     return value;
   }
-  throw new Error("invalid realm");
+  throw new McpInputError("realm");
 };
 
 const asEvidenceFormat = (value: unknown): "json" | "csv" => {
@@ -86,14 +96,14 @@ const asEvidenceFormat = (value: unknown): "json" | "csv" => {
   if (value === "csv") {
     return "csv";
   }
-  throw new Error("invalid format");
+  throw new McpInputError("format");
 };
 
 const asCorrectionChoice = (value: unknown): "select-claim" | "unknown" => {
   if (value === "select-claim" || value === "unknown") {
     return value;
   }
-  throw new Error("invalid choice");
+  throw new McpInputError("choice");
 };
 
 const worldRef = (args: Record<string, unknown>) => ({

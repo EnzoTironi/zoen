@@ -42,6 +42,8 @@ export const dispatchTool = <E, R>(
     if (tool === undefined) {
       return yield* new McpFailure("MCP_INPUT");
     }
+    // MCP-edge mirrors of CLI confirm-before-send flags (not a second policy
+    // authority — Closing/authorization stay on the server).
     if (name === "RequestWorldErasure") {
       const args = asArgs(rawArgs);
       if (args.confirmEntireWorld !== true) {
