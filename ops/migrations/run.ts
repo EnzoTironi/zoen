@@ -135,11 +135,20 @@ export const applyDisclosureMigrations = Effect.fn(
   // Inert: product Eve journal surface removed; keep schema 019 for Fly volume /
   // migration-chain coherence (no runtime grants / no product consumers).
   // Apply without migrator id 19 here so identity events 7/8 still record;
-  // applyErasureMigrations records id 19 after 7–18.
+  // applyErasureMigrations records ids 19–20 after 7–18.
   const eveJournal = yield* fs.readFileString(
     fileURLToPath(new URL("019_eve_owned_durable_journal.sql", import.meta.url))
   );
   yield* sql.withTransaction(sql.unsafe(eveJournal));
+  // Strip leftover journal-role ACLs (USAGE + DML). Safe if role/schema absent;
+  // never DROP inert eve.* on live Fly. Apply without migrator id 20 here so
+  // identity events 7/8 still record; applyErasureMigrations records id 20.
+  const revokeEveJournal = yield* fs.readFileString(
+    fileURLToPath(
+      new URL("020_revoke_eve_journal_privileges.sql", import.meta.url)
+    )
+  );
+  yield* sql.withTransaction(sql.unsafe(revokeEveJournal));
   yield* sql.withTransaction(grantDisclosureRole(roles.authority));
   // Progress + object-write + controller observe grants for capture (F02).
   yield* sql.withTransaction(grantContentBarrierAdmit(roles.authority));
@@ -240,10 +249,18 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
         new URL("019_eve_owned_durable_journal.sql", import.meta.url)
       )
     );
+    const revokeEveJournal = yield* fs.readFileString(
+      fileURLToPath(
+        new URL("020_revoke_eve_journal_privileges.sql", import.meta.url)
+      )
+    );
     const eveExtension = yield* PgMigrator.run({
       loader: PgMigrator.fromRecord({
         "19_eve_owned_durable_journal": sql
           .unsafe(eveJournal)
+          .pipe(Effect.asVoid),
+        "20_revoke_eve_journal_privileges": sql
+          .unsafe(revokeEveJournal)
           .pipe(Effect.asVoid),
       }),
     });
@@ -256,3 +273,35 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
     return [...base, ...extension, ...eveExtension];
   }
 );
+
+/**
+ * Explicit revoke for a known former journal role. Fail-closed-safe when the
+ * role or eve schema is absent. Prefer the numbered 020 discovery path on
+ * upgrade; this helper remains for operators who still know the role name.
+ */
+export const revokeEveJournalMigrations = Effect.fn(
+  "migrations.revokeEveJournal"
+)(function* revokeEveJournalMigrations(journalRole: string) {
+  const sql = yield* SqlClient.SqlClient;
+  if (journalRole.replaceAll('"', "").length === 0) {
+    return;
+  }
+  yield* sql.withTransaction(
+    Effect.gen(function* revokeIfPresent() {
+      const schemaRows = yield* sql<{ present: boolean }>`
+        SELECT to_regnamespace('eve') IS NOT NULL AS present
+      `;
+      if (schemaRows[0]?.present !== true) {
+        return;
+      }
+      const roleRows = yield* sql<{ present: boolean }>`
+        SELECT to_regrole(${journalRole}) IS NOT NULL AS present
+      `;
+      if (roleRows[0]?.present !== true) {
+        return;
+      }
+      yield* sql`REVOKE USAGE ON SCHEMA eve FROM ${sql(journalRole)}`;
+      yield* sql`REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA eve FROM ${sql(journalRole)}`;
+    })
+  );
+});

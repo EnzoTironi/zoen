@@ -457,7 +457,4 @@ export class SemanticExecutor extends Context.Service<
     Layer.provide(ErasurePurgeStore.unqualifiedLayer),
     Layer.provide(ErasureCopyCatalog.unqualifiedLayer)
   );
-
-  /** @deprecated Alias kept for in-flight callers during the strip; prefer layerWithoutProviders. */
-  static readonly layerWithoutEve = SemanticExecutor.layerWithoutProviders;
 }
