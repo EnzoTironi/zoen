@@ -53,7 +53,9 @@
       "g-storage-fence-writer-containment",
       "g-provider-live-opencode-product"
     ],
-    "unknown": ["g-ops-live-erasable-inventory"]
+    "unknown": [
+      "g-ops-live-erasable-inventory"
+    ]
   },
   "conditionalGates": {
     "G-OPS": "Unknown",
@@ -96,7 +98,7 @@
     "ZA-26 selected frontier rebinding on tip 85bf4c7 after #115 alchemy — not full-horizon acceptance.",
     "Eve/G-PROVIDER/G-STORAGE-FENCE/H-01 remain Blocked/Unknown; textProfileAccepted false; hosted Erased not activated; cloud speech disabled.",
     "ICP journeys ZA-22..25 stay listed as implemented product scopes without claiming activation by merge.",
-    "Execution counts retained from ZA-26 implementing-machine runs; historical planning counts are not substituted.",
+    "Tip Verify quality/unit/components/exact-image certify 85bf4c7; unit counts (89 files / 479 tests) refreshed on tip. Frontier/finance acceptance command rows remain supplemental implementing-machine evidence and are not sole tip certification.",
     "Exact-image identity bound from Verify run 34365417321 admission.json for this tip only."
   ]
 }

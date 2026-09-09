@@ -70,6 +70,7 @@
     "Independent GitHub review is not authenticated by this JSON",
     "Hosted/operator actions require separate authority",
     "Deploy Fly for tip succeeded (run 34365417337); https://zoen.tironi.xyz/ready returns 200 {\"status\":\"ready\"} — /ready never certifies image identity",
-    "H-01/H-02/G-PROVIDER/G-STORAGE-FENCE remain Blocked; textProfileAccepted false; no full D05 claim"
+    "H-01/H-02/G-PROVIDER/G-STORAGE-FENCE remain Blocked; textProfileAccepted false; no full D05 claim",
+    "Tip Verify certifies 85bf4c7 quality/unit/components/exact-image; acceptance rows may retain ZA-26 implementing-machine evidence and are not sole tip certification."
   ]
 }
