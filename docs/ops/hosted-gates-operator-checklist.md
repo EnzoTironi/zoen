@@ -46,9 +46,9 @@ pnpm ops:prep-hosted-gates -- --candidate /path/to/candidate.json
 | --- | --- |
 | `0` | Reserved — not used while product gates stay closed (prep never “passes” Full Erased) |
 | `2` | **Fail-closed prep complete** — evidence under `.local/hosted-gates-prep/`; tip gates stay Blocked/Unknown; `fullHostedErased` false |
-| `1` | Invalid candidate JSON / protected-resource attempt flagged as operator error input |
+| `1` | Invalid environment/input, or protected-resource attempt (refusal evidence is written for a valid protected candidate) |
 
-The script **never** runs `fly apps destroy`, `fly volumes destroy`, `fly postgres`, or alchemy adopt.
+Invalid input or missing git identity clears stale `prep.json`; valid candidate evidence includes a canonical identity snapshot + SHA-256. The script **never** runs `fly apps destroy`, `fly volumes destroy`, `fly postgres`, or alchemy adopt.
 
 ## After prep
 
