@@ -24,7 +24,7 @@ export const createZoenMcpServer = () => {
     {
       capabilities: { tools: {} },
       instructions:
-        "Zoen Worlds MCP v0. Tools are SemanticRequest operations (CreatePersonalWorld, ImportEvidence, Inspect, …). Authenticate with the Zoen CLI first (zoen sign-in); this server reuses ~/.config/zoen/session.json. Set ZOEN_BASE_URL to the server origin (HTTPS or loopback HTTP).",
+        "Zoen Worlds MCP v0. Tools are SemanticRequest operations for Worlds and subject-identity (CreatePersonalWorld, Inspect, InspectSubjectIdentity, ResolveIdentity, …). Authenticate with the Zoen CLI first (zoen sign-in); this server reuses ~/.config/zoen/session.json via @zoen/application-client. Set ZOEN_BASE_URL to the server origin (HTTPS or loopback HTTP).",
     }
   );
 

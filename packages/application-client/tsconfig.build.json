@@ -10,13 +10,6 @@
     "tsBuildInfoFile": "dist/.tsbuildinfo",
     "paths": {}
   },
-  "references": [
-    {
-      "path": "../../packages/contracts/tsconfig.build.json"
-    },
-    {
-      "path": "../../packages/application-client/tsconfig.build.json"
-    }
-  ],
+  "references": [{ "path": "../contracts/tsconfig.build.json" }],
   "include": ["src/**/*.ts"]
 }

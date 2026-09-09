@@ -1,6 +1,6 @@
 import { Effect, Stream } from "effect";
 
-import { McpFailure } from "./output.js";
+import { ApplicationClientError } from "./errors.js";
 
 export const collectText = Effect.fn(function* collectText<E, R>(
   stream: Stream.Stream<Uint8Array, E, R>,
@@ -11,7 +11,7 @@ export const collectText = Effect.fn(function* collectText<E, R>(
     Stream.mapEffect((bytes) => {
       size += bytes.byteLength;
       return size > limit
-        ? Effect.fail(new McpFailure("MCP_INPUT"))
+        ? Effect.fail(new ApplicationClientError("INPUT"))
         : Effect.succeed(bytes);
     }),
     Stream.runCollect
@@ -23,7 +23,7 @@ export const collectText = Effect.fn(function* collectText<E, R>(
     offset += chunk.byteLength;
   }
   return yield* Effect.try({
-    catch: () => new McpFailure("MCP_INPUT"),
+    catch: () => new ApplicationClientError("INPUT"),
     try: () =>
       new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes),
   });

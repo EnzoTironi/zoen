@@ -1,11 +1,16 @@
 {
-  "name": "@zoen/cli",
+  "name": "@zoen/application-client",
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./dist/*.js"
+    }
+  },
   "dependencies": {
     "@effect/platform-node": "4.0.0-rc.112",
-    "@zoen/application-client": "workspace:*",
     "@zoen/contracts": "workspace:*",
     "effect": "4.0.0-rc.112"
   }

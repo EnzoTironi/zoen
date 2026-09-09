@@ -24,6 +24,12 @@ describe("MCP tool registry", () => {
       "InspectWorldErasure",
       "RequestWorldErasure",
       "PurgeWorldContent",
+      "InspectSubjectIdentity",
+      "InspectIdentityRecovery",
+      "ProposeIdentityResolution",
+      "ProposeIdentitySplit",
+      "ProposeIdentityUndo",
+      "ResolveIdentity",
     ]);
     for (const tool of toolDefinitions) {
       expect(tool.inputSchema.type).toBe("object");
@@ -74,5 +80,36 @@ describe("MCP tool registry", () => {
         Effect.runSync(decodeSemanticRequest(bogus).pipe(Effect.result))
       )
     ).toBeTruthy();
+  });
+
+  it("builds InspectSubjectIdentity and ResolveIdentity that decode as SemanticRequest", () => {
+    const inspectTool = toolByName.get("InspectSubjectIdentity");
+    const resolveTool = toolByName.get("ResolveIdentity");
+    expect(inspectTool).toBeDefined();
+    expect(resolveTool).toBeDefined();
+    if (inspectTool === undefined || resolveTool === undefined) {
+      return;
+    }
+    const inspected = inspectTool.buildRequest({
+      anchors: ["A", "B"],
+      validFrom: "2026-09-01",
+      validTo: "2026-10-01",
+      worldId: "33333333-3333-4333-8333-333333333333",
+    });
+    const resolved = resolveTool.buildRequest({
+      answer: "same-as",
+      consequenceDigest: "a".repeat(64),
+      operationId: "11111111-1111-4111-8111-111111111111",
+      questionRef: "55555555-5555-4555-8555-555555555555",
+      worldId: "33333333-3333-4333-8333-333333333333",
+    });
+    expect(Effect.runSync(decodeSemanticRequest(inspected))).toMatchObject({
+      operation: "InspectSubjectIdentity",
+      schemaVersion: "subject-identity.v1",
+    });
+    expect(Effect.runSync(decodeSemanticRequest(resolved))).toMatchObject({
+      operation: "ResolveIdentity",
+      schemaVersion: "subject-identity.v1",
+    });
   });
 });
