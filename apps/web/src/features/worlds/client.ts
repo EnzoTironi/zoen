@@ -1,3 +1,4 @@
+import { routeExecute } from "@zoen/application-client/execute";
 import { ApplicationApi } from "@zoen/contracts/worlds/api";
 import { SemanticError, Unavailable } from "@zoen/contracts/worlds/errors";
 import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
@@ -74,71 +75,9 @@ const makeClient = Effect.fn("web.makeClient")(function* makeClient(
     }
     return yield* Effect.void;
   }).pipe(Effect.mapError(() => new Unavailable({ code: "UNAVAILABLE" })));
+  /** Verb routing is shared; browser auth remains Fetch same-origin cookies. */
   const execute = (payload: SemanticRequest) =>
-    Effect.gen(function* executeRequest() {
-      switch (payload.operation) {
-        case "CreatePersonalWorld": {
-          return yield* api.worlds.execute({ payload });
-        }
-        case "ImportEvidence": {
-          return yield* api.worlds.execute({ payload });
-        }
-        case "Inspect": {
-          return yield* api.worlds.execute({ payload });
-        }
-        case "OpenEvidence": {
-          return yield* api.worlds.execute({ payload });
-        }
-        case "ProposeCorrection": {
-          return yield* api.corrections.execute({ payload });
-        }
-        case "AnswerQuestion": {
-          return yield* api.corrections.execute({ payload });
-        }
-        case "UndoCorrection": {
-          return yield* api.corrections.execute({ payload });
-        }
-        case "GrantWorldReadAccess": {
-          return yield* api.sharing.execute({ payload });
-        }
-        case "InspectWorldAccess": {
-          return yield* api.sharing.execute({ payload });
-        }
-        case "RevokeWorldReadAccess": {
-          return yield* api.sharing.execute({ payload });
-        }
-        case "InspectSubjectIdentity": {
-          return yield* api.subjectIdentity.execute({ payload });
-        }
-        case "InspectIdentityRecovery": {
-          return yield* api.subjectIdentity.execute({ payload });
-        }
-        case "ProposeIdentityResolution": {
-          return yield* api.subjectIdentity.execute({ payload });
-        }
-        case "ProposeIdentitySplit": {
-          return yield* api.subjectIdentity.execute({ payload });
-        }
-        case "ProposeIdentityUndo": {
-          return yield* api.subjectIdentity.execute({ payload });
-        }
-        case "ResolveIdentity": {
-          return yield* api.subjectIdentity.execute({ payload });
-        }
-        case "InspectWorldErasure": {
-          return yield* api.erasure.execute({ payload });
-        }
-        case "PurgeWorldContent": {
-          return yield* api.erasure.execute({ payload });
-        }
-        case "RequestWorldErasure": {
-          return yield* api.erasure.execute({ payload });
-        }
-        default: {
-          return yield* new Unavailable({ code: "UNAVAILABLE" });
-        }
-      }
-    }).pipe(Effect.mapError(closedError));
+    routeExecute(api, payload).pipe(Effect.mapError(closedError));
   return { authenticate, execute, logout, session };
 });
 
