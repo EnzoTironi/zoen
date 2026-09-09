@@ -38,6 +38,16 @@ Observed: free-tier models **reject** plain `curl` without OpenCode CLI identity
 
 Smoke (pre-landing): HTTP 200 + content containing `eve-ok` for `big-pickle` with those headers.
 
+## Operator G-PROVIDER qualify (fail-closed)
+
+One-command operator path (does **not** fabricate keys; tip gates stay Blocked until live proof + intentional evidence PR):
+
+```bash
+pnpm eve:qualify-gprovider
+```
+
+See [`docs/ops/eve-gprovider-operator-runbook.md`](../ops/eve-gprovider-operator-runbook.md). Exit `2` when `ZOEN_OPENCODE_API_KEY` is absent.
+
 ## Comandos
 
 Unit (no key; fetch mocked):
