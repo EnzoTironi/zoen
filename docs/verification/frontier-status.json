@@ -4,7 +4,7 @@
   "tip": {
     "commit": "85bf4c7a0f3c32b87ffb8eaf0d610d33801a539b",
     "short": "85bf4c7",
-    "lockfileSha256": "92afa1d6a7fd27ddae857fe5d008d4e28b2ade3b23b488ebd5348ca00a8f4ef2",
+    "lockfileSha256": "c177aba96203bf91a51cdd67dbbe942a20afad14b44a80e2279c3cfc90825212",
     "parentPr": "#115 alchemy Fly/Docker SoT + EX25 legacy boot harden (post-ZA-26 tip)",
     "imageIdentity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55",
     "imageIdentityNote": "Exact-image admission from Verify run 34365417321 on tip 85bf4c7: image_id=sha256:f7235d494411f54b11a20a837cfa1e38c7fffc016ca5bd84ccb8eab893f26744; digest=sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55; local_tag=zoen-all-in-one:exact-85bf4c7a0f3c. /ready alone does not certify identity."

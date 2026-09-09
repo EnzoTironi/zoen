@@ -73,4 +73,34 @@ describe("MCP tool dispatch", () => {
     expect(result.isError).toBeFalsy();
     expect(JSON.parse(result.text)).toStrictEqual(worldCreated);
   });
+
+  it("rejects realm/format/choice typos instead of coercing to live/json/unknown", () => {
+    const expectInput = (name: string, args: Record<string, unknown>) => {
+      expect(
+        Effect.runSync(
+          dispatchTool(name, args, succeedCreated).pipe(Effect.flip)
+        )
+      ).toStrictEqual(new McpFailure("MCP_INPUT"));
+    };
+    expectInput("Inspect", {
+      realm: "livve",
+      subjectKey: "obligation-1",
+      worldId,
+    });
+    expectInput("ImportEvidence", {
+      document: "{}",
+      format: "xml",
+      operationId,
+      worldId,
+    });
+    expectInput("ProposeCorrection", {
+      choice: "maybe",
+      frameRef: "55555555-5555-4555-8555-555555555555",
+      operationId,
+      subjectKey: "obligation-1",
+      validFrom: "2026-09-01",
+      validTo: "2026-10-01",
+      worldId,
+    });
+  });
 });

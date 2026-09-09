@@ -63,8 +63,45 @@ const asString = (value: unknown, fallback?: string): string => {
   return "";
 };
 
-const asRealm = (value: unknown): "live" | "evaluation" =>
-  value === "evaluation" ? "evaluation" : "live";
+class McpInputError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "McpInputError";
+  }
+}
+
+/** Omitted → live (schema default); typos fail closed — never coerce to live. */
+const asRealm = (value: unknown): "live" | "evaluation" => {
+  if (value === undefined || value === null || value === "") {
+    return "live";
+  }
+  if (value === "live" || value === "evaluation") {
+    return value;
+  }
+  throw new McpInputError("realm");
+};
+
+const asEvidenceFormat = (value: unknown): "json" | "csv" => {
+  if (
+    value === undefined ||
+    value === null ||
+    value === "" ||
+    value === "json"
+  ) {
+    return "json";
+  }
+  if (value === "csv") {
+    return "csv";
+  }
+  throw new McpInputError("format");
+};
+
+const asCorrectionChoice = (value: unknown): "select-claim" | "unknown" => {
+  if (value === "select-claim" || value === "unknown") {
+    return value;
+  }
+  throw new McpInputError("choice");
+};
 
 const worldRef = (args: Record<string, unknown>) => ({
   realm: asRealm(args.realm),
@@ -98,7 +135,7 @@ export const toolDefinitions: readonly ToolDefinition[] = [
     buildRequest: (args) => ({
       ...worldsEnvelope,
       input:
-        args.format === "csv"
+        asEvidenceFormat(args.format) === "csv"
           ? { document: asString(args.document), format: "worlds.csv.v1" }
           : { document: asString(args.document) },
       operation: "ImportEvidence",
@@ -185,7 +222,7 @@ export const toolDefinitions: readonly ToolDefinition[] = [
   {
     buildRequest: (args) => {
       const choice =
-        args.choice === "select-claim"
+        asCorrectionChoice(args.choice) === "select-claim"
           ? { _tag: "selectClaim", claimRef: asString(args.claimRef) }
           : { _tag: "unknown" };
       return {

@@ -58,7 +58,10 @@ export const dispatchTool = <E, R>(
         return yield* new McpFailure("MCP_INPUT");
       }
     }
-    const candidate = tool.buildRequest(asArgs(rawArgs));
+    const candidate = yield* Effect.try({
+      catch: () => new McpFailure("MCP_INPUT"),
+      try: () => tool.buildRequest(asArgs(rawArgs)),
+    });
     const request = yield* decodeSemanticRequest(candidate).pipe(
       Effect.mapError(() => new McpFailure("MCP_INPUT"))
     );
