@@ -60,6 +60,11 @@ export default defineConfig({
       },
     },
     {
+      files: ["packages/actions/test/**"],
+      plugins: ["vitest"],
+      rules: { "vitest/max-expects": "off" },
+    },
+    {
       files: [
         "tests/integration/subject-identity/**",
         "apps/cli/test/subject-identity/**",

@@ -59,48 +59,61 @@ export interface ActionLogSqlDriver {
   ) => Promise<readonly Record<string, unknown>[]>;
 }
 
-const toIsoTimestamp = (value: unknown): string => {
-  if (value instanceof Date) {
-    return value.toISOString();
-  }
+const asString = (value: unknown, field: string): string => {
   if (typeof value === "string") {
     return value;
   }
-  return String(value);
+  if (value instanceof Date) {
+    return value.toISOString();
+  }
+  throw new TypeError(`action_log.${field} must be a string`);
+};
+
+const asNullableString = (value: unknown, field: string): string | null => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  return asString(value, field);
+};
+
+const asOutcome = (value: unknown): ActionLogEntry["outcome"] => {
+  if (
+    value === "accepted" ||
+    value === "committed" ||
+    value === "failed" ||
+    value === "rejected"
+  ) {
+    return value;
+  }
+  throw new TypeError(
+    "action_log.outcome must be accepted|committed|failed|rejected"
+  );
+};
+
+const asRealm = (value: unknown): ActionLogEntry["realm"] => {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  if (value === "live" || value === "evaluation") {
+    return value;
+  }
+  throw new TypeError("action_log.realm must be live|evaluation|null");
 };
 
 const mapRow = (row: Record<string, unknown>): ActionLogEntry => ({
-  actionTypeId: String(row.actionTypeId),
-  actorPrincipalId:
-    row.actorPrincipalId === null || row.actorPrincipalId === undefined
-      ? null
-      : String(row.actorPrincipalId),
-  attemptedAt: toIsoTimestamp(row.attemptedAt),
-  completedAt: toIsoTimestamp(row.completedAt),
-  entryId: String(row.entryId),
-  operationId:
-    row.operationId === null || row.operationId === undefined
-      ? null
-      : String(row.operationId),
-  outcome: row.outcome as ActionLogEntry["outcome"],
-  realm:
-    row.realm === null || row.realm === undefined
-      ? null
-      : (row.realm as ActionLogEntry["realm"]),
-  receiptRef:
-    row.receiptRef === null || row.receiptRef === undefined
-      ? null
-      : String(row.receiptRef),
-  rejectionCode:
-    row.rejectionCode === null || row.rejectionCode === undefined
-      ? null
-      : String(row.rejectionCode),
+  actionTypeId: asString(row.actionTypeId, "actionTypeId"),
+  actorPrincipalId: asNullableString(row.actorPrincipalId, "actorPrincipalId"),
+  attemptedAt: asString(row.attemptedAt, "attemptedAt"),
+  completedAt: asString(row.completedAt, "completedAt"),
+  entryId: asString(row.entryId, "entryId"),
+  operationId: asNullableString(row.operationId, "operationId"),
+  outcome: asOutcome(row.outcome),
+  realm: asRealm(row.realm),
+  receiptRef: asNullableString(row.receiptRef, "receiptRef"),
+  rejectionCode: asNullableString(row.rejectionCode, "rejectionCode"),
   result: row.result === undefined ? null : row.result,
-  semanticOperation: String(row.semanticOperation),
-  worldId:
-    row.worldId === null || row.worldId === undefined
-      ? null
-      : String(row.worldId),
+  semanticOperation: asString(row.semanticOperation, "semanticOperation"),
+  worldId: asNullableString(row.worldId, "worldId"),
 });
 
 /** Postgres ActionLog port over authority.action_log (append + list). */
@@ -122,6 +135,8 @@ export const createPgActionLog = (driver: ActionLogSqlDriver): ActionLog => ({
       semanticOperation: input.semanticOperation,
       worldId: input.worldId,
     };
+    const resultJson =
+      entry.result === null ? null : JSON.stringify(entry.result);
     await driver.execute(actionLogInsertSql, [
       entry.entryId,
       entry.actionTypeId,
@@ -133,7 +148,7 @@ export const createPgActionLog = (driver: ActionLogSqlDriver): ActionLog => ({
       entry.outcome,
       entry.rejectionCode,
       entry.receiptRef,
-      entry.result === null ? null : JSON.stringify(entry.result),
+      resultJson,
       entry.attemptedAt,
       entry.completedAt,
     ]);

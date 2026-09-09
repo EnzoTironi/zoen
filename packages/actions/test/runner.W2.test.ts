@@ -209,8 +209,8 @@ describe("W2 ActionRunner", () => {
       authenticatedOwner.principalId
     );
     expect(success.logEntry.semanticOperation).toBe("CreatePersonalWorld");
-    const entries = await log.list();
-    expect(entries.map((entry) => entry.outcome)).toStrictEqual([
+    const successEntries = await log.list();
+    expect(successEntries.map((entry) => entry.outcome)).toStrictEqual([
       "accepted",
       "committed",
     ]);
@@ -287,7 +287,8 @@ describe("W2 ActionRunner", () => {
     });
 
     expect(sawAcceptedBeforeExecute).toBeTruthy();
-    const outcomes = (await log.list()).map((entry) => entry.outcome);
+    const acceptedEntries = await log.list();
+    const outcomes = acceptedEntries.map((entry) => entry.outcome);
     expect(outcomes).toStrictEqual(["accepted", "committed"]);
   });
 
@@ -312,21 +313,22 @@ describe("W2 ActionRunner", () => {
       })
     ).rejects.toThrow("engine-down");
 
-    const outcomes = (await log.list()).map((entry) => entry.outcome);
+    const failedEntries = await log.list();
+    const outcomes = failedEntries.map((entry) => entry.outcome);
     expect(outcomes).toStrictEqual(["accepted", "failed"]);
-    expect((await log.list())[1]?.rejectionCode).toBe("Error");
+    expect(failedEntries[1]?.rejectionCode).toBe("Error");
   });
 
   it("does not rewrite committed engine work as rejected when log append fails", async () => {
     const base = createMemoryActionLog();
     const log = {
-      append: async (input: Parameters<typeof base.append>[0]) => {
+      append: (input: Parameters<typeof base.append>[0]) => {
         if (input.outcome === "committed") {
-          throw new Error("log-append-failed");
+          return Promise.reject(new Error("log-append-failed"));
         }
-        return base.append(input);
+        return Promise.resolve(base.append(input));
       },
-      list: () => base.list(),
+      list: () => Promise.resolve(base.list()),
     };
     const runner = createActionRunner({
       actor: authenticatedOwner,
@@ -352,8 +354,8 @@ describe("W2 ActionRunner", () => {
       })
     ).rejects.toThrow("log-append-failed");
 
-    const outcomes = (await log.list()).map((entry) => entry.outcome);
+    const leftover = await log.list();
+    const outcomes = leftover.map((entry) => entry.outcome);
     expect(outcomes).toStrictEqual(["accepted"]);
-    expect(outcomes).not.toContain("rejected");
   });
 });
