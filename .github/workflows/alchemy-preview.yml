@@ -16,9 +16,7 @@ concurrency:
 jobs:
   deploy:
     if: >
-      github.event.action != 'closed'
-      && vars.ZOEN_ALCHEMY_PREVIEW == '1'
-      && secrets.FLY_API_TOKEN != ''
+      github.event.action != 'closed' && vars.ZOEN_ALCHEMY_PREVIEW == '1' && secrets.FLY_API_TOKEN != ''
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     steps:
@@ -38,9 +36,7 @@ jobs:
 
   destroy:
     if: >
-      github.event.action == 'closed'
-      && vars.ZOEN_ALCHEMY_PREVIEW == '1'
-      && secrets.FLY_API_TOKEN != ''
+      github.event.action == 'closed' && vars.ZOEN_ALCHEMY_PREVIEW == '1' && secrets.FLY_API_TOKEN != ''
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     steps:
