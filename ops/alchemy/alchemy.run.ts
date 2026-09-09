@@ -27,32 +27,29 @@ import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Redacted from "effect/Redacted";
 
+import {
+  ephemeralFlyAppName,
+  hostedPublicUrl,
+  isLocalStage,
+  isProdStage,
+  sanitizeStageSlug,
+} from "./stage.ts";
+
 const repoRoot = path.resolve(import.meta.dirname, "../..");
 
-/** Non-secret env mirrored from ops/fly/fly.toml `[env]`. */
-const hostedEnv = {
+/** Non-secret env mirrored from ops/fly/fly.toml `[env]` (PUBLIC_URL is stage-aware). */
+const hostedEnvBase = {
   ZOEN_ADMIT_HOSTED_RELEASE_UPGRADE: "true",
   ZOEN_BOOTSTRAP_ADMIN_URL: "postgresql://zoen_infra@127.0.0.1:5432/postgres",
   ZOEN_INSTALLATION_FILE: "/data/zoen/installation.json",
   ZOEN_LISTEN_HOST: "0.0.0.0",
   ZOEN_PORT: "4310",
-  ZOEN_PUBLIC_URL: "https://zoen.tironi.xyz",
   ZOEN_RUNTIME_ENV_FILE: "/data/zoen/runtime.env",
   ZOEN_S3_BUCKET: "zoen",
   ZOEN_S3_ENDPOINT: "http://127.0.0.1:9000",
   ZOEN_S3_REGION: "us-east-1",
   ZOEN_WORLD_POLICY: "worlds-hosted-retained-v1",
 } as const;
-
-const isProdStage = (stage: string) => stage === "prod";
-const isLocalStage = (stage: string) =>
-  stage === "local" || stage.startsWith("local_");
-
-const sanitizeStageSlug = (stage: string) =>
-  stage
-    .toLowerCase()
-    .replaceAll(/[^a-z0-9-]/gu, "-")
-    .replaceAll(/-+/gu, "-");
 
 const localDocker = (stage: string) =>
   Effect.gen(function* local() {
@@ -88,10 +85,12 @@ const localDocker = (stage: string) =>
       image: pgImage,
       name: `zoen-alchemy-${sanitizeStageSlug(stage)}-postgres`,
       networks: [{ aliases: ["postgres"], name: network.name }],
-      ports: [{ external: 55_435, internal: 5432 }],
+      // external: 0 → Docker picks a free host port (avoids stage/Compose collisions).
+      ports: [{ external: 0, internal: 5432 }],
       start: true,
       volumes: [
-        { containerPath: "/var/lib/postgresql/data", hostPath: pgDataPath },
+        // Postgres 18 volume boundary is /var/lib/postgresql (not .../data).
+        { containerPath: "/var/lib/postgresql", hostPath: pgDataPath },
       ],
     });
 
@@ -135,8 +134,8 @@ const localDocker = (stage: string) =>
       name: `zoen-alchemy-${sanitizeStageSlug(stage)}-minio`,
       networks: [{ aliases: ["minio"], name: network.name }],
       ports: [
-        { external: 59_005, internal: 9000 },
-        { external: 59_006, internal: 9001 },
+        { external: 0, internal: 9000 },
+        { external: 0, internal: 9001 },
       ],
       start: true,
       volumes: [{ containerPath: "/data", hostPath: minioDataPath }],
@@ -152,8 +151,11 @@ const localDocker = (stage: string) =>
 
 const flyHosted = (stage: string, prod: boolean) =>
   Effect.gen(function* fly() {
-    // Break-glass / ephemeral may build all-in-one locally. Prod must NOT fight
-    // ZA-07 exact-image CD unless ZOEN_ALCHEMY_BREAK_GLASS=1.
+    const appName = prod ? "zoen-rebuild" : ephemeralFlyAppName(stage);
+    const publicUrl = hostedPublicUrl(stage, prod);
+
+    // Break-glass / ephemeral may build all-in-one and push to Fly registry.
+    // Prod must NOT fight ZA-07 exact-image CD unless ZOEN_ALCHEMY_BREAK_GLASS=1.
     const image = yield* Effect.gen(function* resolveImage() {
       const breakGlass = yield* Config.string("ZOEN_ALCHEMY_BREAK_GLASS").pipe(
         Config.withDefault("0")
@@ -169,22 +171,25 @@ const flyHosted = (stage: string, prod: boolean) =>
           return admitted.value;
         }
       }
+      const flyToken = yield* Config.redacted("FLY_API_TOKEN");
       const built = yield* Docker.Image("all-in-one", {
         build: {
           context: repoRoot,
           dockerfile: "ops/containers/all-in-one.Dockerfile",
           platform: "linux/amd64",
         },
-        name: "zoen-all-in-one",
-        skipPush: true,
+        name: appName,
+        registry: {
+          password: flyToken,
+          server: "registry.fly.io",
+          username: "x",
+        },
+        skipPush: false,
         tag: sanitizeStageSlug(stage),
       });
+      // imageRef includes registry host after push (repoDigest is Output-wrapped).
       return built.imageRef;
     });
-
-    const appName = prod
-      ? "zoen-rebuild"
-      : `zoen-${sanitizeStageSlug(stage)}`.slice(0, 30);
 
     const app = yield* Fly.App("App", { name: appName }).pipe(
       Alchemy.RemovalPolicy.retain(prod)
@@ -221,14 +226,22 @@ const flyHosted = (stage: string, prod: boolean) =>
       value: s3Secret,
     }).pipe(Alchemy.RemovalPolicy.retain(prod));
 
+    // Ready-check payload is declared in ./stage.ts (parity with fly.toml).
+    // Alchemy MachineService→Fly mapper does not yet forward `checks`; keep
+    // transitional fly.toml checks for CD until Alchemy supports service checks.
     const machine = yield* Fly.Machine("AllInOne", {
       app,
-      env: { ...hostedEnv },
+      env: { ...hostedEnvBase, ZOEN_PUBLIC_URL: publicUrl },
       guest: { cpuKind: "shared", cpus: 1, memoryMb: 2048 },
       image,
       mounts: [
         {
-          name: prod ? "zoen_data" : `zoen-data-${sanitizeStageSlug(stage)}`,
+          name: prod
+            ? "zoen_data"
+            : `zoen_data_${sanitizeStageSlug(stage).replaceAll("-", "_")}`.slice(
+                0,
+                30
+              ),
           path: "/data",
           sizeGb: 10,
         },
@@ -254,6 +267,7 @@ const flyHosted = (stage: string, prod: boolean) =>
       appName,
       image,
       mode: "fly" as const,
+      publicUrl,
       stage,
       url: machine.url,
     };

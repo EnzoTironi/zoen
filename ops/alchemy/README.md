@@ -73,11 +73,12 @@ Alchemy must not push a different prod tag that CD would then ignore or fight.
 
 ```bash
 pnpm alchemy:deploy -- --stage local
-# Postgres :55435  (user/db zoen; password in alchemy state)
-# MinIO    :59005 / console :59006  (disable with ZOEN_ALCHEMY_LOCAL_S3=0)
+# Postgres / MinIO publish on Docker-chosen free host ports (external: 0)
+# Inspect: docker port zoen-alchemy-<stage>-postgres 5432
+# Disable MinIO with ZOEN_ALCHEMY_LOCAL_S3=0
 ```
 
-State lives under `.alchemy/` (gitignored). Local Postgres/MinIO data bind-mounts to `.local/alchemy/<stage>/` (also gitignored).
+State lives under `.alchemy/` (gitignored). Local Postgres/MinIO data bind-mounts to `.local/alchemy/<stage>/` (also gitignored). Postgres 18 mounts `/var/lib/postgresql` (image volume boundary).
 
 ## Cost model
 
@@ -91,8 +92,8 @@ Never enable Fly managed Postgres, Redis, or Tigris from this stack.
 
 ## CI stub
 
-`.github/workflows/alchemy-preview.yml` is **off** unless `vars.ZOEN_ALCHEMY_PREVIEW=1` and `secrets.FLY_API_TOKEN` are set. It deploys `pr-$N` on pull_request and destroys on close.
+`.github/workflows/alchemy-preview.yml` is **off** unless `vars.ZOEN_ALCHEMY_PREVIEW=1`. The Fly token is checked at step level (`secrets` cannot appear in job-level `if`). Deploy/destroy share `.alchemy/` via Actions cache so destroy can see deploy state. Ephemeral stages push the all-in-one image to `registry.fly.io` and set `ZOEN_PUBLIC_URL` to `https://zoen-pr-N.fly.dev`.
 
 ## HTTP checks
 
-`fly.toml` still declares `/ready` checks (`interval=15s`, `grace=1m`). Alchemy `Fly.Machine` services do not yet mirror check blocks — keep the transitional `fly.toml` checks until CD is alchemy-native or Machine checks are declared here.
+`fly.toml` still declares `/ready` checks (`interval=15s`, `grace=1m`). Declared payload lives in `ops/alchemy/stage.ts` (`FLY_HTTP_READY_CHECK`) for parity tests. Alchemy's MachineService mapper does not yet forward `checks` to the Machines API — keep transitional `fly.toml` checks for CD.

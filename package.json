@@ -18,7 +18,7 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && pnpm typecheck:alchemy",
     "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/ontology/tsconfig.build.json",
     "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json",
     "start:server": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" apps/server/dist/main.js",
