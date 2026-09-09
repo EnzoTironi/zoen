@@ -4,15 +4,10 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 
 import { describe, expect, it } from "@effect/vitest";
-import { CLOUD_SPEECH_ENABLED } from "@zoen/contracts/eve/browser-voice";
 import {
   currentHostedErasableQualification,
   gatesAdmitFullHostedErased,
 } from "@zoen/ontology/hosted/erasable/admission";
-import {
-  currentProductEveAdmissionInput,
-  isProductEveAdmitted,
-} from "@zoen/ontology/ports/eve/admission";
 import { Schema } from "effect";
 
 import { cloneStatus, validateFrontierStatus } from "./status.js";
@@ -126,13 +121,9 @@ describe("ZA-26 frontier integration status", () => {
       ])
     );
 
-    const eve = currentProductEveAdmissionInput(false, {
-      durableJournalQualified: true,
-      evidenceGroundingQualified: true,
-      textProfileAccepted: false,
-    });
-    expect(isProductEveAdmitted(eve)).toBeFalsy();
-    expect(CLOUD_SPEECH_ENABLED).toBeFalsy();
+    // Product Eve / OpenCode / voice surface stripped — keep honesty gates false.
+    expect(status.conditionalGates.textProfileAccepted).toBeFalsy();
+    expect(status.conditionalGates.cloudSpeechEnabled).toBeFalsy();
 
     const hosted = currentHostedErasableQualification();
     expect(hosted.fullHostedErased).toBeFalsy();

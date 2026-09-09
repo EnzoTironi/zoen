@@ -2,7 +2,7 @@ import { exact } from "@zoen/contracts/worlds/values";
 import { AuthorityInstallationSchema } from "@zoen/ontology/commit/configuration";
 import { DataPolicySchema } from "@zoen/ontology/ports/worlds/context";
 import { parseJsonBytes } from "@zoen/ontology/values/json";
-import { Config, Effect, FileSystem, Option, Redacted, Schema } from "effect";
+import { Config, Effect, FileSystem, Option, Schema } from "effect";
 
 import type { ApplicationConfig } from "./composition.ts";
 import { verifyRelease } from "./release.ts";
@@ -112,45 +112,5 @@ export const loadConfiguration = Effect.gen(function* serverConfiguration() {
       ? { erasureControllerAnchorPath: erasureControllerAnchorPath.value }
       : {}),
   };
-  const openCodeApiKey = yield* Config.redacted("ZOEN_OPENCODE_API_KEY").pipe(
-    Config.option
-  );
-  const openCodeBaseUrl = yield* Config.string("ZOEN_OPENCODE_BASE_URL").pipe(
-    Config.withDefault("https://opencode.ai/zen/v1"),
-    Config.option
-  );
-  const openCodeModel = yield* Config.string("ZOEN_OPENCODE_MODEL").pipe(
-    Config.withDefault("big-pickle"),
-    Config.option
-  );
-  // Match port-level env reader: trim and reject blank keys (no live blank bearer).
-  const openCodeKeyNonBlank =
-    Option.isSome(openCodeApiKey) &&
-    Redacted.value(openCodeApiKey.value).trim().length > 0;
-  const applicationWithOpenCode = openCodeKeyNonBlank
-    ? {
-        ...application,
-        openCodeZen: {
-          apiKey: openCodeApiKey.value,
-          baseUrl: Option.isSome(openCodeBaseUrl)
-            ? openCodeBaseUrl.value
-            : "https://opencode.ai/zen/v1",
-          model: Option.isSome(openCodeModel)
-            ? openCodeModel.value
-            : "big-pickle",
-        },
-      }
-    : application;
-  // ZA-18: optional restricted journal identity. Absent → blocked journal surface.
-  // Does not admit product Eve / Zen by itself (ZA-19/ZA-20 still required).
-  const eveJournalDatabaseUrl = yield* Config.redacted(
-    "ZOEN_EVE_JOURNAL_DATABASE_URL"
-  ).pipe(Config.option);
-  const applicationWithJournal = Option.isSome(eveJournalDatabaseUrl)
-    ? {
-        ...applicationWithOpenCode,
-        eveJournalDatabaseUrl: eveJournalDatabaseUrl.value,
-      }
-    : applicationWithOpenCode;
-  return { application: applicationWithJournal, listenHost, listenPort };
+  return { application, listenHost, listenPort };
 });

@@ -29,7 +29,7 @@ ZOEN_TEST_WEB_URL=http://127.0.0.1:4310 \
 pnpm test:acceptance -- apps/web/test/features/finance/finance.ZA25.browser.spec.ts
 ```
 
-Evidence for this profile supports **only** finance reconciliation. It does not qualify Eve product admission, hosted Erased, independent controller, cloud speech, or restore-after-erasure.
+Evidence for this profile supports **only** finance reconciliation. It does not qualify agent/chat product admission, hosted Erased, independent controller, cloud speech, or restore-after-erasure. Eve product surface is stripped from tip.
 
 ## Scope reconciliation (tip 85bf4c7)
 

@@ -4,10 +4,6 @@ import {
   WorldErasureRequest,
   WorldErasureSuccess,
 } from "../erasure/operations.js";
-import {
-  EveConversationRequest,
-  EveConversationSuccess,
-} from "../eve/operations.js";
 import { SharingRequest, SharingSuccess } from "../sharing/operations.js";
 import {
   SubjectIdentityRequest,
@@ -121,7 +117,6 @@ export const SemanticRequest = Schema.Union([
   SharingRequest,
   SubjectIdentityRequest,
   WorldErasureRequest,
-  EveConversationRequest,
 ]);
 export type SemanticRequest = typeof SemanticRequest.Type;
 export const decodeWorldRequest = Schema.decodeUnknownEffect(WorldRequest);
@@ -180,7 +175,6 @@ export const SemanticSuccess = Schema.Union([
   SharingSuccess,
   SubjectIdentitySuccess,
   WorldErasureSuccess,
-  EveConversationSuccess,
 ]);
 export type SemanticSuccess = typeof SemanticSuccess.Type;
 export const SemanticResult = Schema.Union([SemanticSuccess, SemanticError]);

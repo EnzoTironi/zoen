@@ -4,7 +4,7 @@ Este é um contrato ativo de produto, não evidência de implementação. Preser
 
 | ID | Lei | Testemunha adversária exigida quando aplicável |
 | --- | --- | --- |
-| INV-01 | Identidade prova presença; autoridade concede direitos de domínio; Eve possui estado de relacionamento. | Eve não importa nem recebe credencial da base de autoridade |
+| INV-01 | Identidade prova presença; autoridade concede direitos de domínio; superfícies (web/CLI/MCP) não possuem verdade paralela. | Superfície de transporte não importa nem recebe credencial da base de autoridade |
 | INV-02 | Evidência, claim atribuída, interpretação, decisão, tentativa de efeito e settlement observado são fatos distintos. | Uma mensagem “paguei” não cria settlement bancário |
 | INV-03 | Comparar significado, identidade, escopo, unidade e tempo antes do valor. | Reservado 1000, faturado 800 e recebido 600 não são automaticamente conflito |
 | INV-04 | Cópias de fonte não constituem suporte independente; preservar linhagem. | Dez cópias continuam uma família de suporte |
@@ -43,6 +43,6 @@ O primeiro upload exige política de dados conhecida e cumprível, durabilidade,
 
 Uma gramática serve públicos domésticos, profissionais e institucionais. Definições/packs expressam variação; não `if customer` ou kernel separado. Recursos entram quando a jornada os consome. Extrair código compartilhado quando usos concretos demonstram a mesma semântica; não construir framework especulativo.
 
-Journal de Eve, estado de transporte e leases/progresso de workers são persistência operacional legítima, com dono e credenciais delimitados, inicialmente no mesmo PostgreSQL se adequado. Nunca passam a ser outra autoridade, política de domínio ou reconciliação.
+Estado de transporte e leases/progresso de workers são persistência operacional legítima, com dono e credenciais delimitados, inicialmente no mesmo PostgreSQL se adequado. Nunca passam a ser outra autoridade, política de domínio ou reconciliação. Schema `eve` (migração 019) permanece inerte — sem superfície de produto Eve.
 
 Inventário de produção, permissões/licenças, contas cloud, APIs atuais e cargas reais exigem evidência externa. Planos não substituem esses fatos. Não há mock de serviço, identidade privilegiada de desenvolvimento, fallback offline ou resultado de benchmark fabricado. Funções puras são testadas diretamente; integração usa componentes reais.

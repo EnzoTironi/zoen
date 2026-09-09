@@ -1,3 +1,6 @@
+-- INERT SCHEMA (product Eve / journal / OpenCode / voice surface removed).
+-- Kept so Fly volumes and migration history stay coherent; no runtime role grants,
+-- no product routes, and no claim that Eve is application surface.
 -- ZA-18: actor-owned Eve interaction journal (operational, not domain truth).
 -- Restricted schema: runtime uses a dedicated journal role (no authority.* access).
 -- INV-01: never store model/API credentials or authority DB secrets here.

@@ -19,7 +19,7 @@ A bakery operator compares customer order commitments against the shop productio
 - Grams, stock quantities, or mass units as admitted amount currencies — unsupported inputs fail closed (`InvalidInput`); they are never coerced into BRL/USD/EUR revenue
 - Clinical, bank settlement, or provider behavior
 - Empty packs/extensions or a second authority engine
-- Eve involvement (product Eve stays fail-closed; this journey does not touch Eve)
+- Eve/chat/voice product surface (removed from tip; this journey is Worlds verbs only)
 
 ## Acceptance (falsifiable)
 

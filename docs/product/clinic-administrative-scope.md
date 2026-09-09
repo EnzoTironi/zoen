@@ -17,7 +17,7 @@ A clinic administrative user reconciles appointment/fee commitments without gain
 
 - Clinical predicates and excluded fields (`diagnosis.*`, `treatment.*`, `clinical.*`, etc.) are **not** in the admitted `worlds.v1` wire schema for this profile. Decode fails closed (`InvalidInput`) **before** capture/retrieval or any model prompt — no clinical corpus is sent to models.
 - Requesting an excluded/unknown clinical evidence ref or historical frame yields `NotFoundOrDenied` without leaking existence metadata.
-- Clinical scope remains a separate, qualified profile (README). This journey does **not** activate clinical, financial-provider, or Eve behavior.
+- Clinical scope remains a separate, qualified profile (README). This journey does **not** activate clinical, financial-provider, or chat/voice agent behavior.
 
 ## What is not claimed
 
@@ -25,7 +25,7 @@ A clinic administrative user reconciles appointment/fee commitments without gain
 - Patient diagnosis or treatment intelligence
 - Bank settlement or financial provider claims
 - Empty packs/extensions or a second authority engine
-- Eve involvement (product Eve stays fail-closed; this journey does not touch Eve)
+- Eve/chat/voice product surface (removed from tip; this journey is Worlds verbs only)
 
 ## Acceptance (falsifiable)
 
