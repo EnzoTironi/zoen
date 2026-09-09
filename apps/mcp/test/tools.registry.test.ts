@@ -24,6 +24,12 @@ describe("MCP tool registry", () => {
       "InspectWorldErasure",
       "RequestWorldErasure",
       "PurgeWorldContent",
+      "InspectSubjectIdentity",
+      "InspectIdentityRecovery",
+      "ProposeIdentityResolution",
+      "ProposeIdentitySplit",
+      "ProposeIdentityUndo",
+      "ResolveIdentity",
     ]);
     for (const tool of toolDefinitions) {
       expect(tool.inputSchema.type).toBe("object");
@@ -74,5 +80,190 @@ describe("MCP tool registry", () => {
         Effect.runSync(decodeSemanticRequest(bogus).pipe(Effect.result))
       )
     ).toBeTruthy();
+  });
+
+  it("builds InspectSubjectIdentity and ResolveIdentity that decode as SemanticRequest", () => {
+    const inspectTool = toolByName.get("InspectSubjectIdentity");
+    const resolveTool = toolByName.get("ResolveIdentity");
+    expect(inspectTool).toBeDefined();
+    expect(resolveTool).toBeDefined();
+    if (inspectTool === undefined || resolveTool === undefined) {
+      return;
+    }
+    const inspected = inspectTool.buildRequest({
+      anchors: ["A", "B"],
+      validFrom: "2026-09-01",
+      validTo: "2026-10-01",
+      worldId: "33333333-3333-4333-8333-333333333333",
+    });
+    const resolved = resolveTool.buildRequest({
+      answer: "same-as",
+      consequenceDigest: "a".repeat(64),
+      operationId: "11111111-1111-4111-8111-111111111111",
+      questionRef: "55555555-5555-4555-8555-555555555555",
+      worldId: "33333333-3333-4333-8333-333333333333",
+    });
+    expect(Effect.runSync(decodeSemanticRequest(inspected))).toMatchObject({
+      operation: "InspectSubjectIdentity",
+      schemaVersion: "subject-identity.v1",
+    });
+    expect(Effect.runSync(decodeSemanticRequest(resolved))).toMatchObject({
+      operation: "ResolveIdentity",
+      schemaVersion: "subject-identity.v1",
+    });
+  });
+
+  it("builds InspectIdentityRecovery that decodes as SemanticRequest", () => {
+    const tool = toolByName.get("InspectIdentityRecovery");
+    expect(tool).toBeDefined();
+    if (tool === undefined) {
+      return;
+    }
+    const worldId = "33333333-3333-4333-8333-333333333333";
+    const decisionRef = "66666666-6666-4666-8666-666666666666";
+    const decoded = Effect.runSync(
+      decodeSemanticRequest(
+        tool.buildRequest({
+          anchor: "A",
+          targetDecisionRef: decisionRef,
+          validFrom: "2026-09-01",
+          validTo: "2026-10-01",
+          worldId,
+        })
+      )
+    );
+    expect(decoded).toMatchObject({
+      input: {
+        anchor: "A",
+        atFrame: null,
+        interval: {
+          _tag: "DateInterval",
+          from: "2026-09-01",
+          to: "2026-10-01",
+        },
+        targetDecisionRef: decisionRef,
+      },
+      operation: "InspectIdentityRecovery",
+      purpose: "personal-records",
+      schemaVersion: "subject-identity.v1",
+      worldRef: { realm: "live", worldId },
+    });
+  });
+
+  it("builds ProposeIdentityResolution that decodes as SemanticRequest", () => {
+    const tool = toolByName.get("ProposeIdentityResolution");
+    expect(tool).toBeDefined();
+    if (tool === undefined) {
+      return;
+    }
+    const worldId = "33333333-3333-4333-8333-333333333333";
+    const operationId = "11111111-1111-4111-8111-111111111111";
+    const frameRef = "55555555-5555-4555-8555-555555555555";
+    const decoded = Effect.runSync(
+      decodeSemanticRequest(
+        tool.buildRequest({
+          frameRef,
+          left: "A",
+          operationId,
+          right: "B",
+          worldId,
+        })
+      )
+    );
+    expect(decoded).toMatchObject({
+      input: {
+        frame: { frameRef, kind: "subject-identity" },
+        left: "A",
+        right: "B",
+      },
+      operation: "ProposeIdentityResolution",
+      operationId,
+      purpose: "personal-records",
+      schemaVersion: "subject-identity.v1",
+      worldRef: { realm: "live", worldId },
+    });
+  });
+
+  it("builds ProposeIdentitySplit that decodes as SemanticRequest", () => {
+    const tool = toolByName.get("ProposeIdentitySplit");
+    expect(tool).toBeDefined();
+    if (tool === undefined) {
+      return;
+    }
+    const worldId = "33333333-3333-4333-8333-333333333333";
+    const operationId = "11111111-1111-4111-8111-111111111111";
+    const frameRef = "55555555-5555-4555-8555-555555555555";
+    const cellRef = "a".repeat(64);
+    const decoded = Effect.runSync(
+      decodeSemanticRequest(
+        tool.buildRequest({
+          anchor: "A",
+          frameRef,
+          operationId,
+          partitionsByCell: [{ blocks: [["A"], ["B"]], cellRef }],
+          worldId,
+        })
+      )
+    );
+    expect(decoded).toMatchObject({
+      input: {
+        anchor: "A",
+        frame: { frameRef, kind: "subject-identity" },
+        partitionsByCell: [{ blocks: [["A"], ["B"]], cellRef }],
+      },
+      operation: "ProposeIdentitySplit",
+      operationId,
+      purpose: "personal-records",
+      schemaVersion: "subject-identity.v1",
+      worldRef: { realm: "live", worldId },
+    });
+  });
+
+  it("builds ProposeIdentityUndo that decodes with frameKind default", () => {
+    const tool = toolByName.get("ProposeIdentityUndo");
+    expect(tool).toBeDefined();
+    if (tool === undefined) {
+      return;
+    }
+    const worldId = "33333333-3333-4333-8333-333333333333";
+    const operationId = "11111111-1111-4111-8111-111111111111";
+    const frameRef = "55555555-5555-4555-8555-555555555555";
+    const decisionRef = "66666666-6666-4666-8666-666666666666";
+    const recoveryKind = Effect.runSync(
+      decodeSemanticRequest(
+        tool.buildRequest({
+          frameKind: "subject-identity-recovery",
+          frameRef,
+          operationId,
+          targetDecisionRef: decisionRef,
+          worldId,
+        })
+      )
+    );
+    expect(recoveryKind).toMatchObject({
+      input: {
+        frame: { frameRef, kind: "subject-identity-recovery" },
+        targetDecisionRef: decisionRef,
+      },
+      operation: "ProposeIdentityUndo",
+      operationId,
+      purpose: "personal-records",
+      schemaVersion: "subject-identity.v1",
+      worldRef: { realm: "live", worldId },
+    });
+    const defaultKind = Effect.runSync(
+      decodeSemanticRequest(
+        tool.buildRequest({
+          frameRef,
+          operationId,
+          targetDecisionRef: decisionRef,
+          worldId,
+        })
+      )
+    );
+    expect(defaultKind).toMatchObject({
+      input: { frame: { frameRef, kind: "subject-identity" } },
+      operation: "ProposeIdentityUndo",
+    });
   });
 });

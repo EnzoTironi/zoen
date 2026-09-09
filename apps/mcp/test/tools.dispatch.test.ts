@@ -131,4 +131,58 @@ describe("MCP tool dispatch", () => {
       worldId,
     });
   });
+
+  it("smoke-dispatches InspectSubjectIdentity through a mocked executor", () => {
+    const run = (request: SemanticRequest) => {
+      expect(request.operation).toBe("InspectSubjectIdentity");
+      return Effect.succeed(worldCreated);
+    };
+    const result = Effect.runSync(
+      runToolCall(
+        "InspectSubjectIdentity",
+        {
+          anchors: ["A", "B"],
+          validFrom: "2026-09-01",
+          validTo: "2026-10-01",
+          worldId,
+        },
+        run
+      )
+    );
+    expect(result.isError).toBeFalsy();
+    expect(JSON.parse(result.text)).toStrictEqual(worldCreated);
+  });
+
+  it("rejects identity answer/frameKind typos instead of coercing", () => {
+    expect(
+      Effect.runSync(
+        dispatchTool(
+          "ResolveIdentity",
+          {
+            answer: "maybe",
+            consequenceDigest: "a".repeat(64),
+            operationId,
+            questionRef: "55555555-5555-4555-8555-555555555555",
+            worldId,
+          },
+          succeedCreated
+        ).pipe(Effect.flip)
+      )
+    ).toStrictEqual(new McpFailure("MCP_INPUT"));
+    expect(
+      Effect.runSync(
+        dispatchTool(
+          "ProposeIdentityUndo",
+          {
+            frameKind: "other",
+            frameRef: "55555555-5555-4555-8555-555555555555",
+            operationId,
+            targetDecisionRef: "66666666-6666-4666-8666-666666666666",
+            worldId,
+          },
+          succeedCreated
+        ).pipe(Effect.flip)
+      )
+    ).toStrictEqual(new McpFailure("MCP_INPUT"));
+  });
 });

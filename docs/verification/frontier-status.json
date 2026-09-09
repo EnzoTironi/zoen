@@ -4,7 +4,7 @@
   "tip": {
     "commit": "85bf4c7a0f3c32b87ffb8eaf0d610d33801a539b",
     "short": "85bf4c7",
-    "lockfileSha256": "c177aba96203bf91a51cdd67dbbe942a20afad14b44a80e2279c3cfc90825212",
+    "lockfileSha256": "19c33127790a6d1f1c57f2d245a43fa2de43e456446a817f58aa854c27f2e2e7",
     "parentPr": "#115 alchemy Fly/Docker SoT + EX25 legacy boot harden (post-ZA-26 tip)",
     "imageIdentity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55",
     "imageIdentityNote": "Exact-image admission from Verify run 34365417321 on tip 85bf4c7: image_id=sha256:f7235d494411f54b11a20a837cfa1e38c7fffc016ca5bd84ccb8eab893f26744; digest=sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55; local_tag=zoen-all-in-one:exact-85bf4c7a0f3c. /ready alone does not certify identity."
@@ -12,7 +12,7 @@
   "selectedProfile": {
     "id": "finance-record-reconciliation",
     "ticket": "ZA-25",
-    "label": "finance / finanças read-only record reconciliation",
+    "label": "finance / finan\u00e7as read-only record reconciliation",
     "browserSpec": "apps/web/test/features/finance/finance.ZA25.browser.spec.ts",
     "integrationTest": "tests/integration/finance/record-reconciliation.ZA25.integration.test.ts",
     "acceptanceReadme": "tests/acceptance/finance/README.md",
@@ -93,7 +93,7 @@
     ]
   },
   "notes": [
-    "ZA-26 selected frontier rebinding on tip 85bf4c7 after #115 alchemy — not full-horizon acceptance.",
+    "ZA-26 selected frontier rebinding on tip 85bf4c7 after #115 alchemy \u2014 not full-horizon acceptance.",
     "Eve/G-PROVIDER/G-STORAGE-FENCE/H-01 remain Blocked/Unknown; textProfileAccepted false; hosted Erased not activated; cloud speech disabled.",
     "ICP journeys ZA-22..25 stay listed as implemented product scopes without claiming activation by merge.",
     "Tip Verify quality/unit/components/exact-image certify 85bf4c7; unit counts (89 files / 479 tests) refreshed on tip. Frontier/finance acceptance command rows remain supplemental implementing-machine evidence and are not sole tip certification.",

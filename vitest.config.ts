@@ -22,6 +22,9 @@ const integrationLegacyInclude = [
 export default defineConfig({
   resolve: {
     alias: {
+      "@zoen/application-client": fileURLToPath(
+        new URL("packages/application-client/src", import.meta.url)
+      ),
       "@zoen/contracts": fileURLToPath(
         new URL("packages/contracts/src", import.meta.url)
       ),

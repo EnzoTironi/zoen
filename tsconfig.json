@@ -15,6 +15,7 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "paths": {
+      "@zoen/application-client/*": ["./packages/application-client/src/*.ts"],
       "@zoen/contracts/*": ["./packages/contracts/src/*.ts"],
       "@zoen/ontology/*": ["./packages/ontology/src/*.ts"]
     },

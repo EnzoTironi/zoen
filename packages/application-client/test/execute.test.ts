@@ -11,7 +11,7 @@ import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
 import { Effect, Layer, Option, Redacted, Result, Schema } from "effect";
 import { Headers, HttpClient, HttpClientResponse } from "effect/unstable/http";
 
-import { execute } from "../src/transport.ts";
+import { execute } from "../src/execute.ts";
 
 const worldId = "33333333-3333-4333-8333-333333333333";
 const operationId = "11111111-1111-4111-8111-111111111111";
@@ -140,7 +140,7 @@ const runRouted = (payload: SemanticRequest): Effect.Effect<Captured> =>
     return captured;
   });
 
-describe("MCP HTTP transport routing", () => {
+describe("application-client HTTP execute routing", () => {
   it.effect("routes API groups and injects Cookie/Origin headers", () =>
     Effect.gen(function* routing() {
       for (const entry of routingCases) {

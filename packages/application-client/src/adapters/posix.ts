@@ -4,13 +4,15 @@ import { lstat, open } from "node:fs/promises";
 import { NodeStream } from "@effect/platform-node";
 import { Effect } from "effect";
 
+import { ApplicationClientError } from "../errors.js";
 import { collectText } from "../input-stream.js";
-import { McpFailure } from "../output.js";
 
+// Effect FileSystem.open only accepts string OpenFlags, without O_NOFOLLOW;
+// its stat method follows symlinks. This leaf supplies those POSIX operations.
 export const requirePrivateDirectory = Effect.fn(
   function* requirePrivateDirectory(target: string) {
     const stat = yield* Effect.tryPromise({
-      catch: () => new McpFailure("MCP_SESSION"),
+      catch: () => new ApplicationClientError("SESSION"),
       try: () => lstat(target),
     });
     if (
@@ -19,7 +21,7 @@ export const requirePrivateDirectory = Effect.fn(
       (stat.mode & 0o777) !== 0o700 ||
       stat.uid !== process.getuid?.()
     ) {
-      return yield* new McpFailure("MCP_SESSION");
+      return yield* new ApplicationClientError("SESSION");
     }
     return true;
   }
@@ -34,7 +36,7 @@ export const readNoFollow = Effect.fn(function* readNoFollow(
     Effect.gen(function* readDescriptor() {
       const file = yield* Effect.acquireRelease(
         Effect.tryPromise({
-          catch: () => new McpFailure("MCP_INPUT"),
+          catch: () => new ApplicationClientError("INPUT"),
           try: () =>
             open(
               target,
@@ -43,12 +45,12 @@ export const readNoFollow = Effect.fn(function* readNoFollow(
         }),
         (handle) =>
           Effect.tryPromise({
-            catch: () => new McpFailure("MCP_INPUT"),
+            catch: () => new ApplicationClientError("INPUT"),
             try: () => handle.close(),
           }).pipe(Effect.orDie)
       );
       const stat = yield* Effect.tryPromise({
-        catch: () => new McpFailure("MCP_INPUT"),
+        catch: () => new ApplicationClientError("INPUT"),
         try: () => file.stat(),
       });
       if (
@@ -56,12 +58,12 @@ export const readNoFollow = Effect.fn(function* readNoFollow(
         (secret &&
           ((stat.mode & 0o777) !== 0o600 || stat.uid !== process.getuid?.()))
       ) {
-        return yield* new McpFailure("MCP_INPUT");
+        return yield* new ApplicationClientError("INPUT");
       }
       return yield* collectText(
         NodeStream.fromReadable({
           evaluate: () => file.createReadStream({ autoClose: false }),
-          onError: () => new McpFailure("MCP_INPUT"),
+          onError: () => new ApplicationClientError("INPUT"),
         }),
         limit
       );
