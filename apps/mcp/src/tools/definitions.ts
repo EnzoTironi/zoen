@@ -63,13 +63,6 @@ const asString = (value: unknown, fallback?: string): string => {
   return "";
 };
 
-class McpInputError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "McpInputError";
-  }
-}
-
 /** Omitted → live (schema default); typos fail closed — never coerce to live. */
 const asRealm = (value: unknown): "live" | "evaluation" => {
   if (value === undefined || value === null || value === "") {
@@ -78,7 +71,7 @@ const asRealm = (value: unknown): "live" | "evaluation" => {
   if (value === "live" || value === "evaluation") {
     return value;
   }
-  throw new McpInputError("realm");
+  throw new Error("invalid realm");
 };
 
 const asEvidenceFormat = (value: unknown): "json" | "csv" => {
@@ -93,14 +86,14 @@ const asEvidenceFormat = (value: unknown): "json" | "csv" => {
   if (value === "csv") {
     return "csv";
   }
-  throw new McpInputError("format");
+  throw new Error("invalid format");
 };
 
 const asCorrectionChoice = (value: unknown): "select-claim" | "unknown" => {
   if (value === "select-claim" || value === "unknown") {
     return value;
   }
-  throw new McpInputError("choice");
+  throw new Error("invalid choice");
 };
 
 const worldRef = (args: Record<string, unknown>) => ({
