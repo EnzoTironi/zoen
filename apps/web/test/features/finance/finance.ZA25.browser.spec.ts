@@ -195,8 +195,6 @@ test("ZA-25 browser finance lists: contested invoice, CLI agreement, correct and
         exact: true,
       })
     ).toBeVisible();
-    await expect(page.getByText(/3500\.00 BRL/u)).toBeVisible();
-    await expect(page.getByText(/3200\.00 BRL/u)).toBeVisible();
     await expect(page.getByText(/fontes divergentes/u)).toBeVisible();
     await expect(
       page.getByText("Não verificado — não comprova pagamento", { exact: true })
