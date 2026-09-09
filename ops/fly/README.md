@@ -1,3 +1,5 @@
+> **Alchemy primacy:** declared topology lives in [`ops/alchemy/`](../alchemy/README.md) (`alchemy.run.ts`). This directory stays the flyctl / exact-image CD mirror until an explicit operator cutover. Do not add managed Postgres or Tigris here.
+
 # Fly all-in-one (`zoen-rebuild`)
 
 Integrador (`ops/fly/**`). App **`zoen-rebuild`**: **uma VM** com Postgres + RustFS (S3-compatível) + servidor Zoen, dados em **um volume** Fly (`/data`). **Não** usa Managed Postgres (MPG) nem Tigris/S3 gerenciado.
