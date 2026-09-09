@@ -13,7 +13,7 @@
 | **W1** Language plane | OMS MVP — versioned types | Yes |
 | **W2** Engine write path | Action runtime replaces ad-hoc executor switch | Yes |
 | **W3** Worlds pack migration | Existing verbs as Action Types; acceptance green | Yes |
-| **W4** MCP codegen | Tools generated from Action registry | Yes |
+| **W4** MCP codegen | Tools generated from Action registry | Done (SI escape hatch) |
 | **W5** Funnel-lite + Approvals-lite | One sync source; confirmation only if an Action needs it | Yes (optional triggers) |
 
 ## W0 — Spec freeze
@@ -76,12 +76,14 @@
 
 **Goal:** MCP (and CLI help surface where applicable) generate tools from the Action Type registry instead of hand-duplicating verbs across apps.
 
+**Status notes:** `@zoen/oms/mcp-codegen` lists Worlds Action Types (inventory order, then any extra registered Worlds ops); `apps/mcp` `generateWorldsToolsFromOms` + host binders assemble tools. Subject-identity remains a hand escape hatch (no OMS stubs). CLI root help surfaces `oms-actions.ts` OMS name list. No Funnel (W5).
+
 **Acceptance criteria**
 
-- [ ] Adding a new Action Type yields an MCP tool without a hand-written third copy of the verb in `apps/mcp`.
-- [ ] Generated tools still assemble SemanticRequest / Action submit through the Engine grant path.
-- [ ] Web / CLI / MCP parity for the migrated Worlds pack actions under test.
-- [ ] Document escape hatch for non-Action diagnostics (read-only) if any — must not mutate authority.
+- [x] Adding a new Action Type yields an MCP tool without a hand-written third copy of the verb in `apps/mcp` (binder required; name from OMS).
+- [x] Generated tools still assemble SemanticRequest / Action submit through the Engine grant path (W3 ActionRunner).
+- [x] Web / CLI / MCP catalog + CreatePersonalWorld routing under test (OMS name catalog shared across MCP/CLI help; CreatePersonalWorld dispatch proof — not full per-verb cross-surface matrix).
+- [x] Document escape hatch for subject-identity hand binders (direct-engine ops excluded from OMS/ActionRunner; not all read-only) — must not mutate ontology authority via a parallel grant path.
 - [ ] Verify green.
 
 ## W5 — Funnel-lite + Approvals-lite

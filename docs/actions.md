@@ -1,6 +1,6 @@
 # Action runtime (Engine write path)
 
-**Wave:** W2–W3  
+**Wave:** W2–W4  
 **Constitution:** [ADR-0001](adr/ADR-0001-operational-ontology-os.md) · [Glossary](glossary/operational-ontology.md) · [OO roadmap](roadmap-oo-os.md) · [OMS](oms.md)
 
 ## What this is
@@ -19,7 +19,6 @@ Dual path remains intentional during transition: tip HTTP Worlds groups still ca
 
 | Deferred                                      | Wave  |
 | --------------------------------------------- | ----- |
-| MCP codegen from Action Types                 | W4    |
 | Funnel-lite / Approvals-lite                  | W5    |
 | Subject-identity OMS Action Types (W1 waived) | later |
 
@@ -90,3 +89,7 @@ await runner.run({
 - [OMS (Language plane)](oms.md)
 - [Roadmap W2 acceptance](roadmap-oo-os.md#w2--engine-write-path)
 - [Roadmap W3 acceptance](roadmap-oo-os.md#w3--worlds-pack-migration)
+
+## MCP codegen (W4)
+
+Worlds pack MCP tools are assembled from OMS Action Types (`@zoen/oms/mcp-codegen`) plus thin host binders in `apps/mcp`. Execution remains the W3 ActionRunner path (`makeActionRunnerHttpExecutor`). Subject-identity is still excluded from OMS (escape-hatch binders only). See [oms.md](oms.md#mcp-codegen-w4).
