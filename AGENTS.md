@@ -32,7 +32,7 @@ Consolidate the migration baseline only as an explicit coordinated change rather
 - Respeite `depends_on`, contratos, `owns` e pré-condições reais de aceitação. O orquestrador reserva composição, configurações, manifests, lockfile e ordem das migrações. Alteração fora do escopo requer coordenação com ele; não aprovação humana para decisões rotineiras já autorizadas.
 - Use worktrees isoladas por tarefa. Não compartilhe `node_modules` mutável. Entregue um incremento compilável; código só conta como integrado depois de importado pela composição real e exercido pelo caminho correspondente.
 - Use o skill Effect disponível no ambiente e as instruções da versão instalada. Effect 4 nativo, TS7 como único compilador, Ultracite/Oxlint/Oxfmt e CI desde o primeiro código. Não escreva código de Effect de memória quando a API instalada puder ser consultada.
-- Humano, web, CLI, SDK, MCP e Eve usam o mesmo executor semântico. Transporte não cria outra política, banco de autoridade ou reconciliação. I/O de provedores fica fora da transação de autoridade.
+- Humano, web, CLI, SDK e MCP usam o mesmo executor semântico (Worlds). Transporte não cria outra política, banco de autoridade ou reconciliação. I/O de provedores fica fora da transação de autoridade. Eve/chat/voice não é superfície de produto neste tip.
 - Crie módulos quando houver consumidor real. Sem scaffolds por spec, `.plan.md` para simular fonte, autodiscovery de handlers ou framework próprio que replique recursos do Effect.
 
 ## Prova

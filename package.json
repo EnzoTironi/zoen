@@ -42,7 +42,6 @@
     "alchemy:deploy": "alchemy deploy ops/alchemy/alchemy.run.ts",
     "alchemy:destroy": "alchemy destroy ops/alchemy/alchemy.run.ts",
     "typecheck:alchemy": "tsc --noEmit -p ops/alchemy/tsconfig.json",
-    "eve:qualify-gprovider": "python3 tests/integration/eve/gprovider/qualify.py",
     "ops:prep-hosted-gates": "python3 tests/integration/hosted/gates/prep.py"
   },
   "devDependencies": {

@@ -79,7 +79,7 @@ O primeiro fluxo de correção tem Case e Question mínimos, escopo e identidade
 
 ## Persistência e composição
 
-PostgreSQL é a autoridade; S3 guarda payloads retidos, com referência transacional e publicação controlada. Nenhuma autoridade, política de domínio ou reconciliação paralela para app, Eve ou conectores. Journal de interação, estado de transporte e leases são persistência operacional legítima com dono/credencial delimitados. Captura tem estados explícitos de staging/publicação/falha; não fingir atomicidade entre S3 e SQL. Pins, limpeza de órfãos e supressão de apagamento pertencem ao ciclo de vida desde que a operação correspondente for habilitada.
+PostgreSQL é a autoridade; S3 guarda payloads retidos, com referência transacional e publicação controlada. Nenhuma autoridade, política de domínio ou reconciliação paralela para app ou conectores. Estado de transporte e leases são persistência operacional legítima com dono/credencial delimitados. Captura tem estados explícitos de staging/publicação/falha; não fingir atomicidade entre S3 e SQL. Pins, limpeza de órfãos e supressão de apagamento pertencem ao ciclo de vida desde que a operação correspondente for habilitada.
 
 Genesis, escopo de idempotência sem transporte, três tentativas totais de transação e as 24 leis preservadas estão definidos em [invariants.md](invariants.md). Esse contrato impede criar uma transação privilegiada de bootstrap ou retry genérico que repita um efeito externo.
 
@@ -89,7 +89,7 @@ Famílias de operação exportam Layers e schemas por módulo. Um ponto de compo
 
 ## Crescimento condicionado ao uso
 
-Eve, jobs de provider e compute ganham processos separados quando entram no produto, com credenciais mínimas próprias; não herdam todo o ambiente do servidor. Separar pacotes `client`, `identity` ou `connectors` somente quando houver consumidores e necessidade concretos. Governança, dados densos, enterprise e federação ampliam a autoridade existente em módulos; não viram 56 microserviços.
+Jobs de provider e compute ganham processos separados quando entram no produto, com credenciais mínimas próprias; não herdam todo o ambiente do servidor. MCP/agente (futuro) adapta Worlds — não reinstala chat Eve. Separar pacotes `client`, `identity` ou `connectors` somente quando houver consumidores e necessidade concretos. Governança, dados densos, enterprise e federação ampliam a autoridade existente em módulos; não viram 56 microserviços.
 
 Docker será a base local e de CI; Fly é o destino de hospedagem planejado. PostgreSQL e um store S3 compatível serão executados e verificados no bootstrap. Nome de imagem, versão ou perfil não é prova de compatibilidade, licença ou backup. Hospedagem exige a topologia e recuperação reais de D04.
 
@@ -100,6 +100,6 @@ Docker será a base local e de CI; Fly é o destino de hospedagem planejado. Pos
 O diagrama de destino acima é **intenção**, não prova de operação. Em `aa7bc31` (#113 ZA-25) a fronteira selecionada reconcilia escopos **implementados / qualificados / bloqueados** em [`docs/verification/frontier-integration.md`](verification/frontier-integration.md) e [`docs/verification/frontier-status.json`](verification/frontier-status.json).
 
 - ICPs nomeados (household, bakery, clinic admin, finance) têm jornadas web/CLI reais; isso **não** ativa D03/D04/D05 integrais.
-- Eve permanece opcional e fail-closed (`textProfileAccepted: false` sem G-PROVIDER); speech cloud desabilitado.
+- Produto tip = Worlds only; Eve/OpenCode/voice product surface removed (`fullD05` / `textProfileAccepted` stay false).
 - Hosted Erased, controlador independente (H-01), `G-STORAGE-FENCE` e `restoreAfterErasure` permanecem Blocked/Unknown/false.
 - Nunca rotular o diagrama inteiro como implementado.

@@ -23,7 +23,7 @@ Same grammar across ICPs already named in the roadmap (no new commercial persona
 6. Share and revoke (when enabled)
 7. Retention / erasure when qualified
 
-Surfaces first: **web** and **CLI** (same verbs). Agent, SDK, and MCP come later as adapters over that grammar. Eve is an optional conversation/voice layer (D05) over the same semantic executor — not part of the application grammar.
+Surfaces first: **web** and **CLI** (same World verbs). **MCP** (and later SDK/agent adapters) sit over that grammar — not a separate chat product. Product surface is ontology **Worlds** only.
 
 ## Live
 

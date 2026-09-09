@@ -9,7 +9,6 @@ import {
   grantContentBarrierAdmit,
   grantErasureRole,
 } from "../../apps/server/sql/proposals/erasure/grants.ts";
-import { grantEveJournalRole } from "../../apps/server/sql/proposals/eve/grants.ts";
 import { grantSubjectIdentityRole } from "../../apps/server/sql/proposals/subject-identity/grants.ts";
 import { grantWorldsRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
 import type { WorldsDatabaseRoles } from "../../apps/server/sql/proposals/worlds/grants.ts";
@@ -133,8 +132,8 @@ export const applyDisclosureMigrations = Effect.fn(
     fileURLToPath(new URL("017_erasure_controller_head.sql", import.meta.url))
   );
   yield* sql.withTransaction(sql.unsafe(controllerHead));
-  // ZA-18: eve journal schema must exist on every retained/disclosure install
-  // before runtime role checks probe has_schema_privilege(..., 'eve', ...).
+  // Inert: product Eve journal surface removed; keep schema 019 for Fly volume /
+  // migration-chain coherence (no runtime grants / no product consumers).
   // Apply without migrator id 19 here so identity events 7/8 still record;
   // applyErasureMigrations records id 19 after 7–18.
   const eveJournal = yield* fs.readFileString(
@@ -257,11 +256,3 @@ export const applyErasureMigrations = Effect.fn("migrations.applyErasure")(
     return [...base, ...extension, ...eveExtension];
   }
 );
-
-/** ZA-18: grant the restricted journal role after schema 019 exists. */
-export const grantEveJournalMigrations = Effect.fn(
-  "migrations.grantEveJournal"
-)(function* grantEveJournalMigrations(journalRole: string) {
-  const sql = yield* SqlClient.SqlClient;
-  yield* sql.withTransaction(grantEveJournalRole(journalRole));
-});

@@ -18,7 +18,7 @@ A household user compares two ordinary bill/commitment lists, resolves one disag
 - Complete household operations or caregiver account recovery
 - Clinical, financial settlement, or provider behavior
 - Empty packs/extensions or a second authority engine
-- Eve involvement (product Eve stays fail-closed; this journey does not touch Eve)
+- Eve/chat/voice product surface (removed from tip; this journey is Worlds verbs only)
 
 ## Acceptance (falsifiable)
 

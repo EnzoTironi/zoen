@@ -12,7 +12,7 @@ D01–D22 continuam o mapa de ambição do produto. A auditoria pós-#74 define 
 
 Imagens Atlas/arquitetura são ambição **não normativa** — não são lista de materiais. O detalhe condensado vive em [docs/architecture-audit/](architecture-audit/).
 
-Gramática de produto: web/CLI sobre Worlds; Eve = framework de agente opcional só em D05; ICPs household / bakery / clinic / finance já nomeados; sem packs inventados.
+Gramática de produto: web/CLI (e futuro MCP) sobre Worlds; sem produto Eve/chat/voice no tip; ICPs household / bakery / clinic / finance já nomeados; sem packs inventados.
 
 A política Pre-launch Evolution em `AGENTS.md` substitui conselhos de shim, dual-read ou dual-write. IDs D0x são apenas planejamento — não caminhos de código nem ownership de fonte.
 
@@ -23,7 +23,7 @@ Status honesto: `planning/progress.json` registra incrementos verificados; `deli
 | Fase | Resultado | Entregas e condição de saída |
 | --- | --- | --- |
 | P1 — Verdade privada utilizável | Capturar, comparar, explicar, corrigir e desfazer | D01/D02; direitos, retenção e limites mínimos já necessários. Jornada real em web/CLI, histórico, retry e isolamento comprovados |
-| P2 — Uso contínuo e colaboração | Compartilhar/revogar, hospedar e conversar com fatos | Núcleos D03/D04/D05; busca, Notices, primeiro conector e packs operacionais podem ter incrementos. Ativar só providers realmente verificados |
+| P2 — Uso contínuo e colaboração | Compartilhar/revogar, hospedar; agentes/MCP sobre Worlds | Núcleos D03/D04; D05 reorientado a adapters (MCP/agente), não chat Eve; busca, Notices, primeiro conector e packs operacionais podem ter incrementos. Ativar só providers realmente verificados |
 | P3 — Adaptação pelo usuário | Regras, definições e apps declarativos sem redeploy | D07/D08 e núcleos D11/D18; API/SDK/MCP, cenários simples. Publicação e mudança de significado avaliadas e governadas |
 | P4 — Ação e responsabilidade | Aprovação, efeito real, Mandate, observação e canais | D06/D10/D11/D12 e agentes de D13; Unknown e orçamento conservados. Ações clínicas dependem dos controles próprios de D14 |
 | P5 — Extensão e operação institucional | Código isolado, dados densos/live, compute, conectores e SSO | D09/D14/D15/D16/D17/D19 conforme perfil; carga, recuperação, isolamento e permissões externas medidos |
@@ -40,7 +40,7 @@ Estas decisões são propostas concretas do redesenho solicitado e precisam orie
 - **Relógio separado da base:** timestamp/amostra da autoridade PostgreSQL local avalia tempo e prazo; não certifica um snapshot global de fontes. Cuts e revisões de fontes pertencem à base da decisão. Documentar precisão/incerteza aplicável ao perfil real.
 - **Base privada, projeção pública:** dependências, epochs e revisões internas não são devolvidas automaticamente. Opaque token não basta se suas mudanças expõem atividade escondida. Payloads e metadados passam pelo mesmo requisito de não interferência.
 - **Retenção desde a captura:** staging, admitido, indisponível e apagamento pendente são distintos. Pins e política explícita protegem payloads usados. D03 implementa supressão e prova de restore antes de habilitar/promover apagamento; o piloto D04 só promete as operações que comprovou. Nenhum prazo legal ou hold presumido.
-- **Uma operação, várias superfícies:** web/CLI primeiro, Eve/SDK/MCP/apps depois. App declarativo não exige runner, Rivet, GPU ou marketplace. A criação assistida por Eve é um incremento adicional.
+- **Uma operação, várias superfícies:** web/CLI primeiro; MCP/SDK/apps depois sobre a mesma gramática Worlds. App declarativo não exige runner, Rivet, GPU ou marketplace. Assistência por agente/MCP é incremento futuro — não produto Eve no tip.
 - **Ativação por perfil:** modelo, WhatsApp, Telegram, OAuth, feed, GPU, broker e custodiante são dependências apenas das funções que os utilizam. APIs e permissões ausentes permanecem bloqueios explícitos.
 - **Operação enxuta:** Docker primeiro, Fly como destino solicitado; módulos substituem a organização por spec. A configuração antiga de AWS não será copiada por inércia. Migração de sistema/dados existente continua exigindo inventário e cutover explícitos.
 
@@ -56,7 +56,7 @@ O registro estruturado é [planning/deliveries.json](../planning/deliveries.json
 | D02 — Correção e identidade reversíveis | Corrigir/unknown/undo com escopo e histórico; merge/split e stewardship em incrementos próprios. | D01 | Nenhum provider obrigatório para correção local. |
 | D03 — Compartilhamento, revogação e apagamento | Compartilhar sob audiência limitada e revogar em voo; supressão impede ressurreição após restore. | D01 | Política de retenção/hold aplicável e store real; sessão de app só quando D08 existir. |
 | D04 — Primeiro produto hospedado | Deploy Fly, operação e restore reais no escopo habilitado, sem cutover implícito. | D01, D03 | Conta/topologia Fly, secrets, persistência, backup e recuperação verificados. |
-| D05 — Eve com evidência e continuidade | Conversar com fatos, incerteza, cancelamento e journal recuperável; voz como incremento. | D01 | Modelo permitido e API/conta real; voz possui perfil próprio. |
+| D05 — Adapters agente/MCP sobre Worlds | Superfícies agent/MCP usam o mesmo executor semântico; sem produto Eve/chat/voice no tip. | D01 | MCP/SDK e provedores reais quando admitidos; não reinstalar chat Eve como produto. |
 | D06 — Canais autorizados | Ingress durável, vínculo sem autoridade implícita e continuidade; resultado de entrega desconhecido honesto. | D03, D05 | Cada canal tem provider/conta e consentimento próprios; canais independentes. |
 | D07 — Significado e regras em runtime | Editar regra/pack, avaliar e ativar geração exata atomicamente, mantendo história explicável. | D01, D02 | Gramática/IR limitados aos operadores implementados. |
 | D08 — Apps declarativos e superfícies | App privado usa mesma verdade; ampliar para publicação, SDK/MCP, forms e criação assistida. | D01 | Publicação runtime exige D07; sessão D03; forms D11; assistência D05. |
@@ -77,7 +77,7 @@ O registro estruturado é [planning/deliveries.json](../planning/deliveries.json
 
 ## Ordem depois da primeira jornada
 
-Com D01 integrado, preparar D02, o núcleo de D03, a operação D04 e Eve D05 em paralelo conforme os três slots. D02 destrava o significado runtime de D07; D01 também permite a apresentação declarativa inicial de D08, restrita a definições admitidas na imagem. Criar/editar/publicar significado em runtime exige D02/D07 e avaliação sob política atual. Compartilhamento habilita busca e primeiros conectores sem exigir a agência completa.
+Com D01 integrado, preparar D02, o núcleo de D03 e a operação D04 em paralelo conforme os três slots; D05 (MCP/agente) fica fora desta faixa de produto Eve removida. D02 destrava o significado runtime de D07; D01 também permite a apresentação declarativa inicial de D08, restrita a definições admitidas na imagem. Criar/editar/publicar significado em runtime exige D02/D07 e avaliação sob política atual. Compartilhamento habilita busca e primeiros conectores sem exigir a agência completa.
 
 Depois, separar receitas de provedores e canais por conta real e contrato consumido. Google, M365, CRM e ERP não formam uma fila por nome. Ações e Mandates não dependem de WhatsApp. Finanças locais não dependem de federação. D15–D22 preservam critérios e bloqueios, mas não recebem milhares de arquivos antes de haver interfaces estáveis.
 

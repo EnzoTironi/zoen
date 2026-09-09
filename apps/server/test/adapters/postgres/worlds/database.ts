@@ -17,16 +17,10 @@ const profile = (url: Redacted.Redacted, name: string) => ({
   url,
 });
 
-type DatabaseRole =
-  | "authority"
-  | "eveJournal"
-  | "identity"
-  | "migration"
-  | "progress";
+type DatabaseRole = "authority" | "identity" | "migration" | "progress";
 
 export interface WorldsTestDatabase {
   readonly authority: ReturnType<typeof makeWorldsPostgresLayer>;
-  readonly eveJournal: ReturnType<typeof makeWorldsPostgresLayer>;
   readonly identity: ReturnType<typeof makeWorldsPostgresLayer>;
   readonly progress: ReturnType<typeof makeWorldsPostgresLayer>;
   readonly migration: ReturnType<typeof PgClient.layer>;
@@ -46,14 +40,12 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
     const databaseName = `ex06_${suffix}`;
     const names = {
       authority: `ex06_authority_${suffix}`,
-      eveJournal: `ex06_eve_${suffix}`,
       identity: `ex06_identity_${suffix}`,
       migration: `ex06_migration_${suffix}`,
       progress: `ex06_progress_${suffix}`,
     };
     const passwords = {
       authority: randomBytes(32).toString("hex"),
-      eveJournal: randomBytes(32).toString("hex"),
       identity: randomBytes(32).toString("hex"),
       migration: randomBytes(32).toString("hex"),
       progress: randomBytes(32).toString("hex"),
@@ -72,9 +64,6 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
       authority: makeWorldsPostgresLayer(
         profile(roleUrl("authority"), "authority")
       ),
-      eveJournal: makeWorldsPostgresLayer(
-        profile(roleUrl("eveJournal"), "eve-journal")
-      ),
       identity: makeWorldsPostgresLayer(
         profile(roleUrl("identity"), "identity")
       ),
@@ -85,7 +74,6 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
       ),
       urls: {
         authority: roleUrl("authority"),
-        eveJournal: roleUrl("eveJournal"),
         identity: roleUrl("identity"),
         migration: roleUrl("migration"),
         progress: roleUrl("progress"),
@@ -97,7 +85,6 @@ export const withWorldsDatabase = <A, E, R, E2 = never, R2 = never>(
         for (const role of [
           "migration",
           "authority",
-          "eveJournal",
           "identity",
           "progress",
         ] as const) {

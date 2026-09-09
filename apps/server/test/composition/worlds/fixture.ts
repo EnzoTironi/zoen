@@ -25,7 +25,6 @@ import {
   sdk,
   withStorage,
 } from "../../adapters/object-storage/worlds/fixture.ts";
-import { grantTestEveJournalRole } from "../../adapters/postgres/eve/database.ts";
 import { withWorldsDatabase } from "../../adapters/postgres/worlds/database.ts";
 import type { WorldsTestDatabase } from "../../adapters/postgres/worlds/database.ts";
 
@@ -56,27 +55,10 @@ const erasablePolicy = {
   retention: "while-pinned",
 } as const;
 
-export interface WithWorldsHttpOptions {
-  /** When set, exercises ZA-17 key-present composition (still fail-closed). */
-  readonly openCodeZen?: {
-    readonly apiKey: Redacted.Redacted;
-    readonly baseUrl: string;
-    readonly model: string;
-  };
-  /**
-   * ZA-18: wire restricted eve journal identity into makeApplication.
-   * Requires install path that applied migration 019 + journal grants.
-   */
-  readonly eveJournalDatabaseUrl?: Redacted.Redacted;
-  /** When true, apply erasure migrator (incl. 019) + grant eve journal role. */
-  readonly withEveJournal?: boolean;
-}
-
 export const withWorldsHttp = <A, E>(
   run: (
     fixture: HttpFixture
-  ) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>,
-  options?: WithWorldsHttpOptions
+  ) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>
 ) =>
   withWorldsDatabase(
     (database) =>
@@ -127,16 +109,6 @@ export const withWorldsHttp = <A, E>(
               sessionSeconds: 3600,
             },
             installation,
-            ...(options?.openCodeZen === undefined
-              ? {}
-              : { openCodeZen: options.openCodeZen }),
-            ...(options?.eveJournalDatabaseUrl === undefined &&
-            options?.withEveJournal !== true
-              ? {}
-              : {
-                  eveJournalDatabaseUrl:
-                    options.eveJournalDatabaseUrl ?? database.urls.eveJournal,
-                }),
             policy,
             storage,
           });
@@ -151,22 +123,9 @@ export const withWorldsHttp = <A, E>(
       ),
     undefined,
     (database) =>
-      Effect.gen(function* installHttp() {
-        if (options?.withEveJournal === true) {
-          yield* applyErasureMigrations(database.names).pipe(
-            Effect.provide(
-              Layer.mergeAll(database.migration, NodeServices.layer)
-            )
-          );
-          yield* grantTestEveJournalRole(database);
-        } else {
-          yield* applyIdentityBasisMigrations(database.names).pipe(
-            Effect.provide(
-              Layer.mergeAll(database.migration, NodeServices.layer)
-            )
-          );
-        }
-      })
+      applyIdentityBasisMigrations(database.names).pipe(
+        Effect.provide(Layer.mergeAll(database.migration, NodeServices.layer))
+      )
   );
 
 export const http = Effect.fn("test.http")(function* sendHttpRequest(

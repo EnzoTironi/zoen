@@ -5,7 +5,7 @@ Condensed from audit `FRONTIER.md` + `TIP-TO-TARGET.md` + `SHARED-UNDERSTANDING.
 ## Product grammar
 
 - Primary surfaces: **web** and **CLI** over Worlds. Future SDK / MCP / Eve tools share **one** SemanticExecutor — no client-specific authority.
-- **Eve** = optional agent / conversation framework (**D05 only**). Owns interaction and journal, not business facts, permissions, or reconciliation.
+- **Agent/MCP** (future, D05 reoriented) = adapters over Worlds. Tip product surface is Worlds only — Eve chat/voice removed.
 - **ICPs** (already named): household, bakery, clinic administration, personal/small-business finance. **No invented packs** or new commercial personas.
 - **D0x** IDs are planning metadata only — not source paths or package ownership.
 

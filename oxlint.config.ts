@@ -140,51 +140,12 @@ export default defineConfig({
     },
     {
       files: [
-        "packages/ontology/src/ports/eve/**",
-        "packages/ontology/test/ports/eve/**",
-        "packages/contracts/test/eve/**",
-        "apps/cli/src/eve/**",
-        "apps/web/src/features/eve/**",
-        "apps/web/test/integration/eve/**",
-        "apps/server/test/composition/eve/**",
-      ],
-      plugins: ["vitest"],
-      rules: {
-        "effecttsgo/abort-controller-in-effect": "off",
-        "effecttsgo/async-function": "off",
-        "effecttsgo/node-builtin-import": "off",
-        "effecttsgo/prefer-schema-over-json": "off",
-        "effecttsgo/process-env": "off",
-        "effecttsgo/process-env-in-effect": "off",
-        "effecttsgo/schema-sync-in-effect": "off",
-        "eslint/complexity": "off",
-        "eslint/require-await": "off",
-        "typescript/no-unsafe-type-assertion": "off",
-        "unicorn/prefer-response-static-json": "off",
-        "vitest/max-expects": "off",
-      },
-    },
-    {
-      files: [
         "packages/ontology/src/semantic/executor.ts",
         "apps/cli/src/worlds/transport.ts",
         "apps/web/src/features/worlds/client.ts",
       ],
       rules: {
         "eslint/complexity": ["error", { max: 28 }],
-      },
-    },
-    {
-      files: [
-        "apps/web/src/features/eve/web-speech.ts",
-        "apps/web/test/features/eve/**",
-      ],
-      rules: {
-        "effecttsgo/async-function": "off",
-        "effecttsgo/new-promise": "off",
-        "promise/avoid-new": "off",
-        "typescript/prefer-for-of": "off",
-        "unicorn/prefer-add-event-listener": "off",
       },
     },
     {
