@@ -7,7 +7,7 @@
 
 ## Context
 
-Tip Zoen (`0536940`) is a governed **Worlds** product: private truth with evidence, correction, sharing, and erasure over a semantic executor, exposed on web / CLI / MCP. Research against Zhang *Operational Ontology* and *The Palantir Impact* shows that the durable category is broader: an **operational ontology** platform (nouns + verbs + governed write path), not a chat memory store and not a day-one Foundry clone.
+Tip Zoen (`0536940`) is a governed **Worlds** product: private truth with evidence, correction, sharing, and erasure over a semantic executor, exposed on web / CLI / MCP. Research against Zhang _Operational Ontology_ and _The Palantir Impact_ shows that the durable category is broader: an **operational ontology** platform (nouns + verbs + governed write path), not a chat memory store and not a day-one Foundry clone.
 
 The product fork was:
 
@@ -32,8 +32,8 @@ Surfaces stay high-signal OSS: web (thin host), CLI, MCP. No Eve / chat / voice 
 
 ## Sources
 
-- Zhang, *Operational Ontology* — depth: 4C Decision Readiness, Action anatomy, failure modes, OMS shape.
-- *The Palantir Impact* — commercial framing: write-back, nouns+verbs, AIP-style agents on ontology (inspiration only; keep Zoen language).
+- Zhang, _Operational Ontology_ — depth: 4C Decision Readiness, Action anatomy, failure modes, OMS shape.
+- _The Palantir Impact_ — commercial framing: write-back, nouns+verbs, AIP-style agents on ontology (inspiration only; keep Zoen language).
 
 ## Rejected alternatives
 

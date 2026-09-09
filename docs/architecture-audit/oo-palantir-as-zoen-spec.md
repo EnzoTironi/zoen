@@ -3,7 +3,7 @@
 **Status:** research memo (derived) — frozen into product law by [ADR-0001](../adr/ADR-0001-operational-ontology-os.md) (W0, 2026-09-09).  
 **Provenance:** Adapted from `/workspace/zoen-arch-plan/research/oo-palantir-as-zoen-spec.md` (box research). Not an implementation claim.  
 **Date:** 2026-09-09  
-**Inputs:** Zhang *Operational Ontology* (book zip); *The Palantir Impact* markdown; Zoen tip `0536940` (W1–W4 ontology-plugin pivot).  
+**Inputs:** Zhang _Operational Ontology_ (book zip); _The Palantir Impact_ markdown; Zoen tip `0536940` (W1–W4 ontology-plugin pivot).  
 **Constraint from Enzo:** treat as product spec; AGI rewrite OK if needed.
 
 ## Spec in one page
@@ -34,6 +34,7 @@ Zhang supplies depth (4C readiness, Action anatomy, failure modes). Palantir Imp
 ## Gap map (honest)
 
 **Already Zoen-shaped (keep / rename):**
+
 - Semantic executor + receipts ≈ Action write path core
 - Evidence / correction / sharing / erasure ≈ first Action Types + object families inside a World
 - MCP tools = verbs ≈ Action projection (golden rule already matches)
@@ -41,6 +42,7 @@ Zhang supplies depth (4C readiness, Action anatomy, failure modes). Palantir Imp
 - Branch via git/PR ≈ Ontology Proposal culture (process, not OMS yet)
 
 **Missing for spec (must build if we adopt):**
+
 - OMS: versioned Object/Link/Action Type registry (Language plane)
 - Generic Object instance store + Link traversal (not only World-shaped tables)
 - Action Type card: parameters, submission criteria, permissions, edits, function backing, side-effect declaration, modes, degradation
@@ -54,6 +56,7 @@ Zhang supplies depth (4C readiness, Action anatomy, failure modes). Palantir Imp
 - Toolchain: Ontology Manager, Workshop-like builders (later)
 
 **Do not import from Palantir blindly:**
+
 - Funnel streaming constraints, MDO, Skywise-scale indexing
 - FDE services business model
 - AIP brand / Foundry lock-in
