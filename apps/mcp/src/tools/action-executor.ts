@@ -2,6 +2,7 @@ import { executeSemanticViaActionRunner } from "@zoen/actions/host-execute";
 import type { ActionLog } from "@zoen/actions/log";
 import { createMemoryActionLog } from "@zoen/actions/log-memory";
 import { sessionHostActor } from "@zoen/actions/session-actor";
+import { SemanticError } from "@zoen/contracts/worlds/errors";
 import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
 import { SemanticSuccess } from "@zoen/contracts/worlds/operations";
 import { Effect, Schema } from "effect";
@@ -15,6 +16,7 @@ import { execute as httpExecute } from "../transport.js";
 /**
  * Primary Worlds pack path: ActionRunner (OMS + Action Log) → ApplicationApi HTTP.
  * Subject-identity remains direct SemanticRequest HTTP (escape hatch; W1 waived OMS).
+ * Engine SemanticError failures propagate for typed MCP error text.
  */
 export const makeActionRunnerHttpExecutor =
   (config: McpConfig, log: ActionLog = createMemoryActionLog()) =>
@@ -22,7 +24,12 @@ export const makeActionRunnerHttpExecutor =
     Effect.gen(function* actionRunnerHttpExecutor() {
       const cookie = yield* readSession(config.sessionDir, config.baseUrl);
       const outcome = yield* Effect.tryPromise({
-        catch: () => new McpFailure("MCP_TRANSPORT"),
+        catch: (error) => {
+          if (Schema.is(SemanticError)(error)) {
+            return error;
+          }
+          return new McpFailure("MCP_TRANSPORT");
+        },
         try: () =>
           executeSemanticViaActionRunner({
             actor: sessionHostActor(true),
