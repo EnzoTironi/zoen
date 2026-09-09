@@ -35,6 +35,8 @@ jobs:
       - run: python3 -m unittest discover -s tooling -p 'test_*.py'
       - name: Exact-image admission policy fixtures (ZA-07)
         run: python3 -m unittest discover -s tests/integration/hosted/exact_image -p 'test_*.py'
+      - name: Hosted gates prep fail-closed fixtures
+        run: python3 -m unittest discover -s tests/integration/hosted/gates -p 'test_*.py'
 
   unit:
     runs-on: ubuntu-24.04

@@ -1,0 +1,51 @@
+{
+  "schema": "zoen.hosted-gates-prep/v1",
+  "status": "Blocked",
+  "observedAt": "YYYY-MM-DDTHH:MM:SSZ",
+  "tipCommit": "<git rev-parse HEAD>",
+  "gates": {
+    "H-01": "Blocked",
+    "H-02": "Blocked",
+    "G-OPS": "Unknown",
+    "G-STORAGE-FENCE": "Blocked",
+    "fullHostedErased": false,
+    "productAccepted": false,
+    "restoreAfterErasure": false,
+    "cloudSpeechEnabled": false,
+    "textProfileAccepted": false
+  },
+  "refusals": {
+    "destroyZoenRebuild": true,
+    "destroyLegacyZoen": true,
+    "destroyZoenData": true,
+    "managedPostgres": true,
+    "alchemyProdAdopt": true,
+    "claimFullHostedErased": true
+  },
+  "candidatePath": null,
+  "candidateDecision": null,
+  "localControllerSeam": {
+    "compose": "ops/compose.erasure-controller.yaml",
+    "qualifiesH01Hosted": false,
+    "note": "Local ZA-11 declared rollback separation only — not hosted H-01."
+  },
+  "gOpsInventory": {
+    "script": "ops/fly/scripts/inventory.sh",
+    "mode": "read-only-when-operator-runs",
+    "autoQualified": false,
+    "status": "Unknown"
+  },
+  "gStorageFence": {
+    "observeStorageFenceQualification": "Blocked",
+    "objectLockIsWriterFence": false,
+    "docs": [
+      "docs/verification/erasure-object-writer-containment.md",
+      "docs/verification/erasure-fly-object-lock.md"
+    ]
+  },
+  "checklist": "docs/ops/hosted-gates-operator-checklist.md",
+  "notes": [
+    "Prep evidence only — tip gates remain Blocked/Unknown.",
+    "Replace this template via: pnpm ops:prep-hosted-gates"
+  ]
+}
