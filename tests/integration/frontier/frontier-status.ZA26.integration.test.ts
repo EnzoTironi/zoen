@@ -26,14 +26,18 @@ const statusPath = path.resolve(
 const lockPath = path.resolve(repoRoot, "pnpm-lock.yaml");
 
 const EXPECTED_TIP = "aa7bc313e5c3905e83fb69847123f436fc261a22";
+const EXPECTED_IMAGE_IDENTITY =
+  "ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c";
 
 const loadStatus = (): FrontierStatusDocument => {
   const raw: unknown = JSON.parse(readFileSync(statusPath, "utf-8"));
   return validateFrontierStatus(raw, {
     expectedCommit: EXPECTED_TIP,
+    expectedImageIdentity: EXPECTED_IMAGE_IDENTITY,
     expectedLockfileSha256: createHash("sha256")
       .update(readFileSync(lockPath))
       .digest("hex"),
+    requireImageIdentity: true,
   });
 };
 
@@ -74,9 +78,11 @@ describe("ZA-26 frontier integration status", () => {
       ])
     );
     expect(status.execution.selectedProfileIntegrationTests).toBeGreaterThan(0);
+    expect(status.execution.selectedProfileAcceptanceTests).toBeGreaterThan(0);
     expect(
       status.execution.commands.some((command) => command.includes("finance"))
     ).toBeTruthy();
+    expect(status.tip.imageIdentity).toBe(EXPECTED_IMAGE_IDENTITY);
     expect(status.conditionalGates.entireTargetDiagramImplemented).toBeFalsy();
     expect(status.scopes.activated).toStrictEqual([]);
   });
@@ -88,7 +94,7 @@ describe("ZA-26 frontier integration status", () => {
     expect(status.conditionalGates["H-02"]).toBe("Blocked");
     expect(status.conditionalGates["G-PROVIDER"]).toBe("Blocked");
     expect(status.conditionalGates["G-STORAGE-FENCE"]).toBe("Blocked");
-    expect(["Blocked", "Unknown"]).toContain(status.conditionalGates["G-OPS"]);
+    expect(status.conditionalGates["G-OPS"]).toBe("Unknown");
     expect(status.conditionalGates.textProfileAccepted).toBeFalsy();
     expect(status.conditionalGates.fullHostedErased).toBeFalsy();
     expect(status.conditionalGates.cloudSpeechEnabled).toBeFalsy();
@@ -157,7 +163,21 @@ describe("ZA-26 frontier integration status", () => {
     expect(() =>
       validateFrontierStatus(wrongImage, {
         expectedCommit: EXPECTED_TIP,
-        expectedImageIdentity: `sha256:${"d".repeat(64)}`,
+        expectedImageIdentity: EXPECTED_IMAGE_IDENTITY,
+        requireImageIdentity: true,
+      })
+    ).toThrow(/image/iu);
+
+    const missingImage = asMutableRecord(cloneStatus(status));
+    missingImage.tip = {
+      ...asMutableRecord(missingImage.tip),
+      imageIdentity: null,
+    };
+    expect(() =>
+      validateFrontierStatus(missingImage, {
+        expectedCommit: EXPECTED_TIP,
+        expectedImageIdentity: EXPECTED_IMAGE_IDENTITY,
+        requireImageIdentity: true,
       })
     ).toThrow(/image/iu);
 
@@ -203,5 +223,45 @@ describe("ZA-26 frontier integration status", () => {
     expect(() =>
       validateFrontierStatus(dropIcp, { expectedCommit: EXPECTED_TIP })
     ).toThrow(/za-22/iu);
+
+    const zeroAcceptance = asMutableRecord(cloneStatus(status));
+    zeroAcceptance.execution = {
+      ...asMutableRecord(zeroAcceptance.execution),
+      selectedProfileAcceptanceTests: 0,
+    };
+    expect(() =>
+      validateFrontierStatus(zeroAcceptance, { expectedCommit: EXPECTED_TIP })
+    ).toThrow(/selectedProfileAcceptanceTests|schema rejected/iu);
+
+    const qualifyFull = asMutableRecord(cloneStatus(status));
+    const qualifyScopes = asMutableRecord(qualifyFull.scopes);
+    const qualifiedItems = Schema.decodeUnknownSync(
+      Schema.Array(Schema.String)
+    )(qualifyScopes.qualified);
+    qualifyFull.scopes = {
+      ...qualifyScopes,
+      qualified: [...qualifiedItems, "full-d03"],
+    };
+    expect(() =>
+      validateFrontierStatus(qualifyFull, { expectedCommit: EXPECTED_TIP })
+    ).toThrow(/scopes\.qualified|full D03/iu);
+
+    const wrongGate = asMutableRecord(cloneStatus(status));
+    wrongGate.conditionalGates = {
+      ...asMutableRecord(wrongGate.conditionalGates),
+      "H-01": "Unknown",
+    };
+    expect(() =>
+      validateFrontierStatus(wrongGate, { expectedCommit: EXPECTED_TIP })
+    ).toThrow(/conditionalGates\.H-01/iu);
+
+    const opsBlocked = asMutableRecord(cloneStatus(status));
+    opsBlocked.conditionalGates = {
+      ...asMutableRecord(opsBlocked.conditionalGates),
+      "G-OPS": "Blocked",
+    };
+    expect(() =>
+      validateFrontierStatus(opsBlocked, { expectedCommit: EXPECTED_TIP })
+    ).toThrow(/conditionalGates\.G-OPS/iu);
   });
 });

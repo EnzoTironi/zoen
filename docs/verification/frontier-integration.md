@@ -4,7 +4,7 @@ Date observed: **2026-09-09 (PT)**. Reviewed tip: `aa7bc31` (`aa7bc313e5c3905e83
 
 This report closes **only the selected frontier** with independent evidence on one current commit. It is **not** acceptance of the full 157-capability horizon, full D03/D04/D05, or the entire target diagram.
 
-Machine-readable status: [`frontier-status.json`](./frontier-status.json). Validator seam: `tests/integration/frontier/frontier-status.ZA26.integration.test.ts`.
+Machine-readable status: [`frontier-status.json`](./frontier-status.json). Selected-frontier execution report: [`frontier-execution.json`](./frontier-execution.json) (keeps `planning/validation.json` as structural `verify_plan.py` output). Validator seam: `tests/integration/frontier/frontier-status.ZA26.integration.test.ts`.
 
 ## Selected profile (ZA-25 finance)
 

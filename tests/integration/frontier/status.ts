@@ -71,7 +71,7 @@ const Execution = Schema.Struct({
   lint: QualityOutcome,
   selectedProfileAcceptanceTests: Schema.Number.check(
     Schema.isInt(),
-    Schema.isGreaterThanOrEqualTo(0)
+    Schema.isGreaterThan(0)
   ),
   selectedProfileIntegrationTests: Schema.Number.check(
     Schema.isInt(),
@@ -222,31 +222,42 @@ const assertScopes = (doc: FrontierStatusDocument): void => {
       "scopes.activated must stay empty for ZA-26 (merge does not activate)"
     );
   }
-  if (
-    doc.scopes.implemented.some((item) =>
-      /full-d0[345]|entire-target|target-diagram/iu.test(item)
-    )
-  ) {
-    fail(
-      "scopes.implemented must not claim the entire target diagram or full D03/D04/D05"
-    );
+  const overclaim =
+    /full-d0[345]|entire-target|target-diagram|hosted-erased-activated|full-hosted-erased/iu;
+  for (const bucket of ["implemented", "qualified"] as const) {
+    if (doc.scopes[bucket].some((item) => overclaim.test(item))) {
+      fail(
+        `scopes.${bucket} must not claim the entire target diagram, full D03/D04/D05, or hosted Erased activation`
+      );
+    }
   }
 };
 
 const assertConditionalGates = (doc: FrontierStatusDocument): void => {
-  for (const gate of [
-    "H-01",
-    "H-02",
-    "G-PROVIDER",
-    "G-STORAGE-FENCE",
-    "G-OPS",
-  ] as const) {
-    const status = doc.conditionalGates[gate];
-    if (status !== "Blocked" && status !== "Unknown") {
-      fail(
-        `conditionalGates.${gate} must stay Blocked or Unknown without completed qualification`
-      );
-    }
+  if (doc.conditionalGates["G-OPS"] !== "Unknown") {
+    fail(
+      `conditionalGates.G-OPS must be Unknown for ZA-26 (got ${doc.conditionalGates["G-OPS"]})`
+    );
+  }
+  if (doc.conditionalGates["G-PROVIDER"] !== "Blocked") {
+    fail(
+      `conditionalGates.G-PROVIDER must be Blocked for ZA-26 (got ${doc.conditionalGates["G-PROVIDER"]})`
+    );
+  }
+  if (doc.conditionalGates["G-STORAGE-FENCE"] !== "Blocked") {
+    fail(
+      `conditionalGates.G-STORAGE-FENCE must be Blocked for ZA-26 (got ${doc.conditionalGates["G-STORAGE-FENCE"]})`
+    );
+  }
+  if (doc.conditionalGates["H-01"] !== "Blocked") {
+    fail(
+      `conditionalGates.H-01 must be Blocked for ZA-26 (got ${doc.conditionalGates["H-01"]})`
+    );
+  }
+  if (doc.conditionalGates["H-02"] !== "Blocked") {
+    fail(
+      `conditionalGates.H-02 must be Blocked for ZA-26 (got ${doc.conditionalGates["H-02"]})`
+    );
   }
 };
 

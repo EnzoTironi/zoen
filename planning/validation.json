@@ -1,72 +1,53 @@
 {
-  "status": "passed_selected_frontier",
-  "scope": "ZA-26 selected-frontier integration review on tip aa7bc31; not full-horizon product acceptance",
-  "ticket": "ZA-26",
-  "source_commit": "aa7bc313e5c3905e83fb69847123f436fc261a22",
-  "lockfile_sha256": "7de8982d307a68dd80b105c33594ea8c6dd40dca8ece8a5199a7d196fe59293f",
-  "image_identity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c",
-  "image_id": "sha256:9b82052d7f7b2bafa36ec7a9a159ba6e193c3a39635375289fe01939c186c4a3",
-  "image_digest": "sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c",
-  "exact_image_verify_run": "https://github.com/EnzoTironi/zoen/actions/runs/34354995333",
-  "image_identity_note": "Bound from tip Verify exact-image-admission artifact; /ready not used",
-  "selected_profile": {
-    "id": "finance-record-reconciliation",
-    "ticket": "ZA-25",
-    "status_doc": "docs/verification/frontier-status.json",
-    "evidence": "docs/verification/frontier-integration.md",
-    "integration_tests": 1,
-    "acceptance_tests": 1
+  "status": "passed",
+  "scope": "Structural planning validation only; no product checks executed or approved",
+  "source_commit": "517d1e204fd4193cdb3b1748481702a2b1a09ba8",
+  "hashed_snapshots": 4,
+  "coverage": {
+    "tickets": 325,
+    "specs": 56,
+    "capabilities": 157,
+    "file_targets": 2341,
+    "original_checks_preserved": 975
   },
-  "conditional_gates": {
-    "H-01": "Blocked",
-    "H-02": "Blocked",
-    "G-PROVIDER": "Blocked",
-    "G-STORAGE-FENCE": "Blocked",
-    "G-OPS": "Unknown",
-    "textProfileAccepted": false,
-    "fullHostedErased": false,
-    "cloudSpeechEnabled": false,
-    "restoreAfterErasure": false
+  "old_dag": {
+    "nodes": 325,
+    "edges": 514,
+    "roots": 1,
+    "longest_path_nodes": 170,
+    "transitive_redundant_edges": 118,
+    "distinct_oracle_texts": 457,
+    "most_repeated_oracle_count": 133
   },
-  "claims_rejected": [
-    "entire_target_diagram_implemented",
-    "full_d03",
-    "full_d04",
-    "full_d05",
-    "activated_because_pr_merged",
-    "historical_cumulative_test_count_as_execution"
-  ],
-  "product_tests_run": 5,
-  "execution": {
-    "format_check": "pass",
-    "lint": "pass",
-    "typecheck": "pass",
-    "build": "pass",
-    "unit": {
-      "files": 88,
-      "tests": 473,
-      "result": "pass"
-    },
-    "frontier_integration": {
-      "files": 1,
-      "tests": 3,
-      "result": "pass"
-    },
-    "finance_integration": {
-      "files": 1,
-      "tests": 1,
-      "result": "pass"
-    },
-    "finance_acceptance": {
-      "files": 1,
-      "tests": 1,
-      "result": "pass"
-    },
-    "observed_at_pt": "2026-09-09T10:18:00-03:00"
+  "new_plan": {
+    "deliveries": 22,
+    "quality_lanes": 1,
+    "phases": 6,
+    "tasks": 44,
+    "workspaces_initial": 5,
+    "max_workers": 3,
+    "unordered_different_owner_pairs_checked": 179,
+    "concurrent_path_conflicts": 0,
+    "dependency_cycles": 0
   },
+  "ticket_dispositions": {
+    "cross_cutting_requirement": 9,
+    "activation_criterion": 19,
+    "implementation": 242,
+    "test_obligation": 47,
+    "consolidate_duplicate": 7,
+    "conditional_work": 1
+  },
+  "file_dispositions": {
+    "rewrite": 296,
+    "retain-intent": 79,
+    "consolidate": 1944,
+    "retire": 22
+  },
+  "product_tests_run": 0,
   "limitations": [
-    "Independent GitHub review is not authenticated by this JSON",
-    "Hosted/operator actions require separate authority",
-    "Deploy Fly for tip may still be in progress; exact-image Verify admission is the bound artifact"
+    "Semantic correctness of every historical pseudoplan was not reviewed",
+    "Delivery dependencies need exact integrated contracts before implementation dispatch",
+    "Path analysis checks declared glob ownership, not future code imports or behavior"
   ]
 }

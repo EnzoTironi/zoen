@@ -8,6 +8,7 @@ Closes the **selected** frontier on one current tip with truthful status. Not fu
 | --- | --- | --- |
 | Status + fail-closed gates | `tests/integration/frontier/frontier-status.ZA26.integration.test.ts` | ZA-26-01, ZA-26-02, ZA-26-03 |
 | Machine status | `docs/verification/frontier-status.json` | Tip / lock / scopes / gates / execution |
+| Execution report | `docs/verification/frontier-execution.json` | Tip-bound selected-frontier outcomes (not structural planning) |
 | Human report | `docs/verification/frontier-integration.md` | Selected finance profile + blocked gates |
 | Selected ICP demo | `tests/acceptance/finance/README.md` + finance browser/integration | ZA-26-01 scope only |
 
