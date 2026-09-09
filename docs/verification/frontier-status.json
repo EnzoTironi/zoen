@@ -2,17 +2,17 @@
   "schema": "zoen.frontier-integration-status/v1",
   "ticket": "ZA-26",
   "tip": {
-    "commit": "aa7bc313e5c3905e83fb69847123f436fc261a22",
-    "short": "aa7bc31",
+    "commit": "85bf4c7a0f3c32b87ffb8eaf0d610d33801a539b",
+    "short": "85bf4c7",
     "lockfileSha256": "92afa1d6a7fd27ddae857fe5d008d4e28b2ade3b23b488ebd5348ca00a8f4ef2",
-    "parentPr": "#113 ZA-25 finance record reconciliation",
-    "imageIdentity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c",
-    "imageIdentityNote": "Exact-image admission from Verify run 34354995333 on tip aa7bc31: image_id=sha256:9b82052d7f7b2bafa36ec7a9a159ba6e193c3a39635375289fe01939c186c4a3; digest=sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c; local_tag=zoen-all-in-one:exact-aa7bc313e5c3. /ready alone does not certify identity."
+    "parentPr": "#115 alchemy Fly/Docker SoT + EX25 legacy boot harden (post-ZA-26 tip)",
+    "imageIdentity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55",
+    "imageIdentityNote": "Exact-image admission from Verify run 34365417321 on tip 85bf4c7: image_id=sha256:f7235d494411f54b11a20a837cfa1e38c7fffc016ca5bd84ccb8eab893f26744; digest=sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55; local_tag=zoen-all-in-one:exact-85bf4c7a0f3c. /ready alone does not certify identity."
   },
   "selectedProfile": {
     "id": "finance-record-reconciliation",
     "ticket": "ZA-25",
-    "label": "finance / finan\u00e7as read-only record reconciliation",
+    "label": "finance / finanças read-only record reconciliation",
     "browserSpec": "apps/web/test/features/finance/finance.ZA25.browser.spec.ts",
     "integrationTest": "tests/integration/finance/record-reconciliation.ZA25.integration.test.ts",
     "acceptanceReadme": "tests/acceptance/finance/README.md",
@@ -38,7 +38,7 @@
       "exact-image-admission-policy",
       "eve-web-speech-browser-io",
       "narrow-eve-text-profile-harness",
-      "tip-aa7bc31-exact-image-admission"
+      "tip-85bf4c7-exact-image-admission"
     ],
     "activated": [],
     "blocked": [
@@ -76,8 +76,8 @@
     "lint": "pass",
     "typecheck": "pass",
     "build": "pass",
-    "unitTests": 473,
-    "unitFiles": 88,
+    "unitTests": 479,
+    "unitFiles": 89,
     "frontierIntegrationTests": 3,
     "selectedProfileIntegrationTests": 1,
     "selectedProfileAcceptanceTests": 1,
@@ -85,7 +85,7 @@
       "pnpm format:check",
       "pnpm lint",
       "pnpm typecheck",
-      "pnpm test:unit  # 88 files / 473 tests",
+      "pnpm test:unit  # 89 files / 479 tests",
       "pnpm build",
       "pnpm exec vitest run --project integration tests/integration/frontier/frontier-status.ZA26.integration.test.ts  # 3 passed",
       "pnpm exec vitest run --project integration tests/integration/finance/record-reconciliation.ZA25.integration.test.ts  # 1 passed",
@@ -93,10 +93,10 @@
     ]
   },
   "notes": [
-    "ZA-26 closes only the selected frontier on tip aa7bc31 \u2014 not full-horizon acceptance.",
+    "ZA-26 selected frontier rebinding on tip 85bf4c7 after #115 alchemy — not full-horizon acceptance.",
     "Eve/G-PROVIDER/G-STORAGE-FENCE/H-01 remain Blocked/Unknown; textProfileAccepted false; hosted Erased not activated; cloud speech disabled.",
     "ICP journeys ZA-22..25 stay listed as implemented product scopes without claiming activation by merge.",
-    "Execution counts recorded after implementing-machine runs on 2026-09-09 (PT); historical planning counts are not substituted.",
-    "Exact-image identity bound from Verify run 34354995333 admission.json for this tip only."
+    "Tip Verify quality/unit/components/exact-image certify 85bf4c7; unit counts (89 files / 479 tests) refreshed on tip. Frontier/finance acceptance command rows remain supplemental implementing-machine evidence and are not sole tip certification.",
+    "Exact-image identity bound from Verify run 34365417321 admission.json for this tip only."
   ]
 }

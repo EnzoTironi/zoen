@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import re
 from collections import Counter, deque
 from itertools import combinations
 from pathlib import Path
@@ -107,6 +108,60 @@ def globs_intersect(first, second):
     return False
 
 
+
+def load_tip_binding():
+    """Mirror docs/verification/frontier-status.json tip into validation.json when present."""
+    status_path = ROOT / "docs" / "verification" / "frontier-status.json"
+    if not status_path.is_file():
+        return None
+    try:
+        status = json.loads(status_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    tip = status.get("tip") if isinstance(status, dict) else None
+    if not isinstance(tip, dict):
+        return None
+    commit = tip.get("commit")
+    short = tip.get("short")
+    lockfile = tip.get("lockfileSha256")
+    image = tip.get("imageIdentity")
+    note = tip.get("imageIdentityNote") or ""
+    if not commit or not short or not lockfile or not image:
+        return None
+    image_id = None
+    image_digest = None
+    verify_run = None
+    # Parse common exact-image note fields when present.
+    for part in note.replace(";", " ").split():
+        if part.startswith("image_id="):
+            image_id = part.split("=", 1)[1].rstrip(".,")
+        if part.startswith("digest="):
+            image_digest = part.split("=", 1)[1].rstrip(".,")
+    match = re.search(r"Verify run\s+(\d+)", note)
+    if match:
+        verify_run = f"https://github.com/EnzoTironi/zoen/actions/runs/{match.group(1)}"
+    if image_digest is None and "@sha256:" in image:
+        image_digest = "sha256:" + image.split("@sha256:", 1)[1]
+    payload = {
+        "commit": commit,
+        "short": short,
+        "lockfileSha256": lockfile,
+        "imageIdentity": image,
+        "note": (
+            "Post-ZA-26 tip rebind after #115 alchemy. Structural source_commit below remains redesign snapshot; "
+            "product gates stay Blocked (H-01/H-02/G-PROVIDER/G-STORAGE-FENCE); textProfileAccepted false."
+        ),
+    }
+    if image_id:
+        payload["imageId"] = image_id
+    if image_digest:
+        payload["imageDigest"] = image_digest
+    if verify_run:
+        payload["exactImageVerifyRun"] = verify_run
+    return payload
+
+
+
 def verify():
     manifest = read("reference/2026-09-05/manifest.json")
     for entry in manifest["files"]:
@@ -198,9 +253,16 @@ def verify():
     checks = [check for ticket in old_tickets.values() for check in ticket["checks"]]
     oracles = Counter(check["oracle"] for check in checks)
     redundant = sum(any(dep in old_ancestors[other] for other in deps if other != dep) for deps in old_graph.values() for dep in deps)
-    return {
+    tip_binding = load_tip_binding()
+    scope = (
+        "Structural planning validation only; tip_binding records post-ZA-26 tip SHA/lockfile/image "
+        "— no product checks executed or approved; no full D05"
+        if tip_binding
+        else "Structural planning validation only; no product checks executed or approved"
+    )
+    result = {
         "status": "passed",
-        "scope": "Structural planning validation only; no product checks executed or approved",
+        "scope": scope,
         "source_commit": manifest["sourceCommit"],
         "hashed_snapshots": len(manifest["files"]),
         "coverage": {"tickets": len(tickets), "specs": len(specs), "capabilities": len(caps), "file_targets": len(files), "original_checks_preserved": len(checks)},
@@ -211,6 +273,9 @@ def verify():
         "product_tests_run": 0,
         "limitations": ["Semantic correctness of every historical pseudoplan was not reviewed", "Delivery dependencies need exact integrated contracts before implementation dispatch", "Path analysis checks declared glob ownership, not future code imports or behavior"],
     }
+    if tip_binding:
+        result["tip_binding"] = tip_binding
+    return result
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Frontier integration review — ZA-26
 
-Date observed: **2026-09-09 (PT)**. Reviewed tip: `aa7bc31` (`aa7bc313e5c3905e83fb69847123f436fc261a22`) — `#113` ZA-25 finance record reconciliation. Lockfile SHA-256: `92afa1d6a7fd27ddae857fe5d008d4e28b2ade3b23b488ebd5348ca00a8f4ef2`.
+Date observed: **2026-09-09 (PT)**. Reviewed tip: `85bf4c7` (`85bf4c7a0f3c32b87ffb8eaf0d610d33801a539b`) — `#115` alchemy (selected profile remains ZA-25 finance). Lockfile SHA-256: `92afa1d6a7fd27ddae857fe5d008d4e28b2ade3b23b488ebd5348ca00a8f4ef2`.
 
 This report closes **only the selected frontier** with independent evidence on one current commit. It is **not** acceptance of the full 157-capability horizon, full D03/D04/D05, or the entire target diagram.
 
@@ -31,7 +31,7 @@ pnpm test:acceptance -- apps/web/test/features/finance/finance.ZA25.browser.spec
 
 Evidence for this profile supports **only** finance reconciliation. It does not qualify Eve product admission, hosted Erased, independent controller, cloud speech, or restore-after-erasure.
 
-## Scope reconciliation (tip aa7bc31)
+## Scope reconciliation (tip 85bf4c7)
 
 ### Implemented (code landed; not “activated by merge”)
 
@@ -82,14 +82,14 @@ ZA-10..14 and ZA-18..21 remain **qualified or blocked per their own gates** — 
 
 ## Image identity
 
-Bound from tip Verify run [34354995333](https://github.com/EnzoTironi/zoen/actions/runs/34354995333) exact-image admission (not transplanted from an older tip):
+Bound from tip Verify run [34365417321](https://github.com/EnzoTironi/zoen/actions/runs/34365417321) exact-image admission (not transplanted from an older tip):
 
 | Field | Value |
 | --- | --- |
-| `image_id` | `sha256:9b82052d7f7b2bafa36ec7a9a159ba6e193c3a39635375289fe01939c186c4a3` |
-| registry digest | `sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c` |
-| reference | `ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c` |
-| local tag | `zoen-all-in-one:exact-aa7bc313e5c3` |
+| `image_id` | `sha256:f7235d494411f54b11a20a837cfa1e38c7fffc016ca5bd84ccb8eab893f26744` |
+| registry digest | `sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55` |
+| reference | `ghcr.io/enzotironi/zoen/all-in-one@sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55` |
+| local tag | `zoen-all-in-one:exact-85bf4c7a0f3c` |
 
 Public `/ready` never certifies image identity.
 
@@ -98,7 +98,7 @@ Public `/ready` never certifies image identity.
 | Command | Result |
 | --- | --- |
 | `pnpm format:check` / `lint` / `typecheck` / `build` | pass |
-| `pnpm test:unit` | 88 files / **473** tests pass |
+| `pnpm test:unit` | 89 files / **479** tests pass |
 | frontier ZA-26 integration | **3** pass |
 | finance ZA-25 integration | **1** pass |
 | finance ZA-25 browser+CLI acceptance | **1** pass |
