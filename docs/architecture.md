@@ -14,6 +14,7 @@ apps/
     adapters/             # implementações específicas de PG/S3
   web/src/                # apresentação sobre HttpApiClient
   cli/src/                # comandos sobre HttpApiClient
+  mcp/src/                # ferramentas MCP sobre HttpApiClient (stdio)
 packages/
   contracts/src/          # Effect Schema, HttpApi, operações e DTOs públicos
   ontology/src/
@@ -38,6 +39,7 @@ tests/
 flowchart LR
   W[Web] --> C[Contracts e HttpApiClient]
   L[CLI] --> C
+  M[MCP] --> C
   C --> H[HTTP + presença verificada]
   H --> E[Executor semântico único]
   E --> A[Direitos + handlers + commit]

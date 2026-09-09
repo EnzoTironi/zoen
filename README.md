@@ -23,7 +23,7 @@ Same grammar across ICPs already named in the roadmap (no new commercial persona
 6. Share and revoke (when enabled)
 7. Retention / erasure when qualified
 
-Surfaces first: **web** and **CLI** (same World verbs). **MCP** (and later SDK/agent adapters) sit over that grammar — not a separate chat product. Product surface is ontology **Worlds** only.
+Surfaces first: **web**, **CLI**, and **MCP** (same World verbs). Later SDK/agent adapters sit over that grammar — not a separate chat product. Product surface is ontology **Worlds** only.
 
 ## Live
 
@@ -74,10 +74,40 @@ Do not commit Fly secrets or `.env*` files. See [SECURITY.md](SECURITY.md).
 | `apps/web` | Browser UI over the shared HTTP client |
 | `apps/server` | HTTP surface, identity, adapters (PostgreSQL / S3) |
 | `apps/cli` | Same verbs as the web, over the same client |
+| `apps/mcp` | Stdio MCP server — Worlds verbs as tools over the same client |
 | `packages/contracts` | Effect Schema, HttpApi, public DTOs |
 | `packages/ontology` | Commit boundary, access, evidence, knowledge, semantic executor |
 | `ops/` | Compose, containers, migrations, Fly |
 | `tests/` | Integration and acceptance on real components |
+
+## MCP (Cursor / Claude)
+
+`@zoen/mcp` v0 exposes Worlds semantic operations as MCP tools over stdio. It is a thin adapter: tools assemble a `SemanticRequest`, decode it with the same contracts as CLI/web, then call `/api/*/execute`. Writes still go through the server semantic executor (policy + receipts). There is no Eve/chat/voice surface.
+
+1. Build: `pnpm install --frozen-lockfile && pnpm build`
+2. Sign in with the CLI (session file is reused):
+
+```bash
+pnpm cli -- --base-url http://127.0.0.1:4310 sign-in --email you@example.com --password-file /private/password
+```
+
+3. Point Cursor or Claude Desktop at the stdio server (example Cursor `mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "zoen": {
+      "command": "node",
+      "args": ["/absolute/path/to/zoen/apps/mcp/dist/main.js"],
+      "env": {
+        "ZOEN_BASE_URL": "http://127.0.0.1:4310"
+      }
+    }
+  }
+}
+```
+
+Optional: `ZOEN_SESSION_DIR` overrides the default `~/.config/zoen` session directory (must match the CLI session you created). Tools use contract operation names (`CreatePersonalWorld`, `ImportEvidence`, `Inspect`, `ProposeCorrection`, `GrantWorldReadAccess`, `RequestWorldErasure`, …).
 
 ## Docs
 

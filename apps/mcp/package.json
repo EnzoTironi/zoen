@@ -1,0 +1,16 @@
+{
+  "name": "@zoen/mcp",
+  "version": "0.0.0",
+  "private": true,
+  "bin": {
+    "zoen-mcp": "./dist/main.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "@effect/platform-node": "4.0.0-rc.112",
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "@zoen/contracts": "workspace:*",
+    "effect": "4.0.0-rc.112",
+    "zod": "4.5.4"
+  }
+}
