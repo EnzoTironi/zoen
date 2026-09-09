@@ -45,7 +45,14 @@ const loadLocalOpenCodeEnv = (): void => {
     ) {
       value = value.slice(1, -1);
     }
-    process.env[key] ??= value;
+    value = value.trim();
+    if (value.length === 0) {
+      continue;
+    }
+    const existing = process.env[key];
+    if (existing === undefined || existing.trim().length === 0) {
+      process.env[key] = value;
+    }
   }
 };
 
@@ -130,7 +137,7 @@ describe("EX43 OpenCode Zen live smoke / admission (ZA-17)", () => {
           conversationId: Schema.decodeSync(ConversationId)(randomUUID()),
           userText: "Reply with exactly the token eve-ok and nothing else.",
         });
-        expect(completion.visibleText.trim().length).toBeGreaterThan(0);
+        expect(completion.visibleText.toLowerCase()).toContain("eve-ok");
       }).pipe(Effect.provide(EveOpenCodeZen.liveLayer(liveSettings)));
     }
   );

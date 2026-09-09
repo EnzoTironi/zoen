@@ -15,7 +15,8 @@ Key alone does **not** admit product Eve (ZA-17). Journal (ZA-18), evidence grou
 ## Prerequisites
 
 1. Tip green (Verify) on the commit you intend to bind.
-2. Operator-held OpenCode Zen API key — set in the **shell environment** or gitignored `.local/opencode.env`:
+2. Clean relevant tracked tree (Eve/OpenCode + gprovider paths) matching that tip — dirty or mid-run revision drift refuses live evidence.
+3. Operator-held OpenCode Zen API key — set in the **shell environment** or gitignored `.local/opencode.env`:
 
 ```bash
 # .local/opencode.env (never commit; already under .local/ in .gitignore)
