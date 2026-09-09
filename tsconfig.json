@@ -17,7 +17,8 @@
     "paths": {
       "@zoen/application-client/*": ["./packages/application-client/src/*.ts"],
       "@zoen/contracts/*": ["./packages/contracts/src/*.ts"],
-      "@zoen/ontology/*": ["./packages/ontology/src/*.ts"]
+      "@zoen/ontology/*": ["./packages/ontology/src/*.ts"],
+      "@zoen/oms/*": ["./packages/oms/src/*.ts"]
     },
     "jsx": "react-jsx",
     "types": ["node", "bun-types/sqlite"],

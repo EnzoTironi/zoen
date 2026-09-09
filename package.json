@@ -19,7 +19,7 @@
     "format:check": "oxfmt --check",
     "lint": "oxlint",
     "typecheck": "tsc --noEmit && pnpm typecheck:alchemy",
-    "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/application-client/tsconfig.build.json packages/ontology/tsconfig.build.json",
+    "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/application-client/tsconfig.build.json packages/ontology/tsconfig.build.json packages/oms/tsconfig.build.json",
     "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json apps/mcp/tsconfig.build.json",
     "start:server": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" apps/server/dist/main.js",
     "cli": "node apps/cli/dist/main.js",
