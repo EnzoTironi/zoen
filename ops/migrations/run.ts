@@ -288,20 +288,21 @@ export const revokeEveJournalMigrations = Effect.fn(
   }
   yield* sql.withTransaction(
     Effect.gen(function* revokeIfPresent() {
-      const schemaRows = yield* sql<{ present: boolean }>`
+      const [schemaRow] = yield* sql<{ present: boolean }>`
         SELECT to_regnamespace('eve') IS NOT NULL AS present
       `;
-      if (schemaRows[0]?.present !== true) {
+      if (schemaRow?.present !== true) {
         return;
       }
-      const roleRows = yield* sql<{ present: boolean }>`
+      const [roleRow] = yield* sql<{ present: boolean }>`
         SELECT to_regrole(${journalRole}) IS NOT NULL AS present
       `;
-      if (roleRows[0]?.present !== true) {
+      if (roleRow?.present !== true) {
         return;
       }
       yield* sql`REVOKE USAGE ON SCHEMA eve FROM ${sql(journalRole)}`;
       yield* sql`REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA eve FROM ${sql(journalRole)}`;
+      yield* sql`ALTER ROLE ${sql(journalRole)} NOLOGIN`.pipe(Effect.ignore);
     })
   );
 });

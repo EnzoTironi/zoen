@@ -4,6 +4,6 @@
 
 **Why:** product Eve / OpenCode / voice / WhatsApp chat surface is removed from tip (Worlds only). Dropping a live journal schema risks Fly volume / migration-history divergence for installs that already applied 019. An inert schema with no runtime grants, no `/api/eve`, and no journal role is the safer subtract.
 
-**Privilege cleanup:** `ops/migrations/020_revoke_eve_journal_privileges.sql` revokes leftover `USAGE` / table DML previously granted to dedicated journal roles (discovery-based; no-op if schema or role absent). Optional `revokeEveJournalMigrations(role)` covers a known role name the same way. Neither path DROP ROLE nor DROP tables.
+**Privilege cleanup:** `ops/migrations/020_revoke_eve_journal_privileges.sql` revokes leftover `USAGE` / table DML previously granted to dedicated journal roles (discovery-based; no-op if schema or role absent). Dedicated former journal logins (no authority/identity/jobs USAGE) are also set `NOLOGIN` when the migration role may do so; `insufficient_privilege` is ignored. Optional `revokeEveJournalMigrations(role)` covers a known role name for REVOKE. Neither path DROP ROLE nor DROP tables.
 
 **Not claimed:** D05 activated, `fullHostedErased`, G-PROVIDER live, or Eve as application surface.

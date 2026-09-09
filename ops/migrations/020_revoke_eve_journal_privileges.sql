@@ -4,9 +4,12 @@
 -- clear ACLs already stored in PostgreSQL; migration 019 only REVOKE FROM PUBLIC.
 -- Idempotent / fail-closed-safe: missing eve schema or missing roles are no-ops.
 -- Does NOT DROP eve.* tables (Fly volume / migration-chain coherence).
+-- Where safe, also NOLOGIN dedicated former journal logins (no authority/identity/jobs
+-- USAGE). insufficient_privilege is ignored when the migration role lacks CREATEROLE.
 DO $revoke_eve$
 DECLARE
   target name;
+  dedicated boolean;
 BEGIN
   IF to_regnamespace('eve') IS NULL THEN
     RETURN;
@@ -42,6 +45,24 @@ BEGIN
       'REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA eve FROM %I',
       target
     );
+    SELECT
+      NOT has_schema_privilege(r.oid, 'authority', 'USAGE')
+      AND NOT has_schema_privilege(r.oid, 'identity', 'USAGE')
+      AND NOT has_schema_privilege(r.oid, 'jobs', 'USAGE')
+      AND r.rolcanlogin
+    INTO dedicated
+    FROM pg_roles r
+    WHERE r.rolname = target;
+    IF dedicated THEN
+      BEGIN
+        EXECUTE format('ALTER ROLE %I NOLOGIN', target);
+      EXCEPTION
+        WHEN insufficient_privilege THEN
+          NULL;
+        WHEN undefined_object THEN
+          NULL;
+      END;
+    END IF;
   END LOOP;
 END
 $revoke_eve$;
