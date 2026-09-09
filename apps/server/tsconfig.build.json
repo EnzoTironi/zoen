@@ -11,8 +11,20 @@
     "paths": {}
   },
   "references": [
-    { "path": "../../packages/contracts/tsconfig.build.json" },
-    { "path": "../../packages/ontology/tsconfig.build.json" }
+    {
+      "path": "../../packages/contracts/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/ontology/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/actions/tsconfig.build.json"
+    },
+    {
+      "path": "../../packages/oms/tsconfig.build.json"
+    }
   ],
-  "include": ["src/**/*.ts"]
+  "include": [
+    "src/**/*.ts"
+  ]
 }

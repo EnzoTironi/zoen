@@ -54,12 +54,16 @@ export const dispatchTool = <E, R>(
     return yield* run(request);
   });
 
-export const makeHttpExecutor =
+/** @deprecated Prefer makeActionRunnerHttpExecutor — kept as direct SemanticExecutor HTTP escape hatch. */
+export const makeDirectHttpExecutor =
   (config: McpConfig) => (request: SemanticRequest) =>
     Effect.gen(function* httpExecutor() {
       const cookie = yield* readSession(config.sessionDir, config.baseUrl);
       return yield* httpExecute(config.baseUrl, cookie, request);
     });
+
+/** Primary MCP Worlds path: ActionRunner → ApplicationApi (subject-identity stays direct). */
+export { makeActionRunnerHttpExecutor as makeHttpExecutor } from "./action-executor.js";
 
 export const runToolCall = <E, R>(
   name: string,

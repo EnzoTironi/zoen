@@ -11,6 +11,8 @@
     "@zoen/ontology": "workspace:*",
     "better-auth": "1.7.2",
     "effect": "4.0.0-rc.112",
-    "pg": "8.23.0"
+    "pg": "8.23.0",
+    "@zoen/actions": "workspace:*",
+    "@zoen/oms": "workspace:*"
   }
 }

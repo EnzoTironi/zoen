@@ -4,7 +4,7 @@
   "tip": {
     "commit": "85bf4c7a0f3c32b87ffb8eaf0d610d33801a539b",
     "short": "85bf4c7",
-    "lockfileSha256": "96d033b0f7a2b3954204822169645fe16925ec64046735ad15745a46b7344b70",
+    "lockfileSha256": "727889c9be7d20acfda70a6c79e582b64936747afefd2e952813dcb1fa711756",
     "parentPr": "#115 alchemy Fly/Docker SoT + EX25 legacy boot harden (post-ZA-26 tip)",
     "imageIdentity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55",
     "imageIdentityNote": "Exact-image admission from Verify run 34365417321 on tip 85bf4c7: image_id=sha256:f7235d494411f54b11a20a837cfa1e38c7fffc016ca5bd84ccb8eab893f26744; digest=sha256:8852f1df2cb4a53ae245663a018e592c6273fc2e1923dddcd0cd98bab6b7cd55; local_tag=zoen-all-in-one:exact-85bf4c7a0f3c. /ready alone does not certify identity."
@@ -53,7 +53,9 @@
       "g-storage-fence-writer-containment",
       "g-provider-live-opencode-product"
     ],
-    "unknown": ["g-ops-live-erasable-inventory"]
+    "unknown": [
+      "g-ops-live-erasable-inventory"
+    ]
   },
   "conditionalGates": {
     "G-OPS": "Unknown",

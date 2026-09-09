@@ -9,17 +9,16 @@
 
 - Registry document is git-versioned (`packages/oms` seed). A PR is the MVP proposal / review path; in-product Ontology Branching is a later upgrade.
 - Worlds is **pack #1** (`worlds`): World, Evidence, Source, Correction, Membership, ErasureAttempt — mapped from the glossary, not enterprise ERP types.
-- Action Type stubs declare parameters, submission-criteria placeholders, and edit intent. **`runtimeBinding: semantic-executor`** names the Engine adapter; **W2** [`@zoen/actions`](actions.md) ActionRunner is the governed write path that wraps tip SemanticExecutor (dual path until W3).
+- Action Type stubs declare parameters, submission-criteria placeholders, and edit intent. **`runtimeBinding: semantic-executor`** names the Engine adapter; **W2–W3** [`@zoen/actions`](actions.md) ActionRunner is the governed write path (MCP/CLI Worlds pack primary; HTTP emission dual path). Subject-identity not yet OMS Action Types.
 
 ## What this is not
 
-| Deferred                               | Wave |
-| -------------------------------------- | ---- |
-| Worlds pack migration off tip executor | W3   |
-| MCP codegen from Action Types          | W4   |
-| Funnel-lite / Approvals-lite           | W5   |
+| Deferred                      | Wave |
+| ----------------------------- | ---- |
+| MCP codegen from Action Types | W4   |
+| Funnel-lite / Approvals-lite  | W5   |
 
-Action runtime: see [actions.md](actions.md) (W2).
+Action runtime: see [actions.md](actions.md) (W2–W3).
 
 No Eve / chat product surface. No Zep-as-kernel. Tip Worlds / MCP / CLI behavior is unchanged by this package (additive only).
 

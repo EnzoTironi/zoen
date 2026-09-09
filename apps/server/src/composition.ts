@@ -27,6 +27,7 @@ import { SemanticExecutor } from "@zoen/ontology/semantic/executor";
 import { Effect, Layer, Redacted, Schema } from "effect";
 import { HttpApiBuilder } from "effect/unstable/httpapi";
 
+import { makeActionRuntimeLayer } from "./actions/runtime.ts";
 import { fileErasureExternalAnchorLayer } from "./adapters/erasure/file-anchor.ts";
 import { layer as erasureStorageLayer } from "./adapters/object-storage/erasure/s3.ts";
 import type { S3EvidenceConfig } from "./adapters/object-storage/worlds/config.ts";
@@ -164,6 +165,10 @@ export const makeApplication = (config: ApplicationConfig) =>
       const executor = SemanticExecutor.layerWithoutProviders.pipe(
         Layer.provide(infrastructure)
       );
+      // W3: provide ActionRunner + PG Action Log (durable) alongside tip executor.
+      const actionRuntime = makeActionRuntimeLayer.pipe(
+        Layer.provide(authorityPg)
+      );
       const api = HttpApiBuilder.layer(ApplicationApi).pipe(
         Layer.provide(makeWorldsHttpGroup(identityConfig.baseUrl)),
         Layer.provide(makeCorrectionHttpGroup(identityConfig.baseUrl)),
@@ -174,6 +179,7 @@ export const makeApplication = (config: ApplicationConfig) =>
       );
       return Layer.mergeAll(
         api,
+        actionRuntime,
         makeIdentityRoutes(identityConfig.baseUrl),
         readinessRoutes,
         captureMaintenance

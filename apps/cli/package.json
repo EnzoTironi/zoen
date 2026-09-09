@@ -7,6 +7,8 @@
     "@effect/platform-node": "4.0.0-rc.112",
     "@zoen/application-client": "workspace:*",
     "@zoen/contracts": "workspace:*",
-    "effect": "4.0.0-rc.112"
+    "effect": "4.0.0-rc.112",
+    "@zoen/actions": "workspace:*",
+    "@zoen/oms": "workspace:*"
   }
 }

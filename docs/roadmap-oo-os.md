@@ -47,7 +47,7 @@
 
 **Goal:** Action runtime is the governed write path: auth → submission criteria → transactional ontology edits → Action Log → side effects with honest compensation boundary.
 
-**Status notes (in progress):** `@zoen/actions` ActionRunner wraps tip SemanticExecutor / ApplicationApi (dual path OK). Worlds pack Action Types encode → engine → append-only Action Log (`authority.action_log` migration 021). Unit proof: unknown ActionType rejected; param validation; CreatePersonalWorld happy path logs; criteria fail-closed / empty pass-through. MCP codegen deferred to W4; full Worlds migration off SemanticExecutor public API deferred to W3. See [actions.md](actions.md).
+**Status notes (in progress):** `@zoen/actions` ActionRunner wraps tip SemanticExecutor / ApplicationApi (dual path OK). Worlds pack Action Types encode → engine → append-only Action Log (`authority.action_log` migration 021). Unit proof: unknown ActionType rejected; param validation; CreatePersonalWorld happy path logs; criteria fail-closed / empty pass-through. MCP codegen deferred to W4. W3 migrates MCP/CLI Worlds pack call sites onto ActionRunner (HTTP SemanticExecutor emission dual path retained). See [actions.md](actions.md).
 
 **Acceptance criteria**
 
@@ -62,12 +62,14 @@
 
 **Goal:** Worlds is pack #1 on the new kernel. Import / evidence / correct / share / erase (and subject-identity where in tip) are Action Types + Object families — not a parallel product.
 
+**Status notes:** MCP + CLI Worlds pack verbs execute through `@zoen/actions` ActionRunner (OMS lookup + Action Log) with ApplicationApi as Engine. Server composition provides `ActionRuntime` + PG Action Log (migration 021). HTTP Worlds groups remain on SemanticExecutor emission (dual path; receipts unchanged). **Subject-identity** stays on direct SemanticExecutor / ApplicationApi — OMS Action Types not added this wave (W1 waived; explicit escape hatch). Unit proof: CreatePersonalWorld Action Log on MCP/CLI/host path. No Eve. No Funnel (W5). See [actions.md](actions.md).
+
 **Acceptance criteria**
 
-- [ ] Tip World verbs used by web/CLI/MCP are registered Action Types (or thin adapters proven equivalent).
+- [x] Tip World verbs used by web/CLI/MCP are registered Action Types (or thin adapters proven equivalent). (MCP/CLI ActionRunner adapters; web still ApplicationApi → server SemanticExecutor)
 - [ ] MATRIX / acceptance journeys for named ICPs stay green (household, bakery, clinic admin, finance as currently qualified).
-- [ ] Erasure / retention gates remain Action Types with side-effect declaration — no hosted erasure marketing ahead of proof.
-- [ ] No second semantic executor for “legacy Worlds.”
+- [x] Erasure / retention gates remain Action Types with side-effect declaration — no hosted erasure marketing ahead of proof.
+- [x] No second semantic executor for “legacy Worlds.” (ActionRunner wraps tip executor; subject-identity documented exclusion)
 - [ ] Verify green; Eve remains absent.
 
 ## W4 — MCP codegen

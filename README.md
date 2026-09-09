@@ -89,7 +89,7 @@ Do not commit Fly secrets or `.env*` files. See [SECURITY.md](SECURITY.md).
 
 ## MCP (Cursor / Claude)
 
-`@zoen/mcp` v0 exposes the same Worlds **and subject-identity** semantic verbs as the CLI as MCP tools over stdio. Web, CLI, and MCP share `@zoen/application-client` ApplicationApi execute routing; CLI/MCP also share Node session.json (browser auth stays HttpOnly cookies). Tools assemble a `SemanticRequest`, decode it with the same contracts as CLI/web, then call `/api/*/execute`. Writes still go through the server semantic executor (policy + receipts). Sign-in stays on the CLI (no password tools on MCP). There is no Eve/chat/voice surface.
+`@zoen/mcp` v0 exposes the same Worlds **and subject-identity** semantic verbs as the CLI as MCP tools over stdio. Web, CLI, and MCP share `@zoen/application-client` ApplicationApi execute routing; CLI/MCP also share Node session.json (browser auth stays HttpOnly cookies). Worlds pack tools/commands run through **ActionRunner** (OMS Action Types + Action Log) then `/api/*/execute`; subject-identity stays on direct SemanticRequest HTTP. Server SemanticExecutor still owns policy + receipts. Sign-in stays on the CLI (no password tools on MCP). There is no Eve/chat/voice surface.
 
 1. Build: `pnpm install --frozen-lockfile && pnpm build`
 2. Sign in with the CLI (session file is reused):
