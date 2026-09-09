@@ -3,7 +3,7 @@
   "scope": "ZA-26 selected-frontier integration review on tip aa7bc31; not full-horizon product acceptance",
   "ticket": "ZA-26",
   "source_commit": "aa7bc313e5c3905e83fb69847123f436fc261a22",
-  "lockfile_sha256": "7de8982d307a68dd80b105c33594ea8c6dd40dca8ece8a5199a7d196fe59293f",
+  "lockfile_sha256": "92afa1d6a7fd27ddae857fe5d008d4e28b2ade3b23b488ebd5348ca00a8f4ef2",
   "image_identity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c",
   "image_id": "sha256:9b82052d7f7b2bafa36ec7a9a159ba6e193c3a39635375289fe01939c186c4a3",
   "image_digest": "sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c",
