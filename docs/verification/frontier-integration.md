@@ -98,7 +98,7 @@ Public `/ready` never certifies image identity.
 | Command | Result |
 | --- | --- |
 | `pnpm format:check` / `lint` / `typecheck` / `build` | pass |
-| `pnpm test:unit` | 88 files / **473** tests pass |
+| `pnpm test:unit` | 89 files / **479** tests pass |
 | frontier ZA-26 integration | **3** pass |
 | finance ZA-25 integration | **1** pass |
 | finance ZA-25 browser+CLI acceptance | **1** pass |

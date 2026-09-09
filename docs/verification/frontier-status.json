@@ -53,9 +53,7 @@
       "g-storage-fence-writer-containment",
       "g-provider-live-opencode-product"
     ],
-    "unknown": [
-      "g-ops-live-erasable-inventory"
-    ]
+    "unknown": ["g-ops-live-erasable-inventory"]
   },
   "conditionalGates": {
     "G-OPS": "Unknown",
@@ -78,8 +76,8 @@
     "lint": "pass",
     "typecheck": "pass",
     "build": "pass",
-    "unitTests": 473,
-    "unitFiles": 88,
+    "unitTests": 479,
+    "unitFiles": 89,
     "frontierIntegrationTests": 3,
     "selectedProfileIntegrationTests": 1,
     "selectedProfileAcceptanceTests": 1,
@@ -87,7 +85,7 @@
       "pnpm format:check",
       "pnpm lint",
       "pnpm typecheck",
-      "pnpm test:unit  # 88 files / 473 tests",
+      "pnpm test:unit  # 89 files / 479 tests",
       "pnpm build",
       "pnpm exec vitest run --project integration tests/integration/frontier/frontier-status.ZA26.integration.test.ts  # 3 passed",
       "pnpm exec vitest run --project integration tests/integration/finance/record-reconciliation.ZA25.integration.test.ts  # 1 passed",
