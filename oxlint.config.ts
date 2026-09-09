@@ -113,6 +113,8 @@ export default defineConfig({
       files: ["ops/alchemy/**"],
       rules: {
         "effecttsgo/any-unknown-in-error-context": "off",
+        "effecttsgo/global-error-in-effect-failure": "off",
+        "effecttsgo/global-fetch-in-effect": "off",
         "effecttsgo/layer-merge-all-with-dependencies": "off",
         "effecttsgo/node-builtin-import": "off",
         "typescript/no-unsafe-assignment": "off",

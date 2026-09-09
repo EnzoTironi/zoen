@@ -96,4 +96,4 @@ Never enable Fly managed Postgres, Redis, or Tigris from this stack.
 
 ## HTTP checks
 
-`fly.toml` still declares `/ready` checks (`interval=15s`, `grace=1m`). Declared payload lives in `ops/alchemy/stage.ts` (`FLY_HTTP_READY_CHECK`) for parity tests. Alchemy's MachineService mapper does not yet forward `checks` to the Machines API — keep transitional `fly.toml` checks for CD.
+`fly.toml` still declares `/ready` checks (`interval=15s`, `grace=1m`). Declared payload lives in `ops/alchemy/stage.ts` (`FLY_HTTP_READY_CHECK`) for parity tests. Alchemy's MachineService mapper does not yet forward `checks` to the Machines API — keep transitional `fly.toml` checks for CD, and set `ZOEN_ALCHEMY_WAIT_READY=1` (preview CI) to poll `/ready` after Machine create.

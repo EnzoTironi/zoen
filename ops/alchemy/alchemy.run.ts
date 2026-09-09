@@ -263,6 +263,34 @@ const flyHosted = (stage: string, prod: boolean) =>
       ],
     }).pipe(Alchemy.RemovalPolicy.retain(prod));
 
+    // Alchemy MachineService mapper does not forward Fly service `checks` yet.
+    // When enabled (preview CI), poll /ready so deploy does not return before boot.
+    const waitReady = yield* Config.string("ZOEN_ALCHEMY_WAIT_READY").pipe(
+      Config.withDefault("0")
+    );
+    if (waitReady === "1") {
+      const readyUrl = `${publicUrl}/ready`;
+      yield* Effect.gen(function* awaitReady() {
+        let ready = false;
+        for (let attempt = 0; attempt < 60 && !ready; attempt += 1) {
+          ready = yield* Effect.tryPromise(() =>
+            fetch(readyUrl, { signal: AbortSignal.timeout(5000) }).then(
+              (response) => response.status === 200
+            )
+          ).pipe(Effect.orElseSucceed(() => false));
+          if (!ready) {
+            yield* Effect.sleep("2 seconds");
+          }
+        }
+        if (!ready) {
+          return yield* Effect.die(
+            new Error(`Alchemy Fly Machine ready timeout url=${readyUrl}`)
+          );
+        }
+        return null;
+      });
+    }
+
     return {
       appName,
       image,

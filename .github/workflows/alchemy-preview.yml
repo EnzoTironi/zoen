@@ -37,6 +37,7 @@ jobs:
       - name: alchemy deploy pr stage
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          ZOEN_ALCHEMY_WAIT_READY: "1"
           # Ephemeral stages build+push all-in-one to registry.fly.io; not ZA-07 admit.
           CI: "true"
         run: |
