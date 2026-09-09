@@ -27,7 +27,7 @@
 - [x] This roadmap lists W0–W5 with acceptance criteria.
 - [x] README product framing updated (OO OS; Worlds first pack; MCP/CLI; links ADR + glossary; no Foundry parity claim).
 - [x] Research memo cited under `docs/architecture-audit/` as derived.
-- [ ] PR merged to `main` with Verify green (docs paths only).
+- [x] PR merged to `main` with Verify green (docs paths only).
 
 **Out of scope:** Kernel rewrite, Eve revival, prod destroy, PR #51.
 
@@ -37,10 +37,10 @@
 
 **Acceptance criteria**
 
-- [ ] OMS can register and version at least: one Object Type, one Link Type, one Action Type card (parameters + submission criteria stub + declared edits).
-- [ ] Type changes go through an explicit proposal / review path (git PR acceptable for MVP; document upgrade path to in-product Ontology Branching).
-- [ ] Tip Worlds schemas are inventoried as **seeds** for pack migration (no silent delete of contracts).
-- [ ] Unit/integration proof: load registry → reject unknown Action Type id; accept known stub without executing Engine (Engine may still be tip executor).
+- [x] OMS can register and version at least: one Object Type, one Link Type, one Action Type card (parameters + submission criteria stub + declared edits). (`@zoen/oms`)
+- [x] Type changes go through an explicit proposal / review path (git PR acceptable for MVP; document upgrade path to in-product Ontology Branching). See [oms.md](oms.md).
+- [x] Tip Worlds schemas are inventoried as **seeds** for pack migration (no silent delete of contracts).
+- [x] Unit/integration proof: load registry → reject unknown Action Type id; accept known stub without executing Engine (Engine may still be tip executor).
 - [ ] Verify green; no Eve surface.
 
 ## W2 — Engine write path

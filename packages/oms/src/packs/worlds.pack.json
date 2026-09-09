@@ -1,0 +1,1057 @@
+{
+  "packs": [
+    {
+      "actionTypes": [
+        {
+          "description": "Create a personal World (genesis).",
+          "editIntent": {
+            "creates": ["worlds.World"],
+            "deletes": [],
+            "linkCreates": ["worlds.WorldHasMembership"],
+            "updates": []
+          },
+          "glossaryTerm": "World",
+          "id": "worlds.CreatePersonalWorld",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "CreatePersonalWorld",
+          "submissionCriteria": {
+            "notes": "Authenticated principal; no world scope yet (genesis).",
+            "requireAuthenticated": true,
+            "requireOwner": false,
+            "requireWorldScope": false
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Import evidence document into a World.",
+          "editIntent": {
+            "creates": ["worlds.Evidence", "worlds.Source"],
+            "deletes": [],
+            "linkCreates": [
+              "worlds.WorldHasEvidence",
+              "worlds.EvidenceFromSource"
+            ],
+            "updates": []
+          },
+          "glossaryTerm": "Evidence",
+          "id": "worlds.ImportEvidence",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Evidence document body",
+              "kind": "string",
+              "name": "document",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Optional CSV format marker",
+              "kind": "string",
+              "name": "format",
+              "nullable": false,
+              "optional": true,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "ImportEvidence",
+          "submissionCriteria": {
+            "notes": "Owner required on World.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Inspect visible frame for a subject in a World.",
+          "editIntent": {
+            "creates": [],
+            "deletes": [],
+            "linkCreates": [],
+            "updates": []
+          },
+          "glossaryTerm": "World",
+          "id": "worlds.Inspect",
+          "mode": "read",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Subject key",
+              "kind": "string",
+              "name": "subjectKey",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Optional frame pointer",
+              "kind": "uuid",
+              "name": "atFrame",
+              "nullable": true,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "Inspect",
+          "submissionCriteria": {
+            "notes": "Authenticated principal with World access.",
+            "requireAuthenticated": true,
+            "requireOwner": false,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Open an Evidence document by reference.",
+          "editIntent": {
+            "creates": [],
+            "deletes": [],
+            "linkCreates": [],
+            "updates": []
+          },
+          "glossaryTerm": "Evidence",
+          "id": "worlds.OpenEvidence",
+          "mode": "read",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Evidence reference",
+              "kind": "uuid",
+              "name": "evidenceRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "OpenEvidence",
+          "submissionCriteria": {
+            "notes": "Authenticated principal with World access.",
+            "requireAuthenticated": true,
+            "requireOwner": false,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Propose a Correction consequence on a frame.",
+          "editIntent": {
+            "creates": ["worlds.Correction"],
+            "deletes": [],
+            "linkCreates": ["worlds.WorldHasCorrection"],
+            "updates": []
+          },
+          "glossaryTerm": "Correction",
+          "id": "worlds.ProposeCorrection",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Frame reference",
+              "kind": "uuid",
+              "name": "frameRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Correction consequence payload",
+              "kind": "json",
+              "name": "consequence",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "ProposeCorrection",
+          "submissionCriteria": {
+            "notes": "Owner required on World.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Answer a Correction question (confirm | unknown).",
+          "editIntent": {
+            "creates": [],
+            "deletes": [],
+            "linkCreates": [],
+            "updates": ["worlds.Correction"]
+          },
+          "glossaryTerm": "Correction",
+          "id": "worlds.AnswerQuestion",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Question reference",
+              "kind": "uuid",
+              "name": "questionRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "confirm | unknown",
+              "kind": "string",
+              "name": "answer",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Digest of proposed consequence",
+              "kind": "string",
+              "name": "consequenceDigest",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "AnswerQuestion",
+          "submissionCriteria": {
+            "notes": "Owner required on World.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Undo a previously applied Correction.",
+          "editIntent": {
+            "creates": [],
+            "deletes": [],
+            "linkCreates": [],
+            "updates": ["worlds.Correction"]
+          },
+          "glossaryTerm": "Correction",
+          "id": "worlds.UndoCorrection",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Correction reference",
+              "kind": "uuid",
+              "name": "correctionRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Frame reference",
+              "kind": "uuid",
+              "name": "frameRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "UndoCorrection",
+          "submissionCriteria": {
+            "notes": "Owner required on World.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Inspect World membership / access.",
+          "editIntent": {
+            "creates": [],
+            "deletes": [],
+            "linkCreates": [],
+            "updates": []
+          },
+          "glossaryTerm": "Membership",
+          "id": "worlds.InspectWorldAccess",
+          "mode": "read",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Optional principal filter",
+              "kind": "uuid",
+              "name": "principalRef",
+              "nullable": true,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "InspectWorldAccess",
+          "submissionCriteria": {
+            "notes": "Authenticated principal with World access.",
+            "requireAuthenticated": true,
+            "requireOwner": false,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Grant viewer read access (share).",
+          "editIntent": {
+            "creates": ["worlds.Membership"],
+            "deletes": [],
+            "linkCreates": ["worlds.WorldHasMembership"],
+            "updates": ["worlds.Membership"]
+          },
+          "glossaryTerm": "Membership",
+          "id": "worlds.GrantWorldReadAccess",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Principal to grant",
+              "kind": "uuid",
+              "name": "principalRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Optimistic concurrency",
+              "kind": "string",
+              "name": "expectedRevision",
+              "nullable": true,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "GrantWorldReadAccess",
+          "submissionCriteria": {
+            "notes": "Owner required to share.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Revoke viewer read access.",
+          "editIntent": {
+            "creates": [],
+            "deletes": [],
+            "linkCreates": [],
+            "updates": ["worlds.Membership"]
+          },
+          "glossaryTerm": "Membership",
+          "id": "worlds.RevokeWorldReadAccess",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Principal to revoke",
+              "kind": "uuid",
+              "name": "principalRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Optimistic concurrency",
+              "kind": "string",
+              "name": "expectedRevision",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "RevokeWorldReadAccess",
+          "submissionCriteria": {
+            "notes": "Owner required to revoke.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Request World-scoped erasure (Closing).",
+          "editIntent": {
+            "creates": ["worlds.ErasureAttempt"],
+            "deletes": [],
+            "linkCreates": ["worlds.WorldHasErasureAttempt"],
+            "updates": []
+          },
+          "glossaryTerm": "ErasureAttempt",
+          "id": "worlds.RequestWorldErasure",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Must be true",
+              "kind": "boolean",
+              "name": "confirmEntireWorld",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Erasure policy version",
+              "kind": "string",
+              "name": "policyVersion",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Optimistic concurrency",
+              "kind": "string",
+              "name": "expectedErasureRevision",
+              "nullable": true,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "RequestWorldErasure",
+          "submissionCriteria": {
+            "notes": "Owner; qualification gates fail closed.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Inspect World erasure progress (administrative).",
+          "editIntent": {
+            "creates": [],
+            "deletes": [],
+            "linkCreates": [],
+            "updates": []
+          },
+          "glossaryTerm": "ErasureAttempt",
+          "id": "worlds.InspectWorldErasure",
+          "mode": "read",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Optional attempt filter",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": true,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "InspectWorldErasure",
+          "submissionCriteria": {
+            "notes": "Owner/admin narrow progress view.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        },
+        {
+          "description": "Purge controlled World content after Closing.",
+          "editIntent": {
+            "creates": [],
+            "deletes": ["worlds.Evidence", "worlds.Correction"],
+            "linkCreates": [],
+            "updates": ["worlds.ErasureAttempt"]
+          },
+          "glossaryTerm": "ErasureAttempt",
+          "id": "worlds.PurgeWorldContent",
+          "mode": "mutation",
+          "packId": "worlds",
+          "parameters": [
+            {
+              "description": "Declared purpose",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Target World",
+              "kind": "ref",
+              "name": "worldRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": "worlds.World"
+            },
+            {
+              "description": "Closing operation id",
+              "kind": "uuid",
+              "name": "closingOperationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Optimistic concurrency",
+              "kind": "string",
+              "name": "expectedErasureRevision",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Idempotency key",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "runtimeBinding": "semantic-executor",
+          "semanticOperation": "PurgeWorldContent",
+          "submissionCriteria": {
+            "notes": "Owner; Closing→Erased only for controlled copies.",
+            "requireAuthenticated": true,
+            "requireOwner": true,
+            "requireWorldScope": true
+          },
+          "version": "0.1.0"
+        }
+      ],
+      "description": "Worlds ontology pack #1 — private truth with evidence, correction, sharing, erasure. Seeds only; tip SemanticExecutor still runs until W2/W3.",
+      "id": "worlds",
+      "linkTypes": [
+        {
+          "cardinalityFrom": "one",
+          "cardinalityTo": "zero-or-more",
+          "description": "World contains admitted Evidence objects.",
+          "fromTypeId": "worlds.World",
+          "glossaryTerm": "Evidence",
+          "id": "worlds.WorldHasEvidence",
+          "packId": "worlds",
+          "toTypeId": "worlds.Evidence",
+          "version": "0.1.0"
+        },
+        {
+          "cardinalityFrom": "one-or-more",
+          "cardinalityTo": "one",
+          "description": "Evidence is admitted from a Source.",
+          "fromTypeId": "worlds.Evidence",
+          "glossaryTerm": "Source",
+          "id": "worlds.EvidenceFromSource",
+          "packId": "worlds",
+          "toTypeId": "worlds.Source",
+          "version": "0.1.0"
+        },
+        {
+          "cardinalityFrom": "one",
+          "cardinalityTo": "zero-or-more",
+          "description": "World hosts Correction objects.",
+          "fromTypeId": "worlds.World",
+          "glossaryTerm": "Correction",
+          "id": "worlds.WorldHasCorrection",
+          "packId": "worlds",
+          "toTypeId": "worlds.Correction",
+          "version": "0.1.0"
+        },
+        {
+          "cardinalityFrom": "one",
+          "cardinalityTo": "one-or-more",
+          "description": "World has Membership / access rows.",
+          "fromTypeId": "worlds.World",
+          "glossaryTerm": "Membership",
+          "id": "worlds.WorldHasMembership",
+          "packId": "worlds",
+          "toTypeId": "worlds.Membership",
+          "version": "0.1.0"
+        },
+        {
+          "cardinalityFrom": "one",
+          "cardinalityTo": "zero-or-more",
+          "description": "World may have ErasureAttempt records.",
+          "fromTypeId": "worlds.World",
+          "glossaryTerm": "ErasureAttempt",
+          "id": "worlds.WorldHasErasureAttempt",
+          "packId": "worlds",
+          "toTypeId": "worlds.ErasureAttempt",
+          "version": "0.1.0"
+        }
+      ],
+      "objectTypes": [
+        {
+          "description": "Governed private-truth container (ontology pack #1 scope). Maps glossary World.",
+          "glossaryTerm": "World",
+          "id": "worlds.World",
+          "packId": "worlds",
+          "properties": [
+            {
+              "description": "World identifier",
+              "kind": "uuid",
+              "name": "worldId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "live | evaluation",
+              "kind": "string",
+              "name": "realm",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Declared purpose string",
+              "kind": "string",
+              "name": "purpose",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "version": "0.1.0"
+        },
+        {
+          "description": "Admitted evidence artifact under a World. Maps glossary Evidence.",
+          "glossaryTerm": "Evidence",
+          "id": "worlds.Evidence",
+          "packId": "worlds",
+          "properties": [
+            {
+              "description": "Evidence reference",
+              "kind": "uuid",
+              "name": "evidenceRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "application/json | text/csv",
+              "kind": "string",
+              "name": "mediaType",
+              "nullable": false,
+              "optional": true,
+              "refTypeId": null
+            }
+          ],
+          "version": "0.1.0"
+        },
+        {
+          "description": "External or manual source lineage for evidence. Maps glossary Source.",
+          "glossaryTerm": "Source",
+          "id": "worlds.Source",
+          "packId": "worlds",
+          "properties": [
+            {
+              "description": "Source reference",
+              "kind": "uuid",
+              "name": "sourceRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Source namespace",
+              "kind": "string",
+              "name": "namespace",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "External source id",
+              "kind": "string",
+              "name": "externalId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Human label",
+              "kind": "string",
+              "name": "label",
+              "nullable": false,
+              "optional": true,
+              "refTypeId": null
+            }
+          ],
+          "version": "0.1.0"
+        },
+        {
+          "description": "Scoped interpretation edit with undo. Maps glossary Correction.",
+          "glossaryTerm": "Correction",
+          "id": "worlds.Correction",
+          "packId": "worlds",
+          "properties": [
+            {
+              "description": "Correction reference",
+              "kind": "uuid",
+              "name": "correctionRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Case reference",
+              "kind": "uuid",
+              "name": "caseRef",
+              "nullable": false,
+              "optional": true,
+              "refTypeId": null
+            },
+            {
+              "description": "Frame reference",
+              "kind": "uuid",
+              "name": "frameRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "version": "0.1.0"
+        },
+        {
+          "description": "Principal membership / access on a World. Maps glossary Membership/Access.",
+          "glossaryTerm": "Membership",
+          "id": "worlds.Membership",
+          "packId": "worlds",
+          "properties": [
+            {
+              "description": "Principal reference",
+              "kind": "uuid",
+              "name": "principalRef",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "owner | viewer",
+              "kind": "string",
+              "name": "role",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "active | revoked",
+              "kind": "string",
+              "name": "state",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Membership revision",
+              "kind": "string",
+              "name": "revision",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "version": "0.1.0"
+        },
+        {
+          "description": "World-scoped erasure attempt record. Maps glossary ErasureAttempt.",
+          "glossaryTerm": "ErasureAttempt",
+          "id": "worlds.ErasureAttempt",
+          "packId": "worlds",
+          "properties": [
+            {
+              "description": "Closing / attempt operation id",
+              "kind": "uuid",
+              "name": "operationId",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "World erasure phase",
+              "kind": "string",
+              "name": "phase",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Erasure revision",
+              "kind": "string",
+              "name": "revision",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            },
+            {
+              "description": "Product default closed",
+              "kind": "boolean",
+              "name": "restoreAfterErasure",
+              "nullable": false,
+              "optional": false,
+              "refTypeId": null
+            }
+          ],
+          "version": "0.1.0"
+        }
+      ],
+      "version": "0.1.0"
+    }
+  ],
+  "schemaVersion": "oms.v1",
+  "version": "0.1.0"
+}

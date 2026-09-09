@@ -28,6 +28,7 @@ export default defineConfig({
       "@zoen/contracts": fileURLToPath(
         new URL("packages/contracts/src", import.meta.url)
       ),
+      "@zoen/oms": fileURLToPath(new URL("packages/oms/src", import.meta.url)),
       "@zoen/ontology": fileURLToPath(
         new URL("packages/ontology/src", import.meta.url)
       ),
