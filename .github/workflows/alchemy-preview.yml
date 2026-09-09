@@ -1,0 +1,78 @@
+# Optional PR preview via alchemy (Fly ephemeral stage). Default: off.
+# Enable with repository variable ZOEN_ALCHEMY_PREVIEW=1 and secret FLY_API_TOKEN.
+# Note: job-level `if` cannot reference `secrets` (GitHub Actions validation); token is gated at step level.
+name: Alchemy preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: alchemy-preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event.action != 'closed' && vars.ZOEN_ALCHEMY_PREVIEW == '1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
+      - run: pnpm install --frozen-lockfile
+      - name: Restore alchemy local state
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: .alchemy
+          key: alchemy-preview-pr-${{ github.event.pull_request.number }}-v1
+          restore-keys: |
+            alchemy-preview-pr-${{ github.event.pull_request.number }}-
+      - name: alchemy deploy pr stage
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          ZOEN_ALCHEMY_WAIT_READY: "1"
+          # Ephemeral stages build+push all-in-one to registry.fly.io; not ZA-07 admit.
+          CI: "true"
+        run: |
+          if [ -z "${FLY_API_TOKEN}" ]; then
+            echo "FLY_API_TOKEN unset; skipping alchemy preview deploy (opt-in secret)."
+            exit 0
+          fi
+          pnpm exec alchemy deploy ops/alchemy/alchemy.run.ts --stage "pr-${{ github.event.pull_request.number }}" --yes
+
+  destroy:
+    if: github.event.action == 'closed' && vars.ZOEN_ALCHEMY_PREVIEW == '1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413
+      - run: pnpm install --frozen-lockfile
+      - name: Restore alchemy local state
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
+        with:
+          path: .alchemy
+          key: alchemy-preview-pr-${{ github.event.pull_request.number }}-v1
+          restore-keys: |
+            alchemy-preview-pr-${{ github.event.pull_request.number }}-
+      - name: alchemy destroy pr stage
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+          CI: "true"
+        run: |
+          if [ -z "${FLY_API_TOKEN}" ]; then
+            echo "FLY_API_TOKEN unset; skipping alchemy preview destroy (opt-in secret)."
+            exit 0
+          fi
+          pnpm exec alchemy destroy ops/alchemy/alchemy.run.ts --stage "pr-${{ github.event.pull_request.number }}" --yes

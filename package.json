@@ -18,7 +18,7 @@
     "format": "oxfmt",
     "format:check": "oxfmt --check",
     "lint": "oxlint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && pnpm typecheck:alchemy",
     "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/ontology/tsconfig.build.json",
     "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json",
     "start:server": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" apps/server/dist/main.js",
@@ -37,9 +37,14 @@
     "build:container": "docker build -f ops/containers/application.Dockerfile -t zoen-local:current .",
     "test:container": "python3 tooling/verify_container.py",
     "test:container:identity": "python3 tests/integration/hosted/identity/probe_all_in_one_identity.py",
-    "test:container:lifecycle": "python3 tests/integration/hosted/lifecycle/probe_all_in_one_lifecycle.py"
+    "test:container:lifecycle": "python3 tests/integration/hosted/lifecycle/probe_all_in_one_lifecycle.py",
+    "alchemy:plan": "alchemy plan ops/alchemy/alchemy.run.ts",
+    "alchemy:deploy": "alchemy deploy ops/alchemy/alchemy.run.ts",
+    "alchemy:destroy": "alchemy destroy ops/alchemy/alchemy.run.ts",
+    "typecheck:alchemy": "tsc --noEmit -p ops/alchemy/tsconfig.json"
   },
   "devDependencies": {
+    "@alchemy.run/frontend-frameworks": "2.0.0-beta.76",
     "@aws-sdk/client-s3": "3.1127.0",
     "@cloudflare/workers-types": "5.20260905.1",
     "@effect/platform-node": "4.0.0-rc.112",
@@ -52,6 +57,7 @@
     "@types/react": "19.2.18",
     "@types/react-dom": "19.2.7",
     "@vitejs/plugin-react": "6.1.1",
+    "alchemy": "2.0.0-beta.76",
     "bun-types": "1.4.1",
     "effect": "4.0.0-rc.112",
     "oxfmt": "0.66.0",

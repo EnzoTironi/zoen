@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 import type { ChildProcess } from "node:child_process";
 import { randomBytes, randomUUID } from "node:crypto";
+import { createServer } from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -19,7 +20,7 @@ import {
 } from "@zoen/ontology/ports/worlds/context";
 import { SemanticExecutor } from "@zoen/ontology/semantic/executor";
 import { intentDigest } from "@zoen/ontology/values/canonical";
-import { Effect, FileSystem, Layer, Redacted, Schema } from "effect";
+import { Cause, Effect, FileSystem, Layer, Redacted, Schema } from "effect";
 import {
   Cookies,
   FetchHttpClient,
@@ -154,9 +155,88 @@ export const realignIntentDigest = Effect.fn("basis.realignIntentDigest")(
 const childHasExited = (child: ChildProcess) =>
   child.exitCode !== null || child.signalCode !== null;
 
-const reservePort = Effect.sync(
-  () => 45_000 + Math.floor(Math.random() * 10_000)
-);
+const SocketAddress = Schema.Struct({ port: Schema.Int });
+
+/**
+ * Bind an ephemeral port then release it so the legacy child can listen.
+ * Random ports in the ephemeral range raced with kernel-assigned source
+ * ports and other listeners (CI flake: Legacy server exited / server.failed).
+ */
+const reservePort = Effect.gen(function* reserveEphemeralPort() {
+  const listener = createServer();
+  const address = yield* Effect.acquireUseRelease(
+    Effect.callback<null, Cause.UnknownError>((resume) => {
+      listener.once("error", (error) => {
+        resume(Effect.fail(new Cause.UnknownError(error)));
+      });
+      listener.listen(0, "127.0.0.1", () => {
+        resume(Effect.succeed(null));
+      });
+    }),
+    () => Schema.decodeUnknownEffect(SocketAddress)(listener.address()),
+    () =>
+      Effect.callback<null, Cause.UnknownError>((resume) => {
+        listener.close((error) => {
+          resume(
+            error
+              ? Effect.fail(new Cause.UnknownError(error))
+              : Effect.succeed(null)
+          );
+        });
+      })
+  );
+  return address.port;
+});
+
+/** Parent env keys safe to forward; ZOEN_* / CONFIG must not leak into legacy boot. */
+const legacyChildEnv = (
+  overrides: Record<string, string>
+): NodeJS.ProcessEnv => {
+  const forwarded: NodeJS.ProcessEnv = {};
+  for (const key of [
+    "HOME",
+    "LANG",
+    "LC_ALL",
+    "PATH",
+    "PWD",
+    "SHELL",
+    "TMPDIR",
+    "TZ",
+    "USER",
+  ]) {
+    const value = process.env[key];
+    if (typeof value === "string") {
+      forwarded[key] = value;
+    }
+  }
+  // Node itself
+  if (typeof process.env.NODE_ENV === "string") {
+    forwarded.NODE_ENV = process.env.NODE_ENV;
+  }
+  return { ...forwarded, ...overrides };
+};
+
+const portStillFree = (port: number) =>
+  Effect.gen(function* probePort() {
+    const listener = createServer();
+    const bound = yield* Effect.callback<boolean>((resume) => {
+      listener.once("error", () => {
+        resume(Effect.succeed(false));
+      });
+      listener.listen(port, "127.0.0.1", () => {
+        resume(Effect.succeed(true));
+      });
+    });
+    if (!bound) {
+      return false;
+    }
+    yield* Effect.callback<null>((resume) => {
+      listener.close(() => {
+        resume(Effect.succeed(null));
+      });
+    });
+    return true;
+  }).pipe(Effect.orElseSucceed(() => false));
 
 /** Resolve when the OS reports the child has exited (DB clients released). */
 const awaitProcessExit = (child: ChildProcess) =>
@@ -318,8 +398,8 @@ export const withLegacyBasisHarness = <A, E, R>(
             releaseDigest: legacy.releaseDigest,
           });
           const secret = Redacted.make(randomBytes(32).toString("hex"));
-          const port = yield* reservePort;
-          const origin = `http://127.0.0.1:${port}`;
+          // Finish filesystem setup before reserving a port so the handoff gap
+          // between close(listener) and child listen() stays minimal.
           const directory = path.join(
             repoLocal,
             `basis-compat-${randomBytes(6).toString("hex")}`
@@ -333,12 +413,16 @@ export const withLegacyBasisHarness = <A, E, R>(
           );
           const mainJs = path.join(legacy.root, "apps/server/dist/main.js");
           const logs: string[] = [];
-          const child = yield* Effect.acquireRelease(
-            Effect.sync(() => {
+          // Reserve immediately before spawn; retry when another listener won
+          // the port between release and child bind (CI flake class).
+          const boot = yield* Effect.gen(function* bootLegacyWithPortRetry() {
+            let lastFailure: Error | undefined;
+            for (let bootAttempt = 0; bootAttempt < 5; bootAttempt += 1) {
+              const listenPort = yield* reservePort;
+              const listenOrigin = `http://127.0.0.1:${listenPort}`;
               const processChild = spawn(process.execPath, [mainJs], {
                 cwd: legacy.root,
-                env: {
-                  ...process.env,
+                env: legacyChildEnv({
                   ZOEN_AUTHORITY_DATABASE_URL: Redacted.value(
                     database.urls.authority
                   ),
@@ -348,8 +432,8 @@ export const withLegacyBasisHarness = <A, E, R>(
                   ),
                   ZOEN_INSTALLATION_FILE: installationPath,
                   ZOEN_LISTEN_HOST: "127.0.0.1",
-                  ZOEN_PORT: String(port),
-                  ZOEN_PUBLIC_URL: origin,
+                  ZOEN_PORT: String(listenPort),
+                  ZOEN_PUBLIC_URL: listenOrigin,
                   ZOEN_S3_ACCESS_KEY: Redacted.value(
                     storage.credentials.accessKeyId
                   ),
@@ -359,7 +443,7 @@ export const withLegacyBasisHarness = <A, E, R>(
                   ZOEN_S3_SECRET_KEY: Redacted.value(
                     storage.credentials.secretAccessKey
                   ),
-                },
+                }),
                 stdio: ["ignore", "pipe", "pipe"],
               });
               processChild.stdout?.on("data", (chunk: Buffer) => {
@@ -368,43 +452,55 @@ export const withLegacyBasisHarness = <A, E, R>(
               processChild.stderr?.on("data", (chunk: Buffer) => {
                 logs.push(chunk.toString("utf-8"));
               });
-              return processChild;
-            }),
-            (processChild) =>
-              Effect.sync(() => {
-                try {
-                  processChild.kill("SIGKILL");
-                } catch {
-                  // already exited
+              let ready = false;
+              for (let attempt = 0; attempt < 120 && !ready; attempt += 1) {
+                if (processChild.exitCode !== null) {
+                  const free = yield* portStillFree(listenPort);
+                  lastFailure = new Error(
+                    `Legacy server exited before ready code=${String(processChild.exitCode)} port=${String(listenPort)} portFreeAfterExit=${String(free)} bootAttempt=${String(bootAttempt)} logs=${logs.join("")}`
+                  );
+                  if (free && bootAttempt < 4) {
+                    break;
+                  }
+                  return yield* Effect.die(lastFailure);
                 }
-              })
-          );
-          yield* Effect.gen(function* awaitReady() {
-            let ready = false;
-            for (let attempt = 0; attempt < 120 && !ready; attempt += 1) {
-              if (child.exitCode !== null) {
-                return yield* Effect.die(
-                  new Error(
-                    `Legacy server exited before ready code=${String(child.exitCode)} logs=${logs.join("")}`
-                  )
+                ready = yield* Effect.tryPromise(() =>
+                  fetch(`${listenOrigin}/ready`, {
+                    signal: AbortSignal.timeout(1000),
+                  }).then((response) => response.status === 200)
+                ).pipe(Effect.orElseSucceed(() => false));
+                if (!ready) {
+                  yield* Effect.sleep("250 millis");
+                }
+              }
+              if (ready) {
+                const ownedChild = yield* Effect.acquireRelease(
+                  Effect.succeed(processChild),
+                  (owned) =>
+                    Effect.sync(() => {
+                      owned.kill("SIGKILL");
+                    })
                 );
+                return {
+                  child: ownedChild,
+                  origin: listenOrigin,
+                  port: listenPort,
+                };
               }
-              ready = yield* Effect.tryPromise(() =>
-                fetch(`${origin}/ready`, {
-                  signal: AbortSignal.timeout(1000),
-                }).then((response) => response.status === 200)
-              ).pipe(Effect.orElseSucceed(() => false));
-              if (!ready) {
-                yield* Effect.sleep("250 millis");
-              }
-            }
-            if (!ready) {
-              return yield* Effect.die(
-                new Error(`Legacy server ready timeout logs=${logs.join("")}`)
+              processChild.kill("SIGKILL");
+              const free = yield* portStillFree(listenPort);
+              lastFailure = new Error(
+                `Legacy server ready timeout port=${String(listenPort)} portFreeAfterWait=${String(free)} bootAttempt=${String(bootAttempt)} logs=${logs.join("")}`
               );
+              if (!(free && bootAttempt < 4)) {
+                return yield* Effect.die(lastFailure);
+              }
             }
-            return ready;
+            return yield* Effect.die(
+              lastFailure ?? new Error("Legacy server boot retries exhausted")
+            );
           });
+          const { child, origin } = boot;
           let transitioned = false;
           const transitionToCurrentComponent = () =>
             Effect.gen(function* applyTransition() {

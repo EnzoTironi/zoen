@@ -1,6 +1,10 @@
 # Zoen rebuild — all-in-one Fly VM (app + Postgres + RustFS on one volume).
 # Hosted path: reject managed Postgres and managed object storage (Enzo).
 #
+# Source of truth: ops/alchemy/alchemy.run.ts (alchemy.run). This fly.toml is a
+# transitional mirror for flyctl exact-image CD (ZA-07) until Deploy cuts over.
+# Prefer editing the alchemy stack, then mirror env / http_service here.
+#
 # Hostname cutover (authorized replace): ops/fly/CUTOVER.md
 # After DNS+cert prove /ready on zoen.tironi.xyz, replace ZOEN_PUBLIC_URL below
 # with https://zoen.tironi.xyz (single URL — no dual public origins).

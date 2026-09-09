@@ -1,6 +1,6 @@
 # Frontier integration review — ZA-26
 
-Date observed: **2026-09-09 (PT)**. Reviewed tip: `aa7bc31` (`aa7bc313e5c3905e83fb69847123f436fc261a22`) — `#113` ZA-25 finance record reconciliation. Lockfile SHA-256: `7de8982d307a68dd80b105c33594ea8c6dd40dca8ece8a5199a7d196fe59293f`.
+Date observed: **2026-09-09 (PT)**. Reviewed tip: `aa7bc31` (`aa7bc313e5c3905e83fb69847123f436fc261a22`) — `#113` ZA-25 finance record reconciliation. Lockfile SHA-256: `92afa1d6a7fd27ddae857fe5d008d4e28b2ade3b23b488ebd5348ca00a8f4ef2`.
 
 This report closes **only the selected frontier** with independent evidence on one current commit. It is **not** acceptance of the full 157-capability horizon, full D03/D04/D05, or the entire target diagram.
 

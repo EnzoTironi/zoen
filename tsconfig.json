@@ -36,6 +36,8 @@
     "**/node_modules",
     "**/dist",
     "reference",
-    "archives"
+    "archives",
+    "ops/alchemy/**",
+    "ops/alchemy/**/*.ts"
   ]
 }
