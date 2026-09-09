@@ -13,6 +13,7 @@ WORKSPACES = (
     "packages/ontology",
     "apps/server",
     "apps/cli",
+    "apps/mcp",
     "apps/web",
 )
 SCRIPT = Path(os.environ.get("ZOEN_CLEAN_BUILD_SCRIPT", Path(__file__).with_name("clean_build.py")))

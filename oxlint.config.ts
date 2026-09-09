@@ -179,6 +179,7 @@ export default defineConfig({
         "packages/contracts/src/**",
         "apps/web/src/**",
         "apps/cli/src/**",
+        "apps/mcp/src/**",
       ],
       rules: {
         "no-restricted-imports": [
@@ -200,6 +201,17 @@ export default defineConfig({
             ],
           },
         ],
+      },
+    },
+    {
+      files: ["apps/mcp/src/**"],
+      rules: {
+        "effecttsgo/async-function": "off",
+        "effecttsgo/process-env-in-effect": "off",
+        "eslint/sort-keys": "off",
+        "promise/prefer-await-to-callbacks": "off",
+        "promise/prefer-await-to-then": "off",
+        "typescript/no-deprecated": "off",
       },
     },
     {

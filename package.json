@@ -20,7 +20,7 @@
     "lint": "oxlint",
     "typecheck": "tsc --noEmit && pnpm typecheck:alchemy",
     "build:core": "tsc --build packages/contracts/tsconfig.build.json packages/ontology/tsconfig.build.json",
-    "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json",
+    "build:apps": "tsc --build apps/server/tsconfig.build.json apps/cli/tsconfig.build.json apps/mcp/tsconfig.build.json",
     "start:server": "node --env-file=\".env.${ZOEN_LOCAL_PROFILE:-application}\" apps/server/dist/main.js",
     "cli": "node apps/cli/dist/main.js",
     "test:unit": "vitest run --project unit",
@@ -42,7 +42,8 @@
     "alchemy:deploy": "alchemy deploy ops/alchemy/alchemy.run.ts",
     "alchemy:destroy": "alchemy destroy ops/alchemy/alchemy.run.ts",
     "typecheck:alchemy": "tsc --noEmit -p ops/alchemy/tsconfig.json",
-    "ops:prep-hosted-gates": "python3 tests/integration/hosted/gates/prep.py"
+    "ops:prep-hosted-gates": "python3 tests/integration/hosted/gates/prep.py",
+    "mcp": "node apps/mcp/dist/main.js"
   },
   "devDependencies": {
     "@alchemy.run/frontend-frameworks": "2.0.0-beta.76",
