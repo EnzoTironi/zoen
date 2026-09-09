@@ -51,7 +51,7 @@ Unknown Action Type ids throw `UnknownTypeError` (fail closed). Accepting a stub
 
 ## MCP codegen (W4)
 
-`listWorldsMcpToolSpecs` / `listWorldsMcpToolNames` read the loaded Worlds pack Action Types (stable `worldsSemanticOperations` order). `apps/mcp` assembles ListTools entries via `generateWorldsToolsFromOms`: **names** from OMS; **inputSchema + buildRequest** from thin host binders (`host-binders-worlds.ts`). Missing or extra binders fail closed. Subject-identity tools stay hand-maintained (not OMS; documented escape hatch). CLI exposes the same names via `apps/cli/src/worlds/oms-actions.ts`.
+`listWorldsMcpToolSpecs` / `listWorldsMcpToolNames` read loaded Worlds pack Action Types (`worldsSemanticOperations` order, then any additional registered Worlds ops). Duplicate `semanticOperation` values fail closed. `apps/mcp` assembles ListTools via `generateWorldsToolsFromOms`: **names** from OMS; **inputSchema + buildRequest** from thin host binders (`host-binders-worlds.ts`). Missing or extra binders fail closed. Subject-identity tools stay hand-maintained direct-engine ops (not OMS; documented escape hatch). CLI root help surfaces the same names via `apps/cli/src/worlds/oms-actions.ts`.
 
 ## Related
 

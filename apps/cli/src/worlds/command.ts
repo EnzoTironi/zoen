@@ -19,6 +19,7 @@ import { makeSharingCommands } from "../sharing/command.js";
 import { makeSubjectIdentityCommands } from "../subject-identity/command.js";
 import { executeViaActionRunner } from "./action-execute.js";
 import { readInput, validateBaseUrl } from "./input.js";
+import { worldsOmsActionHelpSuffix } from "./oms-actions.js";
 import { CliFailure, formatFailure, formatSuccess } from "./output.js";
 import { readSession, removeSession, saveSession } from "./session.js";
 import { authenticate, signOut } from "./transport.js";
@@ -302,7 +303,7 @@ const logout = Command.make("sign-out", {}, () =>
 
 export const rootCommand = root.pipe(
   Command.withDescription(
-    "Zoen public API client. Results are JSON; errors go to stderr with nonzero exit status."
+    `Zoen public API client. Results are JSON; errors go to stderr with nonzero exit status. ${worldsOmsActionHelpSuffix}`
   ),
   Command.withSubcommands([
     authCommand("sign-up"),

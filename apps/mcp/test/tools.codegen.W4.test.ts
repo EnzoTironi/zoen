@@ -2,7 +2,10 @@ import { describe, expect, it } from "@effect/vitest";
 import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
 import { WorldCreated } from "@zoen/contracts/worlds/operations";
 import { listWorldsMcpToolNames } from "@zoen/oms/mcp-codegen";
+import { defaultOmsRegistry } from "@zoen/oms/packs/default-registry";
 import { worldsSemanticOperations } from "@zoen/oms/packs/worlds";
+import type { LoadedRegistry } from "@zoen/oms/registry";
+import { TypeId } from "@zoen/oms/values";
 import { Effect, Schema } from "effect";
 
 import {
@@ -17,6 +20,8 @@ import {
   generateWorldsToolsFromOms,
 } from "../src/tools/from-oms.ts";
 import { worldsHostBinders } from "../src/tools/host-binders-worlds.ts";
+
+const decodeTypeId = Schema.decodeUnknownSync(TypeId);
 
 const operationId = "11111111-1111-4111-8111-111111111111";
 const worldId = "33333333-3333-4333-8333-333333333333";
@@ -67,6 +72,37 @@ describe("MCP W4 OMS ActionType codegen", () => {
     );
     expect(result.isError).toBeFalsy();
     expect(JSON.parse(result.text)).toStrictEqual(worldCreated);
+  });
+
+  it("accepts an extra Worlds Action Type when its host binder is present", () => {
+    const base = defaultOmsRegistry.actionTypes.get(
+      "worlds.CreatePersonalWorld"
+    );
+    if (base === undefined) {
+      throw new Error("expected worlds.CreatePersonalWorld");
+    }
+    const extra = {
+      ...base,
+      description: "Extra Worlds Action Type for binder acceptance.",
+      id: decodeTypeId("worlds.ExtraWorldsVerb"),
+      semanticOperation: "ExtraWorldsVerb",
+    };
+    const registry: LoadedRegistry = {
+      actionTypes: new Map([
+        ...defaultOmsRegistry.actionTypes,
+        [extra.id, extra],
+      ]),
+      linkTypes: defaultOmsRegistry.linkTypes,
+      objectTypes: defaultOmsRegistry.objectTypes,
+      packs: defaultOmsRegistry.packs,
+      registry: defaultOmsRegistry.registry,
+    };
+    const binders = {
+      ...worldsHostBinders,
+      ExtraWorldsVerb: worldsHostBinders.CreatePersonalWorld,
+    };
+    const tools = generateWorldsToolsFromOms(binders, registry);
+    expect(tools.map((t) => t.name)).toContain("ExtraWorldsVerb");
   });
 
   it("subject-identity tools remain escape-hatch entries after OMS Worlds tools", () => {
