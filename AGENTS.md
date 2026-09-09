@@ -1,6 +1,8 @@
 # Trabalho no redesenho Zoen
 
-Leia `README.md`, as leis ativas em `docs/invariants.md`, o pacote atribuído em `planning/execution.json` e as seções de arquitetura/qualidade que ele consome. O usuário solicitou o reinício e a revisão do catálogo antigo. A arquitetura e o roadmap consolidados aqui substituem sua organização de execução; decisões de produto modificadas estão explícitas em `docs/roadmap.md`. Ambição do usuário → invariantes e decisões explícitas → contratos do incremento → pacote e oráculos. Planos não concedem novas permissões nem aprovam fornecedores.
+**Constitution (W0, 2026-09-09):** Zoen is an **Operational Ontology OS** (Language · Engine · Security); Worlds is pack #1. Read [docs/adr/ADR-0001-operational-ontology-os.md](docs/adr/ADR-0001-operational-ontology-os.md), [docs/glossary/operational-ontology.md](docs/glossary/operational-ontology.md), and [docs/roadmap-oo-os.md](docs/roadmap-oo-os.md) before expanding product surface. No Eve/chat product; no Foundry-parity claims; kernel rewrite is later waves — this tip may still be Worlds-shaped code.
+
+Leia `README.md`, as leis ativas em `docs/invariants.md`, o pacote atribuído em `planning/execution.json` e as seções de arquitetura/qualidade que ele consome. O usuário solicitou o reinício e a revisão do catálogo antigo. A arquitetura e o roadmap consolidados aqui substituem sua organização de execução; decisões de produto modificadas estão explícitas em `docs/roadmap.md` e no roadmap OO OS. Ambição do usuário → invariantes e decisões explícitas → contratos do incremento → pacote e oráculos. Planos não concedem novas permissões nem aprovam fornecedores.
 
 ## Pre-launch Evolution
 
