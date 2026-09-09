@@ -12,6 +12,7 @@ import {
 import type { SemanticRequest } from "@zoen/contracts/worlds/operations";
 import { Effect, Layer, Option, Result, Schema } from "effect";
 import {
+  FetchHttpClient,
   Headers,
   HttpClient,
   HttpClientRequest,
@@ -181,28 +182,33 @@ describe("web Worlds execute routing", () => {
         schemaVersion: "worlds.v1",
       });
       return Effect.gen(function* closed() {
+        let capturedCredentials: RequestCredentials | undefined;
+        const mockFetch = (async (
+          _input: RequestInfo | URL,
+          init?: RequestInit
+        ) => {
+          capturedCredentials = init?.credentials;
+          return Response.json(
+            { _tag: "InvalidInput", code: "INVALID_INPUT" },
+            { status: 400 }
+          );
+        }) as typeof globalThis.fetch;
         const api = yield* BrowserApi.pipe(
           Effect.provide(browserApiLayer(origin))
         );
-        // Unit env may or may not have a local server — either way errors stay
-        // in the public SemanticError closed set (never raw transport leak).
-        const outcome = yield* api.execute(payload).pipe(Effect.result);
+        const outcome = yield* api
+          .execute(payload)
+          .pipe(
+            Effect.provideService(FetchHttpClient.Fetch, mockFetch),
+            Effect.result
+          );
         expect(Result.isFailure(outcome)).toBeTruthy();
         if (Result.isFailure(outcome)) {
-          const tag = outcome.failure._tag;
-          expect([
-            "Blocked",
-            "Conflict",
-            "Expired",
-            "HistoricalContentUnavailable",
-            "InvalidInput",
-            "NotFoundOrDenied",
-            "RateLimited",
-            "SchemaError",
-            "Unavailable",
-            "Unsupported",
-          ]).toContain(tag);
+          expect(outcome.failure).toMatchObject(
+            new InvalidInput({ code: "INVALID_INPUT" })
+          );
         }
+        expect(capturedCredentials).toBe("same-origin");
       });
     }
   );
