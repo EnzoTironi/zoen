@@ -58,3 +58,13 @@ Cada testemunha entra com a capacidade correspondente. Provar um subconjunto nã
 Caos, carga, restore, licenças, SSO, feeds, brokers, modelos e runtimes externos têm perfil, versão e escopo explícitos. A ausência de uma conta bloqueia sua ativação; não transforma a CI em prova daquele provider e não bloqueia uma entrega independente. Não inventar SLO, benchmark, API ou licença para preencher uma planilha.
 
 O autor escreve testes de módulo e reproduz a falha. Outro agente revisa intenção, fronteiras e testemunha independente; o integrador resolve conflitos e reroda a composição. Revisar documentação não aprova código futuro. Entrega que exige produção/conta externa mantém esse gate separado do resultado local.
+
+## Fechamento de fronteira (ZA-26)
+
+Status e contagens de execução são **por tip** (commit + lock + imagem/perfil). Rejeitar:
+
+- commit antigo ou imagem trocada;
+- zero testes / contagem acumulada histórica no lugar da execução atual;
+- inferência de que um suite unitário verde ou rename completa erasure/Eve/hospedagem.
+
+O status máquina [`docs/verification/frontier-status.json`](verification/frontier-status.json) é validado por `tests/integration/frontier/frontier-status.ZA26.integration.test.ts`. Capacidades condicionais ausentes ficam Blocked; trabalho ICP já verificado não é descartado.

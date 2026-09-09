@@ -29,7 +29,7 @@ Surfaces first: **web** and **CLI** (same verbs). Agent, SDK, and MCP come later
 
 [https://zoen.tironi.xyz](https://zoen.tironi.xyz)
 
-**Status:** tip on Fly `zoen-rebuild` is deployed; post-#74 execution frontier is documented in [docs/architecture-audit/](docs/architecture-audit/README.md) (ZA not accepted). Honest verified increments live in `planning/progress.json`.
+**Status:** tip on Fly `zoen-rebuild` tracks `main`; post-#74 frontier is documented in [docs/architecture-audit/](docs/architecture-audit/README.md). Selected-frontier close (ZA-26) on tip `aa7bc31` is recorded in [docs/verification/frontier-integration.md](docs/verification/frontier-integration.md) — not full-horizon acceptance. Honest increments: `planning/progress.json`.
 
 ## Development
 
@@ -83,6 +83,7 @@ Do not commit Fly secrets or `.env*` files. See [SECURITY.md](SECURITY.md).
 
 - [Architecture](docs/architecture.md) — workspaces and composition
 - [Architecture audit (post-#74 frontier)](docs/architecture-audit/README.md) — execution frontier, anti-list, ZA plan (docs only; 0 ZA accepted)
+- [Frontier integration (ZA-26)](docs/verification/frontier-integration.md) — tip-bound selected-frontier status (finance demo; conditional gates stay blocked)
 - [Invariants](docs/invariants.md) — product laws
 - [Roadmap](docs/roadmap.md) — phases and deliveries
 - [Quality](docs/quality.md) — gates and proof layers

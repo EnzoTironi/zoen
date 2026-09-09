@@ -23,10 +23,10 @@
     "deliveries": 22,
     "quality_lanes": 1,
     "phases": 6,
-    "tasks": 15,
+    "tasks": 44,
     "workspaces_initial": 5,
     "max_workers": 3,
-    "unordered_different_owner_pairs_checked": 20,
+    "unordered_different_owner_pairs_checked": 179,
     "concurrent_path_conflicts": 0,
     "dependency_cycles": 0
   },

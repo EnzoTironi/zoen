@@ -94,3 +94,12 @@ Eve, jobs de provider e compute ganham processos separados quando entram no prod
 Docker será a base local e de CI; Fly é o destino de hospedagem planejado. PostgreSQL e um store S3 compatível serão executados e verificados no bootstrap. Nome de imagem, versão ou perfil não é prova de compatibilidade, licença ou backup. Hospedagem exige a topologia e recuperação reais de D04.
 
 **Turborepo fica fora do bootstrap.** pnpm workspaces e comandos diretos bastam inicialmente. Reavaliar quando o grafo de builds e medições frias/quentes mostrarem benefício. Se adotado, declarar inputs/outputs e dependências; integrações e admissões continuam sem cache de resultado. O [contrato oficial de configuração do Turbo](https://github.com/vercel/turborepo/blob/main/apps/docs/content/docs/reference/configuration.mdx) será referência nessa decisão.
+
+## Fronteira selecionada (ZA-26)
+
+O diagrama de destino acima é **intenção**, não prova de operação. Em `aa7bc31` (#113 ZA-25) a fronteira selecionada reconcilia escopos **implementados / qualificados / bloqueados** em [`docs/verification/frontier-integration.md`](verification/frontier-integration.md) e [`docs/verification/frontier-status.json`](verification/frontier-status.json).
+
+- ICPs nomeados (household, bakery, clinic admin, finance) têm jornadas web/CLI reais; isso **não** ativa D03/D04/D05 integrais.
+- Eve permanece opcional e fail-closed (`textProfileAccepted: false` sem G-PROVIDER); speech cloud desabilitado.
+- Hosted Erased, controlador independente (H-01), `G-STORAGE-FENCE` e `restoreAfterErasure` permanecem Blocked/Unknown/false.
+- Nunca rotular o diagrama inteiro como implementado.

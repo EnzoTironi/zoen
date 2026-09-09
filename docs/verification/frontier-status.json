@@ -1,0 +1,102 @@
+{
+  "schema": "zoen.frontier-integration-status/v1",
+  "ticket": "ZA-26",
+  "tip": {
+    "commit": "aa7bc313e5c3905e83fb69847123f436fc261a22",
+    "short": "aa7bc31",
+    "lockfileSha256": "7de8982d307a68dd80b105c33594ea8c6dd40dca8ece8a5199a7d196fe59293f",
+    "parentPr": "#113 ZA-25 finance record reconciliation",
+    "imageIdentity": "ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c",
+    "imageIdentityNote": "Exact-image admission from Verify run 34354995333 on tip aa7bc31: image_id=sha256:9b82052d7f7b2bafa36ec7a9a159ba6e193c3a39635375289fe01939c186c4a3; digest=sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c; local_tag=zoen-all-in-one:exact-aa7bc313e5c3. /ready alone does not certify identity."
+  },
+  "selectedProfile": {
+    "id": "finance-record-reconciliation",
+    "ticket": "ZA-25",
+    "label": "finance / finan\u00e7as read-only record reconciliation",
+    "browserSpec": "apps/web/test/features/finance/finance.ZA25.browser.spec.ts",
+    "integrationTest": "tests/integration/finance/record-reconciliation.ZA25.integration.test.ts",
+    "acceptanceReadme": "tests/acceptance/finance/README.md",
+    "productDoc": "docs/product/finance-record-reconciliation.md",
+    "evidenceRef": "docs/verification/frontier-integration.md#selected-profile-za-25"
+  },
+  "scopes": {
+    "implemented": [
+      "za-04-profile-scoped-staging-reset",
+      "za-07-exact-image-admission",
+      "za-08-orphaned-disclosure-recovery",
+      "za-09-world-closing-barrier",
+      "za-16-feature-ownership",
+      "za-17-eve-fail-closed",
+      "za-22-household-commitment-reconciliation",
+      "za-23-bakery-order-reconciliation",
+      "za-24-clinic-administrative-scope",
+      "za-25-finance-record-reconciliation"
+    ],
+    "qualified": [
+      "local-closing-register",
+      "local-rustfs-object-lock",
+      "exact-image-admission-policy",
+      "eve-web-speech-browser-io",
+      "narrow-eve-text-profile-harness",
+      "tip-aa7bc31-exact-image-admission"
+    ],
+    "activated": [],
+    "blocked": [
+      "independent-erasure-controller",
+      "hosted-erased-activated",
+      "eve-product-admitted",
+      "cloud-speech",
+      "restore-after-erasure",
+      "full-d03",
+      "full-d04",
+      "full-d05",
+      "g-storage-fence-writer-containment",
+      "g-provider-live-opencode-product"
+    ],
+    "unknown": ["g-ops-live-erasable-inventory"]
+  },
+  "conditionalGates": {
+    "G-OPS": "Unknown",
+    "G-PROVIDER": "Blocked",
+    "G-STORAGE-FENCE": "Blocked",
+    "H-01": "Blocked",
+    "H-02": "Blocked",
+    "activatedBecausePrMerged": false,
+    "cloudSpeechEnabled": false,
+    "entireTargetDiagramImplemented": false,
+    "fullD03": false,
+    "fullD04": false,
+    "fullD05": false,
+    "fullHostedErased": false,
+    "restoreAfterErasure": false,
+    "textProfileAccepted": false
+  },
+  "execution": {
+    "formatCheck": "pass",
+    "lint": "pass",
+    "typecheck": "pass",
+    "build": "pass",
+    "unitTests": 473,
+    "unitFiles": 88,
+    "frontierIntegrationTests": 3,
+    "selectedProfileIntegrationTests": 1,
+    "selectedProfileAcceptanceTests": 1,
+    "commands": [
+      "pnpm format:check",
+      "pnpm lint",
+      "pnpm typecheck",
+      "pnpm test:unit  # 88 files / 473 tests",
+      "pnpm build",
+      "pnpm exec vitest run --project integration tests/integration/frontier/frontier-status.ZA26.integration.test.ts  # 3 passed",
+      "pnpm exec vitest run --project integration tests/integration/finance/record-reconciliation.ZA25.integration.test.ts  # 1 passed",
+      "ZOEN_TEST_WEB_URL=http://127.0.0.1:4310 node node_modules/@playwright/test/cli.js test --config playwright.acceptance.config.ts apps/web/test/features/finance/finance.ZA25.browser.spec.ts  # 1 passed"
+    ]
+  },
+  "notes": [
+    "ZA-26 closes only the selected frontier on tip aa7bc31 \u2014 not full-horizon acceptance.",
+    "Eve/G-PROVIDER/G-STORAGE-FENCE/H-01 remain Blocked/Unknown; textProfileAccepted false; hosted Erased not activated; cloud speech disabled.",
+    "ICP journeys ZA-22..25 stay listed as implemented product scopes without claiming activation by merge.",
+    "Execution counts recorded after implementing-machine runs on 2026-09-09 (PT); historical planning counts are not substituted.",
+    "Exact-image identity bound from Verify run 34354995333 admission.json for this tip only."
+  ]
+}

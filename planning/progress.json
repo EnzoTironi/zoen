@@ -1084,6 +1084,14 @@
       "scope": "ZA-25 delivers one personal/SMB finance reconciliation journey through real web/CLI and shared SemanticExecutor: contested comparable ledger vs statement amounts with retained sources and exact amount/currency (ZA-25-01); same numeric different currency or recognized-vs-settled stays non-equivalent and unverified with no inferred provider settlement (ZA-25-02); stale/conflict or same-intent replay on correction with no external payment action or fabricated receipt (ZA-25-03). Reuses worlds import/inspect/correct/undo and sharing; no Eve touch; no packs; no payment rails. Does NOT claim ICP complete or activated because this PR merged.",
       "verified_for_profile": false,
       "notes": "Local unit + finance integration seam required before merge evidence. Browser/CLI acceptance under apps/web/test/features/finance when ZOEN_TEST_WEB_URL is live. See docs/product/finance-record-reconciliation.md."
+    },
+    {
+      "id": "za26-frontier-integration-review",
+      "state": "implemented_pending_independent_review",
+      "profile": "selected frontier tip aa7bc31 / finance ZA-25 demo (ZA-26)",
+      "scope": "ZA-26 reviews tip aa7bc313e5c3905e83fb69847123f436fc261a22 (#113 ZA-25), lockfile sha256 7de8982d307a68dd80b105c33594ea8c6dd40dca8ece8a5199a7d196fe59293f, exact-image reference ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c. Selected real profile = finance record reconciliation with browser/CLI + integration artifact evidence. Conditional H-01/H-02/G-PROVIDER/G-STORAGE-FENCE stay Blocked; G-OPS Unknown; textProfileAccepted false; hosted Erased not activated; cloud speech disabled; restoreAfterErasure false. ZA-22..25 retained as implemented ICP scopes. Does NOT claim full D03/D04/D05, entire target diagram, or activation because this PR merged.",
+      "verified_for_profile": false,
+      "notes": "See docs/verification/frontier-integration.md, frontier-status.json, and frontier-execution.json (planning/validation.json remains structural verify_plan output). Validator: tests/integration/frontier/frontier-status.ZA26.integration.test.ts. Tip Verify exact-image admission 34354995333 bound (ghcr.io/enzotironi/zoen/all-in-one@sha256:048bde6e4b5d45af22982cfe51f3396b1b18930c27e71fb74048df1775012d8c). Local pipeline: unit 473; frontier 3; finance integration 1; finance acceptance 1. Does not activate Eve/hosted Erased or full D03/D04/D05."
     }
   ],
   "verified_deliveries": [],
@@ -1103,7 +1111,7 @@
     {
       "id": "eve-real-model-provider",
       "delivery": "D05",
-      "detail": "ZA-17 honesty: product Eve stays fail-closed until durable journal (ZA-18), evidence grounding (ZA-19), narrow text profile (ZA-20 harness; tip textProfileAccepted false without G-PROVIDER), and G-PROVIDER (ZOEN_OPENCODE_API_KEY in env/Fly secrets). Key alone does not admit stubMemory or live Zen. Worlds/web/CLI core remain usable.",
+      "detail": "ZA-17/ZA-26 honesty: product Eve stays fail-closed until durable journal (ZA-18), evidence grounding (ZA-19), narrow text profile (ZA-20 harness; tip textProfileAccepted false without G-PROVIDER), and G-PROVIDER (ZOEN_OPENCODE_API_KEY in env/Fly secrets). Key alone does not admit stubMemory or live Zen. Worlds/web/CLI core and ZA-22..25 ICP journeys remain usable.",
       "since": "2026-09-07"
     },
     {
