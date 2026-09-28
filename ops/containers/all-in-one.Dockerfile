@@ -1,7 +1,7 @@
 # Zoen Fly all-in-one: Postgres 18 + RustFS (S3) + Zoen server on one volume.
 # Build context: repository root. Do NOT recreate Managed Postgres / Tigris.
 
-FROM node:24.20.0-trixie-slim@sha256:50c3b2f6988dfc307b86e5301d69611af31f4789bdf232863b07d3b02fe55ae0 AS build
+FROM node:26.10.0-trixie-slim@sha256:ec7758ee051e457b468b32bde57b0879010b325bb9862718e9615225ce4aaae1 AS build
 WORKDIR /app
 RUN apt-get update && apt-get install --no-install-recommends --yes python3 && rm -rf /var/lib/apt/lists/*
 RUN npm install --global pnpm@11.25.0
