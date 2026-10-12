@@ -83,7 +83,7 @@ jobs:
       # App-only profile (application.Dockerfile). Not the Fly all-in-one admit path.
       - run: pnpm test:container
       - if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: integration-and-container-failure
           path: |
@@ -108,7 +108,7 @@ jobs:
       - run: pnpm exec playwright install --with-deps chromium
       - run: pnpm test:components
       - if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: component-browser-failure
           path: test-results
@@ -131,7 +131,7 @@ jobs:
           ZOEN_EXACT_IMAGE_PUSH: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && '1' || '0' }}
         run: python3 tests/integration/hosted/exact_image/qualify.py
       - name: Upload exact-image admission evidence
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: exact-image-admission
           path: |
@@ -141,7 +141,7 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
       - if: failure()
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: exact-image-failure
           path: |
