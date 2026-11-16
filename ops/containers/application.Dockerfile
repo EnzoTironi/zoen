@@ -1,4 +1,4 @@
-FROM node:24.20.0-trixie-slim@sha256:50c3b2f6988dfc307b86e5301d69611af31f4789bdf232863b07d3b02fe55ae0 AS build
+FROM node:26.13.1-trixie-slim@sha256:e6bedef217677b276c591795e169840edd9096dbf13f29df8ef8d1856b8820bc AS build
 WORKDIR /app
 RUN apt-get update && apt-get install --no-install-recommends --yes python3 && rm -rf /var/lib/apt/lists/*
 RUN npm install --global pnpm@11.25.0
@@ -6,7 +6,7 @@ COPY . .
 RUN pnpm install --frozen-lockfile
 RUN pnpm build
 
-FROM node:24.20.0-trixie-slim@sha256:50c3b2f6988dfc307b86e5301d69611af31f4789bdf232863b07d3b02fe55ae0 AS runtime
+FROM node:26.13.1-trixie-slim@sha256:e6bedef217677b276c591795e169840edd9096dbf13f29df8ef8d1856b8820bc AS runtime
 WORKDIR /app
 RUN npm install --global pnpm@11.25.0
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
